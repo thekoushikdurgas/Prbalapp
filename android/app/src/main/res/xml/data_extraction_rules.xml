@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <!-- Exclude sensitive app data from device-to-device transfers -->
+    <cloud-backup>
+        <!-- Exclude Hive cache data -->
+        <exclude domain="file" path="app_flutter/hive/" />
+    </cloud-backup>
+    
+    <device-transfer>
+        <!-- Exclude Hive cache data -->
+        <exclude domain="file" path="app_flutter/hive/" />
+    </device-transfer>
+</data-extraction-rules> 

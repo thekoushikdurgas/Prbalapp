@@ -1,0 +1,188 @@
+# Uncomment this line to define a global platform for your project
+platform :ios, '12.0'
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+# Workaround for Firebase Auth bug
+ENV['OS_ACTIVITY_MODE'] = 'disable'
+
+# Performance optimization
+install! 'cocoapods', :deterministic_uuids => false, :warn_for_unused_master_specs_repo => false
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  # Flutter Dependencies
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  
+  # Maps and Location
+  pod 'GoogleMaps'
+  pod 'GooglePlaces'
+  
+  # Networking and Security
+  pod 'Alamofire'
+  pod 'AlamofireImage'
+  pod 'KeychainAccess'
+  
+  # UI and Animation
+  pod 'lottie-ios'
+  pod 'SDWebImage'
+  pod 'SkeletonView'
+  
+  # Utilities
+  pod 'SwiftyJSON'
+  pod 'ReachabilitySwift'
+  
+  # Biometric Authentication
+  pod 'BiometricAuthentication'
+  
+  # Image Processing
+  pod 'GPUImage2'
+  
+  # QR Code and Barcode
+  pod 'QRCodeReader.swift'
+  
+  # Camera and Photo
+  pod 'CropViewController'
+  
+  # Payment Processing
+  pod 'Stripe'
+  pod 'PayPal-iOS-SDK'
+  
+  # Social Login
+  pod 'GoogleSignIn'
+  pod 'FBSDKLoginKit'
+  
+  # Communication
+  pod 'MessageKit'
+  pod 'SendBirdUIKit'
+  
+  target 'RunnerTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+end
+
+# Future extensions can be added here as needed
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    # Performance optimizations
+    target.build_configurations.each do |config|
+      # Enable optimizations
+      config.build_settings['GCC_OPTIMIZATION_LEVEL'] = '3'
+      config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-O'
+      
+      # Enable whole module optimization
+      config.build_settings['SWIFT_COMPILATION_MODE'] = 'wholemodule'
+      
+      # Set minimum deployment target
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      
+      # Enable bitcode for Release
+      if config.name == 'Release'
+        config.build_settings['ENABLE_BITCODE'] = 'YES'
+      else
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+      end
+      
+      # Exclude arm64 for simulator (if needed for older Macs)
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+      
+      # Enable metal performance optimization
+      config.build_settings['MTL_ENABLE_DEBUG_INFO'] = 'NO'
+      
+      # Code signing optimizations
+      config.build_settings['CODE_SIGN_IDENTITY'] = ''
+      config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+      
+      # Linker optimizations
+      config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
+      config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
+      
+      # Other optimizations
+      config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = config.name == 'Debug' ? 'YES' : 'NO'
+      config.build_settings['DEBUG_INFORMATION_FORMAT'] = config.name == 'Debug' ? 'dwarf' : 'dwarf-with-dsym'
+      
+      # Swift specific optimizations
+      if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+        target.build_configurations.each do |config|
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        end
+      end
+      
+      # Fix for M1 Macs
+      if config.build_settings['PRODUCT_NAME'] == 'Flutter'
+        config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+      end
+      
+      # Enable module stability
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      
+      # Memory and performance settings
+      config.build_settings['GCC_OPTIMIZATION_LEVEL'] = config.name == 'Debug' ? '0' : '3'
+      config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = config.name == 'Debug' ? '-Onone' : '-O'
+      
+      # Enable ARC optimizations
+      config.build_settings['CLANG_ENABLE_OBJC_ARC'] = 'YES'
+      config.build_settings['CLANG_ENABLE_OBJC_WEAK'] = 'YES'
+      
+      # Metal shader optimizations
+      config.build_settings['MTL_FAST_MATH'] = 'YES'
+    end
+    
+    # Fix for iOS 14+ signing issues
+    if target.name == 'BoringSSL-GRPC'
+      target.source_build_phase.files.each do |file|
+        if file.settings && file.settings['COMPILER_FLAGS']
+          flags = file.settings['COMPILER_FLAGS'].split
+          flags.reject! { |flag| flag == '-GCC_WARN_INHIBIT_ALL_WARNINGS' }
+          file.settings['COMPILER_FLAGS'] = flags.join(' ')
+        end
+      end
+    end
+  end
+  
+  # Flutter-specific post-install steps
+  flutter_additional_ios_build_settings(installer)
+  
+  # Fix for Xcode 12+ compatibility
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+  end
+  
+  # Enable modular headers for specific pods
+  installer.pods_project.targets.each do |target|
+    if ['GoogleUtilities', 'nanopb'].include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['DEFINES_MODULE'] = 'YES'
+      end
+    end
+  end
+end 

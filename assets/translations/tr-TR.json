@@ -1,0 +1,29 @@
+{
+    "intro" : {
+        "introTitleFirst": "Tanıtım Bayfası Başlığı",
+        "introDescriptionFirst": "Uygulamaya hoşgeldin! Bu nasıl çalıştığıyla ilgili açıklamadır.",
+        "introTitleSecond": "Tanıtım Bayfası Başlığı",
+        "introDescriptionSecond": "Uygulamaya hoşgeldin! Bu nasıl çalıştığıyla ilgili açıklamadır.",
+        "introTitleThird": "Tanıtım Bayfası Başlığı",
+        "introDescriptionThird": "Uygulamaya hoşgeldin! Bu nasıl çalıştığıyla ilgili açıklamadır."
+    },
+    "button": {
+        "skip": "Geç",
+        "done": "Başla",
+        "cancel": "Vazgeç",
+        "ok": "Tamam"
+    },
+    "theme": {
+        "theme": "Tema",
+        "default": "Sistem Teması",
+        "light": "Aydınlık",
+        "dark": "Karanlık",
+        "themeChoose": "Tema Seç"
+    },
+    "localization": {
+        "appLang": "Uygulama Dili",
+        "langChoose": "Dili Seç"
+    },
+    "settingTitle": "Ayarlar"
+    
+}
