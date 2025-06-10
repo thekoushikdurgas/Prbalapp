@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:go_router/go_router.dart';
+import 'package:prbal/components/bottom_navigation.dart';
+// import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
 
 class ProviderDashboard extends ConsumerStatefulWidget {
   const ProviderDashboard({super.key});
@@ -62,6 +65,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                 IconButton(
                   onPressed: () {
                     // Navigate to notifications
+                    context.push('/notifications');
                   },
                   icon: Icon(
                     LineIcons.bell,
@@ -109,6 +113,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                           suffixIcon: IconButton(
                             onPressed: () {
                               // Navigate to explore with filters
+                              context.go('/explore');
                             },
                             icon: Icon(
                               Icons.tune,
@@ -219,6 +224,11 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                           const Color(0xFF4299E1),
                           '8 services',
                           isDark,
+                          onTap: () {
+                            // Navigate to manage home services
+                            context.go(
+                                '/explore'); // Or specific service management route
+                          },
                         ),
                         _buildCategoryCard(
                           'Technical',
@@ -226,6 +236,10 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                           const Color(0xFF9F7AEA),
                           '3 services',
                           isDark,
+                          onTap: () {
+                            // Navigate to manage technical services
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'Beauty & Care',
@@ -233,6 +247,10 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                           const Color(0xFFED64A6),
                           '1 service',
                           isDark,
+                          onTap: () {
+                            // Navigate to manage beauty services
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'Add New',
@@ -240,6 +258,11 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                           isDark ? Colors.grey[600]! : Colors.grey[400]!,
                           'Create service',
                           isDark,
+                          onTap: () {
+                            // Navigate to add service screen
+                            context.push(
+                                '/add-service'); // Could be a feature route
+                          },
                         ),
                       ],
                     ),
@@ -317,6 +340,9 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
           ],
         ),
       ),
+      bottomNavigationBar: const BottomNavigation(
+        initialIndex: 0, // Provider Dashboard is the first tab
+      ),
     );
   }
 
@@ -361,8 +387,9 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
     IconData icon,
     Color color,
     String subtitle,
-    bool isDark,
-  ) {
+    bool isDark, {
+    VoidCallback? onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
@@ -381,9 +408,10 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: () {
-            // Navigate to category details
-          },
+          onTap: onTap ??
+              () {
+                // Default navigation
+              },
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(

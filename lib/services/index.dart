@@ -432,12 +432,9 @@ abstract class APIEndpoints {
     'rejectService': 'POST /api/v1/admin/services/{serviceId}/reject/',
     'featureService': 'POST /api/v1/admin/services/{serviceId}/feature/',
 
-    // Health & Metrics
+    // Health Checks
     'getSystemHealth': 'GET /api/v1/health/',
-    'getHealthMetrics': 'GET /api/v1/health/metrics/',
-    'getDatabaseHealth': 'GET /api/v1/health/database/',
-    'getExternalServicesHealth': 'GET /api/v1/health/external/',
-    'getPerformanceMetrics': 'GET /api/v1/metrics/',
+    'getDatabaseHealth': 'GET /api/v1/health/db/',
 
     // Sync Operations
     'triggerFullSync': 'POST /api/v1/sync/full/',

@@ -15,18 +15,21 @@ The sync service implements all APIs from the Postman collection `Sync.postman_c
 ## Key Features
 
 ### 🔄 Data Synchronization
+
 - Download user profile for offline use
 - Download services with advanced filtering
 - Automatic data caching and expiration handling
 - Optimized sync strategies (category-based, location-based, limited sync)
 
 ### 📱 Offline Functionality
+
 - Queue bids, bookings, and messages when offline
 - Local storage of all offline operations
 - Conflict resolution and error handling
 - Automatic sync when connectivity returns
 
 ### 🚀 Performance Optimization
+
 - Fast sync with limited data sets
 - Efficient local storage using Hive
 - Background sync capabilities
@@ -153,6 +156,7 @@ Future<ApiResponse<SyncServicesResponse>> downloadServices({
 **Endpoint**: `GET /api/v1/sync/services/`
 **Purpose**: Download services with optional filtering
 **Filters**:
+
 - `category`: Filter by service category ID
 - `location`: Filter by location (partial match)
 - `maxPrice`: Filter by maximum price
@@ -577,30 +581,35 @@ if (uploadResponse.success) {
 ## Best Practices
 
 ### 1. Sync Strategy
+
 - Use `downloadLimitedServices()` for initial app load
 - Use category/location-specific sync for targeted data
 - Implement periodic background sync
 - Check data expiration before using cached data
 
 ### 2. Offline Operations
+
 - Always use unique `clientTempId` for offline operations
 - Store offline data immediately when operations fail
 - Provide user feedback about offline status
 - Handle upload conflicts gracefully
 
 ### 3. Performance
+
 - Limit sync data size for better performance
 - Use appropriate ordering for relevant data first
 - Clear expired cache data regularly
 - Monitor local storage usage
 
 ### 4. Error Handling
+
 - Always check `ApiResponse.success` before using data
 - Provide user-friendly error messages
 - Implement retry logic for failed syncs
 - Log errors for debugging
 
 ### 5. UI/UX
+
 - Show sync status to users
 - Indicate when operating offline
 - Provide manual sync options
@@ -654,4 +663,4 @@ void debugSyncService() {
 | `uploadOfflineBookings()` | `POST /sync/upload/` | Upload only offline bookings |
 | `uploadOfflineMessages()` | `POST /sync/upload/` | Upload only offline messages |
 
-This sync service provides a complete offline-first experience for the Prbal application, ensuring users can continue using the app even without internet connectivity and seamlessly sync their data when connectivity is restored. 
+This sync service provides a complete offline-first experience for the Prbal application, ensuring users can continue using the app even without internet connectivity and seamlessly sync their data when connectivity is restored.

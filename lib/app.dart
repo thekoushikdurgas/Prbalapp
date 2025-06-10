@@ -1,7 +1,7 @@
-import 'package:prbal/init/cubit/theme_cubit.dart';
-import 'package:prbal/init/navigation/navigation_route.dart';
-import 'package:prbal/init/theme/dark/dark_theme_custom.dart';
-import 'package:prbal/init/theme/light/light_theme_custom.dart';
+import 'package:prbal/utils/cubit/theme_cubit.dart';
+import 'package:prbal/utils/navigation/navigation_route.dart';
+import 'package:prbal/utils/theme/dark/dark_theme_custom.dart';
+import 'package:prbal/utils/theme/light/light_theme_custom.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

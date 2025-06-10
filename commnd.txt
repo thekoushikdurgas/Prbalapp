@@ -67,6 +67,9 @@ flutter packages upgrade
 gradlew assembleDebug --stacktrace
 dir /s /b wanderai-backend\*.py | sort
 dir /s /b lib\*.dart | sort > tree.dart.txt
+tree /f lib\*.dart > tree.dart.txt
+───lib
+tree /f > tree.dart.txt
 
 dart format .
 flutter analyze . > analysis.txt
@@ -954,3 +957,38 @@ flutter clean
 cd android && gradlew clean && cd ..
 flutter pub get
 flutter run --android-skip-build-dependency-validation --verbose
+
+flutter pub run build_runner build
+
+# Test optimized health checks - run app and check debug logs
+flutter run --debug
+
+# Check for these optimized health check logs:
+# 🏥 Using cached health status: healthy
+# 🏥 Skipping network health check - recent data available
+# 🏥 No recent cached health data - performing fresh check
+
+# Clear app data to test fresh health checks
+flutter clean
+flutter pub get
+
+# Test network health check caching
+flutter run --debug
+
+# Test welcome screen overflow fix - run app and test on different screen sizes
+flutter run --debug
+
+# Check that welcome screen no longer has overflow errors:
+# - Should see smooth animations without rendering exceptions
+# - Content should be properly scrollable on smaller screens  
+# - Layout should adapt to different screen heights
+# - No more "RenderFlex overflowed by X pixels" errors
+
+# Test on different device sizes
+flutter run -d chrome --web-renderer canvaskit  # For web testing
+flutter run --debug  # For mobile testing
+
+# Clear app and test fresh installation
+flutter clean
+flutter pub get
+flutter run --debug

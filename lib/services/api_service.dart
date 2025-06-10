@@ -6,20 +6,21 @@ import 'package:flutter/foundation.dart';
 /// API Configuration constants
 class ApiConfig {
   // Use different URLs based on environment
-  // static const String baseUrl = 'http://localhost:8000';
-  static String get baseUrl {
-    if (kDebugMode) {
-      // For development - use your computer's IP address instead of localhost
-      // Replace with your actual IP address when testing on physical device
+  static const String baseUrl =
+      'https://391fe935-4d49-4781-be95-ac0773559dcb-00-25e80q0svv2q.riker.replit.dev';
+  // static String get baseUrl {
+  //   if (kDebugMode) {
+  //     // For development - use your computer's IP address instead of localhost
+  //     // Replace with your actual IP address when testing on physical device
 
-      return 'http://localhost:8000'; // Android emulator default
-      // return 'http://10.0.2.2:8000'; // Android emulator default
-      // return 'http://192.168.1.x:8000'; // Replace x with your IP for physical device
-    } else {
-      // For production - replace with your actual production API URL
-      return 'https://your-production-api.com';
-    }
-  }
+  //     return 'http://localhost:8000'; // Android emulator default
+  //     // return 'http://10.0.2.2:8000'; // Android emulator default
+  //     // return 'http://192.168.1.x:8000'; // Replace x with your IP for physical device
+  //   } else {
+  //     // For production - replace with your actual production API URL
+  //     return 'https://your-production-api.com';
+  //   }
+  // }
 
   static const String apiVersion = 'v1';
   static String get baseApiUrl => '$baseUrl/api/$apiVersion';

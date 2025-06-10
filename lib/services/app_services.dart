@@ -86,10 +86,17 @@ final isVerifiedProvider = Provider<bool>((ref) {
   return user?.isVerified ?? false;
 });
 
-/// User type provider
+/// User type provider - reads directly from Hive storage
 final userTypeProvider = Provider<String?>((ref) {
+  // First try to get from authenticated user
   final user = ref.watch(authProvider);
-  return user?.userType;
+  if (user != null) {
+    return user.userType;
+  }
+
+  // If no authenticated user, read from Hive storage
+  final userData = HiveService.getUserData();
+  return userData?['userType'] as String?;
 });
 
 /// Is provider check
@@ -101,7 +108,7 @@ final isProviderProvider = Provider<bool>((ref) {
 /// Is customer check
 final isCustomerProvider = Provider<bool>((ref) {
   final userType = ref.watch(userTypeProvider);
-  return userType == 'customer';
+  return userType == 'customer' || userType == 'taker';
 });
 
 /// Is admin check

@@ -7,6 +7,7 @@ The Prbal Messaging Service provides a comprehensive real-time messaging solutio
 ## Features
 
 ### Core Messaging Features
+
 - **Message Threads**: Organize conversations by type (bid, booking, general, support)
 - **Real-time Messaging**: WebSocket-based live chat with typing indicators
 - **Read Receipts**: Track message read status
@@ -15,12 +16,14 @@ The Prbal Messaging Service provides a comprehensive real-time messaging solutio
 - **Message Management**: Full CRUD operations on messages and threads
 
 ### Thread Types
+
 - **Bid Threads**: Conversations related to service bids
 - **Booking Threads**: Discussions about specific bookings
 - **General Threads**: Open conversations between users
 - **Support Threads**: Customer support communications
 
 ### Real-time Features
+
 - **Live Chat**: WebSocket-based instant messaging
 - **Typing Indicators**: Show when users are typing
 - **Presence Status**: Track user online/offline status
@@ -124,6 +127,7 @@ GET /api/v1/messaging/threads/
 ```
 
 **Query Parameters:**
+
 - `thread_type`: Filter by thread type (bid, booking, general, support)
 - `ordering`: Order by field (-updated_at, -created_at, updated_at, created_at)
 
@@ -210,6 +214,7 @@ GET /api/v1/messaging/threads/{thread_id}/messages/
 ```
 
 **Query Parameters:**
+
 - `since`: Timestamp to get messages after (optional)
 
 **Usage:**
@@ -339,6 +344,7 @@ GET /api/v1/messaging/messages/unread_count/
 ```
 
 **Query Parameters:**
+
 - `thread_id`: Get unread count for specific thread (optional)
 
 **Usage:**
@@ -737,6 +743,7 @@ final messagingServiceProvider = Provider<MessagingService>((ref) {
 ## Support
 
 For any issues or questions regarding the messaging service implementation, please refer to the example files:
+
 - `lib/services/messaging_service.dart` - Main service implementation
 - `lib/example/messaging_service_examples.dart` - Complete usage examples
 

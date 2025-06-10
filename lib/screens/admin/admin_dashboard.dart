@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:go_router/go_router.dart';
+import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
+import 'package:prbal/components/bottom_navigation.dart';
 
 class AdminDashboard extends ConsumerStatefulWidget {
   const AdminDashboard({super.key});
@@ -53,7 +56,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    // Navigate to alerts
+                    // Navigate to notifications - could be implemented as a feature route
+                    context.push(RouteEnum.notifications.rawValue);
                   },
                   icon: Icon(
                     LineIcons.bell,
@@ -264,36 +268,62 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                                 LineIcons.userEdit,
                                 const Color(0xFF4299E1),
                                 isDark,
+                                onTap: () {
+                                  // Navigate to users screen via bottom navigation
+                                  context.go(RouteEnum.explore
+                                      .rawValue); // This will show AdminUsersScreen
+                                },
                               ),
                               _buildQuickActionCard(
                                 'Service\nModeration',
                                 LineIcons.lock,
                                 const Color(0xFF48BB78),
                                 isDark,
+                                onTap: () {
+                                  // Navigate to moderation screen
+                                  context.go(RouteEnum.orders
+                                      .rawValue); // This will show moderation screen
+                                },
                               ),
                               _buildQuickActionCard(
                                 'Payment\nIssues',
                                 LineIcons.exclamationTriangle,
                                 const Color(0xFFE53E3E),
                                 isDark,
+                                onTap: () {
+                                  // Navigate to payments screen
+                                  context.push(RouteEnum.payments.rawValue);
+                                },
                               ),
                               _buildQuickActionCard(
                                 'Analytics\nReports',
                                 Icons.bar_chart,
                                 const Color(0xFF9F7AEA),
                                 isDark,
+                                onTap: () {
+                                  // Stay on current dashboard for analytics
+                                  context.go(RouteEnum.home.rawValue);
+                                },
                               ),
                               _buildQuickActionCard(
                                 'System\nSettings',
                                 LineIcons.cog,
                                 const Color(0xFFED8936),
                                 isDark,
+                                onTap: () {
+                                  // Navigate to settings
+                                  context.go('/settings');
+                                },
                               ),
                               _buildQuickActionCard(
                                 'Backup\n& Security',
                                 LineIcons.lock,
                                 const Color(0xFF38B2AC),
                                 isDark,
+                                onTap: () {
+                                  // Navigate to settings for backup/security
+                                  context.go('/settings');
+                                },
                               ),
                             ],
                           ),
@@ -338,7 +368,9 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                                 const Spacer(),
                                 TextButton(
                                   onPressed: () {
-                                    // View all activity
+                                    // Navigate to full activity view
+                                    context.push(
+                                        '/admin-activity'); // Could be a feature route
                                   },
                                   child: Text(
                                     'View All',
@@ -398,6 +430,9 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: const BottomNavigation(
+        initialIndex: 0, // Admin Dashboard is the first tab
       ),
     );
   }
@@ -515,15 +550,17 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     String title,
     IconData icon,
     Color color,
-    bool isDark,
-  ) {
+    bool isDark, {
+    VoidCallback? onTap,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(12.r),
-        onTap: () {
-          // Handle quick action
-        },
+        onTap: onTap ??
+            () {
+              // Default action if no specific onTap provided
+            },
         child: Container(
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(

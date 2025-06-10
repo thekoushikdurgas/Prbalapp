@@ -13,6 +13,8 @@ class HiveService {
 
   // Keys
   static const String _introWatchedKey = 'introWatched';
+  static const String _languageSelectedKey = 'languageSelected';
+  static const String _selectedLanguageKey = 'selectedLanguage';
   static const String _isLoggedInKey = 'isLoggedIn';
   static const String _userDataKey = 'userData';
   static const String _authTokenKey = 'authToken';
@@ -24,6 +26,11 @@ class HiveService {
   static const String _offlineBidsKey = 'offlineBids';
   static const String _offlineBookingsKey = 'offlineBookings';
   static const String _offlineMessagesKey = 'offlineMessages';
+
+  // Health check tracking keys
+  static const String _lastHealthCheckKey = 'lastHealthCheck';
+  static const String _healthCheckStatusKey = 'healthCheckStatus';
+  static const String _healthCheckResultKey = 'healthCheckResult';
 
   // Lazy boxes for better performance
   static late Box _introBox;
@@ -100,6 +107,55 @@ class HiveService {
       await _introBox.put(_introWatchedKey, false);
     } catch (e) {
       throw Exception('Failed to reset intro watched: $e');
+    }
+  }
+
+  // === LANGUAGE SELECTION METHODS ===
+
+  /// Check if user has selected a language
+  static bool isLanguageSelected() {
+    try {
+      return _introBox.get(_languageSelectedKey, defaultValue: false) as bool;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Mark language as selected
+  static Future<void> setLanguageSelected() async {
+    try {
+      await _introBox.put(_languageSelectedKey, true);
+    } catch (e) {
+      throw Exception('Failed to set language selected: $e');
+    }
+  }
+
+  /// Get selected language code
+  static String? getSelectedLanguage() {
+    try {
+      return _introBox.get(_selectedLanguageKey) as String?;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Set selected language
+  static Future<void> setSelectedLanguage(String languageCode) async {
+    try {
+      await _introBox.put(_selectedLanguageKey, languageCode);
+      await setLanguageSelected();
+    } catch (e) {
+      throw Exception('Failed to set selected language: $e');
+    }
+  }
+
+  /// Reset language selection (for testing or reset functionality)
+  static Future<void> resetLanguageSelection() async {
+    try {
+      await _introBox.put(_languageSelectedKey, false);
+      await _introBox.delete(_selectedLanguageKey);
+    } catch (e) {
+      throw Exception('Failed to reset language selection: $e');
     }
   }
 
@@ -478,6 +534,186 @@ class HiveService {
       await _offlineBox.clear();
     } catch (e) {
       throw Exception('Failed to clear offline data: $e');
+    }
+  }
+
+  /// Save health check timestamp
+  static Future<void> saveLastHealthCheck(DateTime timestamp) async {
+    try {
+      await _syncBox.put(_lastHealthCheckKey, timestamp.millisecondsSinceEpoch);
+    } catch (e) {
+      throw Exception('Failed to save health check timestamp: $e');
+    }
+  }
+
+  /// Get last health check timestamp
+  static DateTime? getLastHealthCheck() {
+    try {
+      final timestamp = _syncBox.get(_lastHealthCheckKey);
+      return timestamp != null
+          ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+          : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Save health check status
+  static Future<void> saveHealthCheckStatus(String status) async {
+    try {
+      await _syncBox.put(_healthCheckStatusKey, status);
+    } catch (e) {
+      throw Exception('Failed to save health check status: $e');
+    }
+  }
+
+  /// Get cached health check status
+  static String? getHealthCheckStatus() {
+    try {
+      return _syncBox.get(_healthCheckStatusKey);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Save health check result
+  static Future<void> saveHealthCheckResult(Map<String, dynamic> result) async {
+    try {
+      await _syncBox.put(_healthCheckResultKey, result);
+    } catch (e) {
+      throw Exception('Failed to save health check result: $e');
+    }
+  }
+
+  /// Get cached health check result
+  static Map<String, dynamic>? getHealthCheckResult() {
+    try {
+      final result = _syncBox.get(_healthCheckResultKey);
+      return result != null ? Map<String, dynamic>.from(result) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Check if health check is needed (based on time interval)
+  static bool isHealthCheckNeeded(
+      {Duration interval = const Duration(minutes: 30)}) {
+    try {
+      final lastCheck = getLastHealthCheck();
+      if (lastCheck == null) return true;
+
+      final timeSinceLastCheck = DateTime.now().difference(lastCheck);
+      return timeSinceLastCheck >= interval;
+    } catch (e) {
+      return true; // If we can't determine, better to check
+    }
+  }
+
+  /// Clear health check data
+  static Future<void> clearHealthCheckData() async {
+    try {
+      await _syncBox.delete(_lastHealthCheckKey);
+      await _syncBox.delete(_healthCheckStatusKey);
+      await _syncBox.delete(_healthCheckResultKey);
+    } catch (e) {
+      throw Exception('Failed to clear health check data: $e');
+    }
+  }
+
+  // === USER TYPE DETECTION METHODS ===
+
+  /// Get user type from stored user data
+  static String getUserType() {
+    try {
+      final userData = getUserData();
+      final userType = userData?['userType'] as String?;
+      return _normalizeUserType(userType);
+    } catch (e) {
+      return 'customer'; // Default fallback
+    }
+  }
+
+  /// Check if current user is a provider
+  static bool isProvider() {
+    return getUserType() == 'provider';
+  }
+
+  /// Check if current user is a customer
+  static bool isCustomer() {
+    final userType = getUserType();
+    return userType == 'customer' || userType == 'taker';
+  }
+
+  /// Check if current user is an admin
+  static bool isAdmin() {
+    return getUserType() == 'admin';
+  }
+
+  /// Normalize user type to handle variations
+  static String _normalizeUserType(String? userType) {
+    if (userType == null) return 'customer';
+
+    switch (userType.toLowerCase()) {
+      case 'provider':
+        return 'provider';
+      case 'admin':
+        return 'admin';
+      case 'customer':
+      case 'taker':
+      default:
+        return 'customer';
+    }
+  }
+
+  /// Get user type display name
+  static String getUserTypeDisplayName() {
+    switch (getUserType()) {
+      case 'provider':
+        return 'Service Provider';
+      case 'admin':
+        return 'Administrator';
+      case 'customer':
+      default:
+        return 'Customer';
+    }
+  }
+
+  /// Get user type color for UI
+  static int getUserTypeColor() {
+    switch (getUserType()) {
+      case 'provider':
+        return 0xFF10B981; // Emerald
+      case 'admin':
+        return 0xFF8B5CF6; // Violet
+      case 'customer':
+      default:
+        return 0xFF3B82F6; // Blue
+    }
+  }
+
+  /// Get user type icon for UI
+  static int getUserTypeIconCodePoint() {
+    switch (getUserType()) {
+      case 'provider':
+        return 0xf0ad; // tools icon
+      case 'admin':
+        return 0xf521; // crown icon
+      case 'customer':
+      default:
+        return 0xf2c0; // user icon
+    }
+  }
+
+  /// Update user type in stored data
+  static Future<void> updateUserType(String userType) async {
+    try {
+      final userData = getUserData();
+      if (userData != null) {
+        userData['userType'] = _normalizeUserType(userType);
+        await saveUserData(userData);
+      }
+    } catch (e) {
+      throw Exception('Failed to update user type: $e');
     }
   }
 }

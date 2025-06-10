@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:go_router/go_router.dart';
+import 'package:prbal/components/bottom_navigation.dart';
+// import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
 
 class TakerDashboard extends ConsumerStatefulWidget {
   const TakerDashboard({super.key});
@@ -64,6 +67,7 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                 IconButton(
                   onPressed: () {
                     // Navigate to notifications
+                    context.push('/notifications');
                   },
                   icon: Icon(
                     LineIcons.bell,
@@ -111,6 +115,7 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                           suffixIcon: IconButton(
                             onPressed: () {
                               // Navigate to explore with search
+                              context.go('/explore');
                             },
                             icon: Icon(
                               LineIcons.arrowRight,
@@ -189,6 +194,7 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                         TextButton(
                           onPressed: () {
                             // Navigate to explore page
+                            context.go('/explore');
                           },
                           child: Text(
                             'See All',
@@ -218,36 +224,60 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                           LineIcons.home,
                           const Color(0xFF4299E1),
                           isDark,
+                          onTap: () {
+                            // Navigate to explore with home cleaning filter
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'AC Repair\n& Service',
                           LineIcons.snowflake,
                           const Color(0xFF48BB78),
                           isDark,
+                          onTap: () {
+                            // Navigate to explore with AC repair filter
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'Plumbing\nServices',
                           LineIcons.wrench,
                           const Color(0xFF9F7AEA),
                           isDark,
+                          onTap: () {
+                            // Navigate to explore with plumbing filter
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'Beauty\n& Care',
                           LineIcons.cut,
                           const Color(0xFFED64A6),
                           isDark,
+                          onTap: () {
+                            // Navigate to explore with beauty filter
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'Tech\nSupport',
                           LineIcons.laptop,
                           const Color(0xFFED8936),
                           isDark,
+                          onTap: () {
+                            // Navigate to explore with tech support filter
+                            context.go('/explore');
+                          },
                         ),
                         _buildCategoryCard(
                           'More\nServices',
                           LineIcons.thLarge,
                           isDark ? Colors.grey[600]! : Colors.grey[400]!,
                           isDark,
+                          onTap: () {
+                            // Navigate to full explore page
+                            context.go('/explore');
+                          },
                         ),
                       ],
                     ),
@@ -270,6 +300,7 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                         TextButton(
                           onPressed: () {
                             // Navigate to order history
+                            context.go('/orders');
                           },
                           child: Text(
                             'View All',
@@ -347,6 +378,10 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                             LineIcons.exclamationTriangle,
                             const Color(0xFFE53E3E),
                             isDark,
+                            onTap: () {
+                              // Navigate to explore with emergency filter
+                              context.go('/explore');
+                            },
                           ),
                         ),
                         SizedBox(width: 16.w),
@@ -357,6 +392,10 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
                             LineIcons.calendar,
                             const Color(0xFF4299E1),
                             isDark,
+                            onTap: () {
+                              // Navigate to explore to book services
+                              context.go('/explore');
+                            },
                           ),
                         ),
                       ],
@@ -369,6 +408,9 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: const BottomNavigation(
+        initialIndex: 0, // Taker Dashboard is the first tab (Home)
       ),
     );
   }
@@ -425,6 +467,7 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
             ElevatedButton(
               onPressed: () {
                 // Apply promotion
+                context.go('/explore'); // Navigate to explore to use promotion
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -453,8 +496,9 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
     String title,
     IconData icon,
     Color color,
-    bool isDark,
-  ) {
+    bool isDark, {
+    VoidCallback? onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
@@ -473,9 +517,11 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: () {
-            // Navigate to category services
-          },
+          onTap: onTap ??
+              () {
+                // Default navigation to explore
+                context.go('/explore');
+              },
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -587,8 +633,9 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
     String subtitle,
     IconData icon,
     Color color,
-    bool isDark,
-  ) {
+    bool isDark, {
+    VoidCallback? onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
@@ -607,9 +654,10 @@ class _TakerDashboardState extends ConsumerState<TakerDashboard> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12.r),
-          onTap: () {
-            // Handle quick action
-          },
+          onTap: onTap ??
+              () {
+                // Default action
+              },
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(

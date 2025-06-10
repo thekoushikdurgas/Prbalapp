@@ -1,8 +1,8 @@
 import 'package:prbal/app.dart';
-import 'package:prbal/init/cache/onboarding/intro_caching.dart';
-import 'package:prbal/init/cubit/theme_cubit.dart';
-import 'package:prbal/init/cache/theme/theme_caching.dart';
-import 'package:prbal/init/localization/project_locales.dart';
+import 'package:prbal/utils/cache/onboarding/intro_caching.dart';
+import 'package:prbal/utils/cubit/theme_cubit.dart';
+import 'package:prbal/utils/cache/theme/theme_caching.dart';
+import 'package:prbal/utils/localization/project_locales.dart';
 import 'package:prbal/cubit_observer.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/services/performance_service.dart';
@@ -12,28 +12,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'init/localization/localization.dart';
+part 'utils/localization/localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Run app services in parallel
+    debugPrint('🚀 Starting Prbal app initialization...');
+
+    // Set up BLoC observer for better debugging
+    Bloc.observer = CubitObserver();
+
+    // Run app services in parallel for faster startup
     await Future.wait([
       // Cache and locale initializations (can run in parallel)
       _initializeAppServices(),
-      // Performance optimization
-      PerformanceService.instance.optimizeStartup(),
+      // Performance optimization and health monitoring
+      _initializePerformanceAndHealth(),
     ]);
 
-    // Set up BLoC observer and performance monitoring
-    Bloc.observer = CubitObserver();
-    await PerformanceService.instance.initializePerformanceMonitoring();
-    PerformanceService.optimizeImageLoading();
-
-    // Initialize health monitoring
-    final healthService = HealthService();
-    await healthService.initialize();
+    debugPrint('🚀 All services initialized successfully');
 
     runApp(
       ProviderScope(
@@ -50,7 +48,7 @@ Future<void> main() async {
     );
   } catch (error) {
     // Fallback error handling
-    debugPrint('App initialization error: $error');
+    debugPrint('❌ App initialization error: $error');
     runApp(
       MaterialApp(
         home: Scaffold(
@@ -70,6 +68,14 @@ Future<void> main() async {
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.grey),
                 ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // Restart the app
+                    main();
+                  },
+                  child: const Text('Retry'),
+                ),
               ],
             ),
           ),
@@ -81,10 +87,32 @@ Future<void> main() async {
 
 /// Parallel initialization of app services
 Future<void> _initializeAppServices() async {
+  debugPrint('📦 Initializing app services...');
   await Future.wait([
     LocaleVariables._init(),
     ThemeCaching.init(),
     IntroCaching.init(),
     HiveService.init(),
   ]);
+  debugPrint('📦 App services initialized');
+}
+
+/// Initialize performance monitoring and health checks
+Future<void> _initializePerformanceAndHealth() async {
+  debugPrint('🏥 Initializing performance and health monitoring...');
+
+  // Initialize performance service first
+  await PerformanceService.instance.initializePerformanceMonitoring();
+
+  // Optimize image loading
+  PerformanceService.optimizeImageLoading();
+
+  // Initialize health monitoring service (but don't perform check here)
+  // The splash screen will handle health checking with proper caching
+  final healthService = HealthService();
+  await healthService.initialize();
+
+  debugPrint('🏥 Performance and health monitoring ready');
+  debugPrint(
+      '🏥 Note: Health checks will be performed on splash screen with caching');
 }

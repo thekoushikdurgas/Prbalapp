@@ -507,7 +507,7 @@ class AdminService {
     );
   }
 
-  // === HEALTH CHECKS & METRICS ===
+  // === HEALTH CHECKS ===
 
   /// Get system health status
   Future<ApiResponse<Map<String, dynamic>>> getSystemHealth() async {
@@ -517,46 +517,10 @@ class AdminService {
     );
   }
 
-  /// Get detailed health metrics
-  Future<ApiResponse<Map<String, dynamic>>> getHealthMetrics() async {
-    return _apiService.get<Map<String, dynamic>>(
-      '/health/metrics/',
-      fromJson: (data) => data,
-    );
-  }
-
   /// Get database health
   Future<ApiResponse<Map<String, dynamic>>> getDatabaseHealth() async {
     return _apiService.get<Map<String, dynamic>>(
-      '/health/database/',
-      fromJson: (data) => data,
-    );
-  }
-
-  /// Get external services health
-  Future<ApiResponse<Map<String, dynamic>>> getExternalServicesHealth() async {
-    return _apiService.get<Map<String, dynamic>>(
-      '/health/external/',
-      fromJson: (data) => data,
-    );
-  }
-
-  /// Get performance metrics
-  Future<ApiResponse<Map<String, dynamic>>> getPerformanceMetrics({
-    DateTime? startTime,
-    DateTime? endTime,
-    String? metric, // 'response_time', 'throughput', 'error_rate'
-  }) async {
-    final queryParams = <String, String>{};
-    if (startTime != null) {
-      queryParams['start_time'] = startTime.toIso8601String();
-    }
-    if (endTime != null) queryParams['end_time'] = endTime.toIso8601String();
-    if (metric != null) queryParams['metric'] = metric;
-
-    return _apiService.get<Map<String, dynamic>>(
-      '/metrics/',
-      queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      '/health/db/',
       fromJson: (data) => data,
     );
   }
