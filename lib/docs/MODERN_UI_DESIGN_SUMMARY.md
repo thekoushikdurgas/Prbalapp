@@ -340,4 +340,4 @@ The design system ensures that the Prbal App delivers a premium, modern user exp
 ---
 
 **Created with ❤️ for the Prbal App project**
-*Modern UI Design System v1.0* 
+*Modern UI Design System v1.0*

@@ -4,17 +4,24 @@ import 'package:prbal/screens/auth/health_dashboard.dart';
 import 'package:prbal/utils/navigation/router_utils.dart';
 import 'package:prbal/screens/main/messages_screen.dart';
 import 'package:prbal/screens/main/payments_screen.dart';
-import 'package:prbal/screens/main/booking_details_screen.dart';
+import 'package:prbal/screens/common/booking_details_screen.dart';
 import 'package:prbal/screens/main/service_details_screen.dart';
-import 'package:prbal/screens/main/full_screen_image_screen.dart';
-import 'package:prbal/screens/provider/provider_dashboard.dart';
-import 'package:prbal/screens/provider/schedule_screen.dart';
-import 'package:prbal/screens/provider/profile_screen.dart';
-import 'package:prbal/screens/admin/admin_dashboard.dart';
-import 'package:prbal/screens/taker/taker_dashboard.dart';
+import 'package:prbal/screens/common/full_screen_image_screen.dart';
+// import 'package:prbal/screens/settings/settings_screen.dart';
+// import 'package:prbal/screens/provider/provider_dashboard.dart';
+// import 'package:prbal/screens/provider/provider_explore_screen.dart';
+// import 'package:prbal/screens/provider/provider_orders_screen.dart';
+import 'package:prbal/screens/main/schedule_screen.dart';
+import 'package:prbal/screens/settings/profile_screen.dart';
+// import 'package:prbal/screens/admin/admin_dashboard.dart';
+// import 'package:prbal/screens/admin/admin_users_screen.dart';
+// import 'package:prbal/screens/taker/taker_dashboard.dart';
+// import 'package:prbal/screens/taker/taker_explore_screen.dart';
+// import 'package:prbal/screens/taker/taker_orders_screen.dart';
 import 'package:prbal/screens/common/add_service_screen.dart';
 import 'package:prbal/screens/common/post_request_screen.dart';
 import 'package:prbal/screens/common/notifications_screen.dart';
+import 'package:prbal/components/bottom_navigation.dart';
 import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
 
 /// Feature routes (chat, payments, bookings, etc.)
@@ -38,7 +45,27 @@ class FeatureRoutes {
       pageBuilder: (context, state) => RouterUtils.buildPageTransition(
         context: context,
         state: state,
-        child: const ProviderDashboard(),
+        child: const BottomNavigation(initialIndex: 0),
+      ),
+    ),
+
+    // Provider Explore route
+    GoRoute(
+      path: RouteEnum.providerExplore.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 1),
+      ),
+    ),
+
+    // Provider Orders route
+    GoRoute(
+      path: RouteEnum.providerOrders.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 2),
       ),
     ),
 
@@ -48,7 +75,17 @@ class FeatureRoutes {
       pageBuilder: (context, state) => RouterUtils.buildPageTransition(
         context: context,
         state: state,
-        child: const AdminDashboard(),
+        child: const BottomNavigation(initialIndex: 0),
+      ),
+    ),
+
+    // Admin Users route
+    GoRoute(
+      path: RouteEnum.adminUsers.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 1),
       ),
     ),
 
@@ -58,7 +95,37 @@ class FeatureRoutes {
       pageBuilder: (context, state) => RouterUtils.buildPageTransition(
         context: context,
         state: state,
-        child: const TakerDashboard(),
+        child: const BottomNavigation(initialIndex: 0),
+      ),
+    ),
+
+    // Taker Explore route
+    GoRoute(
+      path: RouteEnum.takerExplore.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 1),
+      ),
+    ),
+
+    // Taker Orders route
+    GoRoute(
+      path: RouteEnum.takerOrders.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 2),
+      ),
+    ),
+
+    // Settings route
+    GoRoute(
+      path: RouteEnum.settings.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 3),
       ),
     ),
 
@@ -248,8 +315,7 @@ class AdminActivityScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         title: Text(

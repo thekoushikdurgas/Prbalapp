@@ -233,12 +233,12 @@ final response = await bidsService.createBid(request);
 if (response.success && response.data != null) {
   // Success
   final bid = response.data!;
-  print('Bid created: ${bid.id}');
+  debugPrint('Bid created: ${bid.id}');
 } else {
   // Error
-  print('Error: ${response.message}');
+  debugPrint('Error: ${response.message}');
   if (response.errors != null) {
-    print('Details: ${response.errors}');
+    debugPrint('Details: ${response.errors}');
   }
 }
 ```
@@ -262,10 +262,10 @@ The service handles all bid statuses:
 final pricingResponse = await bidsService.getSmartPricing('service-id');
 if (pricingResponse.success) {
   final pricing = pricingResponse.data!;
-  print('Optimal price: ${pricing.optimalPrice}');
-  print('Range: ${pricing.minPrice} - ${pricing.maxPrice}');
-  print('Confidence: ${pricing.confidenceScore}');
-  print('Analysis: ${pricing.marketAnalysis}');
+  debugPrint('Optimal price: ${pricing.optimalPrice}');
+  debugPrint('Range: ${pricing.minPrice} - ${pricing.maxPrice}');
+  debugPrint('Confidence: ${pricing.confidenceScore}');
+  debugPrint('Analysis: ${pricing.marketAnalysis}');
 }
 ```
 

@@ -251,7 +251,7 @@ class PrbalSecurityManager {
     
     private func handleScreenshotDetected() {
         // Log security event
-        print("🚨 Screenshot detected!")
+        debugPrint("🚨 Screenshot detected!")
         
         // You could implement additional security measures here:
         // - Log out the user

@@ -115,7 +115,7 @@ class PrbalNotificationService: UNNotificationServiceExtension {
             let attachment = try UNNotificationAttachment(identifier: "image", url: tempURL, options: nil)
             content.attachments = [attachment]
         } catch {
-            print("Error creating notification attachment: \(error)")
+            debugPrint("Error creating notification attachment: \(error)")
         }
     }
 } 

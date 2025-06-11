@@ -1,5 +1,31 @@
 {
   "app": {
     "name": "Prbal"
-  }
+  },
+  "intro": {
+    "introTitleFirst": "Welcome to Prbal",
+    "introDescriptionFirst": "Connect with service providers in your area",
+    "introTitleSecond": "Book Services",
+    "introDescriptionSecond": "Easily book and manage your services",
+    "introTitleThird": "Get Started",
+    "introDescriptionThird": "Start your journey with Prbal today"
+  },
+  "button": {
+    "skip": "Skip",
+    "done": "Done",
+    "cancel": "Cancel",
+    "ok": "OK"
+  },
+  "theme": {
+    "theme": "Theme",
+    "default": "System Default",
+    "light": "Light",
+    "dark": "Dark",
+    "themeChoose": "Choose Theme"
+  },
+  "localization": {
+    "appLang": "App Language",
+    "langChoose": "Choose Language"
+  },
+  "settingTitle": "Settings"
 }

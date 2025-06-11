@@ -45,9 +45,9 @@ import Photos
             options: authOptions,
             completionHandler: { granted, error in
                 if let error = error {
-                    print("❌ Notification authorization error: \(error)")
+                    debugPrint("❌ Notification authorization error: \(error)")
                 } else {
-                    print("✅ Notification authorization granted: \(granted)")
+                    debugPrint("✅ Notification authorization granted: \(granted)")
                 }
             }
         )
@@ -258,13 +258,13 @@ import Photos
     
     private func requestCameraPermission() {
         AVCaptureDevice.requestAccess(for: .video) { granted in
-            print("Camera permission granted: \(granted)")
+            debugPrint("Camera permission granted: \(granted)")
         }
     }
     
     private func requestPhotoPermission() {
         PHPhotoLibrary.requestAuthorization { status in
-            print("Photo permission status: \(status.rawValue)")
+            debugPrint("Photo permission status: \(status.rawValue)")
         }
     }
     
@@ -411,7 +411,7 @@ import Photos
         
         // Handle device token for custom push notification service
         let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        print("✅ Device token: \(tokenString)")
+        debugPrint("✅ Device token: \(tokenString)")
         
         // Send token to Flutter
         let tokenData = ["token": tokenString]
@@ -422,7 +422,7 @@ import Photos
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
-        print("❌ Failed to register for remote notifications: \(error)")
+        debugPrint("❌ Failed to register for remote notifications: \(error)")
         super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
     }
 }
@@ -483,7 +483,7 @@ extension AppDelegate: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("❌ Location error: \(error)")
+        debugPrint("❌ Location error: \(error)")
         
         let errorData: [String: Any] = [
             "code": (error as NSError).code,

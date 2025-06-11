@@ -3,6 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
 
+/// Admin Users Management Screen
+/// This screen provides comprehensive user management functionality including:
+/// - User search and filtering
+/// - Tab-based user categorization (All, Providers, Customers)
+/// - User status management (verified, pending, suspended)
+/// - Individual user actions and details
 class AdminUsersScreen extends ConsumerStatefulWidget {
   const AdminUsersScreen({super.key});
 
@@ -10,20 +16,39 @@ class AdminUsersScreen extends ConsumerStatefulWidget {
   ConsumerState<AdminUsersScreen> createState() => _AdminUsersScreenState();
 }
 
-class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-  final TextEditingController _searchController = TextEditingController();
-  String _selectedFilter = 'All';
+class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with TickerProviderStateMixin {
+  // ========== STATE VARIABLES ==========
+  late TabController _tabController; // Controls the user type tabs (All/Providers/Customers)
+  final TextEditingController _searchController = TextEditingController(); // Search input controller
+  String _selectedFilter = 'All'; // Currently selected filter (All/Verified/Pending/Suspended/New)
 
   @override
   void initState() {
     super.initState();
+    print('👥 AdminUsersScreen: Initializing user management screen');
+
+    // Initialize tab controller with 3 tabs (All Users, Providers, Customers)
     _tabController = TabController(length: 3, vsync: this);
+    print('👥 AdminUsersScreen: Tab controller initialized with 3 tabs');
+
+    // Add listener to track tab changes for debugging
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        print('👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
+        final tabNames = ['All Users', 'Providers', 'Customers'];
+        print('👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
+      }
+    });
+
+    // Add listener to search controller for real-time search tracking
+    _searchController.addListener(() {
+      print('🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
+    });
   }
 
   @override
   void dispose() {
+    print('👥 AdminUsersScreen: Disposing user management screen');
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -31,180 +56,238 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Get current theme for consistent styling across the screen
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    print('👥 AdminUsersScreen: Building user management interface');
+    print('👥 AdminUsersScreen: Dark mode: $isDark');
+    print('👥 AdminUsersScreen: Current filter: $_selectedFilter');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      // Adaptive background color based on theme
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark
-                        ? Colors.black.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'User Management',
-                        style: TextStyle(
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          // Export user data
-                        },
-                        icon: Icon(
-                          LineIcons.download,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF4A5568),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.h),
+            // ========== HEADER SECTION ==========
+            // Contains title, search bar, and tab navigation
+            _buildHeaderSection(isDark),
 
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF2D2D2D)
-                          : const Color(0xFFF7FAFC),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Search users...',
-                        hintStyle: TextStyle(
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
-                          fontSize: 16.sp,
-                        ),
-                        prefixIcon: Icon(
-                          LineIcons.search,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 12.h,
-                        ),
-                      ),
-                    ),
-                  ),
+            // ========== FILTER CHIPS SECTION ==========
+            // Horizontal scrollable filter options
+            _buildFilterSection(isDark),
 
-                  SizedBox(height: 16.h),
-
-                  // Tab Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF2D2D2D)
-                          : const Color(0xFFF7FAFC),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: TabBar(
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        color: const Color(0xFF8B5CF6),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor:
-                          isDark ? Colors.grey[400] : Colors.grey[600],
-                      labelStyle: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      tabs: const [
-                        Tab(text: 'All Users'),
-                        Tab(text: 'Providers'),
-                        Tab(text: 'Customers'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Filters
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-              child: SizedBox(
-                height: 40.h,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildFilterChip('All', _selectedFilter == 'All', isDark),
-                    SizedBox(width: 8.w),
-                    _buildFilterChip(
-                        'Verified', _selectedFilter == 'Verified', isDark),
-                    SizedBox(width: 8.w),
-                    _buildFilterChip(
-                        'Pending', _selectedFilter == 'Pending', isDark),
-                    SizedBox(width: 8.w),
-                    _buildFilterChip(
-                        'Suspended', _selectedFilter == 'Suspended', isDark),
-                    SizedBox(width: 8.w),
-                    _buildFilterChip('New', _selectedFilter == 'New', isDark),
-                  ],
-                ),
-              ),
-            ),
-
-            // User List
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildUserList('all', isDark),
-                  _buildUserList('provider', isDark),
-                  _buildUserList('customer', isDark),
-                ],
-              ),
-            ),
+            // ========== USER LIST SECTION ==========
+            // Tab-based user listing with different categories
+            _buildUserListSection(isDark),
           ],
         ),
       ),
     );
   }
 
+  // ========== HEADER SECTION BUILDER ==========
+  /// Builds the top section containing title, export button, search bar, and tabs
+  /// This section provides the main navigation and search functionality
+  Widget _buildHeaderSection(bool isDark) {
+    print('👥 AdminUsersScreen: Building header section');
+
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // ========== TITLE AND EXPORT ROW ==========
+          Row(
+            children: [
+              Text(
+                'User Management',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                ),
+              ),
+              const Spacer(),
+              // Export functionality for user data
+              IconButton(
+                onPressed: () {
+                  print('📤 AdminUsersScreen: Export button pressed');
+                  print('📤 AdminUsersScreen: Preparing user data export...');
+                  // TODO: Implement user data export functionality
+                  // This could export to CSV, Excel, or PDF format
+                },
+                icon: Icon(
+                  LineIcons.download,
+                  color: isDark ? Colors.white : const Color(0xFF4A5568),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+
+          // ========== SEARCH BAR ==========
+          // Real-time search functionality for user filtering
+          _buildSearchBar(isDark),
+
+          SizedBox(height: 16.h),
+
+          // ========== TAB BAR ==========
+          // User type categorization tabs
+          _buildTabBar(isDark),
+        ],
+      ),
+    );
+  }
+
+  // ========== SEARCH BAR BUILDER ==========
+  /// Builds the search input field with proper theming and functionality
+  Widget _buildSearchBar(bool isDark) {
+    print('👥 AdminUsersScreen: Building search bar');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (value) {
+          print('🔍 AdminUsersScreen: Search input changed: "$value"');
+          // TODO: Implement real-time search filtering
+          // This could filter users by name, email, phone, or ID
+        },
+        decoration: InputDecoration(
+          hintText: 'Search users...',
+          hintStyle: TextStyle(
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            fontSize: 16.sp,
+          ),
+          prefixIcon: Icon(
+            LineIcons.search,
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ========== TAB BAR BUILDER ==========
+  /// Builds the user type categorization tab bar
+  Widget _buildTabBar(bool isDark) {
+    print('👥 AdminUsersScreen: Building tab bar');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+          color: const Color(0xFF8B5CF6), // Purple indicator for selected tab
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        labelColor: Colors.white,
+        unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey[600],
+        labelStyle: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+        ),
+        onTap: (index) {
+          print('👥 AdminUsersScreen: Tab tapped: index $index');
+          final tabNames = ['All Users', 'Providers', 'Customers'];
+          print('👥 AdminUsersScreen: Switched to ${tabNames[index]} tab');
+        },
+        tabs: const [
+          Tab(text: 'All Users'), // Shows all user types
+          Tab(text: 'Providers'), // Shows only service providers
+          Tab(text: 'Customers'), // Shows only customers/takers
+        ],
+      ),
+    );
+  }
+
+  // ========== FILTER SECTION BUILDER ==========
+  /// Builds the horizontal scrollable filter chips for user status filtering
+  Widget _buildFilterSection(bool isDark) {
+    print('👥 AdminUsersScreen: Building filter section');
+    print('👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+      child: SizedBox(
+        height: 40.h,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            // Filter options for different user states
+            _buildFilterChip('All', _selectedFilter == 'All', isDark),
+            SizedBox(width: 8.w),
+            _buildFilterChip('Verified', _selectedFilter == 'Verified', isDark),
+            SizedBox(width: 8.w),
+            _buildFilterChip('Pending', _selectedFilter == 'Pending', isDark),
+            SizedBox(width: 8.w),
+            _buildFilterChip('Suspended', _selectedFilter == 'Suspended', isDark),
+            SizedBox(width: 8.w),
+            _buildFilterChip('New', _selectedFilter == 'New', isDark),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ========== USER LIST SECTION BUILDER ==========
+  /// Builds the tab view containing different user lists
+  Widget _buildUserListSection(bool isDark) {
+    print('👥 AdminUsersScreen: Building user list section');
+
+    return Expanded(
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildUserList('all', isDark), // All users regardless of type
+          _buildUserList('provider', isDark), // Service providers only
+          _buildUserList('customer', isDark), // Customers/takers only
+        ],
+      ),
+    );
+  }
+
+  // ========== FILTER CHIP BUILDER ==========
+  /// Builds individual filter chips for status filtering
   Widget _buildFilterChip(String label, bool isSelected, bool isDark) {
     return GestureDetector(
       onTap: () {
+        print('🏷️ AdminUsersScreen: Filter chip tapped: $label');
+        print('🏷️ AdminUsersScreen: Previous filter: $_selectedFilter');
         setState(() {
           _selectedFilter = label;
         });
+        print('🏷️ AdminUsersScreen: New filter: $_selectedFilter');
+        // TODO: Implement actual filtering logic based on selected filter
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF8B5CF6)
-              : (isDark ? const Color(0xFF2D2D2D) : Colors.white),
+          // Visual feedback for selected/unselected state
+          color: isSelected ? const Color(0xFF8B5CF6) : (isDark ? const Color(0xFF2D2D2D) : Colors.white),
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF8B5CF6)
-                : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
+            color: isSelected ? const Color(0xFF8B5CF6) : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
           ),
         ),
         child: Text(
@@ -212,20 +295,29 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected
-                ? Colors.white
-                : (isDark ? Colors.white : const Color(0xFF2D3748)),
+            color: isSelected ? Colors.white : (isDark ? Colors.white : const Color(0xFF2D3748)),
           ),
         ),
       ),
     );
   }
 
+  // ========== USER LIST BUILDER ==========
+  /// Builds the scrollable list of users based on type and filters
   Widget _buildUserList(String userType, bool isDark) {
+    print('👥 AdminUsersScreen: Building user list for type: $userType');
+    print('👥 AdminUsersScreen: Applied filter: $_selectedFilter');
+
+    // TODO: Replace with actual API call to fetch users
+    // This should filter based on userType and _selectedFilter
+    const int mockUserCount = 20;
+
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
-      itemCount: 20, // Mock data
+      itemCount: mockUserCount,
       itemBuilder: (context, index) {
+        print('👥 AdminUsersScreen: Building user card $index for $userType users');
+
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
           decoration: BoxDecoration(
@@ -233,9 +325,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
+                color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -247,7 +337,11 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
     );
   }
 
+  // ========== USER CARD BUILDER ==========
+  /// Builds individual user cards with all user information and actions
   Widget _buildUserCard(int index, String userType, bool isDark) {
+    // ========== MOCK DATA ==========
+    // TODO: Replace with actual user data from API
     final users = [
       {'name': 'Sarah Johnson', 'type': 'provider', 'service': 'Home Cleaning'},
       {'name': 'Mike Wilson', 'type': 'provider', 'service': 'AC Repair'},
@@ -256,58 +350,55 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
       {'name': 'David Lee', 'type': 'customer', 'service': null},
     ];
 
-    final statuses = [
-      'verified',
-      'pending',
-      'suspended',
-      'verified',
-      'verified'
-    ];
+    final statuses = ['verified', 'pending', 'suspended', 'verified', 'verified'];
     final user = users[index % users.length];
     final status = statuses[index % statuses.length];
     final isProvider = user['type'] == 'provider';
 
+    print('👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
+
+    // ========== STATUS COLOR MAPPING ==========
     Color statusColor;
     switch (status) {
       case 'verified':
-        statusColor = const Color(0xFF10B981);
+        statusColor = const Color(0xFF10B981); // Green for verified
         break;
       case 'pending':
-        statusColor = const Color(0xFFF59E0B);
+        statusColor = const Color(0xFFF59E0B); // Orange for pending
         break;
       case 'suspended':
-        statusColor = const Color(0xFFEF4444);
+        statusColor = const Color(0xFFEF4444); // Red for suspended
         break;
       default:
-        statusColor = const Color(0xFF6B7280);
+        statusColor = const Color(0xFF6B7280); // Gray for unknown
     }
 
     return Padding(
       padding: EdgeInsets.all(16.w),
       child: Row(
         children: [
-          // Avatar
+          // ========== USER AVATAR ==========
+          // Visual distinction between providers and customers
           CircleAvatar(
             radius: 24.r,
             backgroundColor: isProvider
-                ? const Color(0xFF10B981).withValues(alpha: 0.1)
-                : const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                ? const Color(0xFF10B981).withValues(alpha: 0.1) // Green for providers
+                : const Color(0xFF3B82F6).withValues(alpha: 0.1), // Blue for customers
             child: Icon(
               isProvider ? LineIcons.tools : LineIcons.user,
-              color: isProvider
-                  ? const Color(0xFF10B981)
-                  : const Color(0xFF3B82F6),
+              color: isProvider ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
               size: 20.sp,
             ),
           ),
 
           SizedBox(width: 12.w),
 
-          // User Info
+          // ========== USER INFORMATION ==========
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Name and status row
                 Row(
                   children: [
                     Text(
@@ -319,9 +410,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                       ),
                     ),
                     SizedBox(width: 8.w),
+                    // Status badge with appropriate color
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
@@ -338,45 +429,43 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   ],
                 ),
                 SizedBox(height: 4.h),
+                // User type and service information
                 Row(
                   children: [
                     Text(
                       isProvider ? 'Provider' : 'Customer',
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color:
-                            isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                        color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
                       ),
                     ),
+                    // Show service type for providers
                     if (isProvider && user['service'] != null) ...[
                       Text(
                         ' • ${user['service']}',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: isDark
-                              ? Colors.grey[400]
-                              : const Color(0xFF6B7280),
+                          color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
                         ),
                       ),
                     ],
                   ],
                 ),
                 SizedBox(height: 4.h),
+                // Registration date (mock data)
                 Row(
                   children: [
                     Icon(
                       LineIcons.calendar,
                       size: 12.sp,
-                      color:
-                          isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
+                      color: isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
                     ),
                     SizedBox(width: 4.w),
                     Text(
                       'Joined ${index + 1} days ago',
                       style: TextStyle(
                         fontSize: 11.sp,
-                        color:
-                            isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
+                        color: isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
                       ),
                     ),
                   ],
@@ -385,26 +474,15 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
             ),
           ),
 
-          // Actions
+          // ========== ACTION MENU ==========
+          // Context menu for user management actions
           PopupMenuButton<String>(
             onSelected: (value) {
-              // Handle action
-              switch (value) {
-                case 'view':
-                  _showUserDetails(user, isDark);
-                  break;
-                case 'verify':
-                  // Verify user
-                  break;
-                case 'suspend':
-                  // Suspend user
-                  break;
-                case 'delete':
-                  // Delete user
-                  break;
-              }
+              print('👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
+              _handleUserAction(value, user, status);
             },
             itemBuilder: (context) => [
+              // View user details action
               const PopupMenuItem(
                 value: 'view',
                 child: Row(
@@ -415,6 +493,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   ],
                 ),
               ),
+              // Verify action (only for pending users)
               if (status == 'pending')
                 const PopupMenuItem(
                   value: 'verify',
@@ -426,6 +505,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                     ],
                   ),
                 ),
+              // Suspend action (only for non-suspended users)
               if (status != 'suspended')
                 const PopupMenuItem(
                   value: 'suspend',
@@ -437,6 +517,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                     ],
                   ),
                 ),
+              // Delete action (always available, with warning styling)
               const PopupMenuItem(
                 value: 'delete',
                 child: Row(
@@ -458,11 +539,43 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
     );
   }
 
-  void _showUserDetails(Map<String, String?> user, bool isDark) {
+  // ========== USER ACTION HANDLER ==========
+  /// Handles all user management actions from the context menu
+  void _handleUserAction(String action, Map<String, String?> user, String status) {
+    print('👥 AdminUsersScreen: Handling $action for user ${user['name']}');
+
+    switch (action) {
+      case 'view':
+        print('👁️ AdminUsersScreen: Showing details for ${user['name']}');
+        _showUserDetails(user);
+        break;
+      case 'verify':
+        print('✅ AdminUsersScreen: Verifying user ${user['name']}');
+        // TODO: Implement user verification API call
+        break;
+      case 'suspend':
+        print('🚫 AdminUsersScreen: Suspending user ${user['name']}');
+        // TODO: Implement user suspension API call
+        break;
+      case 'delete':
+        print('🗑️ AdminUsersScreen: Deleting user ${user['name']}');
+        // TODO: Implement user deletion with confirmation dialog
+        break;
+      default:
+        print('❓ AdminUsersScreen: Unknown action: $action');
+    }
+  }
+
+  // ========== USER DETAILS MODAL ==========
+  /// Shows detailed user information in a bottom sheet modal
+  void _showUserDetails(Map<String, String?> user) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    print('👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      isScrollControlled: true,
+      isScrollControlled: true, // Allow full screen height
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.7,
         decoration: BoxDecoration(
@@ -471,7 +584,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
         ),
         child: Column(
           children: [
-            // Handle
+            // ========== MODAL HANDLE ==========
+            // Visual indicator for drag-to-close functionality
             Container(
               margin: EdgeInsets.symmetric(vertical: 12.h),
               height: 4.h,
@@ -482,7 +596,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
               ),
             ),
 
-            // Title
+            // ========== MODAL HEADER ==========
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Row(
@@ -497,57 +611,63 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      print('👁️ AdminUsersScreen: Closing user details modal');
+                      Navigator.pop(context);
+                    },
                     icon: Icon(
                       LineIcons.times,
-                      color:
-                          isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                      color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Content
+            // ========== MODAL CONTENT ==========
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // User profile info would go here
-                    Text(
-                      'Name: ${user['name']}',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: isDark ? Colors.white : const Color(0xFF111827),
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      'Type: ${user['type']}',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: isDark ? Colors.white : const Color(0xFF111827),
-                      ),
-                    ),
-                    if (user['service'] != null) ...[
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Service: ${user['service']}',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF111827),
-                        ),
-                      ),
-                    ],
-                    // Add more user details here
+                    // TODO: Replace with comprehensive user profile display
+                    // This should include: profile image, contact info, verification status,
+                    // service history, ratings, reviews, etc.
+
+                    _buildDetailRow('Name', user['name']!, isDark),
+                    _buildDetailRow('Type', user['type']!, isDark),
+                    if (user['service'] != null) _buildDetailRow('Service', user['service']!, isDark),
+
+                    // TODO: Add more comprehensive user details:
+                    // - Email address
+                    // - Phone number
+                    // - Registration date
+                    // - Last login
+                    // - Verification documents
+                    // - Service history
+                    // - Ratings and reviews
+                    // - Payment information
                   ],
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // ========== DETAIL ROW BUILDER ==========
+  /// Builds a single row in the user details modal
+  Widget _buildDetailRow(String label, String value, bool isDark) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(
+          fontSize: 16.sp,
+          color: isDark ? Colors.white : const Color(0xFF111827),
         ),
       ),
     );

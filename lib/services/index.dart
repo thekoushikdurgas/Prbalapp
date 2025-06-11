@@ -73,8 +73,7 @@ class AllServices {
 
   // Enhanced Service Management (From Postman APIs)
   static final serviceCategoryService = ServiceCategoryService(apiService);
-  static final serviceSubcategoryService =
-      ServiceSubcategoryService(apiService);
+  static final serviceSubcategoryService = ServiceSubcategoryService(apiService);
   static final serviceRequestService = ServiceRequestService(apiService);
   static final enhancedServiceService = EnhancedServiceService(apiService);
 
@@ -188,7 +187,7 @@ abstract class APIEndpoints {
     'loginCustomer': 'POST /api/v1/auth/login/customer/',
     'loginProvider': 'POST /api/v1/auth/login/provider/',
     'loginAdmin': 'POST /api/v1/auth/login/admin/',
-    'searchUserByPhone': 'GET /api/v1/auth/search/phone/{phone}/',
+    'searchUserByPhone': 'GET /api/v1/users/search/phone/{phone}/',
 
     // PIN Authentication
     'pinLogin': 'POST /api/v1/auth/pin/login/',
@@ -235,8 +234,7 @@ abstract class APIEndpoints {
     'startWork': 'POST /api/v1/bookings/{bookingId}/start/',
     'completeWork': 'POST /api/v1/bookings/{bookingId}/complete/',
     'approveCompletion': 'POST /api/v1/bookings/{bookingId}/approve/',
-    'requestCancellation':
-        'POST /api/v1/bookings/{bookingId}/request_cancellation/',
+    'requestCancellation': 'POST /api/v1/bookings/{bookingId}/request_cancellation/',
     'disputeBooking': 'POST /api/v1/bookings/{bookingId}/dispute/',
 
     // Calendar
@@ -278,8 +276,7 @@ abstract class APIEndpoints {
     'updateThread': 'PATCH /api/v1/messages/threads/{threadId}/',
     'archiveThread': 'POST /api/v1/messages/threads/{threadId}/archive/',
     'addParticipant': 'POST /api/v1/messages/threads/{threadId}/participants/',
-    'removeParticipant':
-        'DELETE /api/v1/messages/threads/{threadId}/participants/{userId}/',
+    'removeParticipant': 'DELETE /api/v1/messages/threads/{threadId}/participants/{userId}/',
 
     // Messages
     'getMessages': 'GET /api/v1/messages/threads/{threadId}/messages/',
@@ -313,8 +310,7 @@ abstract class APIEndpoints {
     'addGatewayAccount': 'POST /api/v1/payments/gateways/',
     'updateGatewayAccount': 'PATCH /api/v1/payments/gateways/{accountId}/',
     'deleteGatewayAccount': 'DELETE /api/v1/payments/gateways/{accountId}/',
-    'verifyGatewayAccount':
-        'POST /api/v1/payments/gateways/{accountId}/verify/',
+    'verifyGatewayAccount': 'POST /api/v1/payments/gateways/{accountId}/verify/',
 
     // Payouts
     'getPayoutHistory': 'GET /api/v1/payouts/',
@@ -328,8 +324,7 @@ abstract class APIEndpoints {
   static const Map<String, String> notifications = {
     'getNotifications': 'GET /api/v1/notifications/',
     'getNotification': 'GET /api/v1/notifications/{notificationId}/',
-    'markNotificationAsRead':
-        'POST /api/v1/notifications/{notificationId}/read/',
+    'markNotificationAsRead': 'POST /api/v1/notifications/{notificationId}/read/',
     'markAllNotificationsAsRead': 'POST /api/v1/notifications/read_all/',
     'deleteNotification': 'DELETE /api/v1/notifications/{notificationId}/',
     'getUnreadCount': 'GET /api/v1/notifications/unread_count/',
@@ -350,11 +345,9 @@ abstract class APIEndpoints {
     'testPushNotification': 'POST /api/v1/notifications/test_push/',
 
     // WebSocket
-    'connectRealtimeNotifications':
-        'GET /api/v1/notifications/websocket/connect/',
+    'connectRealtimeNotifications': 'GET /api/v1/notifications/websocket/connect/',
     'subscribeToChannel': 'POST /api/v1/notifications/websocket/subscribe/',
-    'unsubscribeFromChannel':
-        'POST /api/v1/notifications/websocket/unsubscribe/',
+    'unsubscribeFromChannel': 'POST /api/v1/notifications/websocket/unsubscribe/',
   };
 
   // === REVIEW ENDPOINTS ===
@@ -384,24 +377,15 @@ abstract class APIEndpoints {
   static const Map<String, String> aiSuggestions = {
     // AI Suggestions
     'listAISuggestions': 'GET /api/v1/ai_suggestions/suggestions/',
-    'filterSuggestionsByType':
-        'GET /api/v1/ai_suggestions/suggestions/?suggestion_type={type}',
-    'filterSuggestionsByStatus':
-        'GET /api/v1/ai_suggestions/suggestions/?status={status}',
-    'getAISuggestionDetails':
-        'GET /api/v1/ai_suggestions/suggestions/{suggestionId}/',
-    'adminViewAllSuggestions':
-        'GET /api/v1/ai_suggestions/suggestions/?all=true',
-    'provideFeedbackOnSuggestion':
-        'POST /api/v1/ai_suggestions/suggestions/{suggestionId}/provide_feedback/',
-    'generateServiceSuggestions':
-        'POST /api/v1/ai_suggestions/suggestions/generate_service_suggestions/',
-    'suggestBidAmount':
-        'POST /api/v1/ai_suggestions/suggestions/suggest_bid_amount/',
-    'suggestBidMessage':
-        'POST /api/v1/ai_suggestions/suggestions/suggest_bid_message/',
-    'suggestMessageTemplate':
-        'POST /api/v1/ai_suggestions/suggestions/suggest_message/',
+    'filterSuggestionsByType': 'GET /api/v1/ai_suggestions/suggestions/?suggestion_type={type}',
+    'filterSuggestionsByStatus': 'GET /api/v1/ai_suggestions/suggestions/?status={status}',
+    'getAISuggestionDetails': 'GET /api/v1/ai_suggestions/suggestions/{suggestionId}/',
+    'adminViewAllSuggestions': 'GET /api/v1/ai_suggestions/suggestions/?all=true',
+    'provideFeedbackOnSuggestion': 'POST /api/v1/ai_suggestions/suggestions/{suggestionId}/provide_feedback/',
+    'generateServiceSuggestions': 'POST /api/v1/ai_suggestions/suggestions/generate_service_suggestions/',
+    'suggestBidAmount': 'POST /api/v1/ai_suggestions/suggestions/suggest_bid_amount/',
+    'suggestBidMessage': 'POST /api/v1/ai_suggestions/suggestions/suggest_bid_message/',
+    'suggestMessageTemplate': 'POST /api/v1/ai_suggestions/suggestions/suggest_message/',
 
     // AI Feedback Logs
     'listFeedbackLogs': 'GET /api/v1/ai_suggestions/feedback/',
@@ -446,8 +430,7 @@ abstract class APIEndpoints {
     // Verifications
     'getVerificationRequests': 'GET /api/v1/verifications/',
     'submitVerification': 'POST /api/v1/verifications/',
-    'processVerification':
-        'POST /api/v1/verifications/{verificationId}/process/',
+    'processVerification': 'POST /api/v1/verifications/{verificationId}/process/',
 
     // Bids
     'getAllBids': 'GET /api/v1/bids/',

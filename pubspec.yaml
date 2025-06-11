@@ -74,7 +74,6 @@ dependencies:
   google_maps_flutter: ^2.5.0
   path_provider: ^2.1.1
   path: ^1.8.3
-  file_selector: ^1.0.3
   flutter_native_splash: ^2.3.10
   easy_localization: ^3.0.7+1
   flutter_bloc: ^9.1.1

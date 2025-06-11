@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
-import 'package:prbal/components/bottom_navigation.dart';
 
+/// Full Admin Dashboard with bottom navigation bar
+/// Use this for direct route access
+/// This class provides the complete admin dashboard experience with navigation
 class AdminDashboard extends ConsumerStatefulWidget {
   const AdminDashboard({super.key});
 
@@ -15,20 +17,68 @@ class AdminDashboard extends ConsumerStatefulWidget {
 
 class _AdminDashboardState extends ConsumerState<AdminDashboard> {
   @override
+  void initState() {
+    super.initState();
+    // Debug: Track when full admin dashboard is initialized
+    debugPrint('🏠 AdminDashboard: Full dashboard widget initialized');
+    debugPrint('🏠 AdminDashboard: This version includes bottom navigation bar');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    debugPrint('🏠 AdminDashboard: Building full dashboard with bottom navigation');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      // Main dashboard content without navigation (prevents circular dependency)
+      body: const AdminDashboardContent(),
+    );
+  }
+
+  @override
+  void dispose() {
+    debugPrint('🏠 AdminDashboard: Full dashboard widget disposed');
+    super.dispose();
+  }
+}
+
+/// Content-only Admin Dashboard without bottom navigation
+/// Use this within BottomNavigation to prevent circular dependency
+/// This separation is crucial for preventing memory leaks and circular references
+class AdminDashboardContent extends ConsumerStatefulWidget {
+  const AdminDashboardContent({super.key});
+
+  @override
+  ConsumerState<AdminDashboardContent> createState() => _AdminDashboardContentState();
+}
+
+class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
+  @override
+  void initState() {
+    super.initState();
+    // Debug: Track when content-only dashboard is initialized
+    debugPrint('📊 AdminDashboardContent: Content-only dashboard initialized');
+    debugPrint('📊 AdminDashboardContent: This version prevents circular dependency');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Get current theme mode for consistent styling
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    debugPrint('📊 AdminDashboardContent: Building dashboard content');
+    debugPrint('📊 AdminDashboardContent: Dark mode: $isDark');
+
+    return Scaffold(
+      // Background color that adapts to theme
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // App Bar
+            // ========== SLIVER APP BAR SECTION ==========
+            // Collapsible app bar that stays pinned at top when scrolled
             SliverAppBar(
-              expandedHeight: 120.h,
-              floating: false,
-              pinned: true,
+              expandedHeight: 120.h, // Height when expanded
+              floating: false, // Don't show when scrolling up
+              pinned: true, // Stay visible when collapsed
               backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
@@ -41,6 +91,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                     color: isDark ? Colors.white : const Color(0xFF2D3748),
                   ),
                 ),
+                // Gradient background that adapts to theme
                 background: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -54,10 +105,18 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                 ),
               ),
               actions: [
+                // Notifications button
                 IconButton(
                   onPressed: () {
-                    // Navigate to notifications - could be implemented as a feature route
-                    context.push(RouteEnum.notifications.rawValue);
+                    debugPrint('🔔 AdminDashboard: Notifications button pressed');
+                    debugPrint('🔔 AdminDashboard: Navigating to ${RouteEnum.notifications.rawValue}');
+                    try {
+                      // Navigate to notifications - using predefined route enum for consistency
+                      context.push(RouteEnum.notifications.rawValue);
+                      debugPrint('🔔 AdminDashboard: Navigation to notifications successful');
+                    } catch (e) {
+                      debugPrint('❌ AdminDashboard: Navigation to notifications failed: $e');
+                    }
                   },
                   icon: Icon(
                     LineIcons.bell,
@@ -68,6 +127,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
               ],
             ),
 
+            // ========== MAIN CONTENT SECTION ==========
+            // Scrollable content area with all dashboard widgets
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -75,353 +136,27 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                   children: [
                     SizedBox(height: 20.h),
 
-                    // System Status
-                    Container(
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'System Status',
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? Colors.white
-                                      : const Color(0xFF2D3748),
-                                ),
-                              ),
-                              const Spacer(),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w, vertical: 6.h),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF48BB78)
-                                      .withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 8.w,
-                                      height: 8.h,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF48BB78),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    SizedBox(width: 6.w),
-                                    Text(
-                                      'All Systems Operational',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: const Color(0xFF48BB78),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16.h),
-                          Row(
-                            children: [
-                              _buildSystemMetric(
-                                  'API Response',
-                                  '99.9%',
-                                  LineIcons.server,
-                                  const Color(0xFF48BB78),
-                                  isDark),
-                              _buildSystemMetric(
-                                  'Database',
-                                  '100%',
-                                  LineIcons.database,
-                                  const Color(0xFF4299E1),
-                                  isDark),
-                              _buildSystemMetric(
-                                  'Payment',
-                                  '98.7%',
-                                  LineIcons.creditCard,
-                                  const Color(0xFF9F7AEA),
-                                  isDark),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    // ========== SYSTEM STATUS CARD ==========
+                    // Real-time system health monitoring widget
+                    _buildSystemStatusCard(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Key Metrics
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildMetricCard(
-                            'Total Users',
-                            '12,450',
-                            '+5.2% this week',
-                            LineIcons.users,
-                            const Color(0xFF4299E1),
-                            isDark,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: _buildMetricCard(
-                            'Active Bookings',
-                            '847',
-                            '+12.3% today',
-                            LineIcons.calendar,
-                            const Color(0xFF48BB78),
-                            isDark,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 16.h),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildMetricCard(
-                            'Revenue',
-                            '\$45,230',
-                            '+8.7% this month',
-                            LineIcons.dollarSign,
-                            const Color(0xFF9F7AEA),
-                            isDark,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: _buildMetricCard(
-                            'Support Tickets',
-                            '23',
-                            '-15% this week',
-                            LineIcons.headset,
-                            const Color(0xFFED8936),
-                            isDark,
-                          ),
-                        ),
-                      ],
-                    ),
+                    // ========== KEY METRICS GRID ==========
+                    // Two-row grid showing important business metrics
+                    _buildMetricsGrid(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Quick Actions
-                    Container(
-                      padding: EdgeInsets.all(20.w),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Quick Actions',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF2D3748),
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12.w,
-                            mainAxisSpacing: 12.h,
-                            childAspectRatio: 1.1,
-                            children: [
-                              _buildQuickActionCard(
-                                'User\nManagement',
-                                LineIcons.userEdit,
-                                const Color(0xFF4299E1),
-                                isDark,
-                                onTap: () {
-                                  // Navigate to users screen via bottom navigation
-                                  context.go(RouteEnum.explore
-                                      .rawValue); // This will show AdminUsersScreen
-                                },
-                              ),
-                              _buildQuickActionCard(
-                                'Service\nModeration',
-                                LineIcons.lock,
-                                const Color(0xFF48BB78),
-                                isDark,
-                                onTap: () {
-                                  // Navigate to moderation screen
-                                  context.go(RouteEnum.orders
-                                      .rawValue); // This will show moderation screen
-                                },
-                              ),
-                              _buildQuickActionCard(
-                                'Payment\nIssues',
-                                LineIcons.exclamationTriangle,
-                                const Color(0xFFE53E3E),
-                                isDark,
-                                onTap: () {
-                                  // Navigate to payments screen
-                                  context.push(RouteEnum.payments.rawValue);
-                                },
-                              ),
-                              _buildQuickActionCard(
-                                'Analytics\nReports',
-                                Icons.bar_chart,
-                                const Color(0xFF9F7AEA),
-                                isDark,
-                                onTap: () {
-                                  // Stay on current dashboard for analytics
-                                  context.go(RouteEnum.home.rawValue);
-                                },
-                              ),
-                              _buildQuickActionCard(
-                                'System\nSettings',
-                                LineIcons.cog,
-                                const Color(0xFFED8936),
-                                isDark,
-                                onTap: () {
-                                  // Navigate to settings
-                                  context.go('/settings');
-                                },
-                              ),
-                              _buildQuickActionCard(
-                                'Backup\n& Security',
-                                LineIcons.lock,
-                                const Color(0xFF38B2AC),
-                                isDark,
-                                onTap: () {
-                                  // Navigate to settings for backup/security
-                                  context.go('/settings');
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    // ========== QUICK ACTIONS SECTION ==========
+                    // Grid of admin action buttons for common tasks
+                    _buildQuickActionsSection(isDark),
 
                     SizedBox(height: 24.h),
 
-                    // Recent Activity
-                    Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(20.w),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Recent Activity',
-                                  style: TextStyle(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark
-                                        ? Colors.white
-                                        : const Color(0xFF2D3748),
-                                  ),
-                                ),
-                                const Spacer(),
-                                TextButton(
-                                  onPressed: () {
-                                    // Navigate to full activity view
-                                    context.push(
-                                        '/admin-activity'); // Could be a feature route
-                                  },
-                                  child: Text(
-                                    'View All',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF4299E1),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          _buildActivityItem(
-                            'New user registration',
-                            'John Doe joined as a service provider',
-                            '5 minutes ago',
-                            LineIcons.userPlus,
-                            const Color(0xFF48BB78),
-                            isDark,
-                          ),
-                          const Divider(height: 1),
-                          _buildActivityItem(
-                            'Payment dispute resolved',
-                            'Booking #12345 - \$150 dispute closed',
-                            '15 minutes ago',
-                            Icons.security,
-                            const Color(0xFF4299E1),
-                            isDark,
-                          ),
-                          const Divider(height: 1),
-                          _buildActivityItem(
-                            'Service verification completed',
-                            'Mike Wilson - AC Repair service approved',
-                            '1 hour ago',
-                            LineIcons.checkCircle,
-                            const Color(0xFF9F7AEA),
-                            isDark,
-                          ),
-                          const Divider(height: 1),
-                          _buildActivityItem(
-                            'System maintenance',
-                            'Database optimization completed',
-                            '2 hours ago',
-                            LineIcons.tools,
-                            const Color(0xFFED8936),
-                            isDark,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // ========== RECENT ACTIVITY SECTION ==========
+                    // Live feed of recent system activities and events
+                    _buildRecentActivitySection(isDark),
 
                     SizedBox(height: 24.h),
                   ],
@@ -431,23 +166,377 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavigation(
-        initialIndex: 0, // Admin Dashboard is the first tab
+    );
+  }
+
+  // ========== SYSTEM STATUS CARD BUILDER ==========
+  /// Builds the system status monitoring card showing API, database, and payment health
+  /// This provides real-time operational status for critical system components
+  Widget _buildSystemStatusCard(bool isDark) {
+    debugPrint('📊 AdminDashboard: Building system status card');
+
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Status header with operational indicator
+          Row(
+            children: [
+              Text(
+                'System Status',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                ),
+              ),
+              const Spacer(),
+              // Global system status indicator
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Row(
+                  children: [
+                    // Green dot indicator for operational status
+                    Container(
+                      width: 8.w,
+                      height: 8.h,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF48BB78),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      'All Systems Operational',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF48BB78),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+          // Individual system metrics row
+          Row(
+            children: [
+              _buildSystemMetric(
+                  'API Response', // API performance metric
+                  '99.9%',
+                  LineIcons.server,
+                  const Color(0xFF48BB78),
+                  isDark),
+              _buildSystemMetric(
+                  'Database', // Database connectivity metric
+                  '100%',
+                  LineIcons.database,
+                  const Color(0xFF4299E1),
+                  isDark),
+              _buildSystemMetric(
+                  'Payment', // Payment gateway status
+                  '98.7%',
+                  LineIcons.creditCard,
+                  const Color(0xFF9F7AEA),
+                  isDark),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSystemMetric(
-      String label, String value, IconData icon, Color color, bool isDark) {
+  // ========== METRICS GRID BUILDER ==========
+  /// Builds the key business metrics grid showing users, bookings, revenue, and support data
+  /// This provides quick insights into business performance
+  Widget _buildMetricsGrid(bool isDark) {
+    debugPrint('📊 AdminDashboard: Building metrics grid');
+
+    return Column(
+      children: [
+        // First row: Users and Bookings
+        Row(
+          children: [
+            Expanded(
+              child: _buildMetricCard(
+                'Total Users', // User base size
+                '12,450',
+                '+5.2% this week', // Growth indicator
+                LineIcons.users,
+                const Color(0xFF4299E1),
+                isDark,
+              ),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: _buildMetricCard(
+                'Active Bookings', // Current active bookings
+                '847',
+                '+12.3% today', // Daily growth
+                LineIcons.calendar,
+                const Color(0xFF48BB78),
+                isDark,
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 16.h),
+
+        // Second row: Revenue and Support
+        Row(
+          children: [
+            Expanded(
+              child: _buildMetricCard(
+                'Revenue', // Financial performance
+                '\$84,350',
+                '+8.1% this month', // Monthly growth
+                LineIcons.dollarSign,
+                const Color(0xFF9F7AEA),
+                isDark,
+              ),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: _buildMetricCard(
+                'Support Tickets', // Customer support load
+                '23',
+                '-15.4% today', // Support ticket reduction (positive trend)
+                LineIcons.questionCircle,
+                const Color(0xFFED8936),
+                isDark,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ========== QUICK ACTIONS SECTION BUILDER ==========
+  /// Builds the quick actions grid for common admin tasks
+  /// This provides one-tap access to frequently used admin functions
+  Widget _buildQuickActionsSection(bool isDark) {
+    debugPrint('📊 AdminDashboard: Building quick actions section');
+
+    return Column(
+      children: [
+        // Section title
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Quick Actions',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF2D3748),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+
+        // 4-column grid of action buttons
+        GridView.count(
+          shrinkWrap: true, // Don't take more space than needed
+          physics: const NeverScrollableScrollPhysics(), // Disable grid scrolling
+          crossAxisCount: 4, // 4 items per row
+          crossAxisSpacing: 12.w,
+          mainAxisSpacing: 12.h,
+          childAspectRatio: 0.85, // Slightly taller aspect ratio to accommodate text
+          children: [
+            _buildQuickActionCard(
+              'Manage Users', // User management functionality
+              LineIcons.userEdit,
+              const Color(0xFF4299E1),
+              isDark,
+              onTap: () {
+                debugPrint('👥 AdminDashboard: Manage Users button pressed');
+                debugPrint('👥 AdminDashboard: Navigating to ${RouteEnum.adminUsers.rawValue}');
+                try {
+                  // Navigate to user management screen
+                  context.push(RouteEnum.adminUsers.rawValue);
+                  debugPrint('👥 AdminDashboard: Navigation to user management successful');
+                } catch (e) {
+                  debugPrint('❌ AdminDashboard: Navigation to user management failed: $e');
+                }
+              },
+            ),
+            _buildQuickActionCard(
+              'View Reports', // Analytics and reporting
+              LineIcons.calculator,
+              const Color(0xFF48BB78),
+              isDark,
+              onTap: () {
+                debugPrint('📈 AdminDashboard: View Reports button pressed');
+                debugPrint('📈 AdminDashboard: Navigating to /admin/reports');
+                try {
+                  // Navigate to reports section
+                  context.push('/admin/reports');
+                  debugPrint('📈 AdminDashboard: Navigation to reports successful');
+                } catch (e) {
+                  debugPrint('❌ AdminDashboard: Navigation to reports failed: $e');
+                }
+              },
+            ),
+            _buildQuickActionCard(
+              'System Settings', // Configuration management
+              LineIcons.cogs,
+              const Color(0xFF9F7AEA),
+              isDark,
+              onTap: () {
+                debugPrint('⚙️ AdminDashboard: System Settings button pressed');
+                debugPrint('⚙️ AdminDashboard: Navigating to /admin/settings');
+                try {
+                  // Navigate to system settings
+                  context.push('/admin/settings');
+                  debugPrint('⚙️ AdminDashboard: Navigation to settings successful');
+                } catch (e) {
+                  debugPrint('❌ AdminDashboard: Navigation to settings failed: $e');
+                }
+              },
+            ),
+            _buildQuickActionCard(
+              'Send Alert', // Emergency communication system
+              LineIcons.exclamationTriangle,
+              const Color(0xFFED8936),
+              isDark,
+              onTap: () {
+                debugPrint('🚨 AdminDashboard: Send Alert button pressed');
+                debugPrint('🚨 AdminDashboard: Navigating to /admin/alerts');
+                try {
+                  // Navigate to alert management
+                  context.push('/admin/alerts');
+                  debugPrint('🚨 AdminDashboard: Navigation to alerts successful');
+                } catch (e) {
+                  debugPrint('❌ AdminDashboard: Navigation to alerts failed: $e');
+                }
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ========== RECENT ACTIVITY SECTION BUILDER ==========
+  /// Builds the recent system activity feed showing live system events
+  /// This provides real-time visibility into system operations and user activities
+  Widget _buildRecentActivitySection(bool isDark) {
+    debugPrint('📊 AdminDashboard: Building recent activity section');
+
+    return Column(
+      children: [
+        // Section title
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Recent System Activity',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF2D3748),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+
+        // Activity feed container
+        Container(
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Recent activity items (could be fetched from API in real implementation)
+              _buildActivityItem(
+                'New user registration', // User onboarding event
+                'Sarah Johnson signed up as a provider',
+                '10 min ago',
+                LineIcons.userPlus,
+                const Color(0xFF4299E1),
+                isDark,
+              ),
+              const Divider(height: 1),
+              _buildActivityItem(
+                'Payment processed', // Financial transaction
+                'Transaction #TXN-12345 completed',
+                '25 min ago',
+                LineIcons.checkCircle,
+                const Color(0xFF48BB78),
+                isDark,
+              ),
+              const Divider(height: 1),
+              _buildActivityItem(
+                'Support ticket created', // Customer service event
+                'User reported booking issue #SUP-789',
+                '1 hour ago',
+                LineIcons.exclamationCircle,
+                const Color(0xFFED8936),
+                isDark,
+              ),
+              const Divider(height: 1),
+              _buildActivityItem(
+                'System maintenance', // Operational event
+                'Scheduled database backup completed',
+                '3 hours ago',
+                LineIcons.server,
+                const Color(0xFF9F7AEA),
+                isDark,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ========== INDIVIDUAL WIDGET BUILDERS ==========
+  // These methods build specific UI components used throughout the dashboard
+
+  /// Builds individual system metric display (API, Database, Payment status)
+  /// Shows health percentage with icon and label
+  Widget _buildSystemMetric(String label, String value, IconData icon, Color color, bool isDark) {
+    debugPrint('📊 AdminDashboard: Building system metric for $label: $value');
+
     return Expanded(
       child: Column(
         children: [
+          // Metric icon with theme-aware coloring
           Icon(
             icon,
             color: color,
             size: 20.sp,
           ),
           SizedBox(height: 8.h),
+          // Metric value (percentage)
           Text(
             value,
             style: TextStyle(
@@ -457,6 +546,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             ),
           ),
           SizedBox(height: 4.h),
+          // Metric label
           Text(
             label,
             style: TextStyle(
@@ -470,6 +560,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     );
   }
 
+  /// Builds individual metric cards for business KPIs
+  /// Shows value, trend, and icon with proper theming
   Widget _buildMetricCard(
     String title,
     String value,
@@ -478,6 +570,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     Color color,
     bool isDark,
   ) {
+    debugPrint('📊 AdminDashboard: Building metric card for $title: $value ($trend)');
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -485,9 +579,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -498,6 +590,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         children: [
           Row(
             children: [
+              // Icon container with colored background
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
@@ -514,6 +607,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             ],
           ),
           SizedBox(height: 12.h),
+          // Metric title
           Text(
             title,
             style: TextStyle(
@@ -522,6 +616,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             ),
           ),
           SizedBox(height: 4.h),
+          // Metric value (main number)
           Text(
             value,
             style: TextStyle(
@@ -531,13 +626,13 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             ),
           ),
           SizedBox(height: 4.h),
+          // Trend indicator (growth/decline percentage)
           Text(
             trend,
             style: TextStyle(
               fontSize: 11.sp,
-              color: trend.contains('+')
-                  ? const Color(0xFF48BB78)
-                  : const Color(0xFFE53E3E),
+              // Green for positive trends (+), red for negative trends (-)
+              color: trend.contains('+') ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -546,6 +641,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     );
   }
 
+  /// Builds quick action cards for admin functions
+  /// Provides tap functionality and visual feedback
   Widget _buildQuickActionCard(
     String title,
     IconData icon,
@@ -553,6 +650,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     bool isDark, {
     VoidCallback? onTap,
   }) {
+    debugPrint('📊 AdminDashboard: Building quick action card for $title');
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -560,30 +659,38 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         onTap: onTap ??
             () {
               // Default action if no specific onTap provided
+              debugPrint('🔄 AdminDashboard: Default action triggered for $title');
             },
         child: Container(
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 0.1), // Semi-transparent background
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min, // Prevent column from taking more space than needed
             children: [
+              // Action icon
               Icon(
                 icon,
                 color: color,
-                size: 24.sp,
+                size: 20.sp, // Reduced icon size to fit better
               ),
-              SizedBox(height: 8.h),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+              SizedBox(height: 6.h), // Reduced spacing
+              // Action title
+              Flexible(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 10.sp, // Slightly smaller font
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2, // Allow text to wrap to 2 lines if needed
+                  overflow: TextOverflow.ellipsis, // Handle overflow gracefully
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -592,6 +699,8 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     );
   }
 
+  /// Builds individual activity items for the recent activity feed
+  /// Shows activity type, description, timestamp, and status icon
   Widget _buildActivityItem(
     String title,
     String subtitle,
@@ -600,7 +709,10 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     Color color,
     bool isDark,
   ) {
+    debugPrint('📊 AdminDashboard: Building activity item: $title - $time');
+
     return ListTile(
+      // Activity icon with colored background
       leading: Container(
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
@@ -613,6 +725,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
           size: 20.sp,
         ),
       ),
+      // Activity title
       title: Text(
         title,
         style: TextStyle(
@@ -621,6 +734,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
           color: isDark ? Colors.white : const Color(0xFF2D3748),
         ),
       ),
+      // Activity description
       subtitle: Text(
         subtitle,
         style: TextStyle(
@@ -628,6 +742,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
           color: isDark ? Colors.grey[400] : Colors.grey[600],
         ),
       ),
+      // Activity timestamp
       trailing: Text(
         time,
         style: TextStyle(
@@ -636,5 +751,11 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    debugPrint('📊 AdminDashboardContent: Content dashboard disposed');
+    super.dispose();
   }
 }

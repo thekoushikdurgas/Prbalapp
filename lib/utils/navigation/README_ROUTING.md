@@ -5,16 +5,19 @@ This directory contains a modular routing system that breaks down the large rout
 ## User Types & Navigation
 
 ### 🔧 Provider (Service Provider)
+
 - **Dashboard**: `/provider-dashboard` - Manage services and bookings
 - **Navigation**: Dashboard → Explore → Orders → Settings  
 - **Color**: Emerald (#10B981)
 
 ### 👑 Admin (Administrator)  
+
 - **Dashboard**: `/admin-dashboard` - System analytics and management
 - **Navigation**: Analytics → Users → Moderation → Settings
 - **Color**: Violet (#8B5CF6)
 
 ### 🏠 Customer (Default)
+
 - **Dashboard**: `/taker-dashboard` - Browse and book services  
 - **Navigation**: Home → Explore → Bookings → Profile
 - **Color**: Blue (#3B82F6)
@@ -70,21 +73,25 @@ lib/init/navigation/
 ### 5. Route Modules (`routes/` directory)
 
 #### Core Routes (`core_routes.dart`)
+
 - Splash screen
 - Onboarding  
 - Welcome screen
 
 #### Authentication Routes (`auth_routes.dart`)
+
 - OTP verification
 - PIN entry
 - Authentication screens
 
 #### Main Navigation Routes (`main_navigation_routes.dart`) - **Enhanced**
+
 - Uses `BottomNavigation` component with user-type awareness
 - Supports tab-specific routing with query parameters
 - Dynamic screen selection based on HiveService data
 
 #### Feature Routes (`feature_routes.dart`) - **Enhanced**  
+
 - User-type specific dashboard routes
 - Chat functionality
 - Payment screens
@@ -139,11 +146,13 @@ await HiveService.updateUserType('provider');
 ## Router Guard Features
 
 ### Automatic Redirects
+
 - **Home routing**: `/home` → user-specific dashboard
 - **Wrong dashboard**: Redirects to correct dashboard for user type
 - **Permission checking**: Blocks unauthorized access
 
 ### User Type Routing Logic
+
 ```dart
 // Provider access
 if (userType == 'provider' && route.contains('provider')) {
@@ -162,6 +171,7 @@ if (userType == 'admin') {
 ## Migration Path
 
 ### Current Enhanced State
+
 - ✅ HiveService integration complete
 - ✅ Three user types fully supported
 - ✅ Bottom navigation adapts dynamically
@@ -169,6 +179,7 @@ if (userType == 'admin') {
 - ✅ Permission system implemented
 
 ### Testing User Types
+
 ```dart
 // Test different user types in development
 await HiveService.updateUserType('provider');
@@ -184,16 +195,19 @@ await HiveService.updateUserType('customer');
 ## Benefits
 
 ### User Experience
+
 - **Personalized navigation**: Each user type sees relevant options
 - **Automatic routing**: Smart redirects to appropriate screens
 - **Permission protection**: Prevents access to unauthorized features
 
 ### Developer Experience  
+
 - **Type safety**: All user types handled consistently
 - **Easy testing**: Switch user types programmatically
 - **Centralized logic**: User type detection in one place (HiveService)
 
 ### Maintainability
+
 - **Modular structure**: Easy to add new user types or routes
 - **Clear separation**: User type logic isolated in appropriate files
 - **Consistent patterns**: Same approach across all navigation features
@@ -201,12 +215,14 @@ await HiveService.updateUserType('customer');
 ## Troubleshooting
 
 ### Common Issues
+
 1. **User Type Detection**: Ensure HiveService.getUserData() contains 'userType' field
 2. **Route Access**: Check RouterGuard.hasPermissionForRoute() for blocked routes
 3. **Navigation Updates**: Call BottomNavigation.refreshUserType() after user type changes
 4. **Dashboard Redirects**: Verify user type matches expected route permissions
 
 ### Debug Mode
+
 - Enable `debugLogDiagnostics: true` in GoRouter
 - Check console for user type detection logs
 - Verify HiveService.getUserType() returns expected values

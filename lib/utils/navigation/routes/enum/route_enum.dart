@@ -16,6 +16,8 @@ enum RouteEnum {
 
   // Provider dashboard routes
   providerDashboard,
+  providerExplore,
+  providerOrders,
   notifications,
   profile,
   addService,
@@ -24,10 +26,13 @@ enum RouteEnum {
 
   // Admin dashboard routes
   adminDashboard,
+  adminUsers,
   adminActivity,
 
   // Taker dashboard routes
   takerDashboard,
+  takerExplore,
+  takerOrders,
   postRequest,
 
   // Additional feature routes
@@ -47,7 +52,6 @@ enum RouteEnum {
   // Legacy routes
   intro,
   setting,
-  homePage,
 }
 
 extension RouteEnumString on RouteEnum {
@@ -80,6 +84,10 @@ extension RouteEnumString on RouteEnum {
       // Provider dashboard routes
       case RouteEnum.providerDashboard:
         return '/provider-dashboard';
+      case RouteEnum.providerExplore:
+        return '/provider-explore';
+      case RouteEnum.providerOrders:
+        return '/provider-orders';
       case RouteEnum.notifications:
         return '/notifications';
       case RouteEnum.profile:
@@ -94,12 +102,18 @@ extension RouteEnumString on RouteEnum {
       // Admin dashboard routes
       case RouteEnum.adminDashboard:
         return '/admin-dashboard';
+      case RouteEnum.adminUsers:
+        return '/admin-users';
       case RouteEnum.adminActivity:
         return '/admin-activity';
 
       // Taker dashboard routes
       case RouteEnum.takerDashboard:
         return '/taker-dashboard';
+      case RouteEnum.takerExplore:
+        return '/taker-explore';
+      case RouteEnum.takerOrders:
+        return '/taker-orders';
       case RouteEnum.postRequest:
         return '/post-request';
 
@@ -130,8 +144,6 @@ extension RouteEnumString on RouteEnum {
         return '/intro';
       case RouteEnum.setting:
         return '/setting';
-      case RouteEnum.homePage:
-        return '/home';
     }
   }
 }

@@ -2,12 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
 
-/// Modern UI Components Library for consistent design across the app
+/// ModernUIComponents - A comprehensive library of modern UI components
+///
+/// This utility class provides a collection of pre-built, modern UI components
+/// with consistent styling and theming. All components are designed to work
+/// seamlessly across light and dark themes.
+///
+/// **Available Components:**
+/// - Glassmorphism cards with blur effects
+/// - Gradient cards with customizable colors
+/// - Elevated cards with subtle shadows
+/// - Metric cards for displaying statistics
+/// - Status indicators for real-time states
+/// - Modern buttons with multiple styles
+///
+/// **Design Philosophy:**
+/// - Consistent spacing and sizing using ScreenUtil
+/// - Theme-aware color schemes
+/// - Smooth animations and transitions
+/// - Accessibility-friendly implementations
+/// - Responsive design patterns
+///
+/// **Usage Pattern:**
+/// All methods are static and can be called directly:
+/// ```dart
+/// ModernUIComponents.glassmorphismCard(
+///   child: YourContent(),
+///   isDark: Theme.of(context).brightness == Brightness.dark,
+/// )
+/// ```
 class ModernUIComponents {
-  // Private constructor to prevent instantiation
+  /// Private constructor to prevent instantiation
+  /// This class is designed as a utility class with static methods only
   ModernUIComponents._();
 
-  /// Modern glassmorphism card with blur effect
+  /// Creates a modern glassmorphism card with blur effect
+  ///
+  /// **Glassmorphism Design:**
+  /// - Semi-transparent background with gradient overlay
+  /// - Subtle border for definition
+  /// - Shadow effects for depth perception
+  /// - Responsive to theme changes (light/dark)
+  ///
+  /// **Parameters:**
+  /// - [child]: Content widget to display inside the card
+  /// - [padding]: Internal spacing (default: 20.w)
+  /// - [margin]: External spacing (default: 8.w)
+  /// - [isDark]: Theme mode for color adaptation
+  /// - [borderRadius]: Corner rounding (default: 16)
+  ///
+  /// **Usage:**
+  /// ```dart
+  /// ModernUIComponents.glassmorphismCard(
+  ///   child: Text('Glassmorphism Content'),
+  ///   isDark: Theme.of(context).brightness == Brightness.dark,
+  /// )
+  /// ```
   static Widget glassmorphismCard({
     required Widget child,
     EdgeInsetsGeometry? padding,
@@ -15,10 +65,15 @@ class ModernUIComponents {
     bool isDark = false,
     double borderRadius = 16,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating glassmorphism card');
+    debugPrint('🎨 ModernUIComponents: Theme mode: ${isDark ? 'dark' : 'light'}');
+    debugPrint('🎨 ModernUIComponents: Border radius: $borderRadius');
+
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius.r),
+        // Glassmorphism gradient effect
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -32,17 +87,15 @@ class ModernUIComponents {
                   Colors.white.withValues(alpha: 0.3),
                 ],
         ),
+        // Subtle border for glassmorphism effect
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.2)
-              : Colors.white.withValues(alpha: 0.3),
+          color: isDark ? Colors.white.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.3),
           width: 1,
         ),
+        // Shadow for depth perception
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.1),
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -58,7 +111,26 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern gradient card
+  /// Creates a modern gradient card with customizable colors
+  ///
+  /// **Gradient Design:**
+  /// - Linear gradient from top-left to bottom-right
+  /// - Customizable color scheme
+  /// - Automatic shadow generation based on primary color
+  /// - Responsive corner rounding
+  ///
+  /// **Parameters:**
+  /// - [child]: Content widget for the card
+  /// - [colors]: List of colors for the gradient effect
+  /// - [padding]: Internal spacing (default: 20.w)
+  /// - [margin]: External spacing (default: 8.w)
+  /// - [borderRadius]: Corner rounding (default: 16)
+  /// - [boxShadow]: Custom shadow effects (optional)
+  ///
+  /// **Color Guidelines:**
+  /// - Use 2-3 colors for smooth gradients
+  /// - Ensure sufficient contrast for text readability
+  /// - Consider theme compatibility
   static Widget gradientCard({
     required Widget child,
     required List<Color> colors,
@@ -67,15 +139,21 @@ class ModernUIComponents {
     double borderRadius = 16,
     List<BoxShadow>? boxShadow,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating gradient card');
+    debugPrint('🎨 ModernUIComponents: Gradient colors: ${colors.length} colors');
+    debugPrint('🎨 ModernUIComponents: Border radius: $borderRadius');
+
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius.r),
+        // Custom gradient with provided colors
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: colors,
         ),
+        // Shadow effect using primary color
         boxShadow: boxShadow ??
             [
               BoxShadow(
@@ -92,7 +170,18 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern elevated card with subtle shadow
+  /// Creates a modern elevated card with subtle shadow
+  ///
+  /// **Elevated Design:**
+  /// - Clean, minimalist appearance
+  /// - Subtle shadow for depth
+  /// - Theme-aware background colors
+  /// - Consistent with Material Design principles
+  ///
+  /// **Theme Adaptation:**
+  /// - Light theme: White background with light shadow
+  /// - Dark theme: Dark surface with stronger shadow
+  /// - Automatic color scheme integration
   static Widget elevatedCard({
     required Widget child,
     EdgeInsetsGeometry? padding,
@@ -101,17 +190,20 @@ class ModernUIComponents {
     double borderRadius = 16,
     Color? backgroundColor,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating elevated card');
+    debugPrint('🎨 ModernUIComponents: Theme mode: ${isDark ? 'dark' : 'light'}');
+    debugPrint('🎨 ModernUIComponents: Custom background: ${backgroundColor != null}');
+
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        color: backgroundColor ??
-            (isDark ? const Color(0xFF1E293B) : Colors.white),
+        // Theme-appropriate background color
+        color: backgroundColor ?? (isDark ? const Color(0xFF1E293B) : Colors.white),
         borderRadius: BorderRadius.circular(borderRadius.r),
+        // Subtle shadow for elevation effect
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.08),
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -124,7 +216,32 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern metric card with icon and statistics
+  /// Creates a modern metric card for displaying statistics
+  ///
+  /// **Metric Card Features:**
+  /// - Large, prominent value display
+  /// - Descriptive title and optional subtitle
+  /// - Color-coded icon with background
+  /// - Optional tap handling for navigation
+  /// - External link indicator when tappable
+  ///
+  /// **Visual Hierarchy:**
+  /// 1. Icon with colored background (top-left)
+  /// 2. Large metric value (prominent)
+  /// 3. Descriptive title (secondary)
+  /// 4. Optional subtitle with color coding
+  ///
+  /// **Usage for Analytics:**
+  /// ```dart
+  /// ModernUIComponents.metricCard(
+  ///   title: 'Total Users',
+  ///   value: '1,234',
+  ///   icon: Icons.people,
+  ///   iconColor: Colors.blue,
+  ///   subtitle: '+12% this month',
+  ///   onTap: () => navigateToUserDetails(),
+  /// )
+  /// ```
   static Widget metricCard({
     required String title,
     required String value,
@@ -134,19 +251,32 @@ class ModernUIComponents {
     bool isDark = false,
     VoidCallback? onTap,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating metric card');
+    debugPrint('🎨 ModernUIComponents: Metric - Title: "$title", Value: "$value"');
+    debugPrint('🎨 ModernUIComponents: Icon color: $iconColor');
+    debugPrint('🎨 ModernUIComponents: Tappable: ${onTap != null}');
+    debugPrint('🎨 ModernUIComponents: Has subtitle: ${subtitle != null}');
+
     return elevatedCard(
       isDark: isDark,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: onTap != null
+              ? () {
+                  debugPrint('🎨 ModernUIComponents: Metric card tapped - $title');
+                  onTap();
+                }
+              : null,
           borderRadius: BorderRadius.circular(16.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header row with icon and optional external link indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Icon container with color-coded background
                   Container(
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
@@ -159,17 +289,18 @@ class ModernUIComponents {
                       size: 24.sp,
                     ),
                   ),
+                  // External link indicator for tappable cards
                   if (onTap != null)
                     Icon(
                       LineIcons.alternateExternalLink,
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.5)
-                          : Colors.black.withValues(alpha: 0.5),
+                      color: isDark ? Colors.white.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.5),
                       size: 16.sp,
                     ),
                 ],
               ),
               SizedBox(height: 16.h),
+
+              // Large metric value display
               Text(
                 value,
                 style: TextStyle(
@@ -179,23 +310,25 @@ class ModernUIComponents {
                 ),
               ),
               SizedBox(height: 4.h),
+
+              // Descriptive title
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? const Color(0xFF94A3B8)
-                      : const Color(0xFF6B7280),
+                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
                 ),
               ),
+
+              // Optional subtitle with positive change indicator color
               if (subtitle != null) ...[
                 SizedBox(height: 8.h),
                 Text(
                   subtitle,
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: const Color(0xFF10B981),
+                    color: const Color(0xFF10B981), // Green for positive metrics
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -207,21 +340,39 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern status indicator
+  /// Creates a modern status indicator with label and color coding
+  ///
+  /// **Status Indicator Features:**
+  /// - Colored dot for quick visual status identification
+  /// - Text label describing the current state
+  /// - Pill-shaped container with subtle background
+  /// - Consistent sizing for alignment in lists
+  ///
+  /// **Common Use Cases:**
+  /// - Online/Offline status
+  /// - Service health indicators
+  /// - User presence indicators
+  /// - System status displays
   static Widget statusIndicator({
     required String label,
     required Color color,
     bool isOnline = true,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating status indicator');
+    debugPrint('🎨 ModernUIComponents: Status - Label: "$label", Online: $isOnline');
+    debugPrint('🎨 ModernUIComponents: Status color: $color');
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
+        // Subtle background using status color
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Status indicator dot
           Container(
             width: 8.w,
             height: 8.h,
@@ -231,6 +382,7 @@ class ModernUIComponents {
             ),
           ),
           SizedBox(width: 6.w),
+          // Status label
           Text(
             label,
             style: TextStyle(
@@ -244,7 +396,18 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern button with multiple styles
+  /// Creates a modern button with multiple style options
+  ///
+  /// **Button Styles:**
+  /// - Primary: Filled button with brand colors
+  /// - Secondary: Outlined button with transparent background
+  /// - Tertiary: Text button with minimal styling
+  ///
+  /// **Features:**
+  /// - Consistent sizing and spacing
+  /// - Loading state support
+  /// - Disabled state handling
+  /// - Custom icon support
   static Widget modernButton({
     required String text,
     required VoidCallback onPressed,
@@ -279,9 +442,7 @@ class ModernUIComponents {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: type == ModernButtonType.gradient
-              ? Colors.transparent
-              : buttonColors['background'],
+          backgroundColor: type == ModernButtonType.gradient ? Colors.transparent : buttonColors['background'],
           foregroundColor: buttonColors['foreground'],
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -428,8 +589,7 @@ class ModernUIComponents {
                     width: 40.w,
                     height: 40.h,
                     decoration: BoxDecoration(
-                      color: (leadingIconColor ?? const Color(0xFF3B82F6))
-                          .withValues(alpha: 0.1),
+                      color: (leadingIconColor ?? const Color(0xFF3B82F6)).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Icon(
@@ -449,8 +609,7 @@ class ModernUIComponents {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: isDark ? Colors.white : const Color(0xFF1F2937),
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -459,9 +618,7 @@ class ModernUIComponents {
                           subtitle,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF6B7280),
+                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
                           ),
                         ),
                       ],
@@ -475,9 +632,7 @@ class ModernUIComponents {
                   SizedBox(width: 16.w),
                   Icon(
                     LineIcons.angleRight,
-                    color: isDark
-                        ? const Color(0xFF64748B)
-                        : const Color(0xFF9CA3AF),
+                    color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
                     size: 20.sp,
                   ),
                 ],
@@ -518,9 +673,7 @@ class ModernUIComponents {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF6B7280),
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -534,8 +687,7 @@ class ModernUIComponents {
   }
 
   /// Get button colors based on type and theme
-  static Map<String, Color> _getButtonColors(
-      ModernButtonType type, bool isDark) {
+  static Map<String, Color> _getButtonColors(ModernButtonType type, bool isDark) {
     switch (type) {
       case ModernButtonType.primary:
         return {
@@ -546,8 +698,7 @@ class ModernUIComponents {
         };
       case ModernButtonType.secondary:
         return {
-          'background':
-              isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
+          'background': isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
           'foreground': isDark ? Colors.white : const Color(0xFF1F2937),
           'shadow': Colors.black.withValues(alpha: 0.1),
           'border': Colors.transparent,
@@ -614,12 +765,10 @@ class ModernAnimatedContainer extends StatefulWidget {
   });
 
   @override
-  State<ModernAnimatedContainer> createState() =>
-      _ModernAnimatedContainerState();
+  State<ModernAnimatedContainer> createState() => _ModernAnimatedContainerState();
 }
 
-class _ModernAnimatedContainerState extends State<ModernAnimatedContainer>
-    with SingleTickerProviderStateMixin {
+class _ModernAnimatedContainerState extends State<ModernAnimatedContainer> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 

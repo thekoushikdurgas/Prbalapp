@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prbal/components/bottom_navigation.dart';
 // import 'package:prbal/utils/navigation/routes/enum/route_enum.dart';
 
+/// Full Provider Dashboard with bottom navigation bar
+/// Use this for direct route access
 class ProviderDashboard extends ConsumerStatefulWidget {
   const ProviderDashboard({super.key});
 
@@ -14,6 +15,24 @@ class ProviderDashboard extends ConsumerStatefulWidget {
 }
 
 class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const ProviderDashboardContent(),
+    );
+  }
+}
+
+/// Content-only Provider Dashboard without bottom navigation
+/// Use this within BottomNavigation to prevent circular dependency
+class ProviderDashboardContent extends ConsumerStatefulWidget {
+  const ProviderDashboardContent({super.key});
+
+  @override
+  ConsumerState<ProviderDashboardContent> createState() => _ProviderDashboardContentState();
+}
+
+class _ProviderDashboardContentState extends ConsumerState<ProviderDashboardContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -27,8 +46,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -90,9 +108,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
+                            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -117,8 +133,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                             },
                             icon: Icon(
                               Icons.tune,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: isDark ? Colors.grey[400] : Colors.grey[600],
                             ),
                           ),
                           border: InputBorder.none,
@@ -140,9 +155,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
+                            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -199,69 +212,68 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                       child: Text(
                         'Your Service Categories',
                         style: TextStyle(
-                          fontSize: 20.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: isDark ? Colors.white : const Color(0xFF2D3748),
                         ),
                       ),
                     ),
 
                     SizedBox(height: 16.h),
 
-                    // Category Grid
-                    GridView.count(
+                    // Categories Grid
+                    GridView(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16.w,
-                      mainAxisSpacing: 16.h,
-                      childAspectRatio: 1.2,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.w,
+                        mainAxisSpacing: 16.h,
+                        childAspectRatio: 1.2,
+                      ),
                       children: [
                         _buildCategoryCard(
-                          'Home Services',
-                          LineIcons.home,
+                          'Home Cleaning',
+                          LineIcons.broom,
                           const Color(0xFF4299E1),
-                          '8 services',
+                          '8 active listings',
                           isDark,
                           onTap: () {
-                            // Navigate to manage home services
-                            context.go(
-                                '/explore'); // Or specific service management route
+                            // Navigate to cleaning services
+                            context.push('/services/cleaning');
                           },
                         ),
                         _buildCategoryCard(
-                          'Technical',
-                          LineIcons.laptop,
-                          const Color(0xFF9F7AEA),
-                          '3 services',
+                          'Plumbing',
+                          LineIcons.tools,
+                          const Color(0xFF48BB78),
+                          '3 active listings',
                           isDark,
                           onTap: () {
-                            // Navigate to manage technical services
-                            context.go('/explore');
+                            // Navigate to plumbing services
+                            context.push('/services/plumbing');
                           },
                         ),
                         _buildCategoryCard(
-                          'Beauty & Care',
-                          LineIcons.cut,
-                          const Color(0xFFED64A6),
-                          '1 service',
+                          'Electrical',
+                          LineIcons.plug,
+                          const Color(0xFFED8936),
+                          '2 active listings',
                           isDark,
                           onTap: () {
-                            // Navigate to manage beauty services
-                            context.go('/explore');
+                            // Navigate to electrical services
+                            context.push('/services/electrical');
                           },
                         ),
                         _buildCategoryCard(
                           'Add New',
                           LineIcons.plus,
-                          isDark ? Colors.grey[600]! : Colors.grey[400]!,
+                          const Color(0xFF9F7AEA),
                           'Create service',
                           isDark,
                           onTap: () {
-                            // Navigate to add service screen
-                            context.push(
-                                '/add-service'); // Could be a feature route
+                            // Navigate to add service
+                            context.push('/services/add');
                           },
                         ),
                       ],
@@ -270,31 +282,13 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                     SizedBox(height: 24.h),
 
                     // Recent Activity
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Recent Activity',
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 16.h),
-
-                    // Activity List
                     Container(
                       decoration: BoxDecoration(
                         color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
+                            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -302,6 +296,36 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
                       ),
                       child: Column(
                         children: [
+                          Padding(
+                            padding: EdgeInsets.all(20.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Recent Activity',
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigate to full activity
+                                    context.push('/activity');
+                                  },
+                                  child: Text(
+                                    'View All',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: const Color(0xFF4299E1),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           _buildActivityItem(
                             'New booking request',
                             'John Doe requested home cleaning',
@@ -339,9 +363,6 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: const BottomNavigation(
-        initialIndex: 0, // Provider Dashboard is the first tab
       ),
     );
   }
@@ -396,9 +417,7 @@ class _ProviderDashboardState extends ConsumerState<ProviderDashboard> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
+            color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

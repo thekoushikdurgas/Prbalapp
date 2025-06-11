@@ -135,12 +135,12 @@ class PrbalLocationManager: NSObject {
     
     func startMonitoring(region: CLCircularRegion) {
         guard CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) else {
-            print("Geofencing is not available on this device")
+            debugPrint("Geofencing is not available on this device")
             return
         }
         
         guard locationManager.authorizationStatus == .authorizedAlways else {
-            print("Always location permission required for geofencing")
+            debugPrint("Always location permission required for geofencing")
             return
         }
         
@@ -190,16 +190,16 @@ extension PrbalLocationManager: CLLocationManagerDelegate {
         }
         
         // Log location update
-        print("📍 Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+        debugPrint("📍 Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("❌ Location error: \(error.localizedDescription)")
+        debugPrint("❌ Location error: \(error.localizedDescription)")
         errorCallback?(error)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print("📍 Location authorization changed: \(status.rawValue)")
+        debugPrint("📍 Location authorization changed: \(status.rawValue)")
         authorizationCallback?(status)
         
         switch status {
@@ -218,21 +218,21 @@ extension PrbalLocationManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("📍 Entered region: \(region.identifier)")
+        debugPrint("📍 Entered region: \(region.identifier)")
         
         // Handle geofence entry - could trigger notifications or API calls
         NotificationCenter.default.post(name: .didEnterRegion, object: region)
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("📍 Exited region: \(region.identifier)")
+        debugPrint("📍 Exited region: \(region.identifier)")
         
         // Handle geofence exit
         NotificationCenter.default.post(name: .didExitRegion, object: region)
     }
     
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        print("❌ Monitoring failed for region: \(region?.identifier ?? "unknown") - \(error.localizedDescription)")
+        debugPrint("❌ Monitoring failed for region: \(region?.identifier ?? "unknown") - \(error.localizedDescription)")
     }
 }
 

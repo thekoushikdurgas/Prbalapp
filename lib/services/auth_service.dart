@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'api_service.dart';
-import 'hive_service.dart';
+import 'package:prbal/services/index.dart';
 
 /// User model for authentication (matching API structure)
 class AppUser {
@@ -15,11 +15,15 @@ class AppUser {
   final String? bio;
   final String? location;
   final bool isVerified;
+  final bool isEmailVerified;
+  final bool isPhoneVerified;
   final double rating;
   final String balance;
   final int totalBookings;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? lastLogin;
+  final bool isActive;
 
   const AppUser({
     required this.id,
@@ -33,11 +37,15 @@ class AppUser {
     this.bio,
     this.location,
     this.isVerified = false,
+    this.isEmailVerified = false,
+    this.isPhoneVerified = false,
     this.rating = 0.0,
     this.balance = '0.00',
     this.totalBookings = 0,
     required this.createdAt,
     required this.updatedAt,
+    this.lastLogin,
+    this.isActive = true,
   });
 
   AppUser copyWith({
@@ -52,11 +60,15 @@ class AppUser {
     String? bio,
     String? location,
     bool? isVerified,
+    bool? isEmailVerified,
+    bool? isPhoneVerified,
     double? rating,
     String? balance,
     int? totalBookings,
     DateTime? createdAt,
     DateTime? updatedAt,
+    DateTime? lastLogin,
+    bool? isActive,
   }) {
     return AppUser(
       id: id ?? this.id,
@@ -70,11 +82,15 @@ class AppUser {
       bio: bio ?? this.bio,
       location: location ?? this.location,
       isVerified: isVerified ?? this.isVerified,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
       rating: rating ?? this.rating,
       balance: balance ?? this.balance,
       totalBookings: totalBookings ?? this.totalBookings,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      lastLogin: lastLogin ?? this.lastLogin,
+      isActive: isActive ?? this.isActive,
     );
   }
 
@@ -91,11 +107,15 @@ class AppUser {
       'bio': bio,
       'location': location,
       'is_verified': isVerified,
+      'is_email_verified': isEmailVerified,
+      'is_phone_verified': isPhoneVerified,
       'rating': rating,
       'balance': balance,
       'total_bookings': totalBookings,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
+      'last_login': lastLogin?.toIso8601String(),
+      'is_active': isActive,
     };
   }
 
@@ -112,12 +132,31 @@ class AppUser {
       bio: json['bio'] as String?,
       location: json['location'] as String?,
       isVerified: json['is_verified'] as bool? ?? false,
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      isEmailVerified: json['is_email_verified'] as bool? ?? false,
+      isPhoneVerified: json['is_phone_verified'] as bool? ?? false,
+      rating: _parseDouble(json['rating']) ?? 0.0,
       balance: json['balance'] as String? ?? '0.00',
       totalBookings: json['total_bookings'] as int? ?? 0,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      lastLogin: json['last_login'] != null ? DateTime.parse(json['last_login'] as String) : null,
+      isActive: json['is_active'] as bool? ?? true,
     );
+  }
+
+  /// Helper method to safely parse a dynamic value to double
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) {
+      try {
+        return double.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   }
 
   /// Get display name
@@ -198,55 +237,45 @@ class PinStatus {
       hasPinSet: json['has_pin_set'] as bool,
       isLocked: json['is_locked'] as bool,
       attemptsLeft: json['attempts_left'] as int,
-      lockoutExpiresAt: json['lockout_expires_at'] != null
-          ? DateTime.parse(json['lockout_expires_at'] as String)
-          : null,
+      lockoutExpiresAt:
+          json['lockout_expires_at'] != null ? DateTime.parse(json['lockout_expires_at'] as String) : null,
     );
   }
 }
 
-/// User Type Detection Response model
+/// User Type Detection Response model (simplified)
 class UserTypeResponse {
-  final String userId;
-  final String username;
   final String userType;
-  final String userTypeDisplay;
-  final bool isCustomer;
-  final bool isProvider;
-  final bool isAdmin;
 
   const UserTypeResponse({
-    required this.userId,
-    required this.username,
     required this.userType,
-    required this.userTypeDisplay,
-    required this.isCustomer,
-    required this.isProvider,
-    required this.isAdmin,
   });
 
   factory UserTypeResponse.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>;
-    return UserTypeResponse(
-      userId: data['user_id'] as String,
-      username: data['username'] as String,
-      userType: data['user_type'] as String,
-      userTypeDisplay: data['user_type_display'] as String,
-      isCustomer: data['is_customer'] as bool,
-      isProvider: data['is_provider'] as bool,
-      isAdmin: data['is_admin'] as bool,
-    );
+    // Handle the original complex response format
+    if (json.containsKey('data')) {
+      final data = json['data'] as Map<String, dynamic>;
+      return UserTypeResponse(
+        userType: data['user_type'] as String,
+      );
+    }
+    // Handle the simplified response format {usertype=Provider}
+    else if (json.containsKey('usertype')) {
+      return UserTypeResponse(
+        userType: json['usertype'] as String,
+      );
+    }
+    // Fallback to direct userType field
+    else {
+      return UserTypeResponse(
+        userType: json['user_type'] as String? ?? 'customer',
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'user_id': userId,
-      'username': username,
-      'user_type': userType,
-      'user_type_display': userTypeDisplay,
-      'is_customer': isCustomer,
-      'is_provider': isProvider,
-      'is_admin': isAdmin,
+      'usertype': userType,
     };
   }
 }
@@ -339,7 +368,7 @@ class AuthService extends StateNotifier<AppUser?> {
     String? lastName,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/register/',
+      APIEndpoints.authentication['register']!,
       body: {
         'username': username,
         'email': email,
@@ -366,7 +395,7 @@ class AuthService extends StateNotifier<AppUser?> {
     String? lastName,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/register/customer/',
+      APIEndpoints.authentication['registerCustomer']!,
       body: {
         'username': username,
         'email': email,
@@ -395,7 +424,7 @@ class AuthService extends StateNotifier<AppUser?> {
     List<String>? skills,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/register/provider/',
+      APIEndpoints.authentication['registerProvider']!,
       body: {
         'username': username,
         'email': email,
@@ -424,7 +453,7 @@ class AuthService extends StateNotifier<AppUser?> {
     String? lastName,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/register/admin/',
+      APIEndpoints.authentication['registerAdmin']!,
       body: {
         'username': username,
         'email': email,
@@ -445,14 +474,39 @@ class AuthService extends StateNotifier<AppUser?> {
   // Login Methods
 
   /// Search user by phone number
-  Future<ApiResponse<List<AppUser>>> searchUserByPhone(
-      String phoneNumber) async {
-    return _apiService.get<List<AppUser>>(
-      '/auth/search/phone/$phoneNumber/',
-      fromJson: (data) => (data['results'] as List)
-          .map((user) => AppUser.fromJson(user))
-          .toList(),
+  Future<ApiResponse<AppUser>> searchUserByPhone(String phoneNumber) async {
+    debugPrint('🔍 Starting phone search for: $phoneNumber');
+
+    final response = await _apiService.post<AppUser>(
+      '/users/search/phone/',
+      body: {
+        'phone_number': phoneNumber,
+      },
+      fromJson: (data) {
+        debugPrint('📥 Raw API response data: $data');
+
+        // API returns single user in 'user' field, not a list
+        if (data['message'] == 'User found with exact phone match') {
+          debugPrint('✅ User found, processing user data: ${data['user']}');
+          try {
+            final appUser = AppUser.fromJson(data['user'] as Map<String, dynamic>);
+            debugPrint('✅ AppUser created successfully: ${appUser.id}');
+            return appUser;
+          } catch (e) {
+            debugPrint('❌ Error creating AppUser: $e');
+            return null;
+          }
+        } else if (data['message'] == 'No users found with the given phone number') {
+          debugPrint('❌ No user found with phone number');
+          return null;
+        }
+        debugPrint('❌ Unexpected response message: ${data['message']}');
+        return null;
+      },
     );
+
+    debugPrint('📤 Final response success: ${response.success}, data: ${response.data}');
+    return response;
   }
 
   /// Generic login
@@ -461,7 +515,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String pin,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/login/',
+      APIEndpoints.authentication['login']!,
       body: {
         'identifier': identifier,
         'pin': pin,
@@ -482,7 +536,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String pin,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/login/customer/',
+      APIEndpoints.authentication['loginCustomer']!,
       body: {
         'identifier': identifier,
         'pin': pin,
@@ -503,7 +557,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String pin,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/login/provider/',
+      APIEndpoints.authentication['loginProvider']!,
       body: {
         'identifier': identifier,
         'pin': pin,
@@ -524,7 +578,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String pin,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
-      '/auth/login/admin/',
+      APIEndpoints.authentication['loginAdmin']!,
       body: {
         'identifier': identifier,
         'pin': pin,
@@ -543,13 +597,13 @@ class AuthService extends StateNotifier<AppUser?> {
 
   /// PIN login
   Future<ApiResponse<RegistrationResponse>> pinLogin({
-    required String identifier,
+    required String phoneNumber,
     required String pin,
   }) async {
     final response = await _apiService.post<RegistrationResponse>(
       '/auth/pin/login/',
       body: {
-        'identifier': identifier,
+        'phone_number': phoneNumber,
         'pin': pin,
       },
       fromJson: (data) => RegistrationResponse.fromJson(data),
@@ -568,7 +622,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String confirmPin,
   }) async {
     return _apiService.post<Map<String, dynamic>>(
-      '/auth/pin/register/',
+      'auth/pin/register/',
       body: {
         'pin': pin,
         'confirm_pin': confirmPin,
@@ -583,7 +637,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String confirmPin,
   }) async {
     return _apiService.post<Map<String, dynamic>>(
-      '/auth/pin/register/customer/',
+      APIEndpoints.authentication['registerCustomerPin']!,
       body: {
         'pin': pin,
         'confirm_pin': confirmPin,
@@ -598,7 +652,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String confirmPin,
   }) async {
     return _apiService.post<Map<String, dynamic>>(
-      '/auth/pin/register/provider/',
+      APIEndpoints.authentication['registerProviderPin']!,
       body: {
         'pin': pin,
         'confirm_pin': confirmPin,
@@ -614,7 +668,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String confirmNewPin,
   }) async {
     return _apiService.post<Map<String, dynamic>>(
-      '/auth/pin/change/',
+      APIEndpoints.authentication['changePin']!,
       body: {
         'current_pin': currentPin,
         'new_pin': newPin,
@@ -631,7 +685,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String confirmNewPin,
   }) async {
     return _apiService.post<Map<String, dynamic>>(
-      '/auth/pin/reset/',
+      APIEndpoints.authentication['resetPin']!,
       body: {
         'phone_number': phoneNumber,
         'new_pin': newPin,
@@ -644,7 +698,7 @@ class AuthService extends StateNotifier<AppUser?> {
   /// Get PIN status
   Future<ApiResponse<PinStatus>> getPinStatus() async {
     return _apiService.get<PinStatus>(
-      '/auth/pin/status/',
+      APIEndpoints.authentication['pinStatus']!,
       fromJson: (data) => PinStatus.fromJson(data),
     );
   }
@@ -664,7 +718,7 @@ class AuthService extends StateNotifier<AppUser?> {
     required String phoneNumber,
     required String pin,
   }) async {
-    return pinLogin(identifier: phoneNumber, pin: pin);
+    return pinLogin(phoneNumber: phoneNumber, pin: pin);
   }
 
   // Token Management
@@ -672,7 +726,7 @@ class AuthService extends StateNotifier<AppUser?> {
   /// Refresh access token
   Future<ApiResponse<AuthTokens>> refreshToken() async {
     final response = await _apiService.post<AuthTokens>(
-      '/auth/token/refresh/',
+      APIEndpoints.authentication['refreshToken']!,
       fromJson: (data) => AuthTokens.fromJson(data),
     );
 
@@ -694,9 +748,8 @@ class AuthService extends StateNotifier<AppUser?> {
     bool? activeOnly,
   }) async {
     return _apiService.get<List<Map<String, dynamic>>>(
-      '/users/me/tokens/',
-      queryParameters:
-          activeOnly != null ? {'active_only': '$activeOnly'} : null,
+      APIEndpoints.authentication['getUserTokens']!,
+      queryParameters: activeOnly != null ? {'active_only': '$activeOnly'} : null,
       fromJson: (data) => List<Map<String, dynamic>>.from(data['results']),
     );
   }
@@ -730,10 +783,31 @@ class AuthService extends StateNotifier<AppUser?> {
   /// Get user type detection information
   /// Returns the user type (customer, provider, or admin) based on the authentication token
   Future<ApiResponse<UserTypeResponse>> getUserType() async {
-    return _apiService.get<UserTypeResponse>(
+    debugPrint('🔍 Fetching user type from API...');
+
+    final response = await _apiService.get<UserTypeResponse>(
       '/auth/user-type/',
-      fromJson: (data) => UserTypeResponse.fromJson(data),
+      fromJson: (data) {
+        debugPrint('📥 Raw getUserType API response: $data');
+
+        try {
+          final userTypeResponse = UserTypeResponse.fromJson(data);
+          debugPrint('✅ Parsed user type: ${userTypeResponse.userType}');
+          return userTypeResponse;
+        } catch (e) {
+          debugPrint('❌ Error parsing user type response: $e');
+          debugPrint('❌ Raw data that failed to parse: $data');
+          rethrow;
+        }
+      },
     );
+
+    debugPrint('📤 Final getUserType response success: ${response.success}');
+    if (response.data != null) {
+      debugPrint('📤 Returning user type: ${response.data!.userType}');
+    }
+
+    return response;
   }
 
   /// Update current user profile
@@ -783,14 +857,11 @@ class AuthService extends StateNotifier<AppUser?> {
   // User Search
 
   /// Search users with filters
-  Future<ApiResponse<List<AppUser>>> searchUsers(
-      UserSearchRequest request) async {
+  Future<ApiResponse<List<AppUser>>> searchUsers(UserSearchRequest request) async {
     return _apiService.post<List<AppUser>>(
       '/users/search/',
       body: request.toJson(),
-      fromJson: (data) => (data['results'] as List)
-          .map((user) => AppUser.fromJson(user))
-          .toList(),
+      fromJson: (data) => (data['results'] as List).map((user) => AppUser.fromJson(user)).toList(),
     );
   }
 
@@ -818,8 +889,7 @@ class AuthService extends StateNotifier<AppUser?> {
   }
 
   /// Handle successful login by storing user data and tokens
-  Future<void> _handleSuccessfulLogin(
-      RegistrationResponse loginResponse) async {
+  Future<void> _handleSuccessfulLogin(RegistrationResponse loginResponse) async {
     state = loginResponse.user;
     _apiService.setTokens(
       accessToken: loginResponse.tokens.accessToken,
