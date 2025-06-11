@@ -25,30 +25,30 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   @override
   void initState() {
     super.initState();
-    print('👥 AdminUsersScreen: Initializing user management screen');
+    debugPrint('👥 AdminUsersScreen: Initializing user management screen');
 
     // Initialize tab controller with 3 tabs (All Users, Providers, Customers)
     _tabController = TabController(length: 3, vsync: this);
-    print('👥 AdminUsersScreen: Tab controller initialized with 3 tabs');
+    debugPrint('👥 AdminUsersScreen: Tab controller initialized with 3 tabs');
 
     // Add listener to track tab changes for debugging
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        print('👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
+        debugPrint('👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
         final tabNames = ['All Users', 'Providers', 'Customers'];
-        print('👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
+        debugPrint('👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
       }
     });
 
     // Add listener to search controller for real-time search tracking
     _searchController.addListener(() {
-      print('🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
+      debugPrint('🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
     });
   }
 
   @override
   void dispose() {
-    print('👥 AdminUsersScreen: Disposing user management screen');
+    debugPrint('👥 AdminUsersScreen: Disposing user management screen');
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -58,9 +58,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   Widget build(BuildContext context) {
     // Get current theme for consistent styling across the screen
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    print('👥 AdminUsersScreen: Building user management interface');
-    print('👥 AdminUsersScreen: Dark mode: $isDark');
-    print('👥 AdminUsersScreen: Current filter: $_selectedFilter');
+    debugPrint('👥 AdminUsersScreen: Building user management interface');
+    debugPrint('👥 AdminUsersScreen: Dark mode: $isDark');
+    debugPrint('👥 AdminUsersScreen: Current filter: $_selectedFilter');
 
     return Scaffold(
       // Adaptive background color based on theme
@@ -89,7 +89,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   /// Builds the top section containing title, export button, search bar, and tabs
   /// This section provides the main navigation and search functionality
   Widget _buildHeaderSection(bool isDark) {
-    print('👥 AdminUsersScreen: Building header section');
+    debugPrint('👥 AdminUsersScreen: Building header section');
 
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -120,8 +120,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
               // Export functionality for user data
               IconButton(
                 onPressed: () {
-                  print('📤 AdminUsersScreen: Export button pressed');
-                  print('📤 AdminUsersScreen: Preparing user data export...');
+                  debugPrint('📤 AdminUsersScreen: Export button pressed');
+                  debugPrint('📤 AdminUsersScreen: Preparing user data export...');
                   // TODO: Implement user data export functionality
                   // This could export to CSV, Excel, or PDF format
                 },
@@ -151,7 +151,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== SEARCH BAR BUILDER ==========
   /// Builds the search input field with proper theming and functionality
   Widget _buildSearchBar(bool isDark) {
-    print('👥 AdminUsersScreen: Building search bar');
+    debugPrint('👥 AdminUsersScreen: Building search bar');
 
     return Container(
       decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
       child: TextField(
         controller: _searchController,
         onChanged: (value) {
-          print('🔍 AdminUsersScreen: Search input changed: "$value"');
+          debugPrint('🔍 AdminUsersScreen: Search input changed: "$value"');
           // TODO: Implement real-time search filtering
           // This could filter users by name, email, phone, or ID
         },
@@ -188,7 +188,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== TAB BAR BUILDER ==========
   /// Builds the user type categorization tab bar
   Widget _buildTabBar(bool isDark) {
-    print('👥 AdminUsersScreen: Building tab bar');
+    debugPrint('👥 AdminUsersScreen: Building tab bar');
 
     return Container(
       decoration: BoxDecoration(
@@ -208,9 +208,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
           fontWeight: FontWeight.w600,
         ),
         onTap: (index) {
-          print('👥 AdminUsersScreen: Tab tapped: index $index');
+          debugPrint('👥 AdminUsersScreen: Tab tapped: index $index');
           final tabNames = ['All Users', 'Providers', 'Customers'];
-          print('👥 AdminUsersScreen: Switched to ${tabNames[index]} tab');
+          debugPrint('👥 AdminUsersScreen: Switched to ${tabNames[index]} tab');
         },
         tabs: const [
           Tab(text: 'All Users'), // Shows all user types
@@ -224,8 +224,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== FILTER SECTION BUILDER ==========
   /// Builds the horizontal scrollable filter chips for user status filtering
   Widget _buildFilterSection(bool isDark) {
-    print('👥 AdminUsersScreen: Building filter section');
-    print('👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
+    debugPrint('👥 AdminUsersScreen: Building filter section');
+    debugPrint('👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
@@ -253,7 +253,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== USER LIST SECTION BUILDER ==========
   /// Builds the tab view containing different user lists
   Widget _buildUserListSection(bool isDark) {
-    print('👥 AdminUsersScreen: Building user list section');
+    debugPrint('👥 AdminUsersScreen: Building user list section');
 
     return Expanded(
       child: TabBarView(
@@ -272,12 +272,12 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   Widget _buildFilterChip(String label, bool isSelected, bool isDark) {
     return GestureDetector(
       onTap: () {
-        print('🏷️ AdminUsersScreen: Filter chip tapped: $label');
-        print('🏷️ AdminUsersScreen: Previous filter: $_selectedFilter');
+        debugPrint('🏷️ AdminUsersScreen: Filter chip tapped: $label');
+        debugPrint('🏷️ AdminUsersScreen: Previous filter: $_selectedFilter');
         setState(() {
           _selectedFilter = label;
         });
-        print('🏷️ AdminUsersScreen: New filter: $_selectedFilter');
+        debugPrint('🏷️ AdminUsersScreen: New filter: $_selectedFilter');
         // TODO: Implement actual filtering logic based on selected filter
       },
       child: Container(
@@ -305,8 +305,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== USER LIST BUILDER ==========
   /// Builds the scrollable list of users based on type and filters
   Widget _buildUserList(String userType, bool isDark) {
-    print('👥 AdminUsersScreen: Building user list for type: $userType');
-    print('👥 AdminUsersScreen: Applied filter: $_selectedFilter');
+    debugPrint('👥 AdminUsersScreen: Building user list for type: $userType');
+    debugPrint('👥 AdminUsersScreen: Applied filter: $_selectedFilter');
 
     // TODO: Replace with actual API call to fetch users
     // This should filter based on userType and _selectedFilter
@@ -316,7 +316,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
       padding: EdgeInsets.all(20.w),
       itemCount: mockUserCount,
       itemBuilder: (context, index) {
-        print('👥 AdminUsersScreen: Building user card $index for $userType users');
+        debugPrint('👥 AdminUsersScreen: Building user card $index for $userType users');
 
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
@@ -355,7 +355,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
     final status = statuses[index % statuses.length];
     final isProvider = user['type'] == 'provider';
 
-    print('👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
+    debugPrint('👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
 
     // ========== STATUS COLOR MAPPING ==========
     Color statusColor;
@@ -478,7 +478,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
           // Context menu for user management actions
           PopupMenuButton<String>(
             onSelected: (value) {
-              print('👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
+              debugPrint('👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
               _handleUserAction(value, user, status);
             },
             itemBuilder: (context) => [
@@ -542,27 +542,27 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   // ========== USER ACTION HANDLER ==========
   /// Handles all user management actions from the context menu
   void _handleUserAction(String action, Map<String, String?> user, String status) {
-    print('👥 AdminUsersScreen: Handling $action for user ${user['name']}');
+    debugPrint('👥 AdminUsersScreen: Handling $action for user ${user['name']}');
 
     switch (action) {
       case 'view':
-        print('👁️ AdminUsersScreen: Showing details for ${user['name']}');
+        debugPrint('👁️ AdminUsersScreen: Showing details for ${user['name']}');
         _showUserDetails(user);
         break;
       case 'verify':
-        print('✅ AdminUsersScreen: Verifying user ${user['name']}');
+        debugPrint('✅ AdminUsersScreen: Verifying user ${user['name']}');
         // TODO: Implement user verification API call
         break;
       case 'suspend':
-        print('🚫 AdminUsersScreen: Suspending user ${user['name']}');
+        debugPrint('🚫 AdminUsersScreen: Suspending user ${user['name']}');
         // TODO: Implement user suspension API call
         break;
       case 'delete':
-        print('🗑️ AdminUsersScreen: Deleting user ${user['name']}');
+        debugPrint('🗑️ AdminUsersScreen: Deleting user ${user['name']}');
         // TODO: Implement user deletion with confirmation dialog
         break;
       default:
-        print('❓ AdminUsersScreen: Unknown action: $action');
+        debugPrint('❓ AdminUsersScreen: Unknown action: $action');
     }
   }
 
@@ -570,7 +570,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   /// Shows detailed user information in a bottom sheet modal
   void _showUserDetails(Map<String, String?> user) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    print('👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
+    debugPrint('👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
 
     showModalBottomSheet(
       context: context,
@@ -612,7 +612,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      print('👁️ AdminUsersScreen: Closing user details modal');
+                      debugPrint('👁️ AdminUsersScreen: Closing user details modal');
                       Navigator.pop(context);
                     },
                     icon: Icon(

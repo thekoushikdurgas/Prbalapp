@@ -189,6 +189,16 @@ class FeatureRoutes {
       ),
     ),
 
+    // Admin Tool Manager route
+    GoRoute(
+      path: RouteEnum.adminToolManager.rawValue,
+      pageBuilder: (context, state) => RouterUtils.buildPageTransition(
+        context: context,
+        state: state,
+        child: const BottomNavigation(initialIndex: 2), // 3rd tab for admin users
+      ),
+    ),
+
     // Chat routes
     GoRoute(
       path: RouteEnum.messages.rawValue,

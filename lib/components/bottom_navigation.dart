@@ -13,6 +13,7 @@ import 'package:prbal/screens/taker/taker_explore_screen.dart';
 import 'package:prbal/screens/taker/taker_orders_screen.dart';
 import 'package:prbal/screens/admin/admin_dashboard.dart';
 import 'package:prbal/screens/admin/admin_users_screen.dart';
+import 'package:prbal/screens/admin/admin_tool_manager_screen.dart';
 import 'package:prbal/screens/settings/settings_screen.dart';
 import 'package:prbal/services/hive_service.dart';
 
@@ -231,7 +232,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation> {
         return [
           const AdminDashboardContent(), // Use content-only version
           const AdminUsersScreen(),
-          const AdminDashboardContent(), // Admin moderation screen (reuse dashboard for now)
+          const AdminToolManagerScreen(), // Admin tool manager screen for CRUD operations
           const SettingsScreen(),
         ];
       case 'customer':

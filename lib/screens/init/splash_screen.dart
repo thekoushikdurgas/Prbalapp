@@ -33,8 +33,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with TickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _progressController;
@@ -44,6 +43,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late Animation<double> _logoOpacity;
   late Animation<double> _textOpacity;
   late Animation<double> _progressValue;
+
+  // Lottie animation state management
 
   String _loadingText = 'Initializing app...';
   bool _isInitializationComplete = false;
@@ -119,6 +120,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _startAnimationSequence() async {
     // Start logo and lottie animations simultaneously
     _logoController.forward();
+    _lottieController.duration = const Duration(milliseconds: 3000); // Set initial duration
     _lottieController.repeat(); // Loop the Lottie animation
 
     // Wait for logo animation to finish
@@ -183,8 +185,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         healthStatus = healthService.currentHealth;
         debugPrint('🏥 Using cached health status: ${quickStatus.name}');
         debugPrint('🏥 Skipping network health check - recent data available');
-        await Future.delayed(
-            const Duration(milliseconds: 200)); // Shorter delay for cached data
+        await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
         // Only perform network check if no recent cached data
         _updateLoadingText('Performing health check...');
@@ -197,15 +198,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (healthStatus?.overallStatus == HealthStatus.healthy) {
         _updateLoadingText('System healthy - Ready to launch!');
       } else {
-        _updateLoadingText(
-            'System status: ${healthStatus?.overallStatus.name ?? 'unknown'}');
+        _updateLoadingText('System status: ${healthStatus?.overallStatus.name ?? 'unknown'}');
       }
 
       if (kDebugMode) {
         final lastCheck = HiveService.getLastHealthCheck();
         if (lastCheck != null) {
-          debugPrint(
-              '🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
+          debugPrint('🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
         }
       }
 
@@ -320,20 +319,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       switch (userType.toLowerCase()) {
         case 'admin':
           debugPrint('👑 Navigating to admin dashboard');
-          context.go(RouteEnum.adminDashboard
-              .rawValue); // Will show admin dashboard through bottom navigation
+          context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
           break;
         case 'provider':
           debugPrint('🔧 Navigating to provider dashboard');
-          context.go(RouteEnum.providerDashboard
-              .rawValue); // Will show provider dashboard through bottom navigation
+          context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
           break;
         case 'customer':
         case 'taker':
         default:
           debugPrint('🏠 Navigating to taker dashboard');
-          context.go(RouteEnum.takerDashboard
-              .rawValue); // Will show taker dashboard through bottom navigation
+          context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
           break;
       }
     }
@@ -398,10 +394,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               decoration: BoxDecoration(
                                 gradient: RadialGradient(
                                   colors: [
-                                    const Color(0xFF3B82F6)
-                                        .withValues(alpha: 0.1),
-                                    const Color(0xFF1D4ED8)
-                                        .withValues(alpha: 0.05),
+                                    const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                                    const Color(0xFF1D4ED8).withValues(alpha: 0.05),
                                     Colors.transparent,
                                   ],
                                 ),
@@ -419,24 +413,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                         colors: [
-                                          const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.2),
-                                          const Color(0xFF1D4ED8)
-                                              .withValues(alpha: 0.1),
+                                          const Color(0xFF3B82F6).withValues(alpha: 0.2),
+                                          const Color(0xFF1D4ED8).withValues(alpha: 0.1),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(70.r),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.3),
+                                          color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
                                           blurRadius: 30,
                                           offset: const Offset(0, 10),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  // Lottie animation
+                                  // Lottie animation with better controls
                                   AnimatedBuilder(
                                     animation: _lottieController,
                                     builder: (context, child) {
@@ -451,6 +442,40 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                           fit: BoxFit.contain,
                                           repeat: true,
                                           animate: true,
+                                          frameRate: FrameRate.max,
+                                          options: LottieOptions(
+                                            enableMergePaths: true,
+                                          ),
+                                          onLoaded: (composition) {
+                                            debugPrint('🎬 Lottie animation loaded: ${composition.duration}');
+                                            // Start the animation loop
+                                            _lottieController.duration = composition.duration;
+                                            _lottieController.repeat();
+                                          },
+                                          errorBuilder: (context, error, stackTrace) {
+                                            debugPrint('❌ Lottie animation error: $error');
+                                            // Fallback to fallback icon
+                                            return Container(
+                                              width: 120.w,
+                                              height: 120.h,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                  colors: [
+                                                    const Color(0xFF3B82F6).withValues(alpha: 0.8),
+                                                    const Color(0xFF1D4ED8).withValues(alpha: 0.9),
+                                                  ],
+                                                ),
+                                                borderRadius: BorderRadius.circular(60.r),
+                                              ),
+                                              child: Icon(
+                                                Icons.business,
+                                                size: 60.sp,
+                                                color: Colors.white,
+                                              ),
+                                            );
+                                          },
                                         ),
                                       );
                                     },
@@ -464,17 +489,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                         colors: [
-                                          const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.8),
-                                          const Color(0xFF1D4ED8)
-                                              .withValues(alpha: 0.9),
+                                          const Color(0xFF3B82F6).withValues(alpha: 0.8),
+                                          const Color(0xFF1D4ED8).withValues(alpha: 0.9),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(30.r),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.4),
+                                          color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
                                           blurRadius: 15,
                                           offset: const Offset(0, 5),
                                         ),
@@ -510,9 +532,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                 style: TextStyle(
                                   fontSize: 48.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? Colors.white
-                                      : const Color(0xFF0F172A),
+                                  color: isDark ? Colors.white : const Color(0xFF0F172A),
                                   letterSpacing: -1.5,
                                 ),
                               ),
@@ -525,9 +545,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: isDark
-                                      ? Colors.grey[400]
-                                      : const Color(0xFF64748B),
+                                  color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -540,9 +558,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w400,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : const Color(0xFF94A3B8),
+                                  color: isDark ? Colors.grey[500] : const Color(0xFF94A3B8),
                                 ),
                               ),
                             ],
@@ -571,9 +587,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : const Color(0xFF64748B),
+                              color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
                             ),
                           ),
                         );
@@ -590,9 +604,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           width: double.infinity,
                           height: 4.h,
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF374151)
-                                : const Color(0xFFE2E8F0),
+                            color: isDark ? const Color(0xFF374151) : const Color(0xFFE2E8F0),
                             borderRadius: BorderRadius.circular(2.r),
                           ),
                           child: FractionallySizedBox(

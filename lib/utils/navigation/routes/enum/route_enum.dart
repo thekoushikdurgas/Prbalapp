@@ -28,6 +28,7 @@ enum RouteEnum {
   adminDashboard,
   adminUsers,
   adminActivity,
+  adminToolManager,
 
   // Taker dashboard routes
   takerDashboard,
@@ -106,6 +107,8 @@ extension RouteEnumString on RouteEnum {
         return '/admin-users';
       case RouteEnum.adminActivity:
         return '/admin-activity';
+      case RouteEnum.adminToolManager:
+        return '/admin-tool-manager';
 
       // Taker dashboard routes
       case RouteEnum.takerDashboard:
