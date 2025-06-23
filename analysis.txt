@@ -1,0 +1,15 @@
+Analyzing prbal...                                              
+
+warning - The declaration '_logServiceRequestAnalytics' isn't referenced - lib\screens\taker\taker_post_request_screen.dart:542:8 - unused_element
+warning - The declaration '_logProviderMatchingAnalytics' isn't referenced - lib\screens\taker\taker_post_request_screen.dart:767:8 - unused_element
+warning - The declaration '_validateServiceRequestInput' isn't referenced - lib\screens\taker\taker_post_request_screen.dart:854:24 - unused_element
+warning - The value of the local variable 'userService' isn't used - lib\services\service_providers.dart:402:13 - unused_local_variable
+warning - The value of the local variable 'authNotifier' isn't used - lib\services\service_providers.dart:406:13 - unused_local_variable
+  error - The name 'AuthenticationNotifier' isn't a type, so it can't be used as a type argument - lib\services\service_providers.dart:761:27 - non_type_as_type_argument
+  error - The name 'AuthenticationState' isn't a type, so it can't be used as a type argument - lib\services\service_providers.dart:761:51 - non_type_as_type_argument
+  error - The function 'AuthenticationNotifier' isn't defined - lib\services\service_providers.dart:769:24 - undefined_function
+warning - The value of the field '_serviceManagementService' isn't used - lib\widgets\admin\service_widget.dart:103:33 - unused_field
+  error - Undefined class 'AuthenticationState' - lib\widgets\settings\account_settings_widget.dart:28:9 - undefined_class
+  error - Undefined class 'AuthenticationState' - lib\widgets\settings\profile_picture_handler.dart:155:5 - undefined_class
+  error - Undefined class 'AuthenticationState' - lib\widgets\settings\profile_section_widget.dart:124:5 - undefined_class
+

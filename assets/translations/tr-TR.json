@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Prbal"
+  },
+  "intro": {
+    "introTitleFirst": "Prbal'a Hoş Geldiniz",
+    "introDescriptionFirst": "Bölgenizdeki hizmet sağlayıcılarla bağlantı kurun",
+    "introTitleSecond": "Hizmet Rezervasyonu",
+    "introDescriptionSecond": "Hizmetlerinizi kolayca rezerve edin ve yönetin",
+    "introTitleThird": "Başlayın",
+    "introDescriptionThird": "Prbal ile yolculuğunuza bugün başlayın"
+  },
+  "button": {
+    "skip": "Atla",
+    "done": "Tamam",
+    "cancel": "İptal",
+    "ok": "Tamam"
+  },
+  "theme": {
+    "theme": "Tema",
+    "default": "Sistem Varsayılanı",
+    "light": "Açık",
+    "dark": "Koyu",
+    "themeChoose": "Tema Seç"
+  },
+  "localization": {
+    "appLang": "Uygulama Dili",
+    "langChoose": "Dil Seç"
+  },
+  "settingTitle": "Ayarlar"
+}
