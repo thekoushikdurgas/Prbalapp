@@ -286,20 +286,23 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
 
   /// Build modern bulk actions FAB
   Widget _buildBulkActionsFAB() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF8B5CF6),
-            const Color(0xFF7C3AED),
+            primaryColor,
+            primaryColor.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.4),
+            color: primaryColor.withValues(alpha: 0.4),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -378,6 +381,13 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
     debugPrint('🔧 ServiceCategoryCrud: Showing modern bulk actions bottom sheet');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
+
+    // Theme-aware color definitions
+    final successColor = isDark ? const Color(0xFF10B981) : const Color(0xFF059669);
+    final warningColor = isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706);
+    final infoColor = isDark ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+    final errorColor = isDark ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
 
     showModalBottomSheet(
       context: context,
@@ -426,18 +436,18 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF8B5CF6).withValues(alpha: 0.2),
-                          const Color(0xFF8B5CF6).withValues(alpha: 0.1),
+                          primaryColor.withValues(alpha: 0.2),
+                          primaryColor.withValues(alpha: 0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
-                        color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                        color: primaryColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Icon(
                       LineIcons.cogs,
-                      color: const Color(0xFF8B5CF6),
+                      color: primaryColor,
                       size: 24.sp,
                     ),
                   ),
@@ -458,7 +468,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                           '${widget.selectedIds.length} categories selected',
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: const Color(0xFF8B5CF6),
+                            color: primaryColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -475,13 +485,13 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                 padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 28.h),
                 child: Column(
                   children: [
-                    _buildBulkActionTile('Activate All', LineIcons.checkCircle, const Color(0xFF10B981), isDark),
+                    _buildBulkActionTile('Activate All', LineIcons.checkCircle, successColor, isDark),
                     SizedBox(height: 12.h),
-                    _buildBulkActionTile('Deactivate All', LineIcons.pauseCircle, const Color(0xFFF59E0B), isDark),
+                    _buildBulkActionTile('Deactivate All', LineIcons.pauseCircle, warningColor, isDark),
                     SizedBox(height: 12.h),
-                    _buildBulkActionTile('Export Selected', LineIcons.download, const Color(0xFF3B82F6), isDark),
+                    _buildBulkActionTile('Export Selected', LineIcons.download, infoColor, isDark),
                     SizedBox(height: 12.h),
-                    _buildBulkActionTile('Delete All', LineIcons.trash, const Color(0xFFEF4444), isDark),
+                    _buildBulkActionTile('Delete All', LineIcons.trash, errorColor, isDark),
                   ],
                 ),
               ),
@@ -650,6 +660,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
   /// Build modern search header with back button, search, and filter in one row
   Widget _buildModernSearchHeader() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Container(
         margin: EdgeInsets.all(16.w),
@@ -903,13 +914,13 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF10B981).withValues(alpha: 0.15),
-                          const Color(0xFF10B981).withValues(alpha: 0.05),
+                          (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.15),
+                          (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.05),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                        color: (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -918,14 +929,14 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                         Icon(
                           LineIcons.barChartAlt,
                           size: 12.sp,
-                          color: const Color(0xFF10B981),
+                          color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           '${_filteredCategories.length}',
                           style: TextStyle(
                             fontSize: 12.sp,
-                            color: const Color(0xFF10B981),
+                            color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -949,7 +960,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                           'Total',
                           _totalCount.toString(),
                           LineIcons.database,
-                          const Color(0xFF6366F1),
+                          isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5),
                           isDark,
                         ),
                       ),
@@ -959,7 +970,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                           'Active',
                           _activeCount.toString(),
                           LineIcons.checkCircle,
-                          const Color(0xFF10B981),
+                          isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
                           isDark,
                         ),
                       ),
@@ -969,7 +980,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                           'Inactive',
                           _inactiveCount.toString(),
                           LineIcons.pauseCircle,
-                          const Color(0xFFF59E0B),
+                          isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
                           isDark,
                         ),
                       ),
@@ -980,7 +991,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                             'Selected',
                             widget.selectedIds.length.toString(),
                             LineIcons.checkSquare,
-                            const Color(0xFF8B5CF6),
+                            isDark ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED),
                             isDark,
                           ),
                         ),
@@ -1210,7 +1221,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     icon: LineIcons.checkCircle,
                     value: 'active',
                     isDark: isDark,
-                    color: const Color(0xFF10B981),
+                    color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
                   ),
                   SizedBox(height: 12.h),
                   _buildModernFilterOption(
@@ -1219,7 +1230,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     icon: LineIcons.pauseCircle,
                     value: 'inactive',
                     isDark: isDark,
-                    color: const Color(0xFFF59E0B),
+                    color: isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
                   ),
                 ],
               ),
@@ -1887,7 +1898,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
           color: isSelected
               ? Theme.of(context).primaryColor.withValues(alpha: 0.6)
               : category.isActive
-                  ? Colors.green.withValues(alpha: 0.4)
+                  ? (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.4)
                   : isDark
                       ? Colors.white.withValues(alpha: 0.1)
                       : Colors.grey.withValues(alpha: 0.2),
@@ -1965,38 +1976,6 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
           ),
         ),
       ),
-    );
-  }
-
-  /// Build selection indicator (replaces checkbox)
-  Widget _buildSelectionIndicator(bool isSelected) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: 28.w,
-      height: 28.h,
-      decoration: BoxDecoration(
-        gradient: isSelected
-            ? LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withValues(alpha: 0.8),
-                ],
-              )
-            : null,
-        color: isSelected ? null : Colors.transparent,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.grey.withValues(alpha: 0.3),
-          width: isSelected ? 2 : 1,
-        ),
-      ),
-      child: isSelected
-          ? Icon(
-              LineIcons.check,
-              color: Colors.white,
-              size: 16.sp,
-            )
-          : null,
     );
   }
 
@@ -2175,7 +2154,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
       },
       icon: Icon(
         LineIcons.verticalEllipsis,
-        color: const Color.fromRGBO(117, 117, 117, 1),
+        color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[400] : Colors.grey[600],
         size: 26.sp,
       ),
       tooltip: 'Category Actions',
@@ -2192,6 +2171,12 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
     debugPrint('🔧 CategoryWidget: Showing actions modal for category: ${category.name}');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Theme-aware colors
+    final successColor = isDark ? const Color(0xFF10B981) : const Color(0xFF059669);
+    final warningColor = isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706);
+    final infoColor = isDark ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+    final errorColor = isDark ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
 
     showModalBottomSheet(
       context: context,
@@ -2288,7 +2273,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                               width: 6.w,
                               height: 6.h,
                               decoration: BoxDecoration(
-                                color: category.isActive ? Colors.green : Colors.orange,
+                                color: category.isActive ? successColor : warningColor,
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -2297,7 +2282,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                               category.isActive ? 'Active' : 'Inactive',
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: category.isActive ? Colors.green : Colors.orange,
+                                color: category.isActive ? successColor : warningColor,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -2340,7 +2325,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     title: 'Edit Category',
                     subtitle: 'Modify category details and settings',
                     icon: LineIcons.edit,
-                    color: Colors.blue,
+                    color: infoColor,
                     onTap: () {
                       Navigator.of(context).pop();
                       debugPrint('✏️ Edit category: ${category.name}');
@@ -2355,7 +2340,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     subtitle:
                         category.isActive ? 'Hide this category from users' : 'Make this category visible to users',
                     icon: category.isActive ? LineIcons.toggleOff : LineIcons.toggleOn,
-                    color: category.isActive ? Colors.orange : Colors.green,
+                    color: category.isActive ? warningColor : successColor,
                     onTap: () {
                       Navigator.of(context).pop();
                       debugPrint('🔄 Toggle status: ${category.name}');
@@ -2368,7 +2353,7 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
                     title: 'Delete Category',
                     subtitle: 'Permanently remove this category',
                     icon: LineIcons.trash,
-                    color: Colors.red,
+                    color: errorColor,
                     onTap: () {
                       Navigator.of(context).pop();
                       debugPrint('🗑️ Delete category: ${category.name}');
@@ -2499,99 +2484,237 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
   /// Build modern selection info bar
   Widget _buildModernSelectionInfoBar() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
 
-    return Container(
+    // Theme-aware color definitions
+    final successColor = isDark ? const Color(0xFF10B981) : const Color(0xFF059669);
+    final warningColor = isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706);
+    final errorColor = isDark ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
+    final infoColor = isDark ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+
+    // Enhanced background colors for better theme differentiation
+    final backgroundGradient = isDark
+        ? [
+            const Color(0xFF1E293B).withValues(alpha: 0.95),
+            const Color(0xFF0F172A).withValues(alpha: 0.9),
+          ]
+        : [
+            const Color(0xFFF8FAFC).withValues(alpha: 0.95),
+            Colors.white.withValues(alpha: 0.9),
+          ];
+
+    // Border colors for better contrast
+    final borderColor = isDark ? primaryColor.withValues(alpha: 0.4) : primaryColor.withValues(alpha: 0.3);
+
+    // Text colors for better readability
+    final primaryTextColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final secondaryTextColor = isDark ? Colors.grey[300] : Colors.grey[600];
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).primaryColor.withValues(alpha: 0.15),
-            Theme.of(context).primaryColor.withValues(alpha: 0.05),
-          ],
+          colors: backgroundGradient,
         ),
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-          width: 1.5,
+          color: borderColor,
+          width: 2,
         ),
         boxShadow: [
+          // Primary shadow
           BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: isDark ? Colors.black.withValues(alpha: 0.4) : primaryColor.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+            spreadRadius: 0,
+          ),
+          // Secondary shadow for depth
+          BoxShadow(
+            color: isDark ? primaryColor.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+            spreadRadius: 2,
           ),
         ],
       ),
       child: Row(
         children: [
-          // Selection icon
+          // Enhanced selection icon with animated gradient
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  successColor.withValues(alpha: 0.2),
+                  successColor.withValues(alpha: 0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: successColor.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: successColor.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Icon(
               LineIcons.checkCircle,
-              color: Theme.of(context).primaryColor,
-              size: 20.sp,
+              color: successColor,
+              size: 22.sp,
             ),
           ),
 
-          SizedBox(width: 12.w),
+          SizedBox(width: 16.w),
 
-          // Selection text
+          // Enhanced selection text with better typography
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${widget.selectedIds.length} ${widget.selectedIds.length == 1 ? 'category' : 'categories'} selected',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${widget.selectedIds.length} ${widget.selectedIds.length == 1 ? 'Category' : 'Categories'} Selected',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          color: primaryTextColor,
+                          letterSpacing: -0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    // Selection count badge
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            infoColor.withValues(alpha: 0.2),
+                            infoColor.withValues(alpha: 0.1),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: infoColor.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        '${widget.selectedIds.length}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: infoColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Perform bulk actions or clear selection',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
-                  ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Icon(
+                      LineIcons.cogs,
+                      size: 12.sp,
+                      color: secondaryTextColor,
+                    ),
+                    SizedBox(width: 4.w),
+                    Flexible(
+                      child: Text(
+                        'Tap the floating button for bulk actions',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: secondaryTextColor,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
 
-          // Clear button
+          SizedBox(width: 12.w),
+
+          // Enhanced clear button with modern design
           Container(
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  errorColor.withValues(alpha: 0.15),
+                  errorColor.withValues(alpha: 0.08),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
-                color: Colors.red.withValues(alpha: 0.2),
+                color: errorColor.withValues(alpha: 0.3),
+                width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: errorColor.withValues(alpha: 0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: IconButton(
-              onPressed: () {
-                debugPrint('🗑️ ServiceCategoryCrud: Clear selection pressed');
-                HapticFeedback.lightImpact();
-                // Clear all selections by calling the callback for each selected ID
-                final selectedIdsCopy = Set<String>.from(widget.selectedIds);
-                for (final id in selectedIdsCopy) {
-                  widget.onSelectionChanged(id);
-                }
-              },
-              icon: Icon(
-                LineIcons.times,
-                color: Colors.red,
-                size: 16.sp,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  debugPrint('🗑️ ServiceCategoryCrud: Clear selection pressed');
+                  HapticFeedback.mediumImpact();
+                  // Clear all selections by calling the callback for each selected ID
+                  final selectedIdsCopy = Set<String>.from(widget.selectedIds);
+                  for (final id in selectedIdsCopy) {
+                    widget.onSelectionChanged(id);
+                  }
+                },
+                borderRadius: BorderRadius.circular(12.r),
+                child: Container(
+                  padding: EdgeInsets.all(12.w),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LineIcons.times,
+                        color: errorColor,
+                        size: 18.sp,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Clear',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: errorColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              tooltip: 'Clear Selection',
             ),
           ),
         ],
