@@ -321,7 +321,7 @@ Security measures
 
  explore page , profile , notification
 
-now design Splash Screen in dark-light ui modern style more icon and more user friendly
+now design Splash Screen in dark-light ui more icon and more user friendly modern style
 
    ├── Splash Screen
    │   ├── Language Selection (if needed)

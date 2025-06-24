@@ -1625,6 +1625,644 @@ class CategoryUtils {
       }
     }
   }
+
+  /// **BULK CRUD OPERATIONS** 📦
+  /// ====================================================================
+
+  /// Bulk activate selected categories using CategoryUtils
+  ///
+  /// **Purpose**: Activate multiple categories at once with comprehensive error handling and progress tracking
+  /// **Returns**: Future BulkOperationResult - contains success status, results, and error details
+  /// **Usage**:
+  /// ```dart
+  /// final result = await CategoryUtils.bulkActivateCategories(
+  ///   context: context,
+  ///   selectedIds: widget.selectedIds,
+  ///   allCategories: _allCategories,
+  ///   onSelectionChanged: widget.onSelectionChanged,
+  ///   onDataRefresh: () => _loadCategories(),
+  ///   onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
+  /// );
+  /// ```
+  static Future<BulkOperationResult> bulkActivateCategories({
+    required BuildContext context,
+    required Set<String> selectedIds,
+    required List<ServiceCategory> allCategories,
+    required Function(String) onSelectionChanged,
+    required VoidCallback onDataRefresh,
+    required Function(bool) onLoadingStateChange,
+  }) async {
+    debugPrint('✅ CategoryUtils.CRUD: =============================');
+    debugPrint('✅ CategoryUtils.CRUD: BULK ACTIVATE CATEGORIES');
+    debugPrint('✅ CategoryUtils.CRUD: =============================');
+    debugPrint('✅ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint('✅ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+
+    if (selectedIds.isEmpty) {
+      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk activation');
+      return BulkOperationResult(
+        operation: 'BULK_ACTIVATE',
+        totalRequested: 0,
+        successful: 0,
+        failed: 0,
+        isSuccess: false,
+        errorMessage: 'No categories selected for activation',
+      );
+    }
+
+    // Start CRUD operation tracking
+    final tracker = startCrudOperation('BULK_ACTIVATE', '${selectedIds.length} categories');
+    onLoadingStateChange(true);
+
+    final successfulActivations = <String>[];
+    final failedActivations = <String, String>{};
+    final skippedActivations = <String>[];
+
+    try {
+      debugPrint('✅ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for activation...');
+
+      for (String categoryId in selectedIds) {
+        try {
+          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
+          debugPrint(
+              '✅ CategoryUtils.CRUD: → Processing "${category.name}" (currently ${category.isActive ? 'active' : 'inactive'})');
+
+          if (category.isActive) {
+            debugPrint('⏭️ CategoryUtils.CRUD: → Category "${category.name}" already active, skipping');
+            skippedActivations.add(categoryId);
+            continue;
+          }
+
+          // Use the existing toggleCategoryStatus method
+          final success = await toggleCategoryStatus(
+            context: context,
+            category: category,
+            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
+            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+          );
+
+          if (success) {
+            successfulActivations.add(categoryId);
+            debugPrint('✅ CategoryUtils.CRUD: → Successfully activated "${category.name}"');
+          } else {
+            failedActivations[categoryId] = 'Failed to activate category';
+            debugPrint('❌ CategoryUtils.CRUD: → Failed to activate "${category.name}"');
+          }
+        } catch (e) {
+          failedActivations[categoryId] = e.toString();
+          debugPrint('❌ CategoryUtils.CRUD: → Exception activating category $categoryId: $e');
+        }
+      }
+
+      // Clear selections after bulk action
+      debugPrint('✅ CategoryUtils.CRUD: → Clearing selections after bulk activation...');
+      for (String id in selectedIds.toList()) {
+        onSelectionChanged(id);
+      }
+
+      // Refresh data once at the end
+      debugPrint('✅ CategoryUtils.CRUD: → Refreshing data after bulk activation...');
+      onDataRefresh();
+
+      final result = BulkOperationResult(
+        operation: 'BULK_ACTIVATE',
+        totalRequested: selectedIds.length,
+        successful: successfulActivations.length,
+        failed: failedActivations.length,
+        skipped: skippedActivations.length,
+        isSuccess: failedActivations.isEmpty,
+        successfulIds: successfulActivations,
+        failedIds: failedActivations,
+        skippedIds: skippedActivations,
+      );
+
+      // Show result message
+      if (context.mounted) {
+        final message = result.isSuccess
+            ? 'Successfully activated ${result.successful} categories'
+            : 'Activated ${result.successful} categories, ${result.failed} failed';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: result.isSuccess ? Colors.green : Colors.orange,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      // Complete CRUD operation tracking
+      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
+        'total_requested': result.totalRequested,
+        'successful': result.successful,
+        'failed': result.failed,
+        'skipped': result.skipped,
+        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+      });
+
+      debugPrint(
+          '✅ CategoryUtils.CRUD: Bulk activation completed - Success: ${result.successful}, Failed: ${result.failed}, Skipped: ${result.skipped}');
+      return result;
+    } catch (e) {
+      debugPrint('❌ CategoryUtils.CRUD: Exception during bulk activation: $e');
+
+      final result = BulkOperationResult(
+        operation: 'BULK_ACTIVATE',
+        totalRequested: selectedIds.length,
+        successful: successfulActivations.length,
+        failed: selectedIds.length - successfulActivations.length,
+        isSuccess: false,
+        errorMessage: 'Bulk activation failed: $e',
+      );
+
+      // Complete CRUD operation tracking with exception
+      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Bulk activation failed: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      return result;
+    } finally {
+      if (context.mounted) {
+        onLoadingStateChange(false);
+      }
+    }
+  }
+
+  /// Bulk deactivate selected categories using CategoryUtils
+  ///
+  /// **Purpose**: Deactivate multiple categories at once with comprehensive error handling and progress tracking
+  /// **Returns**: Future BulkOperationResult - contains success status, results, and error details
+  static Future<BulkOperationResult> bulkDeactivateCategories({
+    required BuildContext context,
+    required Set<String> selectedIds,
+    required List<ServiceCategory> allCategories,
+    required Function(String) onSelectionChanged,
+    required VoidCallback onDataRefresh,
+    required Function(bool) onLoadingStateChange,
+  }) async {
+    debugPrint('⏸️ CategoryUtils.CRUD: =============================');
+    debugPrint('⏸️ CategoryUtils.CRUD: BULK DEACTIVATE CATEGORIES');
+    debugPrint('⏸️ CategoryUtils.CRUD: =============================');
+    debugPrint('⏸️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint('⏸️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+
+    if (selectedIds.isEmpty) {
+      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk deactivation');
+      return BulkOperationResult(
+        operation: 'BULK_DEACTIVATE',
+        totalRequested: 0,
+        successful: 0,
+        failed: 0,
+        isSuccess: false,
+        errorMessage: 'No categories selected for deactivation',
+      );
+    }
+
+    // Start CRUD operation tracking
+    final tracker = startCrudOperation('BULK_DEACTIVATE', '${selectedIds.length} categories');
+    onLoadingStateChange(true);
+
+    final successfulDeactivations = <String>[];
+    final failedDeactivations = <String, String>{};
+    final skippedDeactivations = <String>[];
+
+    try {
+      debugPrint('⏸️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deactivation...');
+
+      for (String categoryId in selectedIds) {
+        try {
+          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
+          debugPrint(
+              '⏸️ CategoryUtils.CRUD: → Processing "${category.name}" (currently ${category.isActive ? 'active' : 'inactive'})');
+
+          if (!category.isActive) {
+            debugPrint('⏭️ CategoryUtils.CRUD: → Category "${category.name}" already inactive, skipping');
+            skippedDeactivations.add(categoryId);
+            continue;
+          }
+
+          // Use the existing toggleCategoryStatus method
+          final success = await toggleCategoryStatus(
+            context: context,
+            category: category,
+            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
+            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+          );
+
+          if (success) {
+            successfulDeactivations.add(categoryId);
+            debugPrint('✅ CategoryUtils.CRUD: → Successfully deactivated "${category.name}"');
+          } else {
+            failedDeactivations[categoryId] = 'Failed to deactivate category';
+            debugPrint('❌ CategoryUtils.CRUD: → Failed to deactivate "${category.name}"');
+          }
+        } catch (e) {
+          failedDeactivations[categoryId] = e.toString();
+          debugPrint('❌ CategoryUtils.CRUD: → Exception deactivating category $categoryId: $e');
+        }
+      }
+
+      // Clear selections after bulk action
+      debugPrint('⏸️ CategoryUtils.CRUD: → Clearing selections after bulk deactivation...');
+      for (String id in selectedIds.toList()) {
+        onSelectionChanged(id);
+      }
+
+      // Refresh data once at the end
+      debugPrint('⏸️ CategoryUtils.CRUD: → Refreshing data after bulk deactivation...');
+      onDataRefresh();
+
+      final result = BulkOperationResult(
+        operation: 'BULK_DEACTIVATE',
+        totalRequested: selectedIds.length,
+        successful: successfulDeactivations.length,
+        failed: failedDeactivations.length,
+        skipped: skippedDeactivations.length,
+        isSuccess: failedDeactivations.isEmpty,
+        successfulIds: successfulDeactivations,
+        failedIds: failedDeactivations,
+        skippedIds: skippedDeactivations,
+      );
+
+      // Show result message
+      if (context.mounted) {
+        final message = result.isSuccess
+            ? 'Successfully deactivated ${result.successful} categories'
+            : 'Deactivated ${result.successful} categories, ${result.failed} failed';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: result.isSuccess ? Colors.green : Colors.orange,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      // Complete CRUD operation tracking
+      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
+        'total_requested': result.totalRequested,
+        'successful': result.successful,
+        'failed': result.failed,
+        'skipped': result.skipped,
+        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+      });
+
+      debugPrint(
+          '⏸️ CategoryUtils.CRUD: Bulk deactivation completed - Success: ${result.successful}, Failed: ${result.failed}, Skipped: ${result.skipped}');
+      return result;
+    } catch (e) {
+      debugPrint('❌ CategoryUtils.CRUD: Exception during bulk deactivation: $e');
+
+      final result = BulkOperationResult(
+        operation: 'BULK_DEACTIVATE',
+        totalRequested: selectedIds.length,
+        successful: successfulDeactivations.length,
+        failed: selectedIds.length - successfulDeactivations.length,
+        isSuccess: false,
+        errorMessage: 'Bulk deactivation failed: $e',
+      );
+
+      // Complete CRUD operation tracking with exception
+      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Bulk deactivation failed: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      return result;
+    } finally {
+      if (context.mounted) {
+        onLoadingStateChange(false);
+      }
+    }
+  }
+
+  /// Bulk export selected categories using CategoryUtils
+  ///
+  /// **Purpose**: Export multiple categories to JSON format with comprehensive data formatting
+  /// **Returns**: Future BulkOperationResult - contains export status and file information
+  static Future<BulkOperationResult> bulkExportCategories({
+    required BuildContext context,
+    required Set<String> selectedIds,
+    required List<ServiceCategory> allCategories,
+    required Function(String) onSelectionChanged,
+  }) async {
+    debugPrint('📥 CategoryUtils.CRUD: =============================');
+    debugPrint('📥 CategoryUtils.CRUD: BULK EXPORT CATEGORIES');
+    debugPrint('📥 CategoryUtils.CRUD: =============================');
+    debugPrint('📥 CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint('📥 CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+
+    if (selectedIds.isEmpty) {
+      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk export');
+      return BulkOperationResult(
+        operation: 'BULK_EXPORT',
+        totalRequested: 0,
+        successful: 0,
+        failed: 0,
+        isSuccess: false,
+        errorMessage: 'No categories selected for export',
+      );
+    }
+
+    // Start CRUD operation tracking
+    final tracker = startCrudOperation('BULK_EXPORT', '${selectedIds.length} categories');
+
+    try {
+      debugPrint('📥 CategoryUtils.CRUD: → Preparing export data for ${selectedIds.length} categories...');
+
+      final selectedCategories = allCategories.where((cat) => selectedIds.contains(cat.id)).toList();
+      debugPrint('📥 CategoryUtils.CRUD: → Found ${selectedCategories.length} categories to export');
+
+      // Prepare export data with enhanced formatting
+      final exportData = {
+        'export_metadata': {
+          'export_date': DateTime.now().toIso8601String(),
+          'export_version': '1.0',
+          'total_categories': selectedCategories.length,
+          'exported_by': 'CategoryUtils.bulkExportCategories',
+        },
+        'categories': selectedCategories
+            .map((category) => {
+                  'id': category.id,
+                  'name': capitalizeWords(category.name),
+                  'description': category.description,
+                  'is_active': category.isActive,
+                  'sort_order': category.sortOrder,
+                  'created_at': formatFullDate(category.createdAt),
+                  'updated_at': formatFullDate(category.updatedAt),
+                  'status_display': category.isActive ? 'Active' : 'Inactive',
+                  'export_timestamp': DateTime.now().toIso8601String(),
+                })
+            .toList(),
+        'export_summary': {
+          'active_categories': selectedCategories.where((c) => c.isActive).length,
+          'inactive_categories': selectedCategories.where((c) => !c.isActive).length,
+          'category_names': selectedCategories.map((c) => capitalizeWords(c.name)).toList(),
+        },
+      };
+
+      debugPrint('📥 CategoryUtils.CRUD: → Export data prepared successfully');
+      final exportSummary = exportData['export_summary'] as Map<String, dynamic>;
+      debugPrint('📥 CategoryUtils.CRUD: → Active categories: ${exportSummary['active_categories']}');
+      debugPrint('📥 CategoryUtils.CRUD: → Inactive categories: ${exportSummary['inactive_categories']}');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Categories to export: ${(exportSummary['category_names'] as List).join(', ')}');
+
+      // TODO: Implement actual file export functionality
+      // For now, we'll simulate successful export and show the data in debug
+      debugPrint('📥 CategoryUtils.CRUD: → [SIMULATED] Export data ready for file writing');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → [SIMULATED] Export would save to: categories_export_${DateTime.now().millisecondsSinceEpoch}.json');
+
+      // Clear selections after export (optional - user preference)
+      debugPrint('📥 CategoryUtils.CRUD: → Clearing selections after export...');
+      for (String id in selectedIds.toList()) {
+        onSelectionChanged(id);
+      }
+
+      final result = BulkOperationResult(
+        operation: 'BULK_EXPORT',
+        totalRequested: selectedIds.length,
+        successful: selectedCategories.length,
+        failed: 0,
+        isSuccess: true,
+        successfulIds: selectedCategories.map((c) => c.id).toList(),
+        exportData: exportData,
+      );
+
+      // Show success message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully exported ${selectedCategories.length} categories'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'View Data',
+              textColor: Colors.white,
+              onPressed: () {
+                debugPrint('📥 CategoryUtils.CRUD: → User requested to view export data');
+                // TODO: Show export data in a dialog or save to file
+              },
+            ),
+          ),
+        );
+      }
+
+      // Complete CRUD operation tracking
+      completeCrudOperation(tracker, success: true, additionalData: {
+        'total_exported': selectedCategories.length,
+        'active_count': exportSummary['active_categories'],
+        'inactive_count': exportSummary['inactive_categories'],
+        'export_size_bytes': exportData.toString().length,
+      });
+
+      debugPrint('📥 CategoryUtils.CRUD: Bulk export completed successfully');
+      return result;
+    } catch (e) {
+      debugPrint('❌ CategoryUtils.CRUD: Exception during bulk export: $e');
+
+      final result = BulkOperationResult(
+        operation: 'BULK_EXPORT',
+        totalRequested: selectedIds.length,
+        successful: 0,
+        failed: selectedIds.length,
+        isSuccess: false,
+        errorMessage: 'Bulk export failed: $e',
+      );
+
+      // Complete CRUD operation tracking with exception
+      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Export failed: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      return result;
+    }
+  }
+
+  /// Bulk delete selected categories using CategoryUtils
+  ///
+  /// **Purpose**: Delete multiple categories at once with confirmation and comprehensive error handling
+  /// **Returns**: Future BulkOperationResult - contains deletion status, results, and error details
+  static Future<BulkOperationResult> bulkDeleteCategories({
+    required BuildContext context,
+    required Set<String> selectedIds,
+    required List<ServiceCategory> allCategories,
+    required Function(String) onSelectionChanged,
+    required VoidCallback onDataRefresh,
+    required VoidCallback? onDataChanged,
+    required Function(bool) onLoadingStateChange,
+  }) async {
+    debugPrint('🗑️ CategoryUtils.CRUD: =============================');
+    debugPrint('🗑️ CategoryUtils.CRUD: BULK DELETE CATEGORIES');
+    debugPrint('🗑️ CategoryUtils.CRUD: =============================');
+    debugPrint('🗑️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint('🗑️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+
+    if (selectedIds.isEmpty) {
+      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk deletion');
+      return BulkOperationResult(
+        operation: 'BULK_DELETE',
+        totalRequested: 0,
+        successful: 0,
+        failed: 0,
+        isSuccess: false,
+        errorMessage: 'No categories selected for deletion',
+      );
+    }
+
+    // Show confirmation dialog first
+    debugPrint('🗑️ CategoryUtils.CRUD: → Showing bulk delete confirmation...');
+    final confirmed = await showBulkDeleteConfirmation(context, selectedIds.length);
+
+    if (!confirmed) {
+      debugPrint('🗑️ CategoryUtils.CRUD: → User cancelled bulk deletion');
+      return BulkOperationResult(
+        operation: 'BULK_DELETE',
+        totalRequested: selectedIds.length,
+        successful: 0,
+        failed: 0,
+        isSuccess: false,
+        errorMessage: 'Bulk deletion cancelled by user',
+      );
+    }
+
+    // Start CRUD operation tracking
+    final tracker = startCrudOperation('BULK_DELETE', '${selectedIds.length} categories');
+    onLoadingStateChange(true);
+
+    final successfulDeletions = <String>[];
+    final failedDeletions = <String, String>{};
+
+    try {
+      debugPrint('🗑️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deletion...');
+
+      for (String categoryId in selectedIds.toList()) {
+        try {
+          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
+          debugPrint('🗑️ CategoryUtils.CRUD: → Deleting "${category.name}"...');
+
+          // Use the existing deleteCategory method but don't refresh data for each delete
+          final success = await deleteCategory(
+            context: context,
+            category: category,
+            selectedIds: Set<String>.from(selectedIds), // Pass current selections
+            onSelectionChanged: onSelectionChanged,
+            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
+            onDataChanged: () {}, // Don't trigger data change for each category
+            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+          );
+
+          if (success) {
+            successfulDeletions.add(categoryId);
+            debugPrint('✅ CategoryUtils.CRUD: → Successfully deleted "${category.name}"');
+          } else {
+            failedDeletions[categoryId] = 'Failed to delete category';
+            debugPrint('❌ CategoryUtils.CRUD: → Failed to delete "${category.name}"');
+          }
+        } catch (e) {
+          failedDeletions[categoryId] = e.toString();
+          debugPrint('❌ CategoryUtils.CRUD: → Exception deleting category $categoryId: $e');
+        }
+      }
+
+      // Refresh data once at the end
+      debugPrint('🗑️ CategoryUtils.CRUD: → Refreshing data after bulk deletion...');
+      onDataRefresh();
+      onDataChanged?.call();
+
+      final result = BulkOperationResult(
+        operation: 'BULK_DELETE',
+        totalRequested: selectedIds.length,
+        successful: successfulDeletions.length,
+        failed: failedDeletions.length,
+        isSuccess: failedDeletions.isEmpty,
+        successfulIds: successfulDeletions,
+        failedIds: failedDeletions,
+      );
+
+      // Show result message
+      if (context.mounted) {
+        final message = result.isSuccess
+            ? 'Successfully deleted ${result.successful} categories'
+            : 'Deleted ${result.successful} categories, ${result.failed} failed';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: result.isSuccess ? Colors.green : Colors.orange,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      // Complete CRUD operation tracking
+      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
+        'total_requested': result.totalRequested,
+        'successful': result.successful,
+        'failed': result.failed,
+        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+      });
+
+      debugPrint(
+          '🗑️ CategoryUtils.CRUD: Bulk deletion completed - Success: ${result.successful}, Failed: ${result.failed}');
+      return result;
+    } catch (e) {
+      debugPrint('❌ CategoryUtils.CRUD: Exception during bulk deletion: $e');
+
+      final result = BulkOperationResult(
+        operation: 'BULK_DELETE',
+        totalRequested: selectedIds.length,
+        successful: successfulDeletions.length,
+        failed: selectedIds.length - successfulDeletions.length,
+        isSuccess: false,
+        errorMessage: 'Bulk deletion failed: $e',
+      );
+
+      // Complete CRUD operation tracking with exception
+      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Bulk deletion failed: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      return result;
+    } finally {
+      if (context.mounted) {
+        onLoadingStateChange(false);
+      }
+    }
+  }
 }
 
 /// ====================================================================
@@ -1716,4 +2354,56 @@ class CategoryLoadResult {
     required this.inactiveCount,
     this.errorMessage,
   });
+}
+
+/// ====================================================================
+/// BULK OPERATION RESULT CLASS
+/// ====================================================================
+
+/// **Purpose**: Comprehensive result object for bulk CRUD operations
+class BulkOperationResult {
+  final String operation;
+  final int totalRequested;
+  final int successful;
+  final int failed;
+  final int skipped;
+  final bool isSuccess;
+  final String? errorMessage;
+  final List<String> successfulIds;
+  final Map<String, String> failedIds;
+  final List<String> skippedIds;
+  final Map<String, dynamic>? exportData;
+
+  BulkOperationResult({
+    required this.operation,
+    required this.totalRequested,
+    required this.successful,
+    required this.failed,
+    this.skipped = 0,
+    required this.isSuccess,
+    this.errorMessage,
+    this.successfulIds = const [],
+    this.failedIds = const {},
+    this.skippedIds = const [],
+    this.exportData,
+  });
+
+  /// Get success rate as percentage
+  double get successRate => totalRequested > 0 ? (successful / totalRequested) * 100 : 0.0;
+
+  /// Get failure rate as percentage
+  double get failureRate => totalRequested > 0 ? (failed / totalRequested) * 100 : 0.0;
+
+  /// Get a summary string of the operation result
+  String get summary {
+    if (totalRequested == 0) {
+      return 'No items to process';
+    }
+
+    if (isSuccess) {
+      return 'Successfully processed $successful/$totalRequested items';
+    } else {
+      return 'Processed $successful/$totalRequested items ($failed failed${skipped > 0 ? ', $skipped skipped' : ''})';
+    }
+  }
 }

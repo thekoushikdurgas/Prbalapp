@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
+import 'package:prbal/widgets/admin/category/components/category_actions_bottom_sheet.dart';
+import 'package:prbal/widgets/admin/category/utils/meta_info.dart';
 
 /// ====================================================================
 /// CATEGORY CARD COMPONENTS
@@ -16,7 +18,7 @@ import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
 /// - CategoryIcon: Icon component for categories
 /// - CategoryCardContent: Main content area of the card
 /// - ExpandableContent: Expandable details section
-/// - CategoryActionsMenu: Actions menu for each category
+/// - CategoryActionsMenu: Actions menu using modal bottom sheet
 ///
 /// **Features**:
 /// - Modern Material Design 3.0
@@ -38,6 +40,7 @@ class CategoryCard extends StatefulWidget {
   final Function(ServiceCategory)? onToggleStatus;
   final Set<String> expandedCategories;
   final Function(String) onToggleExpand;
+  final bool isInSelectionMode;
 
   const CategoryCard({
     super.key,
@@ -51,6 +54,7 @@ class CategoryCard extends StatefulWidget {
     this.onToggleStatus,
     required this.expandedCategories,
     required this.onToggleExpand,
+    required this.isInSelectionMode,
   });
 
   @override
@@ -132,17 +136,27 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        debugPrint('🎴 CategoryCard: Card tapped for "${widget.category.name}"');
-                        HapticFeedback.lightImpact();
-                        widget.onTap?.call();
+                        if (widget.isInSelectionMode) {
+                          // Selection mode: tap to toggle selection
+                          debugPrint('🎴 CategoryCard: Card tapped in SELECTION MODE for "${widget.category.name}"');
+                          HapticFeedback.selectionClick();
+                          widget.onTap?.call(); // This will call onSelectionChanged
+                        } else {
+                          // Normal mode: tap to show actions menu (handled by CategoryActionsMenu)
+                          debugPrint(
+                              '🎴 CategoryCard: Card tapped in NORMAL MODE for "${widget.category.name}" - no action (menu button handles this)');
+                          HapticFeedback.lightImpact();
+                          // No action here - user should tap the menu button for actions
+                        }
                       },
                       onLongPress: () {
-                        debugPrint('🎴 CategoryCard: Card long pressed for "${widget.category.name}"');
+                        debugPrint(
+                            '🎴 CategoryCard: Card long pressed for "${widget.category.name}" - entering/toggling selection mode');
                         HapticFeedback.mediumImpact();
                         _scaleController.forward().then((_) {
                           _scaleController.reverse();
                         });
-                        widget.onLongPress?.call();
+                        widget.onLongPress?.call(); // This will call onSelectionChanged (enter/toggle selection)
                       },
                       borderRadius: BorderRadius.circular(16.r),
                       child: AnimatedSize(
@@ -172,12 +186,12 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
                                     ),
                                   ),
 
-                                  SizedBox(width: 12.w),
+                                  // SizedBox(width: 12.w),
 
                                   // Expand/collapse button
-                                  _buildExpandButton(isExpanded, isDark),
+                                  // _buildExpandButton(isExpanded, isDark),
 
-                                  SizedBox(width: 8.w),
+                                  // SizedBox(width: 8.w),
 
                                   // Actions menu
                                   CategoryActionsMenu(
@@ -359,65 +373,65 @@ class CategoryCardContent extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 6.h),
+        // SizedBox(height: 6.h),
 
-        // Description
-        if (category.description.isNotEmpty)
-          Text(
-            category.description,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: secondaryTextColor,
-              height: 1.3,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+        // // Description
+        // if (category.description.isNotEmpty)
+        //   Text(
+        //     category.description,
+        //     style: TextStyle(
+        //       fontSize: 14.sp,
+        //       color: secondaryTextColor,
+        //       height: 1.3,
+        //     ),
+        //     maxLines: 2,
+        //     overflow: TextOverflow.ellipsis,
+        //   ),
 
-        SizedBox(height: 8.h),
+        // SizedBox(height: 8.h),
 
-        // Quick stats
-        Row(
-          children: [
-            Icon(
-              LineIcons.layerGroup,
-              size: 12.sp,
-              color: secondaryTextColor,
-            ),
-            SizedBox(width: 4.w),
-            Flexible(
-              child: Text(
-                'Sort: ${category.sortOrder}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: secondaryTextColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Icon(
-              LineIcons.clock,
-              size: 12.sp,
-              color: secondaryTextColor,
-            ),
-            SizedBox(width: 4.w),
-            Flexible(
-              child: Text(
-                CategoryUtils.formatDate(category.updatedAt),
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: secondaryTextColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+        // // Quick stats
+        // Row(
+        //   children: [
+        //     Icon(
+        //       LineIcons.layerGroup,
+        //       size: 12.sp,
+        //       color: secondaryTextColor,
+        //     ),
+        //     SizedBox(width: 4.w),
+        //     Flexible(
+        //       child: Text(
+        //         'Sort: ${category.sortOrder}',
+        //         style: TextStyle(
+        //           fontSize: 12.sp,
+        //           color: secondaryTextColor,
+        //           fontWeight: FontWeight.w500,
+        //         ),
+        //         maxLines: 1,
+        //         overflow: TextOverflow.ellipsis,
+        //       ),
+        //     ),
+        //     SizedBox(width: 12.w),
+        //     Icon(
+        //       LineIcons.clock,
+        //       size: 12.sp,
+        //       color: secondaryTextColor,
+        //     ),
+        //     SizedBox(width: 4.w),
+        //     Flexible(
+        //       child: Text(
+        //         CategoryUtils.formatDate(category.updatedAt),
+        //         style: TextStyle(
+        //           fontSize: 12.sp,
+        //           color: secondaryTextColor,
+        //           fontWeight: FontWeight.w500,
+        //         ),
+        //         maxLines: 1,
+        //         overflow: TextOverflow.ellipsis,
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
@@ -482,7 +496,7 @@ class ExpandableContent extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _buildMetaInfo(
+                  child: buildMetaInfo(
                     icon: LineIcons.calendar,
                     label: 'Created',
                     value: CategoryUtils.formatFullDate(category.createdAt),
@@ -491,7 +505,7 @@ class ExpandableContent extends StatelessWidget {
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
-                  child: _buildMetaInfo(
+                  child: buildMetaInfo(
                     icon: LineIcons.edit,
                     label: 'Updated',
                     value: CategoryUtils.formatFullDate(category.updatedAt),
@@ -504,7 +518,7 @@ class ExpandableContent extends StatelessWidget {
             SizedBox(height: 12.h),
 
             // Additional metadata
-            _buildMetaInfo(
+            buildMetaInfo(
               icon: LineIcons.hashtag,
               label: 'Category ID',
               value: category.id,
@@ -515,54 +529,9 @@ class ExpandableContent extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildMetaInfo({
-    required IconData icon,
-    required String label,
-    required String value,
-    required bool isDark,
-  }) {
-    final textColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
-    final valueColor = isDark ? Colors.white : const Color(0xFF111827);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(
-              icon,
-              size: 12.sp,
-              color: textColor,
-            ),
-            SizedBox(width: 4.w),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: textColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: valueColor,
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
-  }
 }
 
-/// Actions menu component for category operations
+/// Actions menu component for category operations using modal bottom sheet
 class CategoryActionsMenu extends StatelessWidget {
   final ServiceCategory category;
   final Function(ServiceCategory)? onEdit;
@@ -582,105 +551,32 @@ class CategoryActionsMenu extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    debugPrint('⚙️ CategoryActionsMenu: Building actions menu for category "${category.name}"');
+    debugPrint('⚙️ CategoryActionsMenu: Building actions menu button for category "${category.name}"');
 
-    return PopupMenuButton<String>(
-      icon: Icon(
+    return GestureDetector(
+      onTap: () {
+        debugPrint('⚙️ CategoryActionsMenu: Actions menu tapped for "${category.name}"');
+        HapticFeedback.selectionClick();
+        _showActionsBottomSheet(context);
+      },
+      child: Icon(
         LineIcons.verticalEllipsis,
-        size: 20.sp,
+        size: 25.sp,
         color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      elevation: 8,
-      offset: Offset(-8.w, 8.h),
-      onSelected: (value) {
-        debugPrint('⚙️ CategoryActionsMenu: Action selected: $value for "${category.name}"');
-        HapticFeedback.selectionClick();
-
-        switch (value) {
-          case 'edit':
-            onEdit?.call(category);
-            break;
-          case 'toggle_status':
-            onToggleStatus?.call(category);
-            break;
-          case 'delete':
-            onDelete?.call(category);
-            break;
-        }
-      },
-      itemBuilder: (context) => [
-        _buildActionOption(
-          value: 'edit',
-          icon: LineIcons.edit,
-          label: 'Edit Category',
-          color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6),
-          isDark: isDark,
-        ),
-        _buildActionOption(
-          value: 'toggle_status',
-          icon: category.isActive ? LineIcons.pauseCircle : LineIcons.playCircle,
-          label: category.isActive ? 'Deactivate' : 'Activate',
-          color: category.isActive
-              ? (isDark ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B))
-              : (isDark ? const Color(0xFF34D399) : const Color(0xFF10B981)),
-          isDark: isDark,
-        ),
-        PopupMenuDivider(height: 1),
-        _buildActionOption(
-          value: 'delete',
-          icon: LineIcons.trash,
-          label: 'Delete',
-          color: isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444),
-          isDark: isDark,
-          isDestructive: true,
-        ),
-      ],
     );
   }
 
-  PopupMenuEntry<String> _buildActionOption({
-    required String value,
-    required IconData icon,
-    required String label,
-    required Color color,
-    required bool isDark,
-    bool isDestructive = false,
-  }) {
-    return PopupMenuItem<String>(
-      value: value,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Icon(
-                icon,
-                size: 16.sp,
-                color: color,
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: isDestructive ? color : (isDark ? Colors.white : const Color(0xFF111827)),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+  /// Show category actions bottom sheet
+  Future<void> _showActionsBottomSheet(BuildContext context) async {
+    debugPrint('⚙️ CategoryActionsMenu: Showing actions bottom sheet for "${category.name}"');
+
+    await CategoryActionsBottomSheet.show(
+      context: context,
+      category: category,
+      onEdit: onEdit,
+      onDelete: onDelete,
+      onToggleStatus: onToggleStatus,
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:line_icons/line_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/services/service_providers.dart';
 
@@ -14,8 +14,8 @@ import 'package:prbal/widgets/admin/category/components/category_fab_actions.dar
 import 'package:prbal/widgets/admin/category/components/create_category_modal_widget.dart';
 import 'package:prbal/widgets/admin/category/components/edit_category_modal_widget.dart';
 import 'package:prbal/widgets/admin/category/components/category_main_content.dart';
-import 'package:prbal/widgets/admin/category/components/category_filter_option.dart';
 import 'package:prbal/widgets/admin/category/components/categories_list_view.dart';
+import 'package:prbal/widgets/admin/category/components/category_filter_bottom_sheet.dart';
 
 // ========== UTILITIES ==========
 import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
@@ -42,6 +42,7 @@ import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
 /// - CategoryFabActions: Floating action buttons for add/bulk operations
 /// - CategoryMainContent: Main content area with state management
 /// - CategoriesListView: Complete categories list with statistics and cards
+/// - CategoryFilterBottomSheet: Modern filter bottom sheet with gradient design
 /// - CategoryCard: Individual category display with actions
 /// - CategoryStatisticCards: Statistics overview display
 class ServiceCategoryCrudWidget extends ConsumerStatefulWidget {
@@ -468,207 +469,20 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
     );
   }
 
-  /// Show modern filter bottom sheet for category filtering
-  void _showModernFilterBottomSheet() {
-    debugPrint('🔧 ServiceCategoryCrud: Showing modern filter bottom sheet');
+  /// Show modern filter bottom sheet using CategoryFilterBottomSheet component
+  Future<void> _showModernFilterBottomSheet() async {
+    debugPrint('🔧 ServiceCategoryCrud: Delegating to CategoryFilterBottomSheet.show');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    showModalBottomSheet(
+    await CategoryFilterBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      enableDrag: true,
-      builder: (BuildContext context) => Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.6,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors:
-                isDark ? [const Color(0xFF374151), const Color(0xFF1F2937)] : [Colors.white, const Color(0xFFF8FAFC)],
-          ),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-          border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.2),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Drag handle
-            Container(
-              margin: EdgeInsets.only(top: 12.h, bottom: 8.h),
-              width: 60.w,
-              height: 5.h,
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[600] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-
-            // Header
-            Container(
-              padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 20.h),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  // Filter icon with gradient background
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                          Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                    ),
-                    child: Icon(
-                      LineIcons.filter,
-                      color: Theme.of(context).primaryColor,
-                      size: 24.sp,
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-
-                  // Title
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Filter Categories',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : const Color(0xFF2D3748),
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'Choose category status to display',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Close button
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.grey[800] : Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(
-                        LineIcons.times,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
-                        size: 20.sp,
-                      ),
-                      padding: EdgeInsets.all(8.w),
-                      constraints: BoxConstraints(
-                        minWidth: 40.w,
-                        minHeight: 40.h,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Filter options
-            Flexible(
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 32.h),
-                children: [
-                  CategoryFilterOption(
-                    title: 'All Categories',
-                    subtitle: 'Show both active and inactive categories',
-                    icon: LineIcons.list,
-                    value: 'all',
-                    currentFilter: _currentFilter,
-                    isDark: isDark,
-                    onSelected: (value) {
-                      debugPrint('🔧 ServiceCategoryCrud: Filter option selected: $value');
-                      setState(() {
-                        _currentFilter = value;
-                      });
-                      _applyFilters();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  SizedBox(height: 12.h),
-                  CategoryFilterOption(
-                    title: 'Active Categories',
-                    subtitle: 'Show only active categories',
-                    icon: LineIcons.checkCircle,
-                    value: 'active',
-                    currentFilter: _currentFilter,
-                    isDark: isDark,
-                    color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
-                    onSelected: (value) {
-                      debugPrint('🔧 ServiceCategoryCrud: Filter option selected: $value');
-                      setState(() {
-                        _currentFilter = value;
-                      });
-                      _applyFilters();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  SizedBox(height: 12.h),
-                  CategoryFilterOption(
-                    title: 'Inactive Categories',
-                    subtitle: 'Show only inactive categories',
-                    icon: LineIcons.pauseCircle,
-                    value: 'inactive',
-                    currentFilter: _currentFilter,
-                    isDark: isDark,
-                    color: isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
-                    onSelected: (value) {
-                      debugPrint('🔧 ServiceCategoryCrud: Filter option selected: $value');
-                      setState(() {
-                        _currentFilter = value;
-                      });
-                      _applyFilters();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      currentFilter: _currentFilter,
+      onFilterSelected: (selectedFilter) {
+        debugPrint('🔧 ServiceCategoryCrud: Filter selected from CategoryFilterBottomSheet: $selectedFilter');
+        setState(() {
+          _currentFilter = selectedFilter;
+        });
+        _applyFilters();
+      },
     );
   }
 
@@ -738,136 +552,68 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
     }
   }
 
-  // ========== BULK ACTION METHODS FOR CATEGORYFABACTIONS COMPONENT ==========
+  // ========== BULK ACTION METHODS USING CATEGORYUTILS ==========
 
-  /// Bulk activate selected categories
+  /// Bulk activate selected categories using CategoryUtils
   Future<void> _bulkActivateCategories() async {
-    debugPrint('✅ ServiceCategoryCrud: Bulk activate ${widget.selectedIds.length} categories');
+    debugPrint('✅ ServiceCategoryCrud: Delegating to CategoryUtils.bulkActivateCategories');
 
-    if (widget.selectedIds.isEmpty) {
-      debugPrint('⚠️ ServiceCategoryCrud: No categories selected for bulk activation');
-      return;
-    }
+    final result = await CategoryUtils.bulkActivateCategories(
+      context: context,
+      selectedIds: widget.selectedIds,
+      allCategories: _allCategories,
+      onSelectionChanged: widget.onSelectionChanged,
+      onDataRefresh: () => _loadCategories(),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
+    );
 
-    try {
-      for (String categoryId in widget.selectedIds) {
-        final category = _allCategories.firstWhere((cat) => cat.id == categoryId);
-        if (!category.isActive) {
-          await _toggleCategoryStatus(category);
-        }
-      }
-
-      // Clear selections after bulk action
-      for (String id in widget.selectedIds.toList()) {
-        widget.onSelectionChanged(id);
-      }
-
-      debugPrint('✅ ServiceCategoryCrud: Bulk activation completed successfully');
-    } catch (e) {
-      debugPrint('❌ ServiceCategoryCrud: Bulk activation failed: $e');
-    }
+    debugPrint('✅ ServiceCategoryCrud: Bulk activation result - ${result.summary}');
   }
 
-  /// Bulk deactivate selected categories
+  /// Bulk deactivate selected categories using CategoryUtils
   Future<void> _bulkDeactivateCategories() async {
-    debugPrint('⏸️ ServiceCategoryCrud: Bulk deactivate ${widget.selectedIds.length} categories');
+    debugPrint('⏸️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeactivateCategories');
 
-    if (widget.selectedIds.isEmpty) {
-      debugPrint('⚠️ ServiceCategoryCrud: No categories selected for bulk deactivation');
-      return;
-    }
+    final result = await CategoryUtils.bulkDeactivateCategories(
+      context: context,
+      selectedIds: widget.selectedIds,
+      allCategories: _allCategories,
+      onSelectionChanged: widget.onSelectionChanged,
+      onDataRefresh: () => _loadCategories(),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
+    );
 
-    try {
-      for (String categoryId in widget.selectedIds) {
-        final category = _allCategories.firstWhere((cat) => cat.id == categoryId);
-        if (category.isActive) {
-          await _toggleCategoryStatus(category);
-        }
-      }
-
-      // Clear selections after bulk action
-      for (String id in widget.selectedIds.toList()) {
-        widget.onSelectionChanged(id);
-      }
-
-      debugPrint('⏸️ ServiceCategoryCrud: Bulk deactivation completed successfully');
-    } catch (e) {
-      debugPrint('❌ ServiceCategoryCrud: Bulk deactivation failed: $e');
-    }
+    debugPrint('⏸️ ServiceCategoryCrud: Bulk deactivation result - ${result.summary}');
   }
 
-  /// Bulk export selected categories
+  /// Bulk export selected categories using CategoryUtils
   Future<void> _bulkExportCategories() async {
-    debugPrint('📥 ServiceCategoryCrud: Bulk export ${widget.selectedIds.length} categories');
+    debugPrint('📥 ServiceCategoryCrud: Delegating to CategoryUtils.bulkExportCategories');
 
-    if (widget.selectedIds.isEmpty) {
-      debugPrint('⚠️ ServiceCategoryCrud: No categories selected for bulk export');
-      return;
-    }
+    final result = await CategoryUtils.bulkExportCategories(
+      context: context,
+      selectedIds: widget.selectedIds,
+      allCategories: _allCategories,
+      onSelectionChanged: widget.onSelectionChanged,
+    );
 
-    try {
-      final selectedCategories = _allCategories.where((cat) => widget.selectedIds.contains(cat.id)).toList();
-
-      // TODO: Implement actual export functionality
-      debugPrint('📥 ServiceCategoryCrud: Exporting ${selectedCategories.length} categories');
-      debugPrint('📥 ServiceCategoryCrud: Categories to export: ${selectedCategories.map((c) => c.name).join(', ')}');
-
-      // Show success message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Exported ${selectedCategories.length} categories successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-
-      debugPrint('📥 ServiceCategoryCrud: Bulk export completed successfully');
-    } catch (e) {
-      debugPrint('❌ ServiceCategoryCrud: Bulk export failed: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Export failed: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+    debugPrint('📥 ServiceCategoryCrud: Bulk export result - ${result.summary}');
   }
 
-  /// Bulk delete selected categories
+  /// Bulk delete selected categories using CategoryUtils
   Future<void> _bulkDeleteCategories() async {
-    debugPrint('🗑️ ServiceCategoryCrud: Bulk delete ${widget.selectedIds.length} categories');
+    debugPrint('🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeleteCategories');
 
-    if (widget.selectedIds.isEmpty) {
-      debugPrint('⚠️ ServiceCategoryCrud: No categories selected for bulk deletion');
-      return;
-    }
+    final result = await CategoryUtils.bulkDeleteCategories(
+      context: context,
+      selectedIds: widget.selectedIds,
+      allCategories: _allCategories,
+      onSelectionChanged: widget.onSelectionChanged,
+      onDataRefresh: () => _loadCategories(),
+      onDataChanged: () => widget.onDataChanged?.call(),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
+    );
 
-    // Show confirmation dialog
-    final confirmed = await _showBulkDeleteConfirmation();
-    if (!confirmed) {
-      debugPrint('🗑️ ServiceCategoryCrud: Bulk deletion cancelled by user');
-      return;
-    }
-
-    try {
-      for (String categoryId in widget.selectedIds.toList()) {
-        final category = _allCategories.firstWhere((cat) => cat.id == categoryId);
-        await _deleteCategory(category);
-      }
-
-      debugPrint('🗑️ ServiceCategoryCrud: Bulk deletion completed successfully');
-    } catch (e) {
-      debugPrint('❌ ServiceCategoryCrud: Bulk deletion failed: $e');
-    }
-  }
-
-  /// Show bulk delete confirmation dialog using CategoryUtils
-  Future<bool> _showBulkDeleteConfirmation() async {
-    debugPrint('🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.showBulkDeleteConfirmation');
-
-    return await CategoryUtils.showBulkDeleteConfirmation(context, widget.selectedIds.length);
+    debugPrint('🗑️ ServiceCategoryCrud: Bulk deletion result - ${result.summary}');
   }
 }

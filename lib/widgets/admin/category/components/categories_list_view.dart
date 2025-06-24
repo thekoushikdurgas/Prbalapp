@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/admin/category/components/category_cards.dart';
-import 'package:prbal/widgets/admin/category/components/category_states.dart';
 
 /// CategoriesListView - Extracted component for building categories list
 ///
@@ -56,16 +55,16 @@ class CategoriesListView extends StatelessWidget {
     return Column(
       children: [
         // ========== OPTIONAL STATISTICS CARDS ==========
-        if (totalCount > 0) ...[
-          Padding(
-            padding: EdgeInsets.all(16.w),
-            child: CategoryStatisticCards(
-              totalCount: totalCount,
-              activeCount: activeCount,
-              inactiveCount: inactiveCount,
-            ),
-          ),
-        ],
+        // if (totalCount > 0) ...[
+        //   Padding(
+        //     padding: EdgeInsets.all(16.w),
+        //     child: CategoryStatisticCards(
+        //       totalCount: totalCount,
+        //       activeCount: activeCount,
+        //       inactiveCount: inactiveCount,
+        //     ),
+        //   ),
+        // ],
 
         // ========== ENHANCED CATEGORIES LIST WITH EXTRACTED COMPONENTS ==========
         Expanded(
@@ -94,15 +93,23 @@ class CategoriesListView extends StatelessWidget {
                         category: category,
                         isSelected: isSelected,
                         index: index,
+                        isInSelectionMode: selectedIds.isNotEmpty, // NEW: Pass selection mode state
                         onTap: () {
-                          debugPrint('🎯 CategoriesListView: CategoryCard tapped for "${category.name}"');
-                          HapticFeedback.lightImpact();
-                          onSelectionChanged(category.id);
+                          debugPrint(
+                              '🎯 CategoriesListView: CategoryCard tapped for "${category.name}" (selection mode: ${selectedIds.isNotEmpty})');
+                          // Only call onSelectionChanged when in selection mode or long press
+                          if (selectedIds.isNotEmpty) {
+                            // In selection mode: toggle selection
+                            HapticFeedback.selectionClick();
+                            onSelectionChanged(category.id);
+                          }
+                          // In normal mode: do nothing (actions handled by menu button)
                         },
                         onLongPress: () {
-                          debugPrint('🎯 CategoriesListView: CategoryCard long pressed for "${category.name}"');
+                          debugPrint(
+                              '🎯 CategoriesListView: CategoryCard long pressed for "${category.name}" - toggling selection');
                           HapticFeedback.mediumImpact();
-                          onSelectionChanged(category.id);
+                          onSelectionChanged(category.id); // Always toggle selection on long press
                         },
                         onEdit: onEdit,
                         onDelete: onDelete,

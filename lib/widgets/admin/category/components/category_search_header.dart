@@ -481,18 +481,18 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
               isDark,
             ),
           ),
-          if (widget.selectedCount > 0) ...[
-            SizedBox(width: 12.w),
-            Expanded(
-              child: _buildStatCard(
-                'Selected',
-                widget.selectedCount.toString(),
-                LineIcons.checkSquare,
-                isDark ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED),
-                isDark,
-              ),
-            ),
-          ],
+          // if (widget.selectedCount > 0) ...[
+          //   SizedBox(width: 12.w),
+          //   Expanded(
+          //     child: _buildStatCard(
+          //       'Selected',
+          //       widget.selectedCount.toString(),
+          //       LineIcons.checkSquare,
+          //       isDark ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED),
+          //       isDark,
+          //     ),
+          //   ),
+          // ],
         ],
       ),
     );
