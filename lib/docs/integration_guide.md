@@ -261,7 +261,7 @@ class HomeScreen extends ConsumerWidget {
         title: Text('Welcome, ${currentUser?.displayName ?? 'User'}'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Prbal.logout),
             onPressed: () async {
               final logout = ref.read(logoutProvider);
               await logout();

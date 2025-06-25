@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'dart:math'; // Added for random number generation
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/services/hive_service.dart';
@@ -107,7 +107,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           title: Row(
             children: [
               Icon(
-                LineIcons.exclamationTriangle,
+                Prbal.exclamationTriangle,
                 color: Theme.of(context).colorScheme.error,
                 size: 24.sp,
               ),
@@ -835,7 +835,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(LineIcons.arrowLeft, color: colorScheme.onSurface),
+          icon: Icon(Prbal.arrowLeft, color: colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -911,8 +911,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                                     ),
                                     child: Icon(
                                       widget.isNewUser
-                                          ? LineIcons.lockOpen
-                                          : LineIcons.lock,
+                                          ? Prbal.lockOpen
+                                          : Prbal.lock,
                                       size: 40.sp,
                                       color: Colors.white,
                                     ),
@@ -1078,7 +1078,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                         ),
                         child: Row(
                           children: [
-                            Icon(LineIcons.exclamationTriangle,
+                            Icon(Prbal.exclamationTriangle,
                                 color: colorScheme.error, size: 20.sp),
                             SizedBox(width: 12.w),
                             Expanded(
@@ -1134,8 +1134,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                                 children: [
                                   Icon(
                                     widget.isNewUser
-                                        ? LineIcons.check
-                                        : LineIcons.unlock,
+                                        ? Prbal.check
+                                        : Prbal.unlock,
                                     color: Colors.white,
                                     size: 20.sp,
                                   ),
@@ -1167,7 +1167,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                       ),
                       child: Row(
                         children: [
-                          Icon(LineIcons.userShield,
+                          Icon(Prbal.shield4,
                               color: colorScheme.primary, size: 20.sp),
                           SizedBox(width: 12.w),
                           Expanded(

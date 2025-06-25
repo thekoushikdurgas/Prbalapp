@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 // Components
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
@@ -26,7 +26,7 @@ class AdminControlsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'User Management',
           subtitle: 'Manage users and permissions',
-          icon: LineIcons.users,
+          icon: Prbal.users,
           iconColor: const Color(0xFF4299E1),
           onTap: () {
             debugPrint('⚙️ User Management tapped');
@@ -36,7 +36,7 @@ class AdminControlsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Content Moderation',
           subtitle: 'Review and moderate content',
-          icon: Icons.security,
+          icon: Prbal.security,
           iconColor: const Color(0xFF48BB78),
           onTap: () {
             debugPrint('⚙️ Content Moderation tapped');
@@ -46,7 +46,7 @@ class AdminControlsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Analytics & Reports',
           subtitle: 'View platform analytics',
-          icon: Icons.bar_chart,
+          icon: Prbal.barChart,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ Analytics & Reports tapped');
@@ -56,7 +56,7 @@ class AdminControlsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'System Settings',
           subtitle: 'Configure platform settings',
-          icon: LineIcons.cog,
+          icon: Prbal.cog,
           iconColor: const Color(0xFFED8936),
           onTap: () {
             debugPrint('⚙️ System Settings tapped');

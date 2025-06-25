@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/services/service_providers.dart';
 
@@ -505,7 +505,7 @@ class _ServiceSubcategoryCrudWidgetState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            LineIcons.exclamationTriangle,
+            Prbal.exclamationTriangle,
             size: 64.sp,
             color: Colors.red.withValues(alpha: 179),
           ),
@@ -536,7 +536,7 @@ class _ServiceSubcategoryCrudWidgetState
               });
               _initializeServiceAndLoadData();
             },
-            icon: Icon(LineIcons.redo, size: 18.sp),
+            icon: Icon(Prbal.redo, size: 18.sp),
             label: Text('Retry'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF8B5CF6),
@@ -602,15 +602,15 @@ class _ServiceSubcategoryCrudWidgetState
     if (isSearchResult) {
       title = 'No Search Results';
       subtitle = 'No subcategories found for "${widget.searchQuery}"';
-      icon = LineIcons.search;
+      icon = Prbal.search;
     } else if (isFiltered) {
       title = 'No Subcategories';
       subtitle = 'No subcategories match the current filter';
-      icon = LineIcons.filter;
+      icon = Prbal.filter;
     } else {
       title = 'No Subcategories';
       subtitle = 'Start by creating your first subcategory';
-      icon = LineIcons.sitemap;
+      icon = Prbal.openstreetmap;
     }
 
     return Container(
@@ -665,7 +665,7 @@ class _ServiceSubcategoryCrudWidgetState
                     '➕ ServiceSubcategoryCrud: Create subcategory button pressed');
                 _showCreateSubcategoryDialog();
               },
-              icon: Icon(LineIcons.plus, size: 18.sp),
+              icon: Icon(Prbal.plus, size: 18.sp),
               label: Text('Create Subcategory'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF8B5CF6),
@@ -741,7 +741,7 @@ class _ServiceSubcategoryCrudWidgetState
       child: Row(
         children: [
           Icon(
-            LineIcons.sitemap,
+            Prbal.openstreetmap,
             color: const Color(0xFF8B5CF6),
             size: 24.sp,
           ),
@@ -906,7 +906,7 @@ class _ServiceSubcategoryCrudWidgetState
                       ),
                       child: isSelected
                           ? Icon(
-                              Icons.check,
+                              Prbal.check,
                               size: 16.sp,
                               color: Colors.white,
                             )
@@ -934,9 +934,9 @@ class _ServiceSubcategoryCrudWidgetState
                         subcategory.icon != null
                             ? IconData(
                                 int.tryParse(subcategory.icon!) ??
-                                    LineIcons.sitemap.codePoint,
+                                    Prbal.openstreetmap.codePoint,
                                 fontFamily: 'LineIcons')
-                            : LineIcons.sitemap,
+                            : Prbal.openstreetmap,
                         color: Colors.white,
                         size: 20.sp,
                       ),
@@ -963,7 +963,7 @@ class _ServiceSubcategoryCrudWidgetState
                           Row(
                             children: [
                               Icon(
-                                LineIcons.tag,
+                                Prbal.tag,
                                 size: 12.sp,
                                 color: const Color(0xFF8B5CF6),
                               ),
@@ -1049,7 +1049,7 @@ class _ServiceSubcategoryCrudWidgetState
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            LineIcons.sortAmountUp,
+                            Prbal.sortNumerically,
                             size: 10.sp,
                             color: isDark ? Colors.grey[400] : Colors.grey[600],
                           ),
@@ -1107,7 +1107,7 @@ class _ServiceSubcategoryCrudWidgetState
                                 _showEditSubcategoryDialog(subcategory);
                               },
                               child: Icon(
-                                LineIcons.edit,
+                                Prbal.edit,
                                 size: 16.sp,
                                 color: const Color(0xFF8B5CF6),
                               ),
@@ -1142,9 +1142,7 @@ class _ServiceSubcategoryCrudWidgetState
                                 _toggleSubcategoryStatus(subcategory);
                               },
                               child: Icon(
-                                subcategory.isActive
-                                    ? LineIcons.pause
-                                    : LineIcons.play,
+                                subcategory.isActive ? Prbal.pause : Prbal.play,
                                 size: 16.sp,
                                 color: subcategory.isActive
                                     ? Colors.orange
@@ -1177,7 +1175,7 @@ class _ServiceSubcategoryCrudWidgetState
                                 _showDeleteConfirmationDialog(subcategory);
                               },
                               child: Icon(
-                                LineIcons.trash,
+                                Prbal.trash,
                                 size: 16.sp,
                                 color: Colors.red,
                               ),
@@ -1247,7 +1245,7 @@ class _ServiceSubcategoryCrudWidgetState
                       colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
                     ),
                   ),
-                  child: Icon(LineIcons.plus, color: Colors.white, size: 20.sp),
+                  child: Icon(Prbal.plus, color: Colors.white, size: 20.sp),
                 ),
                 SizedBox(width: 12.w),
                 Text(
@@ -1273,7 +1271,7 @@ class _ServiceSubcategoryCrudWidgetState
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       prefixIcon:
-                          Icon(LineIcons.tag, color: const Color(0xFF8B5CF6)),
+                          Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
                     ),
                     value: selectedCategoryId,
                     items: _allCategories.map((category) {
@@ -1301,7 +1299,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon: Icon(LineIcons.sitemap,
+                      prefixIcon: Icon(Prbal.openstreetmap,
                           color: const Color(0xFF8B5CF6)),
                     ),
                     validator: (value) =>
@@ -1320,7 +1318,7 @@ class _ServiceSubcategoryCrudWidgetState
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       prefixIcon:
-                          Icon(LineIcons.file, color: const Color(0xFF8B5CF6)),
+                          Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
                     ),
                     validator: (value) => value?.isEmpty ?? true
                         ? 'Please enter a description'
@@ -1332,7 +1330,7 @@ class _ServiceSubcategoryCrudWidgetState
                   // Active status switch
                   Row(
                     children: [
-                      Icon(LineIcons.toggleOn, color: const Color(0xFF8B5CF6)),
+                      Icon(Prbal.toggleOn, color: const Color(0xFF8B5CF6)),
                       SizedBox(width: 8.w),
                       Text('Active Status'),
                       const Spacer(),
@@ -1412,7 +1410,7 @@ class _ServiceSubcategoryCrudWidgetState
                       colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
                     ),
                   ),
-                  child: Icon(LineIcons.edit, color: Colors.white, size: 20.sp),
+                  child: Icon(Prbal.edit, color: Colors.white, size: 20.sp),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -1440,7 +1438,7 @@ class _ServiceSubcategoryCrudWidgetState
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       prefixIcon:
-                          Icon(LineIcons.tag, color: const Color(0xFF8B5CF6)),
+                          Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
                     ),
                     value: selectedCategoryId,
                     items: _allCategories.map((category) {
@@ -1466,7 +1464,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon: Icon(LineIcons.sitemap,
+                      prefixIcon: Icon(Prbal.openstreetmap,
                           color: const Color(0xFF8B5CF6)),
                     ),
                   ),
@@ -1483,7 +1481,7 @@ class _ServiceSubcategoryCrudWidgetState
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       prefixIcon:
-                          Icon(LineIcons.file, color: const Color(0xFF8B5CF6)),
+                          Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
                     ),
                   ),
 
@@ -1492,7 +1490,7 @@ class _ServiceSubcategoryCrudWidgetState
                   // Active status switch
                   Row(
                     children: [
-                      Icon(LineIcons.toggleOn, color: const Color(0xFF8B5CF6)),
+                      Icon(Prbal.toggleOn, color: const Color(0xFF8B5CF6)),
                       SizedBox(width: 8.w),
                       Text('Active Status'),
                       const Spacer(),
@@ -1564,7 +1562,7 @@ class _ServiceSubcategoryCrudWidgetState
                 color: Colors.red.withValues(alpha: 26),
                 border: Border.all(color: Colors.red.withValues(alpha: 77)),
               ),
-              child: Icon(LineIcons.trash, color: Colors.red, size: 20.sp),
+              child: Icon(Prbal.trash, color: Colors.red, size: 20.sp),
             ),
             SizedBox(width: 12.w),
             Expanded(

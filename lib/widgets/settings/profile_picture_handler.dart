@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:prbal/services/service_providers.dart';
 import 'package:prbal/services/authentication_notifier.dart';
 import 'package:prbal/services/api_service.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// Profile Picture Handler
 ///
@@ -215,7 +216,7 @@ class ProfilePictureHandler {
         content: Row(
           children: [
             Icon(
-              isError ? Icons.error_outline : Icons.check_circle_outline,
+              isError ? Prbal.errorOutline : Prbal.checkCircleOutline,
               color: Colors.white,
             ),
             const SizedBox(width: 12),

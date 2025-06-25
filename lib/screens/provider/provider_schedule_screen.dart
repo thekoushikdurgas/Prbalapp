@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
 
 class ProviderScheduleScreen extends ConsumerStatefulWidget {
@@ -37,7 +37,7 @@ class _ProviderScheduleScreenState
           IconButton(
             onPressed: () {},
             icon: Icon(
-              LineIcons.plus,
+              Prbal.plus,
               color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
@@ -65,7 +65,7 @@ class _ProviderScheduleScreenState
                           });
                         },
                         icon: Icon(
-                          LineIcons.angleLeft,
+                          Prbal.angleLeft,
                           color:
                               isDark ? Colors.white : const Color(0xFF1F2937),
                         ),
@@ -89,7 +89,7 @@ class _ProviderScheduleScreenState
                           });
                         },
                         icon: Icon(
-                          LineIcons.angleRight,
+                          Prbal.angleRight,
                           color:
                               isDark ? Colors.white : const Color(0xFF1F2937),
                         ),

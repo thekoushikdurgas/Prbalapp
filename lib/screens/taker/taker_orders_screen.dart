@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 class TakerOrdersScreen extends ConsumerStatefulWidget {
   const TakerOrdersScreen({super.key});
@@ -70,7 +70,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                           // Show filter options
                         },
                         icon: Icon(
-                          LineIcons.filter,
+                          Prbal.filter,
                           color:
                               isDark ? Colors.white : const Color(0xFF4A5568),
                         ),
@@ -246,7 +246,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.calendar,
+                  Prbal.calendar,
                   color: const Color(0xFF4299E1),
                   size: 20.sp,
                 ),
@@ -295,7 +295,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.clock,
+                Prbal.clock,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -313,7 +313,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.mapMarker,
+                Prbal.mapMarker,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -333,7 +333,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -356,7 +356,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   onPressed: () {
                     // Call provider
                   },
-                  icon: Icon(LineIcons.phone, size: 16.sp),
+                  icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call',
                     style:
@@ -427,7 +427,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.play,
+                  Prbal.play,
                   color: const Color(0xFF48BB78),
                   size: 20.sp,
                 ),
@@ -478,7 +478,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.clock,
+                Prbal.clock,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -498,7 +498,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.mapMarker,
+                Prbal.mapMarker,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -520,7 +520,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -548,7 +548,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
             child: Row(
               children: [
                 Icon(
-                  LineIcons.locationArrow,
+                  Prbal.locationArrow,
                   color: const Color(0xFF48BB78),
                   size: 16.sp,
                 ),
@@ -574,7 +574,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   onPressed: () {
                     // Call provider
                   },
-                  icon: Icon(LineIcons.phone, size: 16.sp),
+                  icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call Provider',
                     style:
@@ -596,7 +596,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   onPressed: () {
                     // Chat
                   },
-                  icon: Icon(LineIcons.comment, size: 16.sp),
+                  icon: Icon(Prbal.comment, size: 16.sp),
                   label: Text(
                     'Chat',
                     style:
@@ -662,7 +662,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.checkCircle,
+                  Prbal.checkCircle,
                   color: const Color(0xFF48BB78),
                   size: 20.sp,
                 ),
@@ -711,7 +711,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.calendar,
+                Prbal.calendar,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -729,7 +729,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -746,7 +746,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
               Row(
                 children: [
                   Icon(
-                    LineIcons.star,
+                    Prbal.star,
                     size: 16.sp,
                     color: const Color(0xFFED8936),
                   ),

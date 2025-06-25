@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:prbal/utils/cubit/theme_cubit.dart';
 
@@ -81,7 +81,7 @@ class AppSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Notifications',
           subtitle: 'Manage your notification preferences',
-          icon: LineIcons.bell,
+          icon: Prbal.bell,
           iconColor: const Color(0xFFED8936),
           trailing: Switch.adaptive(
             value: notificationsEnabled,
@@ -100,7 +100,7 @@ class AppSettingsWidget extends StatelessWidget {
           subtitle: biometricsEnabled
               ? 'Biometric authentication enabled'
               : 'Biometric authentication disabled',
-          icon: LineIcons.fingerprint,
+          icon: Prbal.fingerprint,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ AppSettingsWidget: Security settings tapped');
@@ -129,7 +129,7 @@ class AppSettingsWidget extends StatelessWidget {
             return SettingsItemWidget(
               title: LocaleKeys.themeTheme.tr(),
               subtitle: themeSubtitle,
-              icon: LineIcons.palette,
+              icon: Prbal.palette,
               iconColor: const Color(0xFF38B2AC),
               onTap: () => _handleThemeSelection(context, themeMode),
             );
@@ -140,7 +140,7 @@ class AppSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: LocaleKeys.localizationAppLang.tr(),
           subtitle: 'Change app language',
-          icon: LineIcons.language,
+          icon: Prbal.language,
           iconColor: const Color(0xFF667EEA),
           onTap: () {
             debugPrint('⚙️ AppSettingsWidget: Language settings tapped');
@@ -159,7 +159,7 @@ class AppSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Analytics & Data',
           subtitle: 'Help improve the app with usage analytics',
-          icon: Icons.analytics,
+          icon: Prbal.analytics,
           iconColor: const Color(0xFF4299E1),
           trailing: Switch.adaptive(
             value: analyticsEnabled,

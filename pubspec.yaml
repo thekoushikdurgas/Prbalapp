@@ -76,7 +76,7 @@ dependencies:
   path: ^1.8.3
   flutter_native_splash: ^2.3.10
   easy_localization: ^3.0.7+1
-  flutter_bloc: ^9.1.1
+  flutter_bloc: ^8.0.1
   introduction_screen: ^3.1.17
   equatable: ^2.0.5
   http_parser: ^4.1.2
@@ -139,6 +139,9 @@ flutter:
     - assets/intro/
 
   fonts:
+    - family: prbal
+      fonts:
+        - asset: assets/icon/prbal.ttf
     - family: SourGummy
       fonts:
         - asset: assets/fonts/SourGummy-Black.ttf

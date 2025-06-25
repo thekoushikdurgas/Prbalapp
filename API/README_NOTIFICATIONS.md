@@ -389,7 +389,7 @@ class NotificationScreen extends ConsumerWidget {
             subtitle: Text(notification.message),
             trailing: notification.isRead 
                 ? null 
-                : Icon(Icons.circle, color: Colors.blue, size: 8),
+                : Icon(Prbal.circle, color: Colors.blue, size: 8),
             onTap: () => _markAsRead(ref, notification.id),
           );
         },

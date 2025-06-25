@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_providers.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
@@ -128,7 +128,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
               ),
             ),
             child: Icon(
-              LineIcons.alternateSignOut,
+              Prbal.powerOff,
               color: const Color(0xFFE53E3E),
               size: 20.sp,
             ),
@@ -165,7 +165,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
 
         // Arrow Icon
         Icon(
-          Icons.arrow_forward_ios,
+          Prbal.arrowSync,
           color: const Color(0xFFE53E3E).withValues(alpha: 0.7),
           size: 16.sp,
         ),
@@ -273,7 +273,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Icon(
-                        LineIcons.alternateSignOut,
+                        Prbal.powerOff,
                         color: const Color(0xFFE53E3E),
                         size: 24.sp,
                       ),

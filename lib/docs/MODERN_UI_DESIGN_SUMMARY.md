@@ -310,7 +310,7 @@ ModernUIComponents.elevatedCard(
 ModernUIComponents.modernButton(
   text: 'Get Started',
   type: ModernButtonType.gradient,
-  icon: LineIcons.rocket,
+  icon:  rocket,
   onPressed: () => Navigator.push(...),
 )
 
@@ -319,7 +319,7 @@ ModernUIComponents.metricCard(
   title: 'Total Users',
   value: '12,450',
   subtitle: '+5.2% this week',
-  icon: LineIcons.users,
+  icon:  users,
   iconColor: Color(0xFF3B82F6),
   isDark: isDark,
 )

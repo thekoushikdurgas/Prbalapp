@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:prbal/utils/localization/project_locales.dart';
@@ -160,7 +160,7 @@ class _LanguageSelectionScreenState
             ],
           ),
           child: Icon(
-            LineIcons.arrowLeft,
+            Prbal.arrowLeft,
             color: isDark ? Colors.white : Colors.black,
             size: 20.sp,
           ),
@@ -286,7 +286,7 @@ class _LanguageSelectionScreenState
               ],
             ),
             child: Icon(
-              LineIcons.language,
+              Prbal.language,
               color: Colors.white,
               size: 32.sp,
             ),
@@ -461,7 +461,7 @@ class _LanguageSelectionScreenState
                   ),
                   child: isSelected
                       ? Icon(
-                          Icons.check,
+                          Prbal.check,
                           color: Colors.white,
                           size: 16.sp,
                         )
@@ -510,7 +510,7 @@ class _LanguageSelectionScreenState
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  LineIcons.check,
+                  Prbal.check,
                   color: Colors.white,
                   size: 20.sp,
                 ),
@@ -561,7 +561,7 @@ class _LanguageSelectionScreenState
           content: Row(
             children: [
               Icon(
-                LineIcons.check,
+                Prbal.check,
                 color: Colors.white,
                 size: 20.sp,
               ),

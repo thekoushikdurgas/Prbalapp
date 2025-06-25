@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class ServiceDetailsScreen extends ConsumerStatefulWidget {
@@ -213,7 +213,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: IconButton(
-          icon: const Icon(LineIcons.arrowLeft, color: Colors.white),
+          icon: const Icon(Prbal.arrowLeft, color: Colors.white),
           onPressed: () => context.pop(),
         ),
       ),
@@ -226,7 +226,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           ),
           child: IconButton(
             icon: Icon(
-              _isFavorite ? LineIcons.heart : LineIcons.heartAlt,
+              _isFavorite ? Prbal.heart : Prbal.heart5,
               color: _isFavorite ? const Color(0xFFEF4444) : Colors.white,
             ),
             onPressed: () {
@@ -243,7 +243,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: IconButton(
-            icon: const Icon(LineIcons.share, color: Colors.white),
+            icon: const Icon(Prbal.share, color: Colors.white),
             onPressed: () {},
           ),
         ),
@@ -314,7 +314,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
         Row(
           children: [
             Icon(
-              LineIcons.star,
+              Prbal.star,
               color: const Color(0xFFF59E0B),
               size: 18.sp,
             ),
@@ -464,7 +464,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     provider['avatar'],
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(LineIcons.user, color: Colors.white, size: 30.sp),
+                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -485,7 +485,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     Row(
                       children: [
                         Icon(
-                          LineIcons.star,
+                          Prbal.star,
                           color: const Color(0xFFF59E0B),
                           size: 16.sp,
                         ),
@@ -516,7 +516,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  LineIcons.comment,
+                  Prbal.comment,
                   color: const Color(0xFF3B82F6),
                   size: 24.sp,
                 ),
@@ -530,7 +530,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                 child: _buildProviderStat(
                   'Completed Jobs',
                   provider['completedJobs'].toString(),
-                  LineIcons.check,
+                  Prbal.check,
                   isDark,
                 ),
               ),
@@ -539,7 +539,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                 child: _buildProviderStat(
                   'Response Time',
                   provider['responseTime'],
-                  LineIcons.clock,
+                  Prbal.clock,
                   isDark,
                 ),
               ),
@@ -721,7 +721,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     child: Row(
                       children: [
                         Icon(
-                          LineIcons.check,
+                          Prbal.check,
                           color: const Color(0xFF10B981),
                           size: 20.sp,
                         ),
@@ -786,7 +786,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(5, (index) {
                           return Icon(
-                            LineIcons.star,
+                            Prbal.star,
                             color: index < serviceData['rating'].floor()
                                 ? const Color(0xFFF59E0B)
                                 : (isDark
@@ -901,7 +901,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     review['avatar'],
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(LineIcons.user, color: Colors.white, size: 20.sp),
+                        Icon(Prbal.user, color: Colors.white, size: 20.sp),
                   ),
                 ),
               ),
@@ -922,7 +922,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       children: [
                         ...List.generate(5, (index) {
                           return Icon(
-                            LineIcons.star,
+                            Prbal.star,
                             color: index < review['rating']
                                 ? const Color(0xFFF59E0B)
                                 : (isDark
@@ -1241,7 +1241,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                             ),
                           ),
                           Icon(
-                            LineIcons.calendar,
+                            Prbal.calendar,
                             color: const Color(0xFF3B82F6),
                             size: 20.sp,
                           ),

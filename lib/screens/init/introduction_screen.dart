@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/navigation_route.dart';
@@ -22,73 +22,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   late Animation<Offset> _slideAnimation;
 
   int currentPage = 0;
-
-  final List<OnboardingPage> _pages = [
-    OnboardingPage(
-      title: 'Get Help Anytime, Anywhere!',
-      subtitle:
-          'From trusted services to skilled manpower — get exactly what you need, when you need it. 24/7 availability at your fingertips.',
-      animationPath: 'assets/intro/work.json',
-      color: const Color(0xFF3B82F6),
-      icon: LineIcons.clock,
-    ),
-    OnboardingPage(
-      title: 'Vast Network of Professionals',
-      subtitle:
-          'Access our large network with thousands of verified professionals and businesses ready to serve your needs.',
-      animationPath: 'assets/intro/commerce.json',
-      color: const Color(0xFF10B981),
-      icon: LineIcons.users,
-    ),
-    OnboardingPage(
-      title: 'Be Your Boss & Boost Business',
-      subtitle:
-          'Discover opportunities and services tailored to your skills with total flexibility. Take control of your professional journey.',
-      animationPath: 'assets/intro/app.json',
-      color: const Color(0xFF8B5CF6),
-      icon: LineIcons.crown,
-    ),
-    OnboardingPage(
-      title: 'Earn Hourly with AI Assistance',
-      subtitle:
-          'Earn wages on an hourly basis with intelligent AI that helps optimize your work schedule and maximize your income.',
-      animationPath: 'assets/intro/hourly.json',
-      color: const Color(0xFFF59E0B),
-      icon: LineIcons.robot,
-    ),
-    OnboardingPage(
-      title: 'Smart Bidding System',
-      subtitle:
-          'Make offers based on your skills, location, and experience. AI suggests fair wages based on market trends and job requirements.',
-      animationPath: 'assets/intro/bidding.json',
-      color: const Color(0xFFEF4444),
-      icon: LineIcons.handshake,
-    ),
-    OnboardingPage(
-      title: 'Best Match & Swipe Features',
-      subtitle:
-          'Smart algorithm learns your preferences. Swipe right to like, left to pass. Get matched with perfect opportunities!',
-      animationPath: 'assets/intro/match.json',
-      color: const Color(0xFFEC4899),
-      icon: LineIcons.heart,
-    ),
-    OnboardingPage(
-      title: 'Minimalistic Design',
-      subtitle:
-          'Clean, intuitive interface with large, clear images and seamless navigation. Built for the modern professional.',
-      animationPath: 'assets/intro/design.json',
-      color: const Color(0xFF06B6D4),
-      icon: LineIcons.palette,
-    ),
-    OnboardingPage(
-      title: 'Trusted & Verified Experts',
-      subtitle:
-          'Complete background verification ensures you work with trusted professionals. Your safety and security is our priority.',
-      animationPath: 'assets/intro/verification.json',
-      color: const Color(0xFF84CC16),
-      icon: LineIcons.checkCircle,
-    ),
-  ];
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -96,6 +30,141 @@ class _IntroductionScreenState extends State<IntroductionScreen>
     pageController = PageController();
     _initializeAnimations();
     _startAnimations();
+    debugPrint('🎯 IntroductionScreen: Basic initialization completed');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _logThemeInitialization();
+      _isInitialized = true;
+    }
+  }
+
+  /// Logs initialization with theme information
+  void _logThemeInitialization() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    debugPrint('🎯 IntroductionScreen: Initializing with theme-aware design');
+    debugPrint(
+        '🎯 IntroductionScreen: Theme mode: ${isDark ? 'dark' : 'light'}');
+    debugPrint(
+        '🎯 IntroductionScreen: Page count: ${_getPages(context).length}');
+    debugPrint('🎯 IntroductionScreen: Animation controllers ready');
+  }
+
+  /// Gets theme-aware onboarding pages
+  List<OnboardingPage> _getPages(BuildContext context) {
+    // final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    debugPrint(
+        '🎨 IntroductionScreen: Building pages for ${isDark ? 'dark' : 'light'} theme');
+
+    return [
+      OnboardingPage(
+        title: 'Get Help Anytime, Anywhere!',
+        subtitle:
+            'From trusted services to skilled manpower — get exactly what you need, when you need it. 24/7 availability at your fingertips.',
+        animationPath: 'assets/intro/work.json',
+        color: _getThemeAwareColor(context, 0),
+        icon: Prbal.clock,
+      ),
+      OnboardingPage(
+        title: 'Vast Network of Professionals',
+        subtitle:
+            'Access our large network with thousands of verified professionals and businesses ready to serve your needs.',
+        animationPath: 'assets/intro/commerce.json',
+        color: _getThemeAwareColor(context, 1),
+        icon: Prbal.users,
+      ),
+      OnboardingPage(
+        title: 'Be Your Boss & Boost Business',
+        subtitle:
+            'Discover opportunities and services tailored to your skills with total flexibility. Take control of your professional journey.',
+        animationPath: 'assets/intro/app.json',
+        color: _getThemeAwareColor(context, 2),
+        icon: Prbal.graduationCap1,
+      ),
+      OnboardingPage(
+        title: 'Earn Hourly with AI Assistance',
+        subtitle:
+            'Earn wages on an hourly basis with intelligent AI that helps optimize your work schedule and maximize your income.',
+        animationPath: 'assets/intro/hourly.json',
+        color: _getThemeAwareColor(context, 3),
+        icon: Prbal.laptop11,
+      ),
+      OnboardingPage(
+        title: 'Smart Bidding System',
+        subtitle:
+            'Make offers based on your skills, location, and experience. AI suggests fair wages based on market trends and job requirements.',
+        animationPath: 'assets/intro/bidding.json',
+        color: _getThemeAwareColor(context, 4),
+        icon: Prbal.hand,
+      ),
+      OnboardingPage(
+        title: 'Best Match & Swipe Features',
+        subtitle:
+            'Smart algorithm learns your preferences. Swipe right to like, left to pass. Get matched with perfect opportunities!',
+        animationPath: 'assets/intro/match.json',
+        color: _getThemeAwareColor(context, 5),
+        icon: Prbal.heart,
+      ),
+      OnboardingPage(
+        title: 'Minimalistic Design',
+        subtitle:
+            'Clean, intuitive interface with large, clear images and seamless navigation. Built for the modern professional.',
+        animationPath: 'assets/intro/design.json',
+        color: _getThemeAwareColor(context, 6),
+        icon: Prbal.palette,
+      ),
+      OnboardingPage(
+        title: 'Trusted & Verified Experts',
+        subtitle:
+            'Complete background verification ensures you work with trusted professionals. Your safety and security is our priority.',
+        animationPath: 'assets/intro/verification.json',
+        color: _getThemeAwareColor(context, 7),
+        icon: Prbal.checkCircle,
+      ),
+    ];
+  }
+
+  /// Gets theme-aware color for each page
+  Color _getThemeAwareColor(BuildContext context, int pageIndex) {
+    // final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Define color palettes for light and dark themes
+    final lightColors = [
+      const Color(0xFF3B82F6), // Blue
+      const Color(0xFF10B981), // Emerald
+      const Color(0xFF8B5CF6), // Purple
+      const Color(0xFFF59E0B), // Amber
+      const Color(0xFFEF4444), // Red
+      const Color(0xFFEC4899), // Pink
+      const Color(0xFF06B6D4), // Cyan
+      const Color(0xFF84CC16), // Lime
+    ];
+
+    final darkColors = [
+      const Color(0xFF60A5FA), // Lighter Blue for dark mode
+      const Color(0xFF34D399), // Lighter Emerald for dark mode
+      const Color(0xFFA78BFA), // Lighter Purple for dark mode
+      const Color(0xFFFBBF24), // Lighter Amber for dark mode
+      const Color(0xFFF87171), // Lighter Red for dark mode
+      const Color(0xFFF472B6), // Lighter Pink for dark mode
+      const Color(0xFF22D3EE), // Lighter Cyan for dark mode
+      const Color(0xFFA3E635), // Lighter Lime for dark mode
+    ];
+
+    final colors = isDark ? darkColors : lightColors;
+    final color = colors[pageIndex % colors.length];
+
+    debugPrint(
+        '🎨 IntroductionScreen: Page $pageIndex color: $color (${isDark ? 'dark' : 'light'} theme)');
+    return color;
   }
 
   void _initializeAnimations() {
@@ -143,13 +212,23 @@ class _IntroductionScreenState extends State<IntroductionScreen>
     pageController.dispose();
     _fadeController.dispose();
     _slideController.dispose();
+    debugPrint('🎯 IntroductionScreen: Disposed animation controllers');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    debugPrint(
+        '🎨 IntroductionScreen: Building with ${isDark ? 'dark' : 'light'} theme');
+    debugPrint('🎨 IntroductionScreen: Primary color: ${colorScheme.primary}');
+    debugPrint('🎨 IntroductionScreen: Surface color: ${colorScheme.surface}');
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: colorScheme.surface,
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
@@ -178,6 +257,8 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   Widget _buildVerticalPageView() {
+    final pages = _getPages(context);
+
     return Expanded(
       child: PageView.builder(
         controller: pageController,
@@ -187,12 +268,13 @@ class _IntroductionScreenState extends State<IntroductionScreen>
             currentPage = index;
           });
           _restartAnimations();
+          debugPrint('🎯 IntroductionScreen: Page changed to $index');
         },
-        itemCount: _pages.length,
+        itemCount: pages.length,
         itemBuilder: (context, index) {
           return SlideTransition(
             position: _slideAnimation,
-            child: _buildPageContent(_pages[index]),
+            child: _buildPageContent(pages[index]),
           );
         },
       ),
@@ -200,13 +282,17 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   Widget _buildSkipIndicator() {
+    final pages = _getPages(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Positioned(
       right: 16.w,
       top: 0,
       bottom: 0,
       child: Column(
         children: [
-          if (currentPage < _pages.length - 1)
+          if (currentPage < pages.length - 1)
             Column(
               children: [
                 GestureDetector(
@@ -215,29 +301,36 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: _pages[currentPage].color.withValues(alpha: 51),
+                        color: pages[currentPage].color.withValues(alpha: 51),
                         width: 1,
                       ),
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: colorScheme.shadow.withValues(alpha: 26),
+                      //     blurRadius: 4,
+                      //     offset: const Offset(0, 2),
+                      //   ),
+                      // ],
                     ),
                     child: Text(
                       'Skip',
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: _pages[currentPage].color,
+                        color: pages[currentPage].color,
                       ),
                     ),
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '${currentPage + 1}/${_pages.length}',
+                  '${currentPage + 1}/${pages.length}',
                   style: TextStyle(
                     fontSize: 10.sp,
-                    color: Theme.of(context).colorScheme.surface,
+                    color: colorScheme.onSurface.withValues(alpha: 153),
                   ),
                 ),
               ],
@@ -248,6 +341,10 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   Widget _buildRightSideIndicators() {
+    final pages = _getPages(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Positioned(
       right: 16.w,
       bottom: 0,
@@ -262,8 +359,15 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                 width: 24.w,
                 height: 24.w,
                 decoration: BoxDecoration(
-                  color: _pages[currentPage].color,
+                  color: pages[currentPage].color,
                   borderRadius: BorderRadius.circular(12.r),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: pages[currentPage].color.withValues(alpha: 77),
+                  //     blurRadius: 6,
+                  //     offset: const Offset(0, 2),
+                  //   ),
+                  // ],
                 ),
                 child: Center(
                   child: Text(
@@ -280,7 +384,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               SizedBox(height: 12.h),
 
               // Vertical page indicators
-              ...List.generate(_pages.length, (index) {
+              ...List.generate(pages.length, (index) {
                 return GestureDetector(
                   onTap: () {
                     pageController.animateToPage(
@@ -297,8 +401,8 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                       height: currentPage == index ? 28.h : 8.h,
                       decoration: BoxDecoration(
                         color: currentPage == index
-                            ? _pages[currentPage].color
-                            : Theme.of(context).colorScheme.surface,
+                            ? pages[currentPage].color
+                            : colorScheme.onSurface.withValues(alpha: 102),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                     ),
@@ -309,17 +413,17 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               SizedBox(height: 12.h),
 
               // Swipe hint
-              if (currentPage < _pages.length - 1)
+              if (currentPage < pages.length - 1)
                 Container(
                   padding: EdgeInsets.all(4.w),
                   decoration: BoxDecoration(
-                    color: _pages[currentPage].color.withValues(alpha: 26),
+                    color: pages[currentPage].color.withValues(alpha: 26),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(
-                    LineIcons.arrowDown,
+                    Prbal.arrowDown,
                     size: 12.sp,
-                    color: _pages[currentPage].color,
+                    color: pages[currentPage].color,
                   ),
                 ),
             ],
@@ -330,6 +434,9 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   Widget _buildPageContent(OnboardingPage page) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return Padding(
@@ -398,12 +505,11 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                         // Title with theme-aware text
                         Text(
                           page.title,
-                          style: TextStyle(
+                          style: theme.textTheme.headlineMedium?.copyWith(
                             fontSize: 22.sp,
                             fontWeight: FontWeight.bold,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium?.color,
                             height: 1.1,
+                            color: colorScheme.onSurface,
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 3,
@@ -415,12 +521,11 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                         // Enhanced subtitle with theme-aware colors
                         Text(
                           page.subtitle,
-                          style: TextStyle(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium?.color,
                             height: 1.4,
+                            color: colorScheme.onSurface.withValues(alpha: 204),
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 4,
@@ -461,6 +566,10 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   Widget _buildBottomNavigation() {
+    final pages = _getPages(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
       padding: EdgeInsets.only(
           left: 20.w,
@@ -481,15 +590,15 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                     child: OutlinedButton(
                       onPressed: _handlePrevious,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: _pages[currentPage].color,
+                        foregroundColor: pages[currentPage].color,
                         side: BorderSide(
-                          color:
-                              _pages[currentPage].color.withValues(alpha: 77),
+                          color: pages[currentPage].color.withValues(alpha: 77),
                           width: 2,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.r),
                         ),
+                        backgroundColor: colorScheme.surface,
                       ),
                       child: FittedBox(
                         child: Row(
@@ -497,7 +606,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              LineIcons.arrowUp,
+                              Prbal.arrowUp,
                               size: 18.sp,
                             ),
                             SizedBox(width: 6.w),
@@ -525,11 +634,11 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                   child: ElevatedButton(
                     onPressed: _handleNext,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _pages[currentPage].color,
+                      backgroundColor: pages[currentPage].color,
                       foregroundColor: Colors.white,
                       elevation: 6,
                       shadowColor:
-                          _pages[currentPage].color.withValues(alpha: 102),
+                          pages[currentPage].color.withValues(alpha: 102),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
                       ),
@@ -541,7 +650,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                         children: [
                           Flexible(
                             child: Text(
-                              currentPage == _pages.length - 1
+                              currentPage == pages.length - 1
                                   ? 'Get Started'
                                   : 'Next',
                               style: TextStyle(
@@ -553,9 +662,9 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                           ),
                           SizedBox(width: 6.w),
                           Icon(
-                            currentPage == _pages.length - 1
-                                ? LineIcons.rocketChat
-                                : LineIcons.arrowDown,
+                            currentPage == pages.length - 1
+                                ? Prbal.rocket2
+                                : Prbal.arrowDown,
                             size: 18.sp,
                           ),
                         ],
@@ -572,8 +681,12 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   void _skipOnboarding() {
+    final pages = _getPages(context);
+    debugPrint(
+        '🎯 IntroductionScreen: Skip button pressed - jumping to last page');
+
     pageController.animateToPage(
-      _pages.length - 1,
+      pages.length - 1,
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeInOut,
     );
@@ -581,6 +694,8 @@ class _IntroductionScreenState extends State<IntroductionScreen>
 
   void _handlePrevious() {
     if (currentPage > 0) {
+      debugPrint(
+          '🎯 IntroductionScreen: Previous button pressed - going to page ${currentPage - 1}');
       pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -589,17 +704,25 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 
   void _handleNext() {
-    if (currentPage < _pages.length - 1) {
+    final pages = _getPages(context);
+
+    if (currentPage < pages.length - 1) {
+      debugPrint(
+          '🎯 IntroductionScreen: Next button pressed - going to page ${currentPage + 1}');
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
+      debugPrint(
+          '🎯 IntroductionScreen: Get Started button pressed - completing onboarding');
       _handleGetStarted();
     }
   }
 
   Future<void> _handleGetStarted() async {
+    debugPrint(
+        '🎯 IntroductionScreen: Setting intro as watched and navigating to welcome');
     await HiveService.setIntroWatched();
     NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
 
@@ -57,7 +57,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                         radius: 50.r,
                         backgroundColor: Colors.white,
                         child: Icon(
-                          LineIcons.user,
+                          Prbal.user,
                           size: 50.sp,
                           color: isDark
                               ? const Color(0xFF1E293B)
@@ -91,7 +91,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                         child: ModernUIComponents.metricCard(
                           title: 'Services',
                           value: '12',
-                          icon: LineIcons.tools,
+                          icon: Prbal.tools,
                           iconColor: const Color(0xFF3B82F6),
                           isDark: isDark,
                         ),
@@ -101,7 +101,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                         child: ModernUIComponents.metricCard(
                           title: 'Rating',
                           value: '4.8',
-                          icon: LineIcons.star,
+                          icon: Prbal.star,
                           iconColor: const Color(0xFFFBBF24),
                           isDark: isDark,
                         ),
@@ -117,28 +117,28 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                       children: [
                         _buildProfileOption(
                           'Edit Profile',
-                          LineIcons.edit,
+                          Prbal.edit,
                           () => context.push('/edit-profile'),
                           isDark,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'My Services',
-                          LineIcons.list,
+                          Prbal.list,
                           () => context.push('/my-services'),
                           isDark,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'Earnings',
-                          LineIcons.moneyBill,
+                          Prbal.wallet3,
                           () => context.push('/earnings'),
                           isDark,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'Settings',
-                          LineIcons.cog,
+                          Prbal.cog,
                           () => context.push('/settings'),
                           isDark,
                         ),
@@ -170,7 +170,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
         ),
       ),
       trailing: Icon(
-        LineIcons.angleRight,
+        Prbal.angleRight,
         color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
       ),
       onTap: onTap,

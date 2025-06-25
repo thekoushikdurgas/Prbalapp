@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// CategoryFilterOption - Modern filter option widget component
 ///
@@ -20,7 +20,7 @@ import 'package:line_icons/line_icons.dart';
 /// CategoryFilterOption(
 ///   title: 'Active Categories',
 ///   subtitle: 'Show only active categories',
-///   icon: LineIcons.checkCircle,
+///   icon: Prbal.checkCircle,
 ///   value: 'active',
 ///   currentFilter: _currentFilter,
 ///   isDark: isDark,
@@ -59,7 +59,8 @@ class CategoryFilterOption extends StatelessWidget {
     final isSelected = currentFilter == value;
     final effectiveColor = color ?? Theme.of(context).primaryColor;
 
-    debugPrint('🔧 CategoryFilterOption: Building filter option "$title" (selected: $isSelected)');
+    debugPrint(
+        '🔧 CategoryFilterOption: Building filter option "$title" (selected: $isSelected)');
 
     return GestureDetector(
       onTap: () {
@@ -79,7 +80,9 @@ class CategoryFilterOption extends StatelessWidget {
                   ],
                 )
               : null,
-          color: isSelected ? null : (isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB)),
+          color: isSelected
+              ? null
+              : (isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB)),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isSelected
@@ -132,7 +135,9 @@ class CategoryFilterOption extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? effectiveColor : (isDark ? Colors.white : const Color(0xFF2D3748)),
+                      color: isSelected
+                          ? effectiveColor
+                          : (isDark ? Colors.white : const Color(0xFF2D3748)),
                     ),
                   ),
                   SizedBox(height: 4.h),
@@ -158,7 +163,7 @@ class CategoryFilterOption extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  LineIcons.check,
+                  Prbal.check,
                   color: Colors.white,
                   size: 16.sp,
                 ),

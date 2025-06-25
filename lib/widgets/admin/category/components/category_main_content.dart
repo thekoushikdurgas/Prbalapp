@@ -52,19 +52,22 @@ class CategoryMainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📱 CategoryMainContent: Building main content with EXTRACTED COMPONENTS');
+    debugPrint(
+        '📱 CategoryMainContent: Building main content with EXTRACTED COMPONENTS');
     debugPrint(
         '📱 CategoryMainContent: Loading: $isLoading, Error: ${errorMessage != null}, HasCategories: $hasCategories');
 
     // ========== LOADING STATE COMPONENT ==========
     if (isLoading && isInitialLoad) {
-      debugPrint('⏳ CategoryMainContent: Showing CategoryLoadingState component');
+      debugPrint(
+          '⏳ CategoryMainContent: Showing CategoryLoadingState component');
       return const CategoryLoadingState();
     }
 
     // ========== ERROR STATE COMPONENT ==========
     if (errorMessage != null) {
-      debugPrint('❌ CategoryMainContent: Showing CategoryErrorState component with message: $errorMessage');
+      debugPrint(
+          '❌ CategoryMainContent: Showing CategoryErrorState component with message: $errorMessage');
       return CategoryErrorState(
         errorMessage: errorMessage!,
         onRetry: onRetry,
@@ -73,14 +76,16 @@ class CategoryMainContent extends StatelessWidget {
 
     // ========== EMPTY STATE COMPONENT ==========
     if (!hasCategories) {
-      debugPrint('📭 CategoryMainContent: Showing CategoryEmptyState component');
+      debugPrint(
+          '📭 CategoryMainContent: Showing CategoryEmptyState component');
       return CategoryEmptyState(
         onCreateCategory: onCreateCategory,
       );
     }
 
     // ========== CATEGORIES LIST WITH EXTRACTED CARD COMPONENTS ==========
-    debugPrint('📋 CategoryMainContent: Showing categories list with CategoryCard components');
+    debugPrint(
+        '📋 CategoryMainContent: Showing categories list with CategoryCard components');
     return categoriesListBuilder();
   }
 }

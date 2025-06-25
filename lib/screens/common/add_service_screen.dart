@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:line_icons/line_icons.dart';
+// import 'package:prbal/utils/icon/prbal_icons.dart';
 
 class AddServiceScreen extends ConsumerStatefulWidget {
   const AddServiceScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/health_service.dart';
 
 /// Health Dashboard Widget
@@ -169,7 +169,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                     ],
                   ),
                   child: Icon(
-                    LineIcons.arrowLeft,
+                    Prbal.arrowLeft,
                     size: 20.sp,
                     color: isDark ? Colors.white : const Color(0xFF374151),
                   ),
@@ -226,7 +226,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        LineIcons.redo,
+                        Prbal.redo,
                         size: 16.sp,
                         color: _autoRefresh
                             ? Colors.white
@@ -298,7 +298,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Icon(
-                    LineIcons.heartbeat,
+                    Prbal.heartbeat,
                     size: 24.sp,
                     color: Colors.white,
                   ),
@@ -404,7 +404,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 child: _buildHealthCard(
                   'System Health',
                   _healthData?.system.status ?? 'Unknown',
-                  LineIcons.server,
+                  Prbal.server,
                   _getHealthColor(_healthData?.system.status),
                   isDark,
                 ),
@@ -414,7 +414,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 child: _buildHealthCard(
                   'Database',
                   _healthData?.database.status ?? 'Unknown',
-                  LineIcons.database,
+                  Prbal.database,
                   _getHealthColor(_healthData?.database.status),
                   isDark,
                 ),
@@ -583,7 +583,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        LineIcons.redo,
+                        Prbal.redo,
                         size: 14.sp,
                         color: Colors.white,
                       ),
@@ -720,21 +720,21 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
         'description': 'Memory usage exceeded 80% threshold',
         'time': '2 hours ago',
         'severity': 'warning',
-        'icon': LineIcons.exclamationTriangle,
+        'icon': Prbal.exclamationTriangle,
       },
       {
         'title': 'Database Slow Query',
         'description': 'Query execution time exceeded 500ms',
         'time': '4 hours ago',
         'severity': 'info',
-        'icon': LineIcons.infoCircle,
+        'icon': Prbal.infoCircle,
       },
       {
         'title': 'System Backup Completed',
         'description': 'Daily backup process completed successfully',
         'time': '6 hours ago',
         'severity': 'success',
-        'icon': LineIcons.checkCircle,
+        'icon': Prbal.checkCircle,
       },
     ];
 

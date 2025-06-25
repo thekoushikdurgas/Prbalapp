@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// ModernUIComponents - A comprehensive library of modern UI components
 ///
@@ -247,7 +247,7 @@ class ModernUIComponents {
   /// ModernUIComponents.metricCard(
   ///   title: 'Total Users',
   ///   value: '1,234',
-  ///   icon: Icons.people,
+  ///   icon: Prbal.people,
   ///   iconColor: Colors.blue,
   ///   subtitle: '+12% this month',
   ///   onTap: () => navigateToUserDetails(),
@@ -305,7 +305,7 @@ class ModernUIComponents {
                   // External link indicator for tappable cards
                   if (onTap != null)
                     Icon(
-                      LineIcons.alternateExternalLink,
+                      Prbal.externalLink,
                       color: isDark
                           ? Colors.white.withValues(alpha: 0.5)
                           : Colors.black.withValues(alpha: 0.5),
@@ -568,7 +568,7 @@ class ModernUIComponents {
             fontSize: 14.sp,
           ),
           prefixIcon: Icon(
-            LineIcons.search,
+            Prbal.search,
             color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
             size: 20.sp,
           ),
@@ -656,7 +656,7 @@ class ModernUIComponents {
                 ] else if (onTap != null) ...[
                   SizedBox(width: 16.w),
                   Icon(
-                    LineIcons.angleRight,
+                    Prbal.angleRight,
                     color: isDark
                         ? const Color(0xFF64748B)
                         : const Color(0xFF9CA3AF),

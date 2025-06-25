@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/widgets/phone_login_bottom_sheet.dart';
 // import 'package:easy_localization/easy_localization.dart';
@@ -272,19 +272,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           children: [
             _buildFeatureHighlight(
               'Verified\nProviders',
-              LineIcons.checkCircle,
+              Prbal.checkCircle,
               const Color(0xFF10B981),
               isDark,
             ),
             _buildFeatureHighlight(
               'Secure\nPayments',
-              LineIcons.lock,
+              Prbal.lock,
               const Color(0xFF3B82F6),
               isDark,
             ),
             _buildFeatureHighlight(
               '24/7\nSupport',
-              LineIcons.headset,
+              Prbal.headset,
               const Color(0xFF8B5CF6),
               isDark,
             ),
@@ -356,7 +356,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  LineIcons.mobilePhone,
+                  Prbal.mobilePhone,
                   size: 18.sp,
                 ),
                 SizedBox(width: 10.w),
@@ -398,7 +398,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  LineIcons.compass,
+                  Prbal.compass,
                   size: 18.sp,
                 ),
                 SizedBox(width: 10.w),

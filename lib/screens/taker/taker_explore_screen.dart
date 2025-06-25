@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 class TakerExploreScreen extends ConsumerStatefulWidget {
   const TakerExploreScreen({super.key});
@@ -73,13 +73,13 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                         child: Row(
                           children: [
                             _buildViewToggle(
-                              icon: LineIcons.map,
+                              icon: Prbal.map,
                               isSelected: _isMapView,
                               onTap: () => setState(() => _isMapView = true),
                               isDark: isDark,
                             ),
                             _buildViewToggle(
-                              icon: LineIcons.list,
+                              icon: Prbal.list,
                               isSelected: !_isMapView,
                               onTap: () => setState(() => _isMapView = false),
                               isDark: isDark,
@@ -109,13 +109,13 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                           fontSize: 16.sp,
                         ),
                         prefixIcon: Icon(
-                          LineIcons.search,
+                          Prbal.search,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                         ),
                         suffixIcon: IconButton(
                           onPressed: _showFilterBottomSheet,
                           icon: Icon(
-                            Icons.tune,
+                            Prbal.tune,
                             color: const Color(0xFF4299E1),
                           ),
                         ),
@@ -246,7 +246,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    LineIcons.map,
+                    Prbal.map,
                     size: 64.sp,
                     color: isDark ? Colors.grey[600] : Colors.grey[500],
                   ),
@@ -353,7 +353,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                 radius: 20.r,
                 backgroundColor: accentColor.withValues(alpha: 0.1),
                 child: Icon(
-                  LineIcons.user,
+                  Prbal.user,
                   color: accentColor,
                   size: 20.sp,
                 ),
@@ -384,7 +384,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
               Row(
                 children: [
                   Icon(
-                    LineIcons.star,
+                    Prbal.star,
                     size: 14.sp,
                     color: const Color(0xFFED8936),
                   ),
@@ -405,7 +405,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
           Row(
             children: [
               Icon(
-                LineIcons.mapMarker,
+                Prbal.mapMarker,
                 size: 14.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -602,7 +602,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                 backgroundColor:
                     colors[index % colors.length].withValues(alpha: 0.1),
                 child: Icon(
-                  LineIcons.user,
+                  Prbal.user,
                   color: colors[index % colors.length],
                   size: 24.sp,
                 ),
@@ -631,7 +631,7 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                     Row(
                       children: [
                         Icon(
-                          LineIcons.star,
+                          Prbal.star,
                           size: 14.sp,
                           color: const Color(0xFFED8936),
                         ),

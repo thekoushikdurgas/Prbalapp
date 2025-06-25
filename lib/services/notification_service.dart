@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'api_service.dart';
 
 /// Notification type enumeration
@@ -1158,17 +1159,17 @@ class NotificationService {
       NotificationType type, NotificationPriority priority) {
     switch (type) {
       case NotificationType.booking:
-        return Icons.calendar_today;
+        return Prbal.calendar9;
       case NotificationType.message:
-        return Icons.message;
+        return Prbal.message;
       case NotificationType.payment:
-        return Icons.payment;
+        return Prbal.wallet3;
       case NotificationType.system:
-        return Icons.info;
+        return Prbal.info;
       case NotificationType.promotion:
-        return Icons.local_offer;
+        return Prbal.localOffer;
       case NotificationType.reminder:
-        return Icons.alarm;
+        return Prbal.alarm;
     }
   }
 

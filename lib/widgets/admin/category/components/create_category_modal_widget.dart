@@ -4,8 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
+import 'package:prbal/services/api_service.dart';
+import 'package:prbal/widgets/admin/category/components/category_icon_picker.dart';
 
 /// CreateCategoryModalWidget - Simple modal for creating categories
 class CreateCategoryModalWidget extends StatefulWidget {
@@ -19,7 +21,8 @@ class CreateCategoryModalWidget extends StatefulWidget {
   });
 
   @override
-  State<CreateCategoryModalWidget> createState() => _CreateCategoryModalWidgetState();
+  State<CreateCategoryModalWidget> createState() =>
+      _CreateCategoryModalWidgetState();
 }
 
 class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
@@ -32,11 +35,15 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
   bool _isActive = true;
   bool _isLoading = false;
   String? _errorMessage;
+  String? _selectedIcon;
 
   @override
   void initState() {
     super.initState();
     _sortOrderController.text = '0';
+    // Initialize service management service with API service
+    serviceManagementService = ServiceManagementService(ApiService());
+    debugPrint('🚀 CreateCategoryModal: ServiceManagementService initialized');
   }
 
   @override
@@ -54,20 +61,32 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
           // Header
           Row(
             children: [
-              Icon(LineIcons.plus, color: Theme.of(context).primaryColor),
+              Icon(Prbal.plus, color: Theme.of(context).primaryColor),
               SizedBox(width: 8.w),
               Expanded(
-                child: Text(
-                  'Create Category',
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Create Category',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Add a new service category with icon',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: Icon(LineIcons.times),
+                icon: Icon(Prbal.cross),
               ),
             ],
           ),
@@ -86,9 +105,11 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
               ),
               child: Row(
                 children: [
-                  Icon(LineIcons.exclamationTriangle, color: Colors.red),
+                  Icon(Prbal.exclamationTriangle, color: Colors.red),
                   SizedBox(width: 8.w),
-                  Expanded(child: Text(_errorMessage!, style: TextStyle(color: Colors.red))),
+                  Expanded(
+                      child: Text(_errorMessage!,
+                          style: TextStyle(color: Colors.red))),
                 ],
               ),
             ),
@@ -104,7 +125,7 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelText: 'Category Name *',
-                      prefixIcon: Icon(LineIcons.tag),
+                      prefixIcon: Icon(Prbal.tag),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
@@ -126,7 +147,7 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
                     maxLines: 3,
                     decoration: InputDecoration(
                       labelText: 'Description *',
-                      prefixIcon: Icon(LineIcons.edit),
+                      prefixIcon: Icon(Prbal.edit),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
@@ -148,7 +169,7 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Sort Order',
-                      prefixIcon: Icon(LineIcons.sort),
+                      prefixIcon: Icon(Prbal.sort),
                       border: OutlineInputBorder(),
                       helperText: 'Lower numbers appear first',
                     ),
@@ -165,11 +186,40 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
 
                   SizedBox(height: 16.h),
 
+                  // Icon Picker Section
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .dividerColor
+                            .withValues(alpha: 128),
+                      ),
+                    ),
+                    child: CategoryIconPicker(
+                      selectedIcon: _selectedIcon,
+                      onIconSelected: (icon) {
+                        setState(() {
+                          _selectedIcon = icon;
+                        });
+                        debugPrint(
+                            '🎨 CreateCategoryModal: Icon selected: ${icon ?? 'none'}');
+                      },
+                      showSearchBar: true,
+                      crossAxisCount: 4,
+                    ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
                   // Active status
                   SwitchListTile(
                     title: Text('Active Status'),
-                    subtitle: Text(
-                        _isActive ? 'Category will be visible immediately' : 'Category will be hidden until activated'),
+                    subtitle: Text(_isActive
+                        ? 'Category will be visible immediately'
+                        : 'Category will be hidden until activated'),
                     value: _isActive,
                     onChanged: (value) => setState(() => _isActive = value),
                   ),
@@ -230,7 +280,8 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
     final name = _nameController.text.trim();
     final description = _descriptionController.text.trim();
     final sortOrderText = _sortOrderController.text.trim();
-    final sortOrder = sortOrderText.isEmpty ? 0 : int.tryParse(sortOrderText) ?? 0;
+    final sortOrder =
+        sortOrderText.isEmpty ? 0 : int.tryParse(sortOrderText) ?? 0;
 
     setState(() => _isLoading = true);
 
@@ -238,6 +289,7 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
       final response = await serviceManagementService.createCategory(
         name: name,
         description: description,
+        iconUrl: _selectedIcon, // ✨ Now passing selected icon as iconUrl to API
         sortOrder: sortOrder,
         isActive: _isActive,
       );
@@ -248,7 +300,8 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Category "${response.data!.name}" created successfully!'),
+              content: Text(
+                  'Category "${response.data!.name}" created successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -258,9 +311,68 @@ class _CreateCategoryModalWidgetState extends State<CreateCategoryModalWidget> {
         Navigator.of(context).pop();
       } else {
         debugPrint('❌ CreateCategoryModal: API error - ${response.message}');
+
+        // Enhanced error handling with validation details
+        String errorMessage = response.message;
+        final validationErrors = <String>[];
+
+        // Check for validation errors in the response.errors
+        if (response.errors != null && response.errors!.isNotEmpty) {
+          debugPrint(
+              '❌ CreateCategoryModal: Validation errors found in response.errors');
+
+          response.errors!.forEach((field, messages) {
+            if (messages is List) {
+              for (final message in messages) {
+                validationErrors.add('$field: $message');
+                debugPrint('❌ → Validation error - $field: $message');
+              }
+            } else {
+              validationErrors.add('$field: $messages');
+              debugPrint('❌ → Validation error - $field: $messages');
+            }
+          });
+        }
+
+        // Also check for nested validation errors in response data
+        // API returns: {"data": {"validation_errors": {"field": ["error"]}}}
+        try {
+          debugPrint('❌ CreateCategoryModal: Full response analysis...');
+
+          // Try to parse the nested structure by checking the debug logs
+          // Since we see the validation error in logs, we can provide more specific error messages
+          if (response.message.contains('validation failed')) {
+            if (_selectedIcon != null) {
+              validationErrors.add(
+                  'Icon: Selected icon "$_selectedIcon" could not be processed');
+              validationErrors
+                  .add('Hint: Try selecting a different icon or leave blank');
+            }
+            validationErrors.add('Please check all fields and try again');
+          }
+
+          // Add field-specific validation hints
+          if (response.message.toLowerCase().contains('name')) {
+            validationErrors.add(
+                'Name: Please ensure the name is unique and follows naming rules');
+          }
+          if (response.message.toLowerCase().contains('description')) {
+            validationErrors
+                .add('Description: Please provide a more detailed description');
+          }
+        } catch (e) {
+          debugPrint(
+              '❌ CreateCategoryModal: Error parsing response details - $e');
+        }
+
+        if (validationErrors.isNotEmpty) {
+          errorMessage = validationErrors.join('\n• ');
+          errorMessage = '• $errorMessage';
+        }
+
         setState(() {
           _isLoading = false;
-          _errorMessage = response.message;
+          _errorMessage = errorMessage;
         });
       }
     } catch (e) {

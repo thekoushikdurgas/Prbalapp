@@ -108,7 +108,8 @@ class HiveService {
     debugPrint('📦 HiveService: Checking if intro has been watched');
 
     try {
-      final result = _introBox.get(_introWatchedKey, defaultValue: false) as bool;
+      final result =
+          _introBox.get(_introWatchedKey, defaultValue: false) as bool;
       debugPrint('📦 HiveService: Intro watched status: $result');
       return result;
     } catch (e) {
@@ -150,11 +151,13 @@ class HiveService {
     debugPrint('📦 HiveService: Checking if language has been selected');
 
     try {
-      final result = _introBox.get(_languageSelectedKey, defaultValue: false) as bool;
+      final result =
+          _introBox.get(_languageSelectedKey, defaultValue: false) as bool;
       debugPrint('📦 HiveService: Language selected status: $result');
       return result;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to check language selected status - $e');
+      debugPrint(
+          '📦 HiveService: Failed to check language selected status - $e');
       return false;
     }
   }
@@ -303,7 +306,8 @@ class HiveService {
 
   /// Set refresh token
   static Future<void> setRefreshToken(String token) async {
-    debugPrint('📦 HiveService: Setting refresh token (length: ${token.length})');
+    debugPrint(
+        '📦 HiveService: Setting refresh token (length: ${token.length})');
 
     try {
       await _authBox.put(_refreshTokenKey, token);
@@ -343,7 +347,8 @@ class HiveService {
 
   /// Set phone number
   static Future<void> setPhoneNumber(String phoneNumber) async {
-    debugPrint('📦 HiveService: Setting phone number: ${phoneNumber.substring(0, 3)}***');
+    debugPrint(
+        '📦 HiveService: Setting phone number: ${phoneNumber.substring(0, 3)}***');
 
     try {
       await _authBox.put(_phoneNumberKey, phoneNumber);
@@ -360,8 +365,10 @@ class HiveService {
 
     try {
       final lastLoginStr = _authBox.get(_lastLoginKey) as String?;
-      final lastLogin = lastLoginStr != null ? DateTime.parse(lastLoginStr) : null;
-      debugPrint('📦 HiveService: Last login: ${lastLogin?.toString().substring(0, 19) ?? 'never'}');
+      final lastLogin =
+          lastLoginStr != null ? DateTime.parse(lastLoginStr) : null;
+      debugPrint(
+          '📦 HiveService: Last login: ${lastLogin?.toString().substring(0, 19) ?? 'never'}');
       return lastLogin;
     } catch (e) {
       debugPrint('📦 HiveService: Failed to get last login - $e');
@@ -373,7 +380,8 @@ class HiveService {
 
   /// Save user data
   static Future<void> saveUserData(Map<String, dynamic> userData) async {
-    debugPrint('📦 HiveService: Saving user data with ${userData.keys.length} fields');
+    debugPrint(
+        '📦 HiveService: Saving user data with ${userData.keys.length} fields');
 
     try {
       await _userBox.put(_userDataKey, userData);
@@ -390,7 +398,8 @@ class HiveService {
 
     try {
       final userData = _userBox.get(_userDataKey);
-      final result = userData != null ? Map<String, dynamic>.from(userData) : null;
+      final result =
+          userData != null ? Map<String, dynamic>.from(userData) : null;
       debugPrint('📦 HiveService: User data exists: ${result != null}');
       if (result != null) {
         debugPrint('📦 HiveService: User data fields: ${result.keys.toList()}');
@@ -494,7 +503,8 @@ class HiveService {
 
   /// Save user profile for sync
   static Future<void> saveUserProfile(Map<String, dynamic> profileData) async {
-    debugPrint('📦 HiveService: Saving user profile with ${profileData.keys.length} fields');
+    debugPrint(
+        '📦 HiveService: Saving user profile with ${profileData.keys.length} fields');
 
     try {
       await _userBox.put(_userProfileKey, profileData);
@@ -511,7 +521,8 @@ class HiveService {
 
     try {
       final profileData = _userBox.get(_userProfileKey);
-      final result = profileData != null ? Map<String, dynamic>.from(profileData) : null;
+      final result =
+          profileData != null ? Map<String, dynamic>.from(profileData) : null;
       debugPrint('📦 HiveService: User profile exists: ${result != null}');
       return result;
     } catch (e) {
@@ -522,7 +533,8 @@ class HiveService {
 
   /// Save health check timestamp
   static Future<void> saveLastHealthCheck(DateTime timestamp) async {
-    debugPrint('📦 HiveService: Saving health check timestamp: ${timestamp.toString().substring(0, 19)}');
+    debugPrint(
+        '📦 HiveService: Saving health check timestamp: ${timestamp.toString().substring(0, 19)}');
 
     try {
       await _userBox.put(_lastHealthCheckKey, timestamp.millisecondsSinceEpoch);
@@ -539,8 +551,11 @@ class HiveService {
 
     try {
       final timestamp = _userBox.get(_lastHealthCheckKey);
-      final result = timestamp != null ? DateTime.fromMillisecondsSinceEpoch(timestamp) : null;
-      debugPrint('📦 HiveService: Last health check: ${result?.toString().substring(0, 19) ?? 'never'}');
+      final result = timestamp != null
+          ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+          : null;
+      debugPrint(
+          '📦 HiveService: Last health check: ${result?.toString().substring(0, 19) ?? 'never'}');
       return result;
     } catch (e) {
       debugPrint('📦 HiveService: Failed to get last health check - $e');
@@ -577,7 +592,8 @@ class HiveService {
 
   /// Save health check result
   static Future<void> saveHealthCheckResult(Map<String, dynamic> result) async {
-    debugPrint('📦 HiveService: Saving health check result with ${result.keys.length} fields');
+    debugPrint(
+        '📦 HiveService: Saving health check result with ${result.keys.length} fields');
 
     try {
       await _userBox.put(_healthCheckResultKey, result);
@@ -604,20 +620,24 @@ class HiveService {
   }
 
   /// Check if health check is needed (based on time interval)
-  static bool isHealthCheckNeeded({Duration interval = const Duration(minutes: 30)}) {
-    debugPrint('📦 HiveService: Checking if health check is needed (interval: ${interval.inMinutes} minutes)');
+  static bool isHealthCheckNeeded(
+      {Duration interval = const Duration(minutes: 30)}) {
+    debugPrint(
+        '📦 HiveService: Checking if health check is needed (interval: ${interval.inMinutes} minutes)');
 
     try {
       final lastCheck = getLastHealthCheck();
       if (lastCheck == null) {
-        debugPrint('📦 HiveService: Health check needed - no previous check found');
+        debugPrint(
+            '📦 HiveService: Health check needed - no previous check found');
         return true;
       }
 
       final timeSinceLastCheck = DateTime.now().difference(lastCheck);
       final isNeeded = timeSinceLastCheck >= interval;
 
-      debugPrint('📦 HiveService: Time since last check: ${timeSinceLastCheck.inMinutes} minutes');
+      debugPrint(
+          '📦 HiveService: Time since last check: ${timeSinceLastCheck.inMinutes} minutes');
       debugPrint('📦 HiveService: Health check needed: $isNeeded');
 
       return isNeeded;
@@ -718,7 +738,8 @@ class HiveService {
       'customer' => 0xFF3B82F6, // Blue
       _ => 0xFF3B82F6, // Blue
     };
-    debugPrint('📦 HiveService: User type color: 0x${color.toRadixString(16).toUpperCase()}');
+    debugPrint(
+        '📦 HiveService: User type color: 0x${color.toRadixString(16).toUpperCase()}');
     return color;
   }
 
@@ -730,14 +751,16 @@ class HiveService {
       'customer' => 0xf2c0, // user icon
       _ => 0xf2c0, // user icon
     };
-    debugPrint('📦 HiveService: User type icon code: 0x${iconCode.toRadixString(16)}');
+    debugPrint(
+        '📦 HiveService: User type icon code: 0x${iconCode.toRadixString(16)}');
     return iconCode;
   }
 
   /// Update user type in stored data
   static Future<void> updateUserType(String userType) async {
     final normalizedType = _normalizeUserType(userType);
-    debugPrint('📦 HiveService: Updating user type to: $normalizedType (from: $userType)');
+    debugPrint(
+        '📦 HiveService: Updating user type to: $normalizedType (from: $userType)');
 
     try {
       final userData = getUserData();
@@ -746,7 +769,8 @@ class HiveService {
         await saveUserData(userData);
         debugPrint('📦 HiveService: User type updated successfully');
       } else {
-        debugPrint('📦 HiveService: No user data found, cannot update user type');
+        debugPrint(
+            '📦 HiveService: No user data found, cannot update user type');
       }
     } catch (e) {
       debugPrint('📦 HiveService: Failed to update user type - $e');

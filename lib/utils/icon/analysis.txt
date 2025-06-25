@@ -1,0 +1,45 @@
+Analyzing icon...                                               
+
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:94:37 - const_with_non_constant_argument
+  error - The getter 'home_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:94:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:97:40 - const_with_non_constant_argument
+  error - The getter 'explore_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:97:46 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:100:41 - const_with_non_constant_argument
+  error - The getter 'message_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:100:47 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:103:40 - const_with_non_constant_argument
+  error - The getter 'person_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:103:46 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:106:37 - const_with_non_constant_argument
+  error - The getter 'arrow_back_ios_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:106:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:109:37 - const_with_non_constant_argument
+  error - The getter 'menu_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:109:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:116:36 - const_with_non_constant_argument
+  error - The getter 'add_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:116:42 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:119:37 - const_with_non_constant_argument
+  error - The getter 'edit_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:119:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:122:39 - const_with_non_constant_argument
+  error - The getter 'delete_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:122:45 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:125:37 - const_with_non_constant_argument
+  error - The getter 'save_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:125:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:128:39 - const_with_non_constant_argument
+  error - The getter 'search_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:128:45 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:131:39 - const_with_non_constant_argument
+  error - The getter 'filter_list_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:131:45 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:134:38 - const_with_non_constant_argument
+  error - The getter 'share_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:134:44 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:137:41 - const_with_non_constant_argument
+  error - The getter 'favorite_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:137:47 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:140:41 - const_with_non_constant_argument
+  error - The getter 'download_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:140:47 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:143:39 - const_with_non_constant_argument
+  error - The getter 'upload_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:143:45 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:158:40 - const_with_non_constant_argument
+  error - The getter 'checkCircle_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:158:46 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:161:37 - const_with_non_constant_argument
+  error - The getter 'info_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:161:43 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:168:40 - const_with_non_constant_argument
+  error - The getter 'hourglass_empty_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:168:46 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:183:38 - const_with_non_constant_argument
+  error - The getter 'image_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:183:44 - undefined_getter
+  error - Arguments of a constant creation must be constant expressions - icon_constants.dart:186:39 - const_with_non_constant_argument
+  error - The getter 'camera_alt_rounded' isn't defined for the type 'Prbal' - icon_constants.dart:186:45 - undefined_getter
+

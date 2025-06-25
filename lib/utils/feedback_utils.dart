@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// Utility class for managing standardized snackbar notifications
 class FeedbackUtils {
@@ -19,7 +20,7 @@ class FeedbackUtils {
         content: Row(
           children: [
             Icon(
-              Icons.error_outline,
+              Prbal.errorOutline,
               color: Colors.white,
               size: 20.sp,
             ),
@@ -81,7 +82,7 @@ class FeedbackUtils {
         content: Row(
           children: [
             Icon(
-              Icons.check_circle,
+              Prbal.checkCircle,
               color: Colors.white,
               size: 20.sp,
             ),
@@ -137,7 +138,7 @@ class FeedbackUtils {
         content: Row(
           children: [
             Icon(
-              Icons.error_outline,
+              Prbal.errorOutline,
               color: Colors.white,
               size: 20.sp,
             ),

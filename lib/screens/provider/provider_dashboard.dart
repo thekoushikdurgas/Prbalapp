@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
@@ -90,7 +90,7 @@ class _ProviderDashboardContentState
                     context.push(RouteEnum.notifications.name);
                   },
                   icon: Icon(
-                    LineIcons.bell,
+                    Prbal.bell,
                     color: isDark ? Colors.white : const Color(0xFF4A5568),
                   ),
                 ),
@@ -129,7 +129,7 @@ class _ProviderDashboardContentState
                             fontSize: 16.sp,
                           ),
                           prefixIcon: Icon(
-                            LineIcons.search,
+                            Prbal.search,
                             color: isDark ? Colors.grey[400] : Colors.grey[600],
                           ),
                           suffixIcon: IconButton(
@@ -138,7 +138,7 @@ class _ProviderDashboardContentState
                               context.go('/explore');
                             },
                             icon: Icon(
-                              Icons.tune,
+                              Prbal.tune,
                               color:
                                   isDark ? Colors.grey[400] : Colors.grey[600],
                             ),
@@ -176,7 +176,7 @@ class _ProviderDashboardContentState
                             child: _buildStatItem(
                               'Active Services',
                               '12',
-                              LineIcons.tools,
+                              Prbal.tools,
                               const Color(0xFF4299E1),
                               isDark,
                             ),
@@ -190,7 +190,7 @@ class _ProviderDashboardContentState
                             child: _buildStatItem(
                               'Pending Requests',
                               '5',
-                              LineIcons.clock,
+                              Prbal.clock,
                               const Color(0xFFED8936),
                               isDark,
                             ),
@@ -204,7 +204,7 @@ class _ProviderDashboardContentState
                             child: _buildStatItem(
                               'Rating',
                               '4.8',
-                              LineIcons.star,
+                              Prbal.star,
                               const Color(0xFF48BB78),
                               isDark,
                             ),
@@ -244,7 +244,7 @@ class _ProviderDashboardContentState
                       children: [
                         _buildCategoryCard(
                           'Home Cleaning',
-                          LineIcons.broom,
+                          Prbal.home1,
                           const Color(0xFF4299E1),
                           '8 active listings',
                           isDark,
@@ -255,7 +255,7 @@ class _ProviderDashboardContentState
                         ),
                         _buildCategoryCard(
                           'Plumbing',
-                          LineIcons.tools,
+                          Prbal.tools,
                           const Color(0xFF48BB78),
                           '3 active listings',
                           isDark,
@@ -266,7 +266,7 @@ class _ProviderDashboardContentState
                         ),
                         _buildCategoryCard(
                           'Electrical',
-                          LineIcons.plug,
+                          Prbal.plug,
                           const Color(0xFFED8936),
                           '2 active listings',
                           isDark,
@@ -277,7 +277,7 @@ class _ProviderDashboardContentState
                         ),
                         _buildCategoryCard(
                           'Add New',
-                          LineIcons.plus,
+                          Prbal.plus,
                           const Color(0xFF9F7AEA),
                           'Create service',
                           isDark,
@@ -344,7 +344,7 @@ class _ProviderDashboardContentState
                             'New booking request',
                             'John Doe requested home cleaning',
                             '2 hours ago',
-                            LineIcons.calendar,
+                            Prbal.calendar,
                             const Color(0xFF4299E1),
                             isDark,
                           ),
@@ -353,7 +353,7 @@ class _ProviderDashboardContentState
                             'Payment received',
                             'Received \$150 from Sarah Smith',
                             '5 hours ago',
-                            LineIcons.dollarSign,
+                            Prbal.dollarSign,
                             const Color(0xFF48BB78),
                             isDark,
                           ),
@@ -362,7 +362,7 @@ class _ProviderDashboardContentState
                             'Review received',
                             'Mike Johnson left a 5-star review',
                             '1 day ago',
-                            LineIcons.star,
+                            Prbal.star,
                             const Color(0xFFED8936),
                             isDark,
                           ),

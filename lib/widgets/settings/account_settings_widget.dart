@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 // Components
 
@@ -39,7 +39,7 @@ class AccountSettingsWidget extends StatelessWidget {
           SettingsItemWidget(
             title: 'Business Profile',
             subtitle: 'Manage your services and portfolio',
-            icon: LineIcons.briefcase,
+            icon: Prbal.briefcase,
             iconColor: const Color(0xFF48BB78),
             onTap: () {
               debugPrint('⚙️ Business Profile tapped');
@@ -49,7 +49,7 @@ class AccountSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Payment & Billing',
           subtitle: 'Manage payment methods and history',
-          icon: LineIcons.creditCard,
+          icon: Prbal.creditCard,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ Payment & Billing tapped');
@@ -59,7 +59,7 @@ class AccountSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Verification',
           subtitle: _isVerified(authState.userData) ? 'Account verified' : 'Complete verification',
-          icon: Icons.security,
+          icon: Prbal.security,
           iconColor: _isVerified(authState.userData) ? const Color(0xFF48BB78) : const Color(0xFFED8936),
           onTap: () {
             debugPrint('⚙️ Verification tapped');
@@ -70,7 +70,7 @@ class AccountSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Account Type',
           subtitle: 'Currently: ${_getUserTypeDisplayName(userType)} - Tap to change',
-          icon: Icons.swap_horiz,
+          icon: Prbal.swapHoriz,
           iconColor: const Color(0xFF667EEA),
           onTap: onUserTypeChange,
           trailing: Container(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// CategorySelectionBar - Enhanced modern selection info bar component
 ///
@@ -34,7 +34,8 @@ class CategorySelectionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📊 CategorySelectionBar: Building enhanced selection bar with $selectedCount/$totalCount selected');
+    debugPrint(
+        '📊 CategorySelectionBar: Building enhanced selection bar with $selectedCount/$totalCount selected');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).primaryColor;
@@ -49,8 +50,10 @@ class CategorySelectionBar extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: isDark
               ? [
-                  const Color(0xFF2D3748).withValues(alpha: 0.98), // Brighter slate
-                  const Color(0xFF1A202C).withValues(alpha: 0.98), // Brighter dark
+                  const Color(0xFF2D3748)
+                      .withValues(alpha: 0.98), // Brighter slate
+                  const Color(0xFF1A202C)
+                      .withValues(alpha: 0.98), // Brighter dark
                 ]
               : [
                   Colors.white.withValues(alpha: 0.95),
@@ -61,14 +64,16 @@ class CategorySelectionBar extends StatelessWidget {
         border: Border.all(
           color: isDark
               ? primaryColor.withValues(alpha: 0.6)
-              : primaryColor.withValues(alpha: 0.3), // Brighter border in dark mode
+              : primaryColor.withValues(
+                  alpha: 0.3), // Brighter border in dark mode
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
             color: isDark
                 ? Colors.black.withValues(alpha: 0.6)
-                : primaryColor.withValues(alpha: 0.15), // Deeper shadow in dark mode
+                : primaryColor.withValues(
+                    alpha: 0.15), // Deeper shadow in dark mode
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 2,
@@ -94,13 +99,15 @@ class CategorySelectionBar extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Enhanced selection icon with animated progress
-                  _buildSelectionIcon(isDark, primaryColor, selectionProgress, isAllSelected),
+                  _buildSelectionIcon(
+                      isDark, primaryColor, selectionProgress, isAllSelected),
 
                   SizedBox(width: 16.w), // Reduced spacing from 20.w to 16.w
 
                   // Enhanced selection info with progress
                   Expanded(
-                    child: _buildSelectionInfo(isDark, primaryColor, isAllSelected),
+                    child: _buildSelectionInfo(
+                        isDark, primaryColor, isAllSelected),
                   ),
 
                   SizedBox(width: 12.w), // Reduced spacing from 16.w to 12.w
@@ -129,7 +136,8 @@ class CategorySelectionBar extends StatelessWidget {
   }
 
   /// Build enhanced selection icon with progress indication
-  Widget _buildSelectionIcon(bool isDark, Color primaryColor, double progress, bool isAllSelected) {
+  Widget _buildSelectionIcon(
+      bool isDark, Color primaryColor, double progress, bool isAllSelected) {
     return Container(
       width: 60.w,
       height: 60.w,
@@ -138,18 +146,22 @@ class CategorySelectionBar extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            primaryColor.withValues(alpha: isDark ? 0.4 : 0.2), // Brighter gradient in dark mode
-            primaryColor.withValues(alpha: isDark ? 0.2 : 0.05), // Enhanced secondary color
+            primaryColor.withValues(
+                alpha: isDark ? 0.4 : 0.2), // Brighter gradient in dark mode
+            primaryColor.withValues(
+                alpha: isDark ? 0.2 : 0.05), // Enhanced secondary color
           ],
         ),
         borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: primaryColor.withValues(alpha: isDark ? 0.8 : 0.4), // Much brighter border in dark mode
+          color: primaryColor.withValues(
+              alpha: isDark ? 0.8 : 0.4), // Much brighter border in dark mode
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: primaryColor.withValues(alpha: isDark ? 0.4 : 0.2), // Brighter shadow in dark mode
+            color: primaryColor.withValues(
+                alpha: isDark ? 0.4 : 0.2), // Brighter shadow in dark mode
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -167,7 +179,8 @@ class CategorySelectionBar extends StatelessWidget {
               strokeWidth: 3,
               backgroundColor: isDark
                   ? Colors.grey[600]!.withValues(alpha: 0.6)
-                  : Colors.grey[300]!.withValues(alpha: 0.5), // Brighter background in dark mode
+                  : Colors.grey[300]!.withValues(
+                      alpha: 0.5), // Brighter background in dark mode
               valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
             ),
           ),
@@ -177,10 +190,10 @@ class CategorySelectionBar extends StatelessWidget {
             padding: EdgeInsets.all(8.w),
             child: Icon(
               isAllSelected
-                  ? LineIcons.checkSquareAlt
+                  ? Prbal.inputChecked
                   : selectedCount > 0
-                      ? LineIcons.checkSquare
-                      : LineIcons.square,
+                      ? Prbal.checkSquare
+                      : Prbal.square,
               color: primaryColor,
               size: 24.sp,
             ),
@@ -191,7 +204,8 @@ class CategorySelectionBar extends StatelessWidget {
   }
 
   /// Build enhanced selection information
-  Widget _buildSelectionInfo(bool isDark, Color primaryColor, bool isAllSelected) {
+  Widget _buildSelectionInfo(
+      bool isDark, Color primaryColor, bool isAllSelected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -200,7 +214,7 @@ class CategorySelectionBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              LineIcons.layerGroup,
+              Prbal.layers5,
               size: 16.sp,
               color: primaryColor,
             ),
@@ -211,7 +225,10 @@ class CategorySelectionBar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF1F2937), // Ultra bright white text in dark mode
+                  color: isDark
+                      ? Colors.white
+                      : const Color(
+                          0xFF1F2937), // Ultra bright white text in dark mode
                   letterSpacing: -0.3,
                 ),
                 maxLines: 1,
@@ -233,7 +250,7 @@ class CategorySelectionBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      LineIcons.check,
+                      Prbal.check,
                       size: 10.sp,
                       color: Colors.green,
                     ),
@@ -260,9 +277,11 @@ class CategorySelectionBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              LineIcons.pieChart,
+              Prbal.pieChart,
               size: 14.sp,
-              color: isDark ? Colors.grey[300] : Colors.grey[600], // Brighter icon in dark mode
+              color: isDark
+                  ? Colors.grey[300]
+                  : Colors.grey[600], // Brighter icon in dark mode
             ),
             SizedBox(width: 4.w), // Reduced spacing from 6.w to 4.w
             Flexible(
@@ -270,7 +289,9 @@ class CategorySelectionBar extends StatelessWidget {
                 'out of $totalCount categories',
                 style: TextStyle(
                   fontSize: 12.sp, // Reduced from 13.sp to 12.sp
-                  color: isDark ? Colors.grey[300] : Colors.grey[600], // Brighter text in dark mode
+                  color: isDark
+                      ? Colors.grey[300]
+                      : Colors.grey[600], // Brighter text in dark mode
                   fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,
@@ -279,7 +300,8 @@ class CategorySelectionBar extends StatelessWidget {
             ),
             SizedBox(width: 6.w), // Reduced spacing from 8.w to 6.w
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h), // Reduced padding
+              padding: EdgeInsets.symmetric(
+                  horizontal: 4.w, vertical: 2.h), // Reduced padding
               decoration: BoxDecoration(
                 color: primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(4.r),
@@ -302,7 +324,8 @@ class CategorySelectionBar extends StatelessWidget {
   }
 
   /// Build enhanced action buttons with better labels
-  Widget _buildActionButtons(bool isDark, Color primaryColor, bool isAllSelected) {
+  Widget _buildActionButtons(
+      bool isDark, Color primaryColor, bool isAllSelected) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -315,7 +338,7 @@ class CategorySelectionBar extends StatelessWidget {
                 HapticFeedback.lightImpact();
                 onSelectAll?.call();
               },
-              icon: LineIcons.doubleCheck,
+              icon: Prbal.checkCircle,
               label: 'All',
               tooltip: 'Select All Categories',
               color: Colors.blue,
@@ -323,17 +346,19 @@ class CategorySelectionBar extends StatelessWidget {
             ),
           ),
 
-        if (onSelectAll != null && !isAllSelected) SizedBox(width: 8.w), // Reduced spacing
+        if (onSelectAll != null && !isAllSelected)
+          SizedBox(width: 8.w), // Reduced spacing
 
         // Clear selection button with enhanced design
         Flexible(
           child: _buildEnhancedActionButton(
             onPressed: () {
-              debugPrint('❌ CategorySelectionBar: Clear selection button pressed');
+              debugPrint(
+                  '❌ CategorySelectionBar: Clear selection button pressed');
               HapticFeedback.mediumImpact();
               onClearSelection();
             },
-            icon: LineIcons.times,
+            icon: Prbal.cross,
             label: 'Clear',
             tooltip: 'Clear Selection',
             color: isDark ? Colors.red[400]! : Colors.red[600]!,
@@ -365,13 +390,17 @@ class CategorySelectionBar extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                color.withValues(alpha: isDark ? 0.3 : 0.15), // Brighter action button gradients
+                color.withValues(
+                    alpha: isDark
+                        ? 0.3
+                        : 0.15), // Brighter action button gradients
                 color.withValues(alpha: isDark ? 0.15 : 0.08),
               ],
             ),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: color.withValues(alpha: isDark ? 0.6 : 0.3), // Brighter action button borders
+              color: color.withValues(
+                  alpha: isDark ? 0.6 : 0.3), // Brighter action button borders
               width: 1,
             ),
           ),
@@ -418,9 +447,11 @@ class CategorySelectionBar extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    LineIcons.tasks,
+                    Prbal.tasks,
                     size: 14.sp,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600], // Brighter text in dark mode
+                    color: isDark
+                        ? Colors.grey[300]
+                        : Colors.grey[600], // Brighter text in dark mode
                   ),
                   SizedBox(width: 6.w),
                   Flexible(
@@ -429,7 +460,9 @@ class CategorySelectionBar extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
-                        color: isDark ? Colors.grey[300] : Colors.grey[600], // Brighter text in dark mode
+                        color: isDark
+                            ? Colors.grey[300]
+                            : Colors.grey[600], // Brighter text in dark mode
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -459,7 +492,8 @@ class CategorySelectionBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark
                 ? Colors.grey[600]!.withValues(alpha: 0.8)
-                : Colors.grey[200]!.withValues(alpha: 0.8), // Brighter progress background
+                : Colors.grey[200]!
+                    .withValues(alpha: 0.8), // Brighter progress background
             borderRadius: BorderRadius.circular(3.r),
           ),
           child: Stack(
@@ -478,7 +512,9 @@ class CategorySelectionBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3.r),
                     boxShadow: [
                       BoxShadow(
-                        color: primaryColor.withValues(alpha: isDark ? 0.6 : 0.4), // Brighter progress shadow
+                        color: primaryColor.withValues(
+                            alpha:
+                                isDark ? 0.6 : 0.4), // Brighter progress shadow
                         blurRadius: 4,
                         offset: const Offset(0, 1),
                       ),
@@ -500,7 +536,8 @@ class CategorySelectionBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Colors.grey[700]!.withValues(alpha: 0.6)
-            : Colors.grey[100]!.withValues(alpha: 0.8), // Brighter quick stats background
+            : Colors.grey[100]!
+                .withValues(alpha: 0.8), // Brighter quick stats background
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isDark
@@ -512,9 +549,11 @@ class CategorySelectionBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LineIcons.infoCircle,
+            Prbal.infoCircle,
             size: 16.sp,
-            color: isDark ? Colors.blue[300] : Colors.blue[600], // Brighter info icon in dark mode
+            color: isDark
+                ? Colors.blue[300]
+                : Colors.blue[600], // Brighter info icon in dark mode
           ),
           SizedBox(width: 8.w),
           Expanded(
@@ -522,7 +561,9 @@ class CategorySelectionBar extends StatelessWidget {
               selectionMessage,
               style: TextStyle(
                 fontSize: 12.sp,
-                color: isDark ? Colors.grey[200] : Colors.grey[700], // Brighter quick stats text
+                color: isDark
+                    ? Colors.grey[200]
+                    : Colors.grey[700], // Brighter quick stats text
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 2,

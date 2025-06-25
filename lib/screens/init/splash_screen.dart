@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/services/performance_service.dart';
 import 'package:prbal/services/health_service.dart';
@@ -507,7 +507,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                                     BorderRadius.circular(60.r),
                                               ),
                                               child: Icon(
-                                                Icons.business,
+                                                Prbal.business,
                                                 size: 60.sp,
                                                 color: Colors.white,
                                               ),
@@ -543,7 +543,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                       ],
                                     ),
                                     child: Icon(
-                                      LineIcons.briefcase,
+                                      Prbal.briefcase,
                                       size: 30.sp,
                                       color: Colors.white,
                                     ),

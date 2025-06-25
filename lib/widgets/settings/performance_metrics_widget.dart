@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 // import 'package:prbal/widget/modern_ui_components.dart';
 
 /// PerformanceMetricsWidget - Modern performance metrics display for admin users
@@ -158,7 +158,7 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
             ),
           ),
           child: Icon(
-            LineIcons.alternateTachometer,
+            Prbal.tachometer,
             color: performanceColor,
             size: 24.sp,
           ),
@@ -302,7 +302,7 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
           child: _buildMetricItem(
             'Frame Drops',
             frameDrops.toString(),
-            LineIcons.exclamationTriangle,
+            Prbal.exclamationTriangle,
             frameDrops > 0 ? const Color(0xFFED8936) : const Color(0xFF48BB78),
             isDark,
           ),
@@ -312,7 +312,7 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
           child: _buildMetricItem(
             'Avg Frame Time',
             '${avgFrameTime.toStringAsFixed(1)}ms',
-            LineIcons.clock,
+            Prbal.clock,
             avgFrameTime > 16.7
                 ? const Color(0xFFED8936)
                 : const Color(0xFF48BB78),
@@ -324,7 +324,7 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
           child: _buildMetricItem(
             'Memory',
             memoryUsage > 0 ? '${memoryUsage.toStringAsFixed(0)}MB' : 'N/A',
-            LineIcons.microchip,
+            Prbal.microchip,
             const Color(0xFF4299E1),
             isDark,
           ),

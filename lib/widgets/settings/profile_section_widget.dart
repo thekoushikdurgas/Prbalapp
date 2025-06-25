@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prbal/services/service_providers.dart';
@@ -36,10 +36,12 @@ class ProfileSectionWidget extends ConsumerStatefulWidget {
   final Function(ImageSource)? onProfilePictureEdit;
 
   @override
-  ConsumerState<ProfileSectionWidget> createState() => _ProfileSectionWidgetState();
+  ConsumerState<ProfileSectionWidget> createState() =>
+      _ProfileSectionWidgetState();
 }
 
-class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> with SingleTickerProviderStateMixin {
+class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -92,8 +94,10 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     final userData = authState.userData;
 
     debugPrint('🎨 ProfileSectionWidget: Theme is dark: $isDark');
-    debugPrint('🎨 ProfileSectionWidget: User authenticated: ${authState.isAuthenticated}');
-    debugPrint('🎨 ProfileSectionWidget: User data available: ${userData != null}');
+    debugPrint(
+        '🎨 ProfileSectionWidget: User authenticated: ${authState.isAuthenticated}');
+    debugPrint(
+        '🎨 ProfileSectionWidget: User data available: ${userData != null}');
 
     // Extract user information with proper fallbacks
     final userInfo = _extractUserInfo(userData);
@@ -142,20 +146,26 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
         borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.1),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.9),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.white.withValues(alpha: 0.9),
             blurRadius: 1,
             offset: const Offset(0, 1),
             spreadRadius: 0,
           ),
         ],
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -229,7 +239,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: widget.onProfilePictureEdit != null ? () => _showImageSourceDialog() : null,
+            onTap: widget.onProfilePictureEdit != null
+                ? () => _showImageSourceDialog()
+                : null,
             borderRadius: BorderRadius.circular(40.r),
             child: Container(
               width: 80.w,
@@ -320,7 +332,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
 
   /// Builds fallback avatar with user.png image
   Widget _buildFallbackAvatar(String? userType, Color userTypeColor) {
-    debugPrint('🎨 ProfileSectionWidget: Building fallback avatar with user.png');
+    debugPrint(
+        '🎨 ProfileSectionWidget: Building fallback avatar with user.png');
 
     return Container(
       width: double.infinity,
@@ -340,7 +353,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
           'assets/images/user.png',
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🎨 ProfileSectionWidget: Error loading user.png: $error');
+            debugPrint(
+                '🎨 ProfileSectionWidget: Error loading user.png: $error');
             // Fallback to icon if image fails to load
             return Container(
               width: double.infinity,
@@ -400,7 +414,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
           onTap: () => _showImageSourceDialog(),
           borderRadius: BorderRadius.circular(14.r),
           child: Icon(
-            LineIcons.camera,
+            Prbal.camera,
             color: Colors.white,
             size: 14.sp,
           ),
@@ -482,7 +496,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
 
                   // Camera Option
                   _buildImageSourceOption(
-                    icon: LineIcons.camera,
+                    icon: Prbal.camera,
                     title: 'Take Photo',
                     subtitle: 'Use camera to take a new photo',
                     onTap: () {
@@ -496,7 +510,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
 
                   // Gallery Option
                   _buildImageSourceOption(
-                    icon: LineIcons.images,
+                    icon: Prbal.images,
                     title: 'Choose from Gallery',
                     subtitle: 'Select from your photo library',
                     onTap: () {
@@ -518,7 +532,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                           side: BorderSide(
-                            color: isDark ? Colors.white.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.3),
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.2)
+                                : Colors.grey.withValues(alpha: 0.3),
                           ),
                         ),
                       ),
@@ -534,7 +550,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
                   ),
 
                   // Bottom padding for devices with home indicator
-                  SizedBox(height: MediaQuery.of(context).padding.bottom > 0 ? 8.h : 0),
+                  SizedBox(
+                      height:
+                          MediaQuery.of(context).padding.bottom > 0 ? 8.h : 0),
                 ],
               ),
             ),
@@ -560,10 +578,14 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
         child: Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.withValues(alpha: 0.05),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.grey.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.grey.withValues(alpha: 0.2),
             ),
           ),
           child: Row(
@@ -574,7 +596,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
                 height: 48.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.withValues(alpha: 0.1),
                 ),
                 child: Icon(
                   icon,
@@ -612,7 +636,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
 
               // Arrow
               Icon(
-                LineIcons.angleRight,
+                Prbal.angleRight,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
                 size: 18.sp,
               ),
@@ -649,7 +673,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
         ),
 
         // Username (if available and different from display name)
-        if (username != null && username.isNotEmpty && username != displayName) ...[
+        if (username != null &&
+            username.isNotEmpty &&
+            username != displayName) ...[
           SizedBox(height: 2.h),
           Text(
             '@$username',
@@ -727,7 +753,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
           child: Padding(
             padding: EdgeInsets.all(12.w),
             child: Icon(
-              LineIcons.edit,
+              Prbal.edit,
               color: userTypeColor,
               size: 20.sp,
             ),
@@ -748,17 +774,21 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.02),
+        color: isDark
+            ? Colors.white.withValues(alpha: 0.05)
+            : Colors.black.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.1),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildStatItem(
-            icon: LineIcons.star,
+            icon: Prbal.star,
             iconColor: const Color(0xFFED8936),
             value: rating.toStringAsFixed(1),
             label: 'Rating',
@@ -766,7 +796,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
           ),
           _buildStatDivider(isDark),
           _buildStatItem(
-            icon: LineIcons.calendar,
+            icon: Prbal.calendar,
             iconColor: const Color(0xFF4299E1),
             value: bookingCount.toString(),
             label: 'Bookings',
@@ -774,7 +804,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
           ),
           _buildStatDivider(isDark),
           _buildStatItem(
-            icon: LineIcons.wallet,
+            icon: Prbal.wallet,
             iconColor: const Color(0xFF9F7AEA),
             value: _formatBalance(balance),
             label: 'Balance',
@@ -827,7 +857,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     return Container(
       width: 1,
       height: 40.h,
-      color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+      color: isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.grey.withValues(alpha: 0.2),
     );
   }
 
@@ -857,7 +889,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LineIcons.checkCircle,
+            Prbal.checkCircle,
             color: Colors.white,
             size: 16.sp,
           ),
@@ -881,7 +913,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     debugPrint('🎨 ProfileSectionWidget: Extracting user info from API data');
 
     if (userData == null) {
-      debugPrint('🎨 ProfileSectionWidget: No user data available, using defaults');
+      debugPrint(
+          '🎨 ProfileSectionWidget: No user data available, using defaults');
       return {
         'displayName': 'Guest User',
         'userType': 'customer',
@@ -893,8 +926,10 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     }
 
     // Extract names with multiple fallback strategies
-    final firstName = userData['first_name'] as String? ?? userData['firstName'] as String?;
-    final lastName = userData['last_name'] as String? ?? userData['lastName'] as String?;
+    final firstName =
+        userData['first_name'] as String? ?? userData['firstName'] as String?;
+    final lastName =
+        userData['last_name'] as String? ?? userData['lastName'] as String?;
     final username = userData['username'] as String?;
 
     String displayName = 'User';
@@ -907,10 +942,13 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     }
 
     // Extract user type
-    final userType = userData['user_type'] as String? ?? userData['userType'] as String? ?? 'customer';
+    final userType = userData['user_type'] as String? ??
+        userData['userType'] as String? ??
+        'customer';
 
     // Extract profile picture
-    final profilePicture = userData['profile_picture'] as String? ?? userData['profilePicture'] as String?;
+    final profilePicture = userData['profile_picture'] as String? ??
+        userData['profilePicture'] as String?;
 
     // Extract rating (with type conversion)
     double rating = 0.0;
@@ -933,11 +971,15 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
     }
 
     // Extract verification status
-    final isVerified = userData['is_verified'] as bool? ?? userData['isVerified'] as bool? ?? false;
+    final isVerified = userData['is_verified'] as bool? ??
+        userData['isVerified'] as bool? ??
+        false;
 
     // Extract balance (with type conversion)
     double balance = 0.0;
-    final balanceData = userData['balance'] ?? userData['wallet_balance'] ?? userData['account_balance'];
+    final balanceData = userData['balance'] ??
+        userData['wallet_balance'] ??
+        userData['account_balance'];
     if (balanceData is double) {
       balance = balanceData;
     } else if (balanceData is int) {
@@ -979,13 +1021,13 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget> wit
   IconData _getUserTypeIcon(String? userType) {
     switch (userType) {
       case 'provider':
-        return LineIcons.tools;
+        return Prbal.tools;
       case 'customer':
-        return LineIcons.user;
+        return Prbal.user;
       case 'admin':
-        return LineIcons.crown;
+        return Prbal.graduationCap1;
       default:
-        return LineIcons.user;
+        return Prbal.user;
     }
   }
 

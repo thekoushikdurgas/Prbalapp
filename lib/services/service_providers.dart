@@ -107,7 +107,8 @@ final performanceServiceProvider = Provider<PerformanceService>((ref) {
 /// Service Management Service Provider - Categories, subcategories, services management
 /// This is the main service for managing the Prbal service ecosystem
 /// Based on extensive Postman collection analysis (Categories, Services, Requests)
-final serviceManagementServiceProvider = Provider<ServiceManagementService>((ref) {
+final serviceManagementServiceProvider =
+    Provider<ServiceManagementService>((ref) {
   debugPrint('🔧 ServiceProviders: Creating ServiceManagementService instance');
   debugPrint('🔧 ========================================');
   debugPrint('🔧 SERVICE MANAGEMENT CAPABILITIES:');
@@ -171,7 +172,8 @@ final aiServiceProvider = Provider<AIService>((ref) {
   debugPrint('🤖   → Provider performance optimization');
   debugPrint('🤖 📡 API ENDPOINTS:');
   debugPrint('🤖   → GET /ai_suggestions/suggestions/ (List suggestions)');
-  debugPrint('🤖   → POST /ai_suggestions/suggestions/generate_service_suggestions/');
+  debugPrint(
+      '🤖   → POST /ai_suggestions/suggestions/generate_service_suggestions/');
   debugPrint('🤖   → POST /ai_suggestions/suggestions/suggest_bid_amount/');
   debugPrint('🤖   → POST /ai_suggestions/suggestions/suggest_bid_message/');
   debugPrint('🤖   → POST /ai_suggestions/suggestions/suggest_message/');
@@ -231,7 +233,8 @@ final paymentServiceProvider = Provider<PaymentService>((ref) {
 final productServiceProvider = Provider<ProductService>((ref) {
   debugPrint('📦 ServiceProviders: Creating ProductService instance');
   debugPrint('📦 → Features: Product catalog, inventory management');
-  debugPrint('📦 → Integration: Service management for product-service linking');
+  debugPrint(
+      '📦 → Integration: Service management for product-service linking');
 
   final apiService = ref.watch(apiServiceProvider);
   return ProductService(apiService);
@@ -275,7 +278,8 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
   debugPrint('🚀   → Memory Monitoring: Performance service enabled');
   debugPrint('🚀   → Resource Tracking: Memory, CPU, Network');
   debugPrint('🚀 ServiceProviders: ');
-  debugPrint('🚀 ServiceProviders: 🏗️ ENHANCED DEPENDENCY INJECTION ARCHITECTURE:');
+  debugPrint(
+      '🚀 ServiceProviders: 🏗️ ENHANCED DEPENDENCY INJECTION ARCHITECTURE:');
   debugPrint('🚀 ServiceProviders: ┌──────────────────────────────────────┐');
   debugPrint('🚀 ServiceProviders: │       RIVERPOD PROVIDER TREE V2      │');
   debugPrint('🚀 ServiceProviders: ├──────────────────────────────────────┤');
@@ -323,8 +327,10 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
 
   try {
     // Phase 1: Critical Infrastructure Services (Enhanced)
-    debugPrint('🚀 ServiceProviders: 🔥 PHASE 1: CRITICAL INFRASTRUCTURE (ENHANCED)');
-    debugPrint('🚀 ServiceProviders: ================================================');
+    debugPrint(
+        '🚀 ServiceProviders: 🔥 PHASE 1: CRITICAL INFRASTRUCTURE (ENHANCED)');
+    debugPrint(
+        '🚀 ServiceProviders: ================================================');
 
     final phase1StartTime = DateTime.now();
     final phase1Memory = _getMemoryUsage();
@@ -333,38 +339,52 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
     debugPrint('🚀 Step 1.1: 🏥 Enhanced Health Monitoring System');
     debugPrint('🚀   → Purpose: API connectivity and system health tracking');
     debugPrint('🚀   → Priority: CRITICAL (Infrastructure dependency)');
-    debugPrint('🚀   → Features: Advanced diagnostics, performance correlation');
+    debugPrint(
+        '🚀   → Features: Advanced diagnostics, performance correlation');
     final healthInitStart = DateTime.now();
     final healthService = ref.read(healthServiceProvider);
     await healthService.initialize();
-    final healthInitDuration = DateTime.now().difference(healthInitStart).inMilliseconds;
+    final healthInitDuration =
+        DateTime.now().difference(healthInitStart).inMilliseconds;
     final healthMemoryUsage = _getMemoryUsage() - phase1Memory;
-    debugPrint('✅ ServiceProviders: Health service initialized (${healthInitDuration}ms, ${healthMemoryUsage}MB)');
+    debugPrint(
+        '✅ ServiceProviders: Health service initialized (${healthInitDuration}ms, ${healthMemoryUsage}MB)');
     debugPrint('🚀   → Health Status: ${healthService.getHealthSummary()}');
-    debugPrint('🚀   → Health Endpoints: System, Database, Dependencies, Metrics');
+    debugPrint(
+        '🚀   → Health Endpoints: System, Database, Dependencies, Metrics');
 
     // Initialize performance monitoring (critical for app metrics)
     debugPrint('🚀 Step 1.2: 📊 Enhanced Performance Monitoring System');
     debugPrint('🚀   → Purpose: App performance metrics and crash reporting');
     debugPrint('🚀   → Priority: CRITICAL (Quality assurance)');
-    debugPrint('🚀   → Features: Real-time metrics, memory tracking, crash analysis');
+    debugPrint(
+        '🚀   → Features: Real-time metrics, memory tracking, crash analysis');
     final perfInitStart = DateTime.now();
     final performanceService = ref.read(performanceServiceProvider);
     await performanceService.initializePerformanceMonitoring();
-    final perfInitDuration = DateTime.now().difference(perfInitStart).inMilliseconds;
-    final perfMemoryUsage = _getMemoryUsage() - (phase1Memory + healthMemoryUsage);
-    debugPrint('✅ ServiceProviders: Performance service initialized (${perfInitDuration}ms, ${perfMemoryUsage}MB)');
-    debugPrint('🚀   → Performance Metrics: ${performanceService.getPerformanceMetrics()}');
-    debugPrint('🚀   → Monitoring Features: CPU, Memory, Network, Crashes, ANRs');
+    final perfInitDuration =
+        DateTime.now().difference(perfInitStart).inMilliseconds;
+    final perfMemoryUsage =
+        _getMemoryUsage() - (phase1Memory + healthMemoryUsage);
+    debugPrint(
+        '✅ ServiceProviders: Performance service initialized (${perfInitDuration}ms, ${perfMemoryUsage}MB)');
+    debugPrint(
+        '🚀   → Performance Metrics: ${performanceService.getPerformanceMetrics()}');
+    debugPrint(
+        '🚀   → Monitoring Features: CPU, Memory, Network, Crashes, ANRs');
 
-    final phase1Duration = DateTime.now().difference(phase1StartTime).inMilliseconds;
+    final phase1Duration =
+        DateTime.now().difference(phase1StartTime).inMilliseconds;
     final phase1TotalMemory = _getMemoryUsage() - phase1Memory;
-    debugPrint('✅ ServiceProviders: Phase 1 completed in ${phase1Duration}ms (${phase1TotalMemory}MB memory used)');
+    debugPrint(
+        '✅ ServiceProviders: Phase 1 completed in ${phase1Duration}ms (${phase1TotalMemory}MB memory used)');
     debugPrint('🚀 ServiceProviders: ');
 
     // Phase 2: Core Domain Services (Enhanced with Analytics)
-    debugPrint('🚀 ServiceProviders: 🧩 PHASE 2: CORE DOMAIN SERVICES (ENHANCED)');
-    debugPrint('🚀 ServiceProviders: ================================================');
+    debugPrint(
+        '🚀 ServiceProviders: 🧩 PHASE 2: CORE DOMAIN SERVICES (ENHANCED)');
+    debugPrint(
+        '🚀 ServiceProviders: ================================================');
 
     final phase2StartTime = DateTime.now();
     final phase2Memory = _getMemoryUsage();
@@ -372,7 +392,8 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
 
     // User Service (Authentication foundation)
     debugPrint('🚀 Step 2.1: 👤 Enhanced User Service & Authentication');
-    debugPrint('🚀   → Features: JWT management, profile sync, role-based access');
+    debugPrint(
+        '🚀   → Features: JWT management, profile sync, role-based access');
     debugPrint('🚀   → Dependencies: ApiService, HiveService');
     debugPrint('🚀   → Priority: HIGH (Authentication foundation)');
     debugPrint('🚀   → Enhanced: Session analytics, behavior tracking');
@@ -387,10 +408,13 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
 
       // Actually use the variables to avoid unused warnings
       // Ensure services are properly initialized
-      assert(userService.runtimeType == UserService, 'UserService not properly initialized');
-      assert(authNotifier.runtimeType == AuthenticationNotifier, 'AuthenticationNotifier not properly initialized');
+      assert(userService.runtimeType == UserService,
+          'UserService not properly initialized');
+      assert(authNotifier.runtimeType == AuthenticationNotifier,
+          'AuthenticationNotifier not properly initialized');
 
-      final userInitDuration = DateTime.now().difference(userInitStart).inMilliseconds;
+      final userInitDuration =
+          DateTime.now().difference(userInitStart).inMilliseconds;
       return {
         'service': 'UserService',
         'duration_ms': userInitDuration,
@@ -402,7 +426,8 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
 
     // Service Management (Core domain logic with enhanced analytics)
     debugPrint('🚀 Step 2.2: 🔧 Enhanced Service Management System');
-    debugPrint('🚀   → Features: Categories, subcategories, services, requests');
+    debugPrint(
+        '🚀   → Features: Categories, subcategories, services, requests');
     debugPrint('🚀   → Caching: Intelligent local caching with TTL');
     debugPrint('🚀   → Real-time: Stream-based updates');
     debugPrint('🚀   → Priority: HIGH (Core business logic)');
@@ -410,18 +435,24 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
     coreServiceFutures['serviceManagement'] = Future(() async {
       final serviceInitStart = DateTime.now();
       final serviceManagement = ref.read(serviceManagementServiceProvider);
-      debugPrint('✅ ServiceProviders: Service management provider instantiated');
+      debugPrint(
+          '✅ ServiceProviders: Service management provider instantiated');
 
       // Pre-load categories for better UX with analytics
       try {
-        final categoriesResponse = await serviceManagement.getCategories(useCache: true);
+        final categoriesResponse =
+            await serviceManagement.getCategories(useCache: true);
         debugPrint('✅ ServiceProviders: Categories pre-loaded successfully');
-        debugPrint('🚀   → Categories loaded: ${categoriesResponse.data?.length ?? 0}');
+        debugPrint(
+            '🚀   → Categories loaded: ${categoriesResponse.data?.length ?? 0}');
 
         // Enhanced analytics for preloaded data
-        if (categoriesResponse.data != null && categoriesResponse.data!.isNotEmpty) {
-          final activeCategories = categoriesResponse.data!.where((c) => c.isActive).length;
-          final inactiveCategories = categoriesResponse.data!.length - activeCategories;
+        if (categoriesResponse.data != null &&
+            categoriesResponse.data!.isNotEmpty) {
+          final activeCategories =
+              categoriesResponse.data!.where((c) => c.isActive).length;
+          final inactiveCategories =
+              categoriesResponse.data!.length - activeCategories;
           debugPrint('🚀   → Active Categories: $activeCategories');
           debugPrint('🚀   → Inactive Categories: $inactiveCategories');
           debugPrint(
@@ -431,20 +462,29 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
         debugPrint('⚠️ ServiceProviders: Category pre-loading failed: $e');
       }
 
-      final serviceInitDuration = DateTime.now().difference(serviceInitStart).inMilliseconds;
+      final serviceInitDuration =
+          DateTime.now().difference(serviceInitStart).inMilliseconds;
       return {
         'service': 'ServiceManagement',
         'duration_ms': serviceInitDuration,
         'memory_mb': 4.8, // Estimated higher due to caching
         'status': 'completed',
-        'features': ['Categories', 'Services', 'Requests', 'Analytics', 'Caching'],
+        'features': [
+          'Categories',
+          'Services',
+          'Requests',
+          'Analytics',
+          'Caching'
+        ],
       };
     });
 
     // AI Service (Machine Learning features with enhanced analytics)
     debugPrint('🚀 Step 2.3: 🤖 Enhanced AI Service & ML Recommendations');
-    debugPrint('🚀   → Features: Service suggestions, bid optimization, message generation');
-    debugPrint('🚀   → ML Models: Collaborative filtering, price prediction, NLP');
+    debugPrint(
+        '🚀   → Features: Service suggestions, bid optimization, message generation');
+    debugPrint(
+        '🚀   → ML Models: Collaborative filtering, price prediction, NLP');
     debugPrint('🚀   → Learning: Continuous improvement via user feedback');
     debugPrint('🚀   → Priority: MEDIUM (Enhancement feature)');
     debugPrint('🚀   → Enhanced: Advanced algorithms, performance tracking');
@@ -456,52 +496,70 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
       // Enhanced health check for AI service with performance metrics
       try {
         final aiHealth = await aiService.checkAIServiceHealth();
-        debugPrint('✅ ServiceProviders: AI service health: ${aiHealth['status']}');
-        debugPrint('🚀   → AI Response Time: ${aiHealth['response_time_ms']}ms');
-        debugPrint('🚀   → AI Features Available: ${aiHealth['features_available']}');
-        debugPrint('🚀   → AI Model Version: ${aiHealth['model_version'] ?? 'Unknown'}');
+        debugPrint(
+            '✅ ServiceProviders: AI service health: ${aiHealth['status']}');
+        debugPrint(
+            '🚀   → AI Response Time: ${aiHealth['response_time_ms']}ms');
+        debugPrint(
+            '🚀   → AI Features Available: ${aiHealth['features_available']}');
+        debugPrint(
+            '🚀   → AI Model Version: ${aiHealth['model_version'] ?? 'Unknown'}');
       } catch (e) {
         debugPrint('⚠️ ServiceProviders: AI service health check failed: $e');
       }
 
-      final aiInitDuration = DateTime.now().difference(aiInitStart).inMilliseconds;
+      final aiInitDuration =
+          DateTime.now().difference(aiInitStart).inMilliseconds;
       return {
         'service': 'AIService',
         'duration_ms': aiInitDuration,
         'memory_mb': 3.2, // Estimated
         'status': 'completed',
-        'features': ['Service Suggestions', 'Bid Optimization', 'Message Generation'],
+        'features': [
+          'Service Suggestions',
+          'Bid Optimization',
+          'Message Generation'
+        ],
       };
     });
 
     // Wait for core services to complete with detailed analytics
-    debugPrint('🚀 ServiceProviders: ⏳ Waiting for enhanced core services initialization...');
+    debugPrint(
+        '🚀 ServiceProviders: ⏳ Waiting for enhanced core services initialization...');
     final coreResults = await Future.wait(coreServiceFutures.values);
 
     // Analyze core services initialization results
-    final totalCoreInitTime = coreResults.fold<int>(0, (sum, result) => sum + (result['duration_ms'] as int));
-    final totalCoreMemory = coreResults.fold<double>(0, (sum, result) => sum + (result['memory_mb'] as double));
+    final totalCoreInitTime = coreResults.fold<int>(
+        0, (sum, result) => sum + (result['duration_ms'] as int));
+    final totalCoreMemory = coreResults.fold<double>(
+        0, (sum, result) => sum + (result['memory_mb'] as double));
 
     debugPrint('🚀 ServiceProviders: 📊 CORE SERVICES ANALYTICS:');
     debugPrint('🚀   → Total Core Init Time: ${totalCoreInitTime}ms');
-    debugPrint('🚀   → Total Core Memory Usage: ${totalCoreMemory.toStringAsFixed(1)}MB');
+    debugPrint(
+        '🚀   → Total Core Memory Usage: ${totalCoreMemory.toStringAsFixed(1)}MB');
 
     for (var result in coreResults) {
       final serviceName = result['service'];
       final duration = result['duration_ms'];
       final memory = result['memory_mb'];
       final features = result['features'] as List<String>;
-      debugPrint('🚀   → $serviceName: ${duration}ms, ${memory}MB, ${features.length} features');
+      debugPrint(
+          '🚀   → $serviceName: ${duration}ms, ${memory}MB, ${features.length} features');
     }
 
-    final phase2Duration = DateTime.now().difference(phase2StartTime).inMilliseconds;
+    final phase2Duration =
+        DateTime.now().difference(phase2StartTime).inMilliseconds;
     final phase2TotalMemory = _getMemoryUsage() - phase2Memory;
-    debugPrint('✅ ServiceProviders: Phase 2 completed in ${phase2Duration}ms (${phase2TotalMemory}MB memory used)');
+    debugPrint(
+        '✅ ServiceProviders: Phase 2 completed in ${phase2Duration}ms (${phase2TotalMemory}MB memory used)');
     debugPrint('🚀 ServiceProviders: ');
 
     // Phase 3: Supporting Services (Enhanced with Performance Tracking)
-    debugPrint('🚀 ServiceProviders: 🔌 PHASE 3: SUPPORTING SERVICES (ENHANCED)');
-    debugPrint('🚀 ServiceProviders: ================================================');
+    debugPrint(
+        '🚀 ServiceProviders: 🔌 PHASE 3: SUPPORTING SERVICES (ENHANCED)');
+    debugPrint(
+        '🚀 ServiceProviders: ================================================');
 
     final phase3StartTime = DateTime.now();
     final phase3Memory = _getMemoryUsage();
@@ -509,11 +567,31 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
 
     // Enhanced Supporting Services with individual performance tracking
     final supportingServices = [
-      {'name': 'Booking', 'emoji': '📅', 'provider': () => ref.read(bookingServiceProvider)},
-      {'name': 'Messaging', 'emoji': '💬', 'provider': () => ref.read(messagingServiceProvider)},
-      {'name': 'Notification', 'emoji': '🔔', 'provider': () => ref.read(notificationServiceProvider)},
-      {'name': 'Payment', 'emoji': '💳', 'provider': () => ref.read(paymentServiceProvider)},
-      {'name': 'Product', 'emoji': '📦', 'provider': () => ref.read(productServiceProvider)},
+      {
+        'name': 'Booking',
+        'emoji': '📅',
+        'provider': () => ref.read(bookingServiceProvider)
+      },
+      {
+        'name': 'Messaging',
+        'emoji': '💬',
+        'provider': () => ref.read(messagingServiceProvider)
+      },
+      {
+        'name': 'Notification',
+        'emoji': '🔔',
+        'provider': () => ref.read(notificationServiceProvider)
+      },
+      {
+        'name': 'Payment',
+        'emoji': '💳',
+        'provider': () => ref.read(paymentServiceProvider)
+      },
+      {
+        'name': 'Product',
+        'emoji': '📦',
+        'provider': () => ref.read(productServiceProvider)
+      },
     ];
 
     for (final service in supportingServices) {
@@ -521,13 +599,16 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
       final emoji = service['emoji'] as String;
       final provider = service['provider'] as Function;
 
-      debugPrint('🚀 Step 3.${supportingServices.indexOf(service) + 1}: $emoji Enhanced $serviceName System');
+      debugPrint(
+          '🚀 Step 3.${supportingServices.indexOf(service) + 1}: $emoji Enhanced $serviceName System');
 
       supportServiceFutures[serviceName.toLowerCase()] = Future(() async {
         final serviceInitStart = DateTime.now();
         provider();
-        final serviceInitDuration = DateTime.now().difference(serviceInitStart).inMilliseconds;
-        debugPrint('✅ ServiceProviders: $serviceName service provider ready (${serviceInitDuration}ms)');
+        final serviceInitDuration =
+            DateTime.now().difference(serviceInitStart).inMilliseconds;
+        debugPrint(
+            '✅ ServiceProviders: $serviceName service provider ready (${serviceInitDuration}ms)');
 
         return {
           'service': serviceName,
@@ -539,32 +620,42 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
     }
 
     // Wait for supporting services with analytics
-    debugPrint('🚀 ServiceProviders: ⏳ Waiting for enhanced supporting services initialization...');
+    debugPrint(
+        '🚀 ServiceProviders: ⏳ Waiting for enhanced supporting services initialization...');
     final supportResults = await Future.wait(supportServiceFutures.values);
 
     // Analyze supporting services results
-    final totalSupportInitTime = supportResults.fold<int>(0, (sum, result) => sum + (result['duration_ms'] as int));
-    final totalSupportMemory = supportResults.fold<double>(0, (sum, result) => sum + (result['memory_mb'] as double));
+    final totalSupportInitTime = supportResults.fold<int>(
+        0, (sum, result) => sum + (result['duration_ms'] as int));
+    final totalSupportMemory = supportResults.fold<double>(
+        0, (sum, result) => sum + (result['memory_mb'] as double));
 
     debugPrint('🚀 ServiceProviders: 📊 SUPPORTING SERVICES ANALYTICS:');
     debugPrint('🚀   → Total Support Init Time: ${totalSupportInitTime}ms');
-    debugPrint('🚀   → Total Support Memory Usage: ${totalSupportMemory.toStringAsFixed(1)}MB');
+    debugPrint(
+        '🚀   → Total Support Memory Usage: ${totalSupportMemory.toStringAsFixed(1)}MB');
 
-    final phase3Duration = DateTime.now().difference(phase3StartTime).inMilliseconds;
+    final phase3Duration =
+        DateTime.now().difference(phase3StartTime).inMilliseconds;
     final phase3TotalMemory = _getMemoryUsage() - phase3Memory;
-    debugPrint('✅ ServiceProviders: Phase 3 completed in ${phase3Duration}ms (${phase3TotalMemory}MB memory used)');
+    debugPrint(
+        '✅ ServiceProviders: Phase 3 completed in ${phase3Duration}ms (${phase3TotalMemory}MB memory used)');
     debugPrint('🚀 ServiceProviders: ');
 
     // Final Comprehensive Analysis
-    final totalInitDuration = DateTime.now().difference(initStartTime).inMilliseconds;
+    final totalInitDuration =
+        DateTime.now().difference(initStartTime).inMilliseconds;
     final totalMemoryUsed = _getMemoryUsage() - baselineMemory;
 
-    debugPrint('🚀 ServiceProviders: ==========================================');
+    debugPrint(
+        '🚀 ServiceProviders: ==========================================');
     debugPrint('🎉 ServiceProviders: ENHANCED INITIALIZATION COMPLETED! 🎉');
-    debugPrint('🚀 ServiceProviders: ==========================================');
+    debugPrint(
+        '🚀 ServiceProviders: ==========================================');
     debugPrint('🎉 → 📊 COMPREHENSIVE PERFORMANCE SUMMARY:');
     debugPrint('🎉   → Total Initialization Time: ${totalInitDuration}ms');
-    debugPrint('🎉   → Total Memory Usage: ${totalMemoryUsed.toStringAsFixed(1)}MB');
+    debugPrint(
+        '🎉   → Total Memory Usage: ${totalMemoryUsed.toStringAsFixed(1)}MB');
     debugPrint(
         '🎉   → Memory Efficiency: ${(totalMemoryUsed / (coreResults.length + supportResults.length)).toStringAsFixed(1)}MB per service');
     debugPrint(
@@ -578,11 +669,14 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
         '🎉   → Initialization Speed: ${totalInitDuration < 2000 ? '🟢 EXCELLENT' : totalInitDuration < 5000 ? '🟡 GOOD' : '🔴 NEEDS_OPTIMIZATION'}');
     debugPrint(
         '🎉   → Memory Efficiency: ${totalMemoryUsed < 20 ? '🟢 EXCELLENT' : totalMemoryUsed < 40 ? '🟡 GOOD' : '🔴 HIGH_USAGE'}');
-    debugPrint('🎉   → Service Coverage: 🟢 COMPLETE (${coreResults.length + supportResults.length} services)');
+    debugPrint(
+        '🎉   → Service Coverage: 🟢 COMPLETE (${coreResults.length + supportResults.length} services)');
     debugPrint('🎉 → 🧩 ENHANCED SERVICE ARCHITECTURE READY:');
-    debugPrint('🎉   → Total Services: ${coreResults.length + supportResults.length} services + 2 monitoring services');
+    debugPrint(
+        '🎉   → Total Services: ${coreResults.length + supportResults.length} services + 2 monitoring services');
     debugPrint('🎉   → Authentication: JWT-based with auto-refresh');
-    debugPrint('🎉   → API Integration: CodeSandbox environment with retry logic');
+    debugPrint(
+        '🎉   → API Integration: CodeSandbox environment with retry logic');
     debugPrint('🎉   → Local Storage: Hive database with intelligent caching');
     debugPrint('🎉   → State Management: Riverpod dependency injection');
     debugPrint('🎉   → Real-time Updates: Stream-based synchronization');
@@ -592,14 +686,18 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
     debugPrint('🎉   → Business Intelligence: Analytics and insights enabled');
     debugPrint('🎉   → Memory Management: Optimized resource usage');
     debugPrint('🎉 → 🚀 APPLICATION READY FOR ENHANCED USER INTERACTION!');
-    debugPrint('🚀 ServiceProviders: ==========================================');
+    debugPrint(
+        '🚀 ServiceProviders: ==========================================');
   } catch (e, stackTrace) {
-    final errorDuration = DateTime.now().difference(initStartTime).inMilliseconds;
+    final errorDuration =
+        DateTime.now().difference(initStartTime).inMilliseconds;
     final errorMemory = _getMemoryUsage() - baselineMemory;
     debugPrint('🚀 ServiceProviders: ❌ ENHANCED INITIALIZATION FAILED!');
-    debugPrint('🚀 ServiceProviders: ==========================================');
+    debugPrint(
+        '🚀 ServiceProviders: ==========================================');
     debugPrint('❌ → Error after ${errorDuration}ms: $e');
-    debugPrint('❌ → Memory used before failure: ${errorMemory.toStringAsFixed(1)}MB');
+    debugPrint(
+        '❌ → Memory used before failure: ${errorMemory.toStringAsFixed(1)}MB');
     debugPrint('❌ → Stack trace (first 5 lines):');
     stackTrace.toString().split('\n').take(5).forEach((line) {
       debugPrint('❌   $line');
@@ -607,7 +705,8 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
     debugPrint('❌ → Recovery: Some services may not be available');
     debugPrint('❌ → App will continue with limited functionality');
     debugPrint('❌ → Recommendation: Check network connectivity and API status');
-    debugPrint('🚀 ServiceProviders: ==========================================');
+    debugPrint(
+        '🚀 ServiceProviders: ==========================================');
     rethrow;
   }
 });
@@ -621,7 +720,8 @@ double _getMemoryUsage() {
     // Simulated memory usage - in production, use:
     // import 'dart:developer' as developer;
     // developer.Service.getVMMemoryUsage()
-    return DateTime.now().millisecondsSinceEpoch % 100 + 10.0; // Simulated 10-110 MB
+    return DateTime.now().millisecondsSinceEpoch % 100 +
+        10.0; // Simulated 10-110 MB
   } catch (e) {
     debugPrint('⚠️ Memory tracking unavailable: $e');
     return 0.0;
@@ -631,7 +731,8 @@ double _getMemoryUsage() {
 /// Enhanced service performance metrics
 /// Provides detailed performance analytics for all initialized services
 Map<String, dynamic> getServicePerformanceMetrics() {
-  debugPrint('📊 ServiceProviders: Generating comprehensive performance metrics');
+  debugPrint(
+      '📊 ServiceProviders: Generating comprehensive performance metrics');
 
   final metrics = {
     'timestamp': DateTime.now().toIso8601String(),
@@ -663,10 +764,13 @@ Map<String, dynamic> getServicePerformanceMetrics() {
 
 /// Enhanced authentication state provider with analytics
 /// Provides comprehensive authentication state management with performance tracking
-final authenticationStateProvider = StateNotifierProvider<AuthenticationNotifier, AuthenticationState>((ref) {
+final authenticationStateProvider =
+    StateNotifierProvider<AuthenticationNotifier, AuthenticationState>((ref) {
   debugPrint('🔐 ServiceProviders: Creating enhanced AuthenticationNotifier');
-  debugPrint('🔐 → Features: State persistence, session analytics, security monitoring');
-  debugPrint('🔐 → Integration: UserService, API refresh tokens, secure storage');
+  debugPrint(
+      '🔐 → Features: State persistence, session analytics, security monitoring');
+  debugPrint(
+      '🔐 → Integration: UserService, API refresh tokens, secure storage');
 
   final userService = ref.watch(userServiceProvider);
   final authNotifier = AuthenticationNotifier(userService);

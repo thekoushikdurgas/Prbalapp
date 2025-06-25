@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/admin/category/components/category_filter_option.dart';
 
 /// CategoryFilterBottomSheet - Extracted component for filter bottom sheet
@@ -29,7 +29,8 @@ class CategoryFilterBottomSheet extends StatelessWidget {
     required String currentFilter,
     required Function(String) onFilterSelected,
   }) async {
-    debugPrint('🔧 CategoryFilterBottomSheet: Showing modern filter bottom sheet');
+    debugPrint(
+        '🔧 CategoryFilterBottomSheet: Showing modern filter bottom sheet');
 
     await showModalBottomSheet(
       context: context,
@@ -57,15 +58,21 @@ class CategoryFilterBottomSheet extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark ? [const Color(0xFF374151), const Color(0xFF1F2937)] : [Colors.white, const Color(0xFFF8FAFC)],
+          colors: isDark
+              ? [const Color(0xFF374151), const Color(0xFF1F2937)]
+              : [Colors.white, const Color(0xFFF8FAFC)],
         ),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.2),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -133,7 +140,7 @@ class CategoryFilterBottomSheet extends StatelessWidget {
               ),
             ),
             child: Icon(
-              LineIcons.filter,
+              Prbal.filter,
               color: Theme.of(context).primaryColor,
               size: 24.sp,
             ),
@@ -175,11 +182,12 @@ class CategoryFilterBottomSheet extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                debugPrint('🔧 CategoryFilterBottomSheet: Close button pressed');
+                debugPrint(
+                    '🔧 CategoryFilterBottomSheet: Close button pressed');
                 Navigator.of(context).pop();
               },
               icon: Icon(
-                LineIcons.times,
+                Prbal.cross,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
                 size: 20.sp,
               ),
@@ -205,12 +213,13 @@ class CategoryFilterBottomSheet extends StatelessWidget {
           CategoryFilterOption(
             title: 'All Categories',
             subtitle: 'Show both active and inactive categories',
-            icon: LineIcons.list,
+            icon: Prbal.list,
             value: 'all',
             currentFilter: currentFilter,
             isDark: isDark,
             onSelected: (value) {
-              debugPrint('🔧 CategoryFilterBottomSheet: Filter option selected: $value');
+              debugPrint(
+                  '🔧 CategoryFilterBottomSheet: Filter option selected: $value');
               onFilterSelected(value);
               Navigator.of(context).pop();
             },
@@ -221,13 +230,14 @@ class CategoryFilterBottomSheet extends StatelessWidget {
           CategoryFilterOption(
             title: 'Active Categories',
             subtitle: 'Show only active categories',
-            icon: LineIcons.checkCircle,
+            icon: Prbal.checkCircle,
             value: 'active',
             currentFilter: currentFilter,
             isDark: isDark,
             color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
             onSelected: (value) {
-              debugPrint('🔧 CategoryFilterBottomSheet: Filter option selected: $value');
+              debugPrint(
+                  '🔧 CategoryFilterBottomSheet: Filter option selected: $value');
               onFilterSelected(value);
               Navigator.of(context).pop();
             },
@@ -238,13 +248,14 @@ class CategoryFilterBottomSheet extends StatelessWidget {
           CategoryFilterOption(
             title: 'Inactive Categories',
             subtitle: 'Show only inactive categories',
-            icon: LineIcons.pauseCircle,
+            icon: Prbal.pauseCircle,
             value: 'inactive',
             currentFilter: currentFilter,
             isDark: isDark,
             color: isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
             onSelected: (value) {
-              debugPrint('🔧 CategoryFilterBottomSheet: Filter option selected: $value');
+              debugPrint(
+                  '🔧 CategoryFilterBottomSheet: Filter option selected: $value');
               onFilterSelected(value);
               Navigator.of(context).pop();
             },

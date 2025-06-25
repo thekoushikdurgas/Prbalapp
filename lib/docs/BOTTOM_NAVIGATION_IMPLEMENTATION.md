@@ -36,24 +36,24 @@ This implementation provides a modern, animated bottom navigation system that su
 
 **Tabs**:
 
-1. **Dashboard** (`LineIcons.home`)
+1. **Dashboard** (`home`)
    - Service categories overview
    - Quick stats (Active Services, Pending Requests, Rating)
    - Recent activity feed
    - Service management shortcuts
 
-2. **Explore** (`LineIcons.search`)
+2. **Explore** (`search`)
    - Map view of customer requests
    - Real-time service opportunities
    - Advanced filtering options
    - Bidding interface
 
-3. **Orders** (`LineIcons.briefcase`)
+3. **Orders** (`briefcase`)
    - Pending orders (Accept/Decline)
    - Active orders (In Progress)
    - Completed orders (History & Reviews)
 
-4. **Settings** (`LineIcons.cog`)
+4. **Settings** (`cog`)
    - Business profile management
    - Service configurations
    - Payment & billing settings
@@ -64,24 +64,24 @@ This implementation provides a modern, animated bottom navigation system that su
 
 **Tabs**:
 
-1. **Home** (`LineIcons.home`)
+1. **Home** (`home`)
    - Service discovery
    - Promotional banners
    - Popular service categories
    - Recent service history
 
-2. **Explore** (`LineIcons.compass`)
+2. **Explore** (`compass`)
    - Map view of available services
    - Service provider listings
    - Real-time availability
    - Advanced search & filters
 
-3. **Bookings** (`LineIcons.clipboard`)
+3. **Bookings** (`clipboard`)
    - Upcoming bookings
    - Active services
    - Booking history & reviews
 
-4. **Profile** (`LineIcons.user`)
+4. **Profile** (`user`)
    - Personal profile management
    - Account settings
    - Payment methods
@@ -92,25 +92,25 @@ This implementation provides a modern, animated bottom navigation system that su
 
 **Tabs**:
 
-1. **Analytics** (`LineIcons.desktop`)
+1. **Analytics** (`desktop`)
    - System metrics dashboard
    - User analytics
    - Revenue tracking
    - Platform health monitoring
 
-2. **Users** (`LineIcons.users`)
+2. **Users** (`users`)
    - User management interface
    - Provider/Customer listings
    - Account verification
    - User moderation tools
 
-3. **Moderation** (`LineIcons.tools`)
+3. **Moderation** (`tools`)
    - Content moderation
    - Service verification
    - Dispute resolution
    - System administration
 
-4. **Settings** (`LineIcons.cog`)
+4. **Settings** (`cog`)
    - Platform configuration
    - Admin controls
    - System settings

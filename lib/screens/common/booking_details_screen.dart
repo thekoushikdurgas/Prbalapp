@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class BookingDetailsScreen extends ConsumerStatefulWidget {
@@ -191,7 +191,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
       elevation: 0,
       leading: IconButton(
         icon: Icon(
-          LineIcons.arrowLeft,
+          Prbal.arrowLeft,
           color: isDark ? Colors.white : const Color(0xFF1F2937),
         ),
         onPressed: () => context.pop(),
@@ -199,14 +199,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
       actions: [
         IconButton(
           icon: Icon(
-            LineIcons.share,
+            Prbal.share,
             color: isDark ? Colors.white70 : const Color(0xFF6B7280),
           ),
           onPressed: () {},
         ),
         IconButton(
           icon: Icon(
-            LineIcons.verticalEllipsis,
+            Prbal.moreVertical,
             color: isDark ? Colors.white70 : const Color(0xFF6B7280),
           ),
           onPressed: () => _showMoreOptions(isDark),
@@ -298,7 +298,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           Row(
             children: [
               Icon(
-                LineIcons.calendar,
+                Prbal.calendar,
                 color: Colors.white70,
                 size: 16.sp,
               ),
@@ -390,14 +390,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           ),
           SizedBox(height: 16.h),
           _buildInfoRow(
-            icon: LineIcons.clock,
+            icon: Prbal.clock,
             label: 'Duration',
             value: bookingData['duration'],
             isDark: isDark,
           ),
           SizedBox(height: 12.h),
           _buildInfoRow(
-            icon: LineIcons.dollarSign,
+            icon: Prbal.dollarSign,
             label: 'Total Price',
             value: '\$${bookingData['price'].toStringAsFixed(2)}',
             isDark: isDark,
@@ -474,7 +474,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     provider['avatar'],
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(LineIcons.user, color: Colors.white, size: 30.sp),
+                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -495,7 +495,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     Row(
                       children: [
                         Icon(
-                          LineIcons.star,
+                          Prbal.star,
                           color: const Color(0xFFF59E0B),
                           size: 16.sp,
                         ),
@@ -539,7 +539,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        LineIcons.phone,
+                        Prbal.phone,
                         color: const Color(0xFF10B981),
                         size: 20.sp,
                       ),
@@ -568,7 +568,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        LineIcons.comment,
+                        Prbal.comment,
                         color: const Color(0xFF3B82F6),
                         size: 20.sp,
                       ),
@@ -629,7 +629,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  LineIcons.directions,
+                  Prbal.directions,
                   color: const Color(0xFF3B82F6),
                   size: 20.sp,
                 ),
@@ -641,7 +641,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                LineIcons.mapMarker,
+                Prbal.mapMarker,
                 color: const Color(0xFFEF4444),
                 size: 20.sp,
               ),
@@ -738,7 +738,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               ),
               child: isCompleted
                   ? Icon(
-                      LineIcons.check,
+                      Prbal.check,
                       color: Colors.white,
                       size: 12.sp,
                     )
@@ -846,7 +846,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                       bookingData['images'][index],
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Icon(
-                          LineIcons.image,
+                          Prbal.image,
                           color: isDark
                               ? Colors.white70
                               : const Color(0xFF9CA3AF)),
@@ -904,7 +904,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
-                  LineIcons.exclamationTriangle,
+                  Prbal.exclamationTriangle,
                   color: const Color(0xFFF59E0B),
                   size: 20.sp,
                 ),
@@ -1136,17 +1136,17 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(LineIcons.edit, color: Color(0xFF3B82F6)),
+              leading: const Icon(Prbal.edit, color: Color(0xFF3B82F6)),
               title: const Text('Modify Booking'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
-              leading: const Icon(LineIcons.calendar, color: Color(0xFFF59E0B)),
+              leading: const Icon(Prbal.calendar, color: Color(0xFFF59E0B)),
               title: const Text('Reschedule'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
-              leading: const Icon(LineIcons.flag, color: Color(0xFFEF4444)),
+              leading: const Icon(Prbal.flag, color: Color(0xFFEF4444)),
               title: const Text('Report Issue'),
               onTap: () => Navigator.pop(context),
             ),
@@ -1219,7 +1219,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(5, (index) {
                 return Icon(
-                  LineIcons.star,
+                  Prbal.star,
                   color: const Color(0xFFF59E0B),
                   size: 32.sp,
                 );

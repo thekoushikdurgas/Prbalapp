@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
 
 class ScheduleScreen extends ConsumerStatefulWidget {
@@ -35,7 +35,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
           IconButton(
             onPressed: () {},
             icon: Icon(
-              LineIcons.plus,
+              Prbal.plus,
               color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class MessagesScreen extends ConsumerStatefulWidget {
@@ -187,7 +187,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       leading: _isInChat
           ? IconButton(
               icon: Icon(
-                LineIcons.arrowLeft,
+                Prbal.arrowLeft,
                 color: isDark ? Colors.white : const Color(0xFF1F2937),
               ),
               onPressed: () {
@@ -198,7 +198,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
             )
           : IconButton(
               icon: Icon(
-                LineIcons.arrowLeft,
+                Prbal.arrowLeft,
                 color: isDark ? Colors.white : const Color(0xFF1F2937),
               ),
               onPressed: () => context.pop(),
@@ -220,12 +220,12 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                             widget.avatarUrl!,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) => Icon(
-                                LineIcons.user,
+                                Prbal.user,
                                 color: Colors.white,
                                 size: 20.sp),
                           ),
                         )
-                      : Icon(LineIcons.user, color: Colors.white, size: 20.sp),
+                      : Icon(Prbal.user, color: Colors.white, size: 20.sp),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -266,14 +266,14 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         if (_isInChat) ...[
           IconButton(
             icon: Icon(
-              LineIcons.phone,
+              Prbal.phone,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
             ),
             onPressed: () {},
           ),
           IconButton(
             icon: Icon(
-              LineIcons.video,
+              Prbal.video,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
             ),
             onPressed: () {},
@@ -281,7 +281,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         ] else ...[
           IconButton(
             icon: Icon(
-              LineIcons.plus,
+              Prbal.plus,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
             ),
             onPressed: () {},
@@ -320,7 +320,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                 fontSize: 14.sp,
               ),
               prefixIcon: Icon(
-                LineIcons.search,
+                Prbal.search,
                 color:
                     isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
                 size: 20.sp,
@@ -399,7 +399,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                           conversation['avatar'],
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Icon(
-                              LineIcons.user,
+                              Prbal.user,
                               color: Colors.white,
                               size: 24.sp),
                         ),
@@ -547,7 +547,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Icon(
-                LineIcons.user,
+                Prbal.user,
                 color: Colors.white,
                 size: 16.sp,
               ),
@@ -609,7 +609,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Icon(
-                LineIcons.user,
+                Prbal.user,
                 color: Colors.white,
                 size: 16.sp,
               ),
@@ -636,7 +636,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
         children: [
           IconButton(
             icon: Icon(
-              LineIcons.paperclip,
+              Prbal.paperclip,
               color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
             ),
             onPressed: () {},
@@ -691,7 +691,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                   }
                 },
                 child: Icon(
-                  LineIcons.paperPlane,
+                  Prbal.paperPlane,
                   color: Colors.white,
                   size: 20.sp,
                 ),

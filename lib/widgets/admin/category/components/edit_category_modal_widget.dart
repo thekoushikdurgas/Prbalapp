@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
+import 'package:prbal/services/api_service.dart';
+import 'package:prbal/widgets/admin/category/components/category_icon_picker.dart';
 
 class EditCategoryModalWidget extends StatefulWidget {
   final ServiceCategory category;
@@ -14,7 +16,8 @@ class EditCategoryModalWidget extends StatefulWidget {
   });
 
   @override
-  State<EditCategoryModalWidget> createState() => _EditCategoryModalWidgetState();
+  State<EditCategoryModalWidget> createState() =>
+      _EditCategoryModalWidgetState();
 }
 
 class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
@@ -27,6 +30,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
   late bool _isActive;
   bool _isLoading = false;
   String? _errorMessage;
+  String? _selectedIcon;
 
   @override
   void initState() {
@@ -34,15 +38,27 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
 
     // Pre-populate form with existing category data
     _nameController = TextEditingController(text: widget.category.name);
-    _descriptionController = TextEditingController(text: widget.category.description);
-    _sortOrderController = TextEditingController(text: widget.category.sortOrder.toString());
+    _descriptionController =
+        TextEditingController(text: widget.category.description);
+    _sortOrderController =
+        TextEditingController(text: widget.category.sortOrder.toString());
     _isActive = widget.category.isActive;
+    _selectedIcon = widget.category.iconUrl ??
+        widget.category
+            .icon; // ✨ Initialize with current iconUrl (fallback to icon)
 
-    debugPrint('✏️ EditCategoryModal: Initialized with category: ${widget.category.name}');
+    // Initialize service management service with API service
+    serviceManagementService = ServiceManagementService(ApiService());
+
+    debugPrint(
+        '✏️ EditCategoryModal: Initialized with category: ${widget.category.name}');
     debugPrint('✏️ → Name: ${widget.category.name}');
     debugPrint('✏️ → Description: ${widget.category.description}');
     debugPrint('✏️ → Sort Order: ${widget.category.sortOrder}');
     debugPrint('✏️ → Is Active: ${widget.category.isActive}');
+    debugPrint('✏️ → Current Icon: ${widget.category.icon ?? 'none'}');
+    debugPrint('✏️ → Current Icon URL: ${widget.category.iconUrl ?? 'none'}');
+    debugPrint('✏️ → Selected Icon: ${_selectedIcon ?? 'none'}');
   }
 
   @override
@@ -56,15 +72,21 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark ? [const Color(0xFF374151), const Color(0xFF1F2937)] : [Colors.white, const Color(0xFFF8FAFC)],
+          colors: isDark
+              ? [const Color(0xFF374151), const Color(0xFF1F2937)]
+              : [Colors.white, const Color(0xFFF8FAFC)],
         ),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.2),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -104,7 +126,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                   ),
                 ),
                 child: Icon(
-                  LineIcons.edit,
+                  Prbal.edit,
                   color: Colors.blue,
                   size: 24.sp,
                 ),
@@ -123,7 +145,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                       ),
                     ),
                     Text(
-                      'Modify "${widget.category.name}" details',
+                      'Modify "${widget.category.name}" with icon selection',
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -140,7 +162,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: Icon(
-                    LineIcons.times,
+                    Prbal.cross,
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
                     size: 20.sp,
                   ),
@@ -168,7 +190,8 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
               ),
               child: Row(
                 children: [
-                  Icon(LineIcons.exclamationTriangle, color: Colors.red, size: 20.sp),
+                  Icon(Prbal.exclamationTriangle,
+                      color: Colors.red, size: 20.sp),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
@@ -193,10 +216,14 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                   // Name field
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                      color: isDark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                        color: isDark
+                            ? Colors.grey[600]!
+                            : const Color(0xFFD1D5DB),
                       ),
                     ),
                     child: TextFormField(
@@ -213,7 +240,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                         prefixIcon: Container(
                           padding: EdgeInsets.all(10.w),
                           child: Icon(
-                            LineIcons.tag,
+                            Prbal.tag,
                             color: Colors.blue,
                             size: 20.sp,
                           ),
@@ -241,10 +268,14 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                   // Description field
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                      color: isDark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                        color: isDark
+                            ? Colors.grey[600]!
+                            : const Color(0xFFD1D5DB),
                       ),
                     ),
                     child: TextFormField(
@@ -262,7 +293,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                         prefixIcon: Container(
                           padding: EdgeInsets.all(10.w),
                           child: Icon(
-                            LineIcons.edit,
+                            Prbal.edit,
                             color: Colors.blue,
                             size: 20.sp,
                           ),
@@ -290,10 +321,14 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                   // Sort order field
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                      color: isDark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                        color: isDark
+                            ? Colors.grey[600]!
+                            : const Color(0xFFD1D5DB),
                       ),
                     ),
                     child: TextFormField(
@@ -311,7 +346,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                         prefixIcon: Container(
                           padding: EdgeInsets.all(10.w),
                           child: Icon(
-                            LineIcons.sort,
+                            Prbal.sort,
                             color: Colors.blue,
                             size: 20.sp,
                           ),
@@ -339,16 +374,50 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                     ),
                   ),
 
+                  SizedBox(height: 16.h),
+
+                  // Icon Picker Section
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFF9FAFB),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.grey[600]!
+                            : const Color(0xFFD1D5DB),
+                      ),
+                    ),
+                    child: CategoryIconPicker(
+                      selectedIcon: _selectedIcon,
+                      onIconSelected: (icon) {
+                        setState(() {
+                          _selectedIcon = icon;
+                        });
+                        debugPrint(
+                            '🎨 EditCategoryModal: Icon selected: ${icon ?? 'none'}');
+                      },
+                      showSearchBar: true,
+                      crossAxisCount: 4,
+                    ),
+                  ),
+
                   SizedBox(height: 20.h),
 
                   // Active status switch
                   Container(
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                      color: isDark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                        color: isDark
+                            ? Colors.grey[600]!
+                            : const Color(0xFFD1D5DB),
                       ),
                     ),
                     child: Row(
@@ -358,14 +427,16 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                (_isActive ? Colors.green : Colors.orange).withValues(alpha: 0.2),
-                                (_isActive ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                                (_isActive ? Colors.green : Colors.orange)
+                                    .withValues(alpha: 0.2),
+                                (_isActive ? Colors.green : Colors.orange)
+                                    .withValues(alpha: 0.1),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Icon(
-                            _isActive ? LineIcons.checkCircle : LineIcons.pauseCircle,
+                            _isActive ? Prbal.checkCircle : Prbal.pauseCircle,
                             color: _isActive ? Colors.green : Colors.orange,
                             size: 20.sp,
                           ),
@@ -380,7 +451,9 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF2D3748),
                                 ),
                               ),
                               SizedBox(height: 4.h),
@@ -390,7 +463,9 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                                     : 'Category is hidden from users',
                                 style: TextStyle(
                                   fontSize: 13.sp,
-                                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                  color: isDark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
                                 ),
                               ),
                             ],
@@ -398,7 +473,8 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                         ),
                         Switch(
                           value: _isActive,
-                          onChanged: (value) => setState(() => _isActive = value),
+                          onChanged: (value) =>
+                              setState(() => _isActive = value),
                           activeColor: Colors.green,
                           inactiveThumbColor: Colors.orange,
                         ),
@@ -482,7 +558,7 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                LineIcons.save,
+                                Prbal.save,
                                 color: Colors.white,
                                 size: 18.sp,
                               ),
@@ -509,7 +585,8 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
 
   /// Update category using the service management service
   Future<void> _updateCategory() async {
-    debugPrint('🔄 EditCategoryModal: Starting category update for: ${widget.category.name}');
+    debugPrint(
+        '🔄 EditCategoryModal: Starting category update for: ${widget.category.name}');
 
     setState(() => _errorMessage = null);
 
@@ -521,14 +598,17 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
     final name = _nameController.text.trim();
     final description = _descriptionController.text.trim();
     final sortOrderText = _sortOrderController.text.trim();
-    final sortOrder =
-        sortOrderText.isEmpty ? widget.category.sortOrder : int.tryParse(sortOrderText) ?? widget.category.sortOrder;
+    final sortOrder = sortOrderText.isEmpty
+        ? widget.category.sortOrder
+        : int.tryParse(sortOrderText) ?? widget.category.sortOrder;
 
-    // Check if anything actually changed
+    // Check if anything actually changed (including iconUrl)
+    final originalIcon = widget.category.iconUrl ?? widget.category.icon;
     final hasChanges = name != widget.category.name ||
         description != widget.category.description ||
         sortOrder != widget.category.sortOrder ||
-        _isActive != widget.category.isActive;
+        _isActive != widget.category.isActive ||
+        _selectedIcon != originalIcon;
 
     if (!hasChanges) {
       debugPrint('ℹ️ EditCategoryModal: No changes detected, closing modal');
@@ -545,11 +625,13 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
       debugPrint('🔄 → New Description: $description');
       debugPrint('🔄 → New Sort Order: $sortOrder');
       debugPrint('🔄 → New Active Status: $_isActive');
+      debugPrint('🔄 → New Icon URL: ${_selectedIcon ?? 'none'}');
 
       final response = await serviceManagementService.updateCategory(
         categoryId: widget.category.id,
         name: name,
         description: description,
+        iconUrl: _selectedIcon, // ✨ Now passing selected icon as iconUrl to API
         sortOrder: sortOrder,
         isActive: _isActive,
       );
@@ -563,17 +645,19 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
             SnackBar(
               content: Row(
                 children: [
-                  Icon(LineIcons.checkCircle, color: Colors.white, size: 20.sp),
+                  Icon(Prbal.checkCircle, color: Colors.white, size: 20.sp),
                   SizedBox(width: 12.w),
                   Text(
                     'Category "${response.data!.name}" updated successfully!',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r)),
               margin: EdgeInsets.all(16.w),
             ),
           );
@@ -583,9 +667,68 @@ class _EditCategoryModalWidgetState extends State<EditCategoryModalWidget> {
         Navigator.of(context).pop();
       } else {
         debugPrint('❌ EditCategoryModal: API error - ${response.message}');
+
+        // Enhanced error handling with validation details
+        String errorMessage = response.message;
+        final validationErrors = <String>[];
+
+        // Check for validation errors in the response.errors
+        if (response.errors != null && response.errors!.isNotEmpty) {
+          debugPrint(
+              '❌ EditCategoryModal: Validation errors found in response.errors');
+
+          response.errors!.forEach((field, messages) {
+            if (messages is List) {
+              for (final message in messages) {
+                validationErrors.add('$field: $message');
+                debugPrint('❌ → Validation error - $field: $message');
+              }
+            } else {
+              validationErrors.add('$field: $messages');
+              debugPrint('❌ → Validation error - $field: $messages');
+            }
+          });
+        }
+
+        // Also check for nested validation errors in response data
+        // API returns: {"data": {"validation_errors": {"field": ["error"]}}}
+        try {
+          debugPrint('❌ EditCategoryModal: Full response analysis...');
+
+          // Try to parse the nested structure by checking the debug logs
+          // Since we see the validation error in logs, we can provide more specific error messages
+          if (response.message.contains('validation failed')) {
+            if (_selectedIcon != null) {
+              validationErrors.add(
+                  'Icon: Selected icon "$_selectedIcon" could not be processed');
+              validationErrors
+                  .add('Hint: Try selecting a different icon or leave blank');
+            }
+            validationErrors.add('Please check all fields and try again');
+          }
+
+          // Add field-specific validation hints
+          if (response.message.toLowerCase().contains('name')) {
+            validationErrors.add(
+                'Name: Please ensure the name is unique and follows naming rules');
+          }
+          if (response.message.toLowerCase().contains('description')) {
+            validationErrors
+                .add('Description: Please provide a more detailed description');
+          }
+        } catch (e) {
+          debugPrint(
+              '❌ EditCategoryModal: Error parsing response details - $e');
+        }
+
+        if (validationErrors.isNotEmpty) {
+          errorMessage = validationErrors.join('\n• ');
+          errorMessage = '• $errorMessage';
+        }
+
         setState(() {
           _isLoading = false;
-          _errorMessage = response.message;
+          _errorMessage = errorMessage;
         });
       }
     } catch (e) {

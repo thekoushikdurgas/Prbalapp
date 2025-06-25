@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
@@ -282,7 +282,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               // TODO: Navigate to admin settings
             },
             icon: Icon(
-              LineIcons.cog,
+              Prbal.cog,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
               size: 20.sp,
             ),
@@ -309,7 +309,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         // SettingsItemWidget(
         //   title: 'Category Management',
         //   subtitle: 'Advanced category settings and bulk operations',
-        //   icon: LineIcons.tags,
+        //   icon: Prbal.tags,
         //   iconColor: const Color(0xFF3182CE),
         //   onTap: () {
         //     debugPrint('⚙️ Category Management tapped');
@@ -319,7 +319,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         // SettingsItemWidget(
         //   title: 'Subcategory Management',
         //   subtitle: 'Advanced subcategory settings and organization',
-        //   icon: LineIcons.sitemap,
+        //   icon: Prbal.openstreetmap,
         //   iconColor: const Color(0xFF319795),
         //   onTap: () {
         //     debugPrint('⚙️ Subcategory Management tapped');
@@ -329,7 +329,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         // SettingsItemWidget(
         //   title: 'Service Management',
         //   subtitle: 'Advanced service controls and moderation',
-        //   icon: LineIcons.servicestack,
+        //   icon: Prbal.layers5,
         //   iconColor: const Color(0xFF38A169),
         //   onTap: () {
         //     debugPrint('⚙️ Service Management tapped');
@@ -348,7 +348,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'User Management',
           subtitle: 'Manage users, roles, and permissions',
-          icon: LineIcons.users,
+          icon: Prbal.users,
           iconColor: const Color(0xFF48BB78),
           onTap: () {
             debugPrint('⚙️ User Management tapped');
@@ -358,7 +358,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Platform Analytics',
           subtitle: 'View detailed platform statistics and reports',
-          icon: LineIcons.barChartAlt,
+          icon: Prbal.statsBars,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ Platform Analytics tapped');
@@ -368,7 +368,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'System Configuration',
           subtitle: 'Configure platform settings and features',
-          icon: LineIcons.cogs,
+          icon: Prbal.cogs,
           iconColor: const Color(0xFF667EEA),
           onTap: () {
             debugPrint('⚙️ System Configuration tapped');
@@ -378,7 +378,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Content Moderation',
           subtitle: 'Review and moderate platform content',
-          icon: LineIcons.alternateShield,
+          icon: Prbal.security,
           iconColor: const Color(0xFFED8936),
           onTap: () {
             debugPrint('⚙️ Content Moderation tapped');
@@ -388,7 +388,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Backup & Security',
           subtitle: 'Manage data backups and security settings',
-          icon: Icons.security,
+          icon: Prbal.security,
           iconColor: const Color(0xFF4299E1),
           onTap: () {
             debugPrint('⚙️ Backup & Security tapped');
@@ -398,7 +398,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Admin Privileges',
           subtitle: 'Manage admin roles and access levels',
-          icon: LineIcons.userShield,
+          icon: Prbal.shield4,
           iconColor: const Color(0xFFE53E3E),
           onTap: () => _showAdminPrivilegesDialog(),
           trailing: Container(
@@ -434,7 +434,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           title: Row(
             children: [
               Icon(
-                LineIcons.userShield,
+                Prbal.shield4,
                 color: const Color(0xFFE53E3E),
                 size: 24.sp,
               ),
@@ -488,7 +488,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
       child: Row(
         children: [
           Icon(
-            granted ? Icons.check_circle : Icons.cancel,
+            granted ? Prbal.checkCircle : Prbal.cancel,
             color: granted ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
             size: 16.sp,
           ),
@@ -590,7 +590,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           Row(
             children: [
               Icon(
-                LineIcons.alternateTachometer,
+                Prbal.tachometer,
                 color: const Color(0xFF4299E1),
                 size: 24.sp,
               ),
@@ -693,7 +693,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Category Management',
           subtitle: 'Create, edit, and organize service categories',
-          icon: LineIcons.tags,
+          icon: Prbal.tags,
           iconColor: const Color(0xFF3182CE),
           onTap: () {
             debugPrint('🛠️ Category Management tapped');
@@ -704,7 +704,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Subcategory Management',
           subtitle: 'Manage subcategories within service categories',
-          icon: LineIcons.sitemap,
+          icon: Prbal.openstreetmap,
           iconColor: const Color(0xFF319795),
           onTap: () {
             debugPrint('🛠️ Subcategory Management tapped');
@@ -715,7 +715,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         SettingsItemWidget(
           title: 'Service Management',
           subtitle: 'View, moderate, and manage all platform services',
-          icon: LineIcons.servicestack,
+          icon: Prbal.layers5,
           iconColor: const Color(0xFF38A169),
           onTap: () {
             debugPrint('🛠️ Service Management tapped');

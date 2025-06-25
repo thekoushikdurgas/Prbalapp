@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/utils/cubit/theme_cubit.dart';
 // import 'package:prbal/utils/theme/theme_caching.dart';
 
@@ -75,7 +75,7 @@ class ThemeSelectorWidget extends StatelessWidget {
                 context,
                 title: 'System Default',
                 subtitle: 'Follow device settings',
-                icon: LineIcons.mobilePhone,
+                icon: Prbal.mobilePhone,
                 isSelected: themeMode == ThemeMode.system,
                 onTap: () {
                   debugPrint(
@@ -91,7 +91,7 @@ class ThemeSelectorWidget extends StatelessWidget {
                 context,
                 title: 'Light',
                 subtitle: 'Light appearance',
-                icon: LineIcons.sun,
+                icon: Prbal.sun,
                 isSelected: themeMode == ThemeMode.light,
                 onTap: () {
                   debugPrint(
@@ -107,7 +107,7 @@ class ThemeSelectorWidget extends StatelessWidget {
                 context,
                 title: 'Dark',
                 subtitle: 'Dark appearance',
-                icon: LineIcons.moon,
+                icon: Prbal.moon,
                 isSelected: themeMode == ThemeMode.dark,
                 onTap: () {
                   debugPrint(
@@ -225,7 +225,7 @@ class ThemeSelectorWidget extends StatelessWidget {
                     debugPrint(
                         '🎨 ThemeSelectorWidget: Showing check icon for selected option - $title');
                     return Icon(
-                      LineIcons.check,
+                      Prbal.check,
                       color: const Color(0xFF3B82F6),
                       size: 20.sp,
                     );

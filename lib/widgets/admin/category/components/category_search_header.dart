@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// ====================================================================
 /// CATEGORY SEARCH HEADER COMPONENT
@@ -58,7 +58,8 @@ class CategorySearchHeader extends StatefulWidget {
   State<CategorySearchHeader> createState() => _CategorySearchHeaderState();
 }
 
-class _CategorySearchHeaderState extends State<CategorySearchHeader> with SingleTickerProviderStateMixin {
+class _CategorySearchHeaderState extends State<CategorySearchHeader>
+    with SingleTickerProviderStateMixin {
   // ========== ANIMATION CONTROLLER ==========
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -79,7 +80,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
@@ -101,7 +103,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    debugPrint('🔍 CategorySearchHeader: Building search header (isDark: $isDark)');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building search header (isDark: $isDark)');
     debugPrint(
         '🔍 CategorySearchHeader: Stats - Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
     debugPrint(
@@ -129,12 +132,16 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
             ),
             borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.grey.withValues(alpha: 0.2),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.1),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.4)
+                    : Colors.grey.withValues(alpha: 0.1),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
                 spreadRadius: 2,
@@ -210,7 +217,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
           widget.onBackPressed?.call();
         },
         icon: Icon(
-          LineIcons.arrowLeft,
+          Prbal.arrowLeft,
           size: 20.sp,
           color: Theme.of(context).primaryColor,
         ),
@@ -243,11 +250,15 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
         ),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.05),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -268,12 +279,14 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
           prefixIcon: Container(
             padding: EdgeInsets.all(10.w),
             child: Icon(
-              LineIcons.search,
+              Prbal.search,
               color: Theme.of(context).primaryColor,
               size: 18.sp,
             ),
           ),
-          suffixIcon: widget.searchController.text.isNotEmpty ? _buildClearSearchButton() : null,
+          suffixIcon: widget.searchController.text.isNotEmpty
+              ? _buildClearSearchButton()
+              : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 12.w,
@@ -303,7 +316,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
           HapticFeedback.lightImpact();
         },
         icon: Icon(
-          LineIcons.times,
+          Prbal.cross,
           color: Colors.grey[600],
           size: 14.sp,
         ),
@@ -321,7 +334,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
   Widget _buildFilterButton(bool isDark) {
     final bool hasActiveFilter = widget.currentFilter != 'all';
 
-    debugPrint('🔍 CategorySearchHeader: Building filter button (hasActiveFilter: $hasActiveFilter)');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building filter button (hasActiveFilter: $hasActiveFilter)');
 
     return Container(
       decoration: BoxDecoration(
@@ -371,7 +385,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
         icon: Stack(
           children: [
             Icon(
-              LineIcons.filter,
+              Prbal.filter,
               size: 18.sp,
               color: hasActiveFilter
                   ? Theme.of(context).primaryColor
@@ -406,27 +420,31 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
 
   /// Build results count badge
   Widget _buildResultsBadge(bool isDark) {
-    debugPrint('🔍 CategorySearchHeader: Building results badge (count: ${widget.filteredCount})');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building results badge (count: ${widget.filteredCount})');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.15),
-            (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.05),
+            (isDark ? const Color(0xFF10B981) : const Color(0xFF059669))
+                .withValues(alpha: 0.15),
+            (isDark ? const Color(0xFF10B981) : const Color(0xFF059669))
+                .withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: (isDark ? const Color(0xFF10B981) : const Color(0xFF059669)).withValues(alpha: 0.2),
+          color: (isDark ? const Color(0xFF10B981) : const Color(0xFF059669))
+              .withValues(alpha: 0.2),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LineIcons.barChartAlt,
+            Prbal.statsBars,
             size: 12.sp,
             color: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
           ),
@@ -456,7 +474,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
             child: _buildStatCard(
               'Total',
               widget.totalCount.toString(),
-              LineIcons.database,
+              Prbal.database,
               isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5),
               isDark,
             ),
@@ -466,7 +484,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
             child: _buildStatCard(
               'Active',
               widget.activeCount.toString(),
-              LineIcons.checkCircle,
+              Prbal.checkCircle,
               isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
               isDark,
             ),
@@ -476,7 +494,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
             child: _buildStatCard(
               'Inactive',
               widget.inactiveCount.toString(),
-              LineIcons.pauseCircle,
+              Prbal.pauseCircle,
               isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706),
               isDark,
             ),
@@ -487,7 +505,7 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
           //     child: _buildStatCard(
           //       'Selected',
           //       widget.selectedCount.toString(),
-          //       LineIcons.checkSquare,
+          //       Prbal.checkSquare,
           //       isDark ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED),
           //       isDark,
           //     ),
@@ -499,7 +517,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader> with Single
   }
 
   /// Build individual statistic card
-  Widget _buildStatCard(String label, String value, IconData icon, Color color, bool isDark) {
+  Widget _buildStatCard(
+      String label, String value, IconData icon, Color color, bool isDark) {
     return Container(
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(

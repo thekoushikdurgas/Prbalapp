@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_providers.dart';
 import 'package:prbal/services/user_service.dart';
 import 'package:prbal/services/hive_service.dart';
@@ -442,7 +442,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                   borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 child: Icon(
-                                  LineIcons.times,
+                                  Prbal.cross,
                                   size: 20.sp,
                                   color: isDark
                                       ? Colors.grey[400]
@@ -545,7 +545,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       ),
                                       SizedBox(width: 4.w),
                                       Icon(
-                                        LineIcons.angleDown,
+                                        Prbal.angleDown,
                                         size: 16.sp,
                                         color: isDark
                                             ? Colors.grey[400]
@@ -605,7 +605,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           Row(
                             children: [
                               Icon(
-                                LineIcons.exclamationTriangle,
+                                Prbal.exclamationTriangle,
                                 size: 16.sp,
                                 color: const Color(0xFFEF4444),
                               ),
@@ -701,7 +701,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             Expanded(
                               child: _buildSocialButton(
                                 'Google',
-                                LineIcons.googleLogo,
+                                Prbal.google11,
                                 Colors.red,
                                 () => _handleSocialLogin('google'),
                                 isDark,
@@ -711,7 +711,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             Expanded(
                               child: _buildSocialButton(
                                 'Apple',
-                                LineIcons.apple,
+                                Prbal.apple,
                                 isDark ? Colors.white : Colors.black,
                                 () => _handleSocialLogin('apple'),
                                 isDark,
@@ -870,7 +870,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Icon(
-                          LineIcons.times,
+                          Prbal.cross,
                           size: 20.sp,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                         ),
@@ -940,7 +940,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       color: isDark ? Colors.grey[400] : Colors.grey[500],
                     ),
                     prefixIcon: Icon(
-                      LineIcons.search,
+                      Prbal.search,
                       color: isDark ? Colors.grey[400] : Colors.grey[500],
                     ),
                     suffixIcon: _searchQuery.isNotEmpty
@@ -952,7 +952,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               });
                             },
                             child: Icon(
-                              LineIcons.times,
+                              Prbal.cross,
                               color:
                                   isDark ? Colors.grey[400] : Colors.grey[500],
                             ),
@@ -995,7 +995,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              LineIcons.search,
+                              Prbal.search,
                               size: 48.sp,
                               color:
                                   isDark ? Colors.grey[600] : Colors.grey[400],
@@ -1103,7 +1103,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
-                                      LineIcons.check,
+                                      Prbal.check,
                                       size: 16.sp,
                                       color: Colors.white,
                                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/admin/category/components/category_cards.dart';
 import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
@@ -40,7 +40,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
     Function(ServiceCategory)? onDelete,
     Function(ServiceCategory)? onToggleStatus,
   }) async {
-    debugPrint('⚙️ CategoryActionsBottomSheet: Showing actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsBottomSheet: Showing actions bottom sheet for "${category.name}"');
 
     await showModalBottomSheet(
       context: context,
@@ -59,9 +60,12 @@ class CategoryActionsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 CategoryActionsBottomSheet: Building actions bottom sheet for "${category.name}"');
-    debugPrint('🎨 CategoryActionsBottomSheet: Screen height: ${MediaQuery.of(context).size.height}');
-    debugPrint('🎨 CategoryActionsBottomSheet: Max height constraint: ${MediaQuery.of(context).size.height * 0.6}');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Building actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Screen height: ${MediaQuery.of(context).size.height}');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Max height constraint: ${MediaQuery.of(context).size.height * 0.6}');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -73,15 +77,21 @@ class CategoryActionsBottomSheet extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark ? [const Color(0xFF374151), const Color(0xFF1F2937)] : [Colors.white, const Color(0xFFF8FAFC)],
+          colors: isDark
+              ? [const Color(0xFF374151), const Color(0xFF1F2937)]
+              : [Colors.white, const Color(0xFFF8FAFC)],
         ),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.2),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -121,7 +131,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
   /// Build header section with category info and close button
   Widget _buildHeader(BuildContext context, bool isDark) {
     final primaryTextColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final secondaryTextColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
     final statusColor = CategoryUtils.getStatusColor(category.isActive, isDark);
     final iconColor = CategoryUtils.getCategoryIconColor(category, isDark);
 
@@ -153,9 +164,11 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      LineIcons.infoCircle,
+                      Prbal.infoCircle,
                       size: 16.sp,
-                      color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : const Color(0xFF6B7280),
                     ),
                     SizedBox(width: 8.w),
                     Text(
@@ -168,7 +181,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6.r),
@@ -208,7 +222,7 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      LineIcons.layerGroup,
+                      Prbal.layers5,
                       size: 12.sp,
                       color: secondaryTextColor,
                     ),
@@ -227,7 +241,7 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                     ),
                     SizedBox(width: 12.w),
                     Icon(
-                      LineIcons.clock,
+                      Prbal.clock,
                       size: 12.sp,
                       color: secondaryTextColor,
                     ),
@@ -266,11 +280,12 @@ class CategoryActionsBottomSheet extends StatelessWidget {
             context: context,
             title: 'Edit Category',
             subtitle: 'Modify category details and settings',
-            icon: LineIcons.edit,
+            icon: Prbal.edit,
             color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6),
             isDark: isDark,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Edit action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Edit action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.selectionClick();
               onEdit?.call(category);
@@ -281,15 +296,19 @@ class CategoryActionsBottomSheet extends StatelessWidget {
           // ========== TOGGLE STATUS ACTION ==========
           _buildActionOption(
             context: context,
-            title: category.isActive ? 'Deactivate Category' : 'Activate Category',
-            subtitle: category.isActive ? 'Set category as inactive' : 'Set category as active',
-            icon: category.isActive ? LineIcons.pauseCircle : LineIcons.playCircle,
+            title:
+                category.isActive ? 'Deactivate Category' : 'Activate Category',
+            subtitle: category.isActive
+                ? 'Set category as inactive'
+                : 'Set category as active',
+            icon: category.isActive ? Prbal.pauseCircle : Prbal.playCircle,
             color: category.isActive
                 ? (isDark ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B))
                 : (isDark ? const Color(0xFF34D399) : const Color(0xFF10B981)),
             isDark: isDark,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Toggle status action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Toggle status action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.selectionClick();
               onToggleStatus?.call(category);
@@ -302,12 +321,13 @@ class CategoryActionsBottomSheet extends StatelessWidget {
             context: context,
             title: 'Delete Category',
             subtitle: 'Permanently remove this category',
-            icon: LineIcons.trash,
+            icon: Prbal.trash,
             color: isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444),
             isDark: isDark,
             isDestructive: true,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Delete action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Delete action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.mediumImpact();
               onDelete?.call(category);
@@ -383,7 +403,9 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDestructive ? color : (isDark ? Colors.white : const Color(0xFF111827)),
+                        color: isDestructive
+                            ? color
+                            : (isDark ? Colors.white : const Color(0xFF111827)),
                         letterSpacing: -0.2,
                       ),
                     ),
@@ -402,7 +424,7 @@ class CategoryActionsBottomSheet extends StatelessWidget {
 
               // ========== ARROW INDICATOR ==========
               Icon(
-                LineIcons.angleRight,
+                Prbal.angleRight,
                 size: 16.sp,
                 color: isDark ? Colors.grey[500] : Colors.grey[400],
               ),

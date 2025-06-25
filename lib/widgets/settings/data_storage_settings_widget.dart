@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Components
@@ -23,8 +24,7 @@ class DataStorageSettingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: Building data & storage settings');
+    debugPrint('⚙️ DataStorageSettingsWidget: Building data & storage settings');
 
     return SettingsSectionWidget(
       title: 'Data & Storage',
@@ -32,28 +32,28 @@ class DataStorageSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Storage Usage',
           subtitle: 'View app storage and cache usage',
-          icon: Icons.storage,
+          icon: Prbal.storage,
           iconColor: const Color(0xFF38B2AC),
           onTap: () => SettingsBottomSheets.showStorageBottomSheet(context),
         ),
         SettingsItemWidget(
           title: 'Clear Cache',
           subtitle: 'Free up space by clearing cached data',
-          icon: Icons.cleaning_services,
+          icon: Prbal.cleaningServices,
           iconColor: const Color(0xFFED8936),
           onTap: onClearCache,
         ),
         SettingsItemWidget(
           title: 'Export Data',
           subtitle: 'Download your personal data',
-          icon: Icons.download,
+          icon: Prbal.download,
           iconColor: const Color(0xFF4299E1),
           onTap: () {},
         ),
         SettingsItemWidget(
           title: 'Data Sync',
           subtitle: 'Manage data synchronization settings',
-          icon: Icons.sync,
+          icon: Prbal.refresh,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {},
         ),

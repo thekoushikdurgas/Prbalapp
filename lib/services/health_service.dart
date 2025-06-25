@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:prbal/services/api_service.dart';
 import 'package:prbal/services/hive_service.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// Health status enumeration
 enum HealthStatus {
@@ -363,12 +364,12 @@ class HealthService {
   IconData getHealthStatusIcon() {
     switch (_lastHealthCheck?.overallStatus) {
       case HealthStatus.healthy:
-        return Icons.check_circle;
+        return Prbal.checkCircle;
       case HealthStatus.unhealthy:
-        return Icons.error;
+        return Prbal.error;
       case HealthStatus.unknown:
       default:
-        return Icons.help;
+        return Prbal.help;
     }
   }
 

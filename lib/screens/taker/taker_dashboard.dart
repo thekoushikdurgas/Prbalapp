@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
@@ -87,7 +87,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                   context.push('/notifications');
                 },
                 icon: Icon(
-                  LineIcons.bell,
+                  Prbal.bell,
                   color: isDark ? Colors.white : const Color(0xFF4A5568),
                 ),
               ),
@@ -126,7 +126,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           fontSize: 16.sp,
                         ),
                         prefixIcon: Icon(
-                          LineIcons.search,
+                          Prbal.search,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                         ),
                         suffixIcon: IconButton(
@@ -135,7 +135,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                             context.go('/explore');
                           },
                           icon: Icon(
-                            LineIcons.arrowRight,
+                            Prbal.arrowRight,
                             color: const Color(0xFF4299E1),
                           ),
                         ),
@@ -238,7 +238,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                     children: [
                       _buildCategoryCard(
                         'Home\nCleaning',
-                        LineIcons.home,
+                        Prbal.home,
                         const Color(0xFF4299E1),
                         isDark,
                         onTap: () {
@@ -248,7 +248,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       ),
                       _buildCategoryCard(
                         'AC Repair\n& Service',
-                        LineIcons.snowflake,
+                        Prbal.snowflake,
                         const Color(0xFF48BB78),
                         isDark,
                         onTap: () {
@@ -258,7 +258,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       ),
                       _buildCategoryCard(
                         'Plumbing\nServices',
-                        LineIcons.wrench,
+                        Prbal.wrench,
                         const Color(0xFF9F7AEA),
                         isDark,
                         onTap: () {
@@ -268,7 +268,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       ),
                       _buildCategoryCard(
                         'Beauty\n& Care',
-                        LineIcons.cut,
+                        Prbal.cut,
                         const Color(0xFFED64A6),
                         isDark,
                         onTap: () {
@@ -278,7 +278,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       ),
                       _buildCategoryCard(
                         'Tech\nSupport',
-                        LineIcons.laptop,
+                        Prbal.laptop,
                         const Color(0xFFED8936),
                         isDark,
                         onTap: () {
@@ -288,7 +288,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       ),
                       _buildCategoryCard(
                         'More\nServices',
-                        LineIcons.thLarge,
+                        Prbal.thLarge,
                         isDark ? Colors.grey[600]! : Colors.grey[400]!,
                         isDark,
                         onTap: () {
@@ -355,7 +355,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           'Completed yesterday',
                           'by Sarah Johnson',
                           4.8,
-                          LineIcons.home,
+                          Prbal.home,
                           const Color(0xFF4299E1),
                           isDark,
                         ),
@@ -365,7 +365,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           'Completed 3 days ago',
                           'by Mike Wilson',
                           4.9,
-                          LineIcons.snowflake,
+                          Prbal.snowflake,
                           const Color(0xFF48BB78),
                           isDark,
                         ),
@@ -375,7 +375,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           'Completed 1 week ago',
                           'by Lisa Brown',
                           4.7,
-                          LineIcons.leaf,
+                          Prbal.leaf,
                           const Color(0xFF9F7AEA),
                           isDark,
                         ),
@@ -392,7 +392,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                         child: _buildQuickActionCard(
                           'Emergency',
                           'Urgent service needed?',
-                          LineIcons.exclamationTriangle,
+                          Prbal.exclamationTriangle,
                           const Color(0xFFE53E3E),
                           isDark,
                           onTap: () {
@@ -406,7 +406,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                         child: _buildQuickActionCard(
                           'Schedule',
                           'Book for later',
-                          LineIcons.calendar,
+                          Prbal.calendar,
                           const Color(0xFF4299E1),
                           isDark,
                           onTap: () {
@@ -655,7 +655,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LineIcons.star,
+            Prbal.star,
             size: 16.sp,
             color: const Color(0xFFED8936),
           ),

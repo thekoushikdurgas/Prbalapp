@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/admin/service_widget.dart';
 
 /// AdminServiceManagerScreen - Comprehensive service management screen for admin users
@@ -171,7 +171,7 @@ class _AdminServiceManagerScreenState
                   ],
                 ),
                 child: Icon(
-                  LineIcons.servicestack,
+                  Prbal.designServices,
                   color: Colors.white,
                   size: 24.sp,
                 ),
@@ -210,7 +210,7 @@ class _AdminServiceManagerScreenState
               _showSearchDialog();
             },
             icon: Icon(
-              LineIcons.search,
+              Prbal.search,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
               size: 22.sp,
             ),
@@ -224,7 +224,7 @@ class _AdminServiceManagerScreenState
               _showFilterDialog();
             },
             icon: Icon(
-              LineIcons.filter,
+              Prbal.filter,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
               size: 22.sp,
             ),
@@ -238,7 +238,7 @@ class _AdminServiceManagerScreenState
               _showStatisticsDialog();
             },
             icon: Icon(
-              LineIcons.calculator,
+              Prbal.calculator,
               color: isDark ? Colors.white70 : const Color(0xFF6B7280),
               size: 22.sp,
             ),
@@ -254,7 +254,7 @@ class _AdminServiceManagerScreenState
                 _showBulkActionsDialog();
               },
               icon: Icon(
-                LineIcons.cogs,
+                Prbal.cogs,
                 color: const Color(0xFF8B5CF6),
                 size: 22.sp,
               ),
@@ -283,7 +283,7 @@ class _AdminServiceManagerScreenState
           borderRadius: BorderRadius.circular(16.r),
         ),
         icon: Icon(
-          LineIcons.plus,
+          Prbal.plus,
           color: Colors.white,
           size: 20.sp,
         ),
@@ -417,7 +417,7 @@ class _AdminServiceManagerScreenState
               Row(
                 children: [
                   _buildQuickActionButton(
-                    icon: LineIcons.eye,
+                    icon: Prbal.eye,
                     label: 'View All',
                     onPressed: () {
                       debugPrint(
@@ -430,7 +430,7 @@ class _AdminServiceManagerScreenState
                   ),
                   SizedBox(width: 8.w),
                   _buildQuickActionButton(
-                    icon: LineIcons.clock,
+                    icon: Prbal.clock,
                     label: 'Pending',
                     onPressed: () {
                       debugPrint(
@@ -635,7 +635,7 @@ class _AdminServiceManagerScreenState
         title: Row(
           children: [
             Icon(
-              LineIcons.search,
+              Prbal.search,
               color: const Color(0xFF8B5CF6),
               size: 24.sp,
             ),
@@ -672,7 +672,7 @@ class _AdminServiceManagerScreenState
               ),
             ),
             prefixIcon: const Icon(
-              LineIcons.search,
+              Prbal.search,
               color: Color(0xFF8B5CF6),
             ),
           ),
@@ -727,7 +727,7 @@ class _AdminServiceManagerScreenState
         title: Row(
           children: [
             Icon(
-              LineIcons.filter,
+              Prbal.filter,
               color: const Color(0xFF8B5CF6),
               size: 24.sp,
             ),
@@ -843,7 +843,7 @@ class _AdminServiceManagerScreenState
         title: Row(
           children: [
             Icon(
-              LineIcons.calculator,
+              Prbal.calculator,
               color: const Color(0xFF8B5CF6),
               size: 24.sp,
             ),
@@ -949,7 +949,7 @@ class _AdminServiceManagerScreenState
         title: Row(
           children: [
             Icon(
-              LineIcons.cogs,
+              Prbal.cogs,
               color: const Color(0xFF8B5CF6),
               size: 24.sp,
             ),
@@ -978,15 +978,14 @@ class _AdminServiceManagerScreenState
             ),
             SizedBox(height: 16.h),
             _buildBulkActionTile(
-                'Approve All', LineIcons.checkCircle, Colors.green, isDark),
+                'Approve All', Prbal.checkCircle, Colors.green, isDark),
             _buildBulkActionTile(
-                'Reject All', LineIcons.timesCircle, Colors.red, isDark),
+                'Reject All', Prbal.closeOutline, Colors.red, isDark),
             _buildBulkActionTile(
-                'Activate All', LineIcons.toggleOn, Colors.blue, isDark),
+                'Activate All', Prbal.toggleOn, Colors.blue, isDark),
             _buildBulkActionTile(
-                'Deactivate All', LineIcons.toggleOff, Colors.orange, isDark),
-            _buildBulkActionTile(
-                'Delete All', LineIcons.trash, Colors.red, isDark),
+                'Deactivate All', Prbal.toggleOff, Colors.orange, isDark),
+            _buildBulkActionTile('Delete All', Prbal.trash, Colors.red, isDark),
           ],
         ),
         actions: [

@@ -12,7 +12,7 @@ import 'package:prbal/widgets/admin/category/components/category_cards.dart';
 /// - Statistics cards display with total, active, and inactive counts
 /// - Animated categories list with refresh indicator
 /// - Individual CategoryCard components for each category
-/// - Proper selection and expansion state management
+/// - Proper selection state management
 /// - Smooth animations and haptic feedback
 class CategoriesListView extends StatelessWidget {
   final int totalCount;
@@ -22,13 +22,11 @@ class CategoriesListView extends StatelessWidget {
   final Animation<double> fadeAnimation;
   final Animation<Offset> slideAnimation;
   final Set<String> selectedIds;
-  final Set<String> expandedCategories;
   final Future<void> Function() onRefresh;
   final Function(String) onSelectionChanged;
   final Function(ServiceCategory) onEdit;
   final Function(ServiceCategory) onDelete;
   final Function(ServiceCategory) onToggleStatus;
-  final Function(String) onToggleExpand;
 
   const CategoriesListView({
     super.key,
@@ -39,18 +37,17 @@ class CategoriesListView extends StatelessWidget {
     required this.fadeAnimation,
     required this.slideAnimation,
     required this.selectedIds,
-    required this.expandedCategories,
     required this.onRefresh,
     required this.onSelectionChanged,
     required this.onEdit,
     required this.onDelete,
     required this.onToggleStatus,
-    required this.onToggleExpand,
   });
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
+    debugPrint(
+        '📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
 
     return Column(
       children: [
@@ -93,7 +90,8 @@ class CategoriesListView extends StatelessWidget {
                         category: category,
                         isSelected: isSelected,
                         index: index,
-                        isInSelectionMode: selectedIds.isNotEmpty, // NEW: Pass selection mode state
+                        isInSelectionMode: selectedIds
+                            .isNotEmpty, // NEW: Pass selection mode state
                         onTap: () {
                           debugPrint(
                               '🎯 CategoriesListView: CategoryCard tapped for "${category.name}" (selection mode: ${selectedIds.isNotEmpty})');
@@ -109,13 +107,12 @@ class CategoriesListView extends StatelessWidget {
                           debugPrint(
                               '🎯 CategoriesListView: CategoryCard long pressed for "${category.name}" - toggling selection');
                           HapticFeedback.mediumImpact();
-                          onSelectionChanged(category.id); // Always toggle selection on long press
+                          onSelectionChanged(category
+                              .id); // Always toggle selection on long press
                         },
                         onEdit: onEdit,
                         onDelete: onDelete,
                         onToggleStatus: onToggleStatus,
-                        expandedCategories: expandedCategories,
-                        onToggleExpand: onToggleExpand,
                       ),
                     );
                   },

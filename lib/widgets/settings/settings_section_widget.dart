@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// SettingsSectionWidget - Modern settings section container
 ///
@@ -333,7 +334,7 @@ class SettingsItemWidget extends StatelessWidget {
     debugPrint('⚙️ SettingsItemWidget: Building default trailing arrow');
 
     return Icon(
-      Icons.arrow_forward_ios,
+      Prbal.arrowSync,
       color: enabled
           ? (isDark ? Colors.grey[400] : Colors.grey[600])
           : (isDark ? Colors.grey[600] : Colors.grey[500]),

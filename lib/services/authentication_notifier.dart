@@ -133,8 +133,10 @@ class AuthenticationState {
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   final UserService _userService;
 
-  AuthenticationNotifier(this._userService) : super(const AuthenticationState.initial()) {
-    debugPrint('🔐 AuthenticationNotifier: Initializing authentication notifier');
+  AuthenticationNotifier(this._userService)
+      : super(const AuthenticationState.initial()) {
+    debugPrint(
+        '🔐 AuthenticationNotifier: Initializing authentication notifier');
   }
 
   /// Initialize authentication state from local storage
@@ -165,7 +167,8 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         debugPrint('🔐 → User type: $userType');
         debugPrint('🔐 → Phone: $phoneNumber');
         debugPrint('🔐 → Auth token exists: ✅');
-        debugPrint('🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
+        debugPrint(
+            '🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
 
         // Create authenticated state with actual tokens
         state = state.copyWithAuthentication(
@@ -175,10 +178,13 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
           userType: userType,
         );
 
-        debugPrint('🔐 AuthenticationNotifier: Authentication state restored successfully');
+        debugPrint(
+            '🔐 AuthenticationNotifier: Authentication state restored successfully');
       } else {
-        debugPrint('🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
-        debugPrint('🔐 → User data exists: ${userData != null && userData.isNotEmpty}');
+        debugPrint(
+            '🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
+        debugPrint(
+            '🔐 → User data exists: ${userData != null && userData.isNotEmpty}');
         debugPrint('🔐 → Auth token exists: ${authToken != null}');
         state = const AuthenticationState.initial();
       }
@@ -227,11 +233,14 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         await HiveService.setPhoneNumber(phoneNumber);
       }
 
-      debugPrint('🔐 AuthenticationNotifier: Authentication state set and persisted');
+      debugPrint(
+          '🔐 AuthenticationNotifier: Authentication state set and persisted');
       debugPrint('🔐 → Auth token saved to Hive: ✅');
-      debugPrint('🔐 → Refresh token saved to Hive: ${refreshToken != null ? '✅' : '❌'}');
+      debugPrint(
+          '🔐 → Refresh token saved to Hive: ${refreshToken != null ? '✅' : '❌'}');
     } catch (e) {
-      debugPrint('🔐 AuthenticationNotifier: Error setting authenticated state: $e');
+      debugPrint(
+          '🔐 AuthenticationNotifier: Error setting authenticated state: $e');
       state = state.copyWithError('Failed to set authentication: $e');
     }
   }
@@ -280,8 +289,10 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       final response = await _userService.refreshToken(state.refreshToken!);
 
       if (response.isSuccess && response.data != null) {
-        final newAccessToken = response.data!['access_token'] ?? response.data!['accessToken'];
-        final newRefreshToken = response.data!['refresh_token'] ?? response.data!['refreshToken'];
+        final newAccessToken =
+            response.data!['access_token'] ?? response.data!['accessToken'];
+        final newRefreshToken =
+            response.data!['refresh_token'] ?? response.data!['refreshToken'];
 
         if (newAccessToken != null) {
           // Update state with new tokens
@@ -298,14 +309,17 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             await HiveService.setRefreshToken(newRefreshToken);
           }
 
-          debugPrint('🔐 AuthenticationNotifier: Access token refreshed successfully');
+          debugPrint(
+              '🔐 AuthenticationNotifier: Access token refreshed successfully');
           debugPrint('🔐 → Updated auth token in Hive: ✅');
-          debugPrint('🔐 → Updated refresh token in Hive: ${newRefreshToken != null ? '✅' : '❌'}');
+          debugPrint(
+              '🔐 → Updated refresh token in Hive: ${newRefreshToken != null ? '✅' : '❌'}');
           return true;
         }
       }
 
-      debugPrint('🔐 AuthenticationNotifier: Token refresh failed: ${response.message}');
+      debugPrint(
+          '🔐 AuthenticationNotifier: Token refresh failed: ${response.message}');
       return false;
     } catch (e) {
       debugPrint('🔐 AuthenticationNotifier: Error refreshing token: $e');
@@ -320,7 +334,8 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
 
     try {
       if (!state.isAuthenticated) {
-        debugPrint('🔐 AuthenticationNotifier: Cannot update user data - not authenticated');
+        debugPrint(
+            '🔐 AuthenticationNotifier: Cannot update user data - not authenticated');
         return;
       }
 

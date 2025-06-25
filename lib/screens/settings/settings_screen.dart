@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'dart:io'; // Added for File operations in profile picture upload
@@ -462,7 +462,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             content: Row(
               children: [
                 Icon(
-                  Icons.error_outline,
+                  Prbal.errorOutline,
                   color: Colors.white,
                   size: 20.sp,
                 ),
@@ -658,7 +658,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 content: Row(
                   children: [
                     Icon(
-                      Icons.check_circle,
+                      Prbal.checkCircle,
                       color: Colors.white,
                       size: 20.sp,
                     ),
@@ -705,7 +705,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             content: Row(
               children: [
                 Icon(
-                  Icons.error_outline,
+                  Prbal.errorOutline,
                   color: Colors.white,
                   size: 20.sp,
                 ),
@@ -1155,7 +1155,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   ),
                                   if (isVerified)
                                     Icon(
-                                      Icons.verified,
+                                      Prbal.verified,
                                       color: const Color(0xFF48BB78),
                                       size: 20.sp,
                                     ),
@@ -1206,7 +1206,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             child: _buildStatItem(
                               'Rating',
                               rating.toStringAsFixed(1),
-                              Icons.star,
+                              Prbal.star,
                               const Color(0xFFFBBF24),
                               isDark,
                             ),
@@ -1216,7 +1216,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             child: _buildStatItem(
                               'Bookings',
                               bookingCount.toString(),
-                              Icons.bookmark,
+                              Prbal.bookmark,
                               const Color(0xFF4299E1),
                               isDark,
                             ),
@@ -1330,7 +1330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(
-                          LineIcons.edit,
+                          Prbal.edit,
                           color: userTypeColor,
                           size: 24.sp,
                         ),
@@ -1351,7 +1351,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       IconButton(
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(
-                          LineIcons.times,
+                          Prbal.cross,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                           size: 24.sp,
                         ),
@@ -1759,7 +1759,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               content: Row(
                 children: [
                   Icon(
-                    Icons.check_circle,
+                    Prbal.checkCircle,
                     color: Colors.white,
                     size: 20.sp,
                   ),
@@ -1946,7 +1946,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             Row(
               children: [
                 Icon(
-                  Icons.refresh,
+                  Prbal.refresh,
                   color: const Color(0xFF9F7AEA),
                   size: 24.sp,
                 ),
@@ -1963,7 +1963,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
-                    Icons.close,
+                    Prbal.close,
                     color: isDark ? Colors.white70 : Colors.grey[600],
                   ),
                 ),
@@ -2056,7 +2056,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () => _refreshAccessToken(),
-                  icon: Icon(Icons.refresh, size: 18.sp),
+                  icon: Icon(Prbal.refresh, size: 18.sp),
                   label: const Text('Refresh Access Token'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9F7AEA),
@@ -2149,7 +2149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         ),
                       ),
                       child: Icon(
-                        LineIcons.alternateShield,
+                        Prbal.security,
                         color: const Color(0xFF48BB78),
                         size: 28.sp,
                       ),
@@ -2195,7 +2195,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       child: IconButton(
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(
-                          LineIcons.times,
+                          Prbal.cross,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                           size: 20.sp,
                         ),
@@ -2260,7 +2260,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 ),
               ),
               child: Icon(
-                LineIcons.exclamationTriangle,
+                Prbal.exclamationTriangle,
                 size: 48.sp,
                 color: isDark ? Colors.grey[500] : Colors.grey[400],
               ),
@@ -2322,18 +2322,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     IconData getDeviceIcon(String type) {
       switch (type.toLowerCase()) {
         case 'mobile':
-          return LineIcons.mobilePhone;
+          return Prbal.mobilePhone;
         case 'desktop':
-          return LineIcons.desktop;
+          return Prbal.desktop;
         case 'web':
         case 'browser':
-          return LineIcons.globe;
+          return Prbal.globe;
         case 'tablet':
-          return LineIcons.tablet;
+          return Prbal.tablet;
         case 'api':
-          return LineIcons.cog;
+          return Prbal.cog;
         default:
-          return LineIcons.question;
+          return Prbal.question;
       }
     }
 
@@ -2509,7 +2509,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             onPressed: () => _showRevokeTokenDialog(
                                 tokenId, deviceTypeDisplay),
                             icon: Icon(
-                              LineIcons.trash,
+                              Prbal.trash,
                               color: const Color(0xFFE53E3E),
                               size: 18.sp,
                             ),
@@ -2545,7 +2545,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         Row(
                           children: [
                             Icon(
-                              LineIcons.key,
+                              Prbal.key,
                               size: 16.sp,
                               color:
                                   isDark ? Colors.grey[400] : Colors.grey[600],
@@ -2605,7 +2605,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     borderRadius: BorderRadius.circular(6.r),
                                   ),
                                   child: Icon(
-                                    LineIcons.copy,
+                                    Prbal.copy,
                                     size: 14.sp,
                                     color: deviceColor,
                                   ),
@@ -2626,7 +2626,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       // Device details
                       Expanded(
                         child: _buildInfoCard(
-                          icon: LineIcons.laptop,
+                          icon: Prbal.laptop,
                           title: 'Device',
                           value: deviceName.replaceAll(
                               'Dart/3.8 (dart:io)', 'Mobile App'),
@@ -2639,7 +2639,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       if (ipAddress != null)
                         Expanded(
                           child: _buildInfoCard(
-                            icon: LineIcons.globe,
+                            icon: Prbal.globe,
                             title: 'Location',
                             value: ipAddress,
                             isDark: isDark,
@@ -2656,7 +2656,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         if (createdAt != null)
                           Expanded(
                             child: _buildInfoCard(
-                              icon: LineIcons.clock,
+                              icon: Prbal.clock,
                               title: 'Created',
                               value: _formatRelativeTime(createdAt),
                               isDark: isDark,
@@ -2669,7 +2669,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         if (lastUsed != null)
                           Expanded(
                             child: _buildInfoCard(
-                              icon: LineIcons.history,
+                              icon: Prbal.history,
                               title: 'Last Used',
                               value: _formatRelativeTime(lastUsed),
                               isDark: isDark,
@@ -2769,7 +2769,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 ),
               ),
               child: Icon(
-                LineIcons.exclamationTriangle,
+                Prbal.exclamationTriangle,
                 color: const Color(0xFFE53E3E),
                 size: 32.sp,
               ),
@@ -2883,7 +2883,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           content: Row(
             children: [
               Icon(
-                LineIcons.check,
+                Prbal.check,
                 color: Colors.white,
                 size: 18.sp,
               ),

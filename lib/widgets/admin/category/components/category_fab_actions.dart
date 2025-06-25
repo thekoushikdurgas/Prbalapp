@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// CategoryFabActions - Floating Action Button components for category operations
 ///
@@ -38,9 +38,12 @@ class CategoryFabActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🚀 CategoryFabActions: Building FAB - hasSelection: $hasSelection, selectedCount: $selectedCount');
+    debugPrint(
+        '🚀 CategoryFabActions: Building FAB - hasSelection: $hasSelection, selectedCount: $selectedCount');
 
-    final fabWidget = hasSelection ? _buildBulkActionsFAB(context) : _buildAddCategoryFAB(context);
+    final fabWidget = hasSelection
+        ? _buildBulkActionsFAB(context)
+        : _buildAddCategoryFAB(context);
 
     if (scaleAnimation != null) {
       return ScaleTransition(
@@ -54,7 +57,8 @@ class CategoryFabActions extends StatelessWidget {
 
   /// Build bulk actions floating action button when categories are selected
   Widget _buildBulkActionsFAB(BuildContext context) {
-    debugPrint('⚡ CategoryFabActions: Building bulk actions FAB for $selectedCount selected categories');
+    debugPrint(
+        '⚡ CategoryFabActions: Building bulk actions FAB for $selectedCount selected categories');
 
     final primaryColor = Theme.of(context).primaryColor;
 
@@ -74,13 +78,13 @@ class CategoryFabActions extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(
-          LineIcons.cog,
+          Prbal.cog,
           size: 20.sp,
           color: Colors.white,
         ),
       ),
       label: Text(
-        'Bulk Actions ($selectedCount)',
+        '$selectedCount',
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -97,43 +101,24 @@ class CategoryFabActions extends StatelessWidget {
   Widget _buildAddCategoryFAB(BuildContext context) {
     debugPrint('➕ CategoryFabActions: Building add category FAB');
 
-    final primaryColor = Theme.of(context).primaryColor;
+    // final primaryColor = Theme.of(context).primaryColor;
 
-    return FloatingActionButton.extended(
+    return FloatingActionButton(
       onPressed: () {
         debugPrint('➕ CategoryFabActions: Add category FAB pressed');
         HapticFeedback.lightImpact();
         onAddCategory();
       },
-      backgroundColor: primaryColor,
-      foregroundColor: Colors.white,
-      elevation: 12,
-      icon: Container(
-        padding: EdgeInsets.all(6.w),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
-            width: 1,
-          ),
-        ),
-        child: Icon(
-          LineIcons.plus,
-          size: 20.sp,
-          color: Colors.white,
-        ),
-      ),
-      label: Text(
-        'Add Category',
-        style: TextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
+      backgroundColor: Colors.white.withValues(alpha: 0.2),
+      // foregroundColor: Colors.white,
+      // elevation: 12,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Icon(
+        Prbal.plus,
+        size: 20.sp,
+        color: Colors.white,
       ),
     );
   }
@@ -155,16 +140,21 @@ class CategoryFabActions extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors:
-                isDark ? [const Color(0xFF374151), const Color(0xFF1F2937)] : [Colors.white, const Color(0xFFF8FAFC)],
+            colors: isDark
+                ? [const Color(0xFF374151), const Color(0xFF1F2937)]
+                : [Colors.white, const Color(0xFFF8FAFC)],
           ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
           border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.1)
+                : Colors.grey.withValues(alpha: 0.2),
           ),
           boxShadow: [
             BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.2),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.4)
+                  : Colors.grey.withValues(alpha: 0.2),
               blurRadius: 20,
               offset: const Offset(0, -5),
             ),
@@ -213,7 +203,7 @@ class CategoryFabActions extends StatelessWidget {
                         ),
                       ),
                       child: Icon(
-                        LineIcons.cog,
+                        Prbal.cog,
                         color: primaryColor,
                         size: 24.sp,
                       ),
@@ -228,7 +218,9 @@ class CategoryFabActions extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : const Color(0xFF2D3748),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF2D3748),
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -237,7 +229,8 @@ class CategoryFabActions extends StatelessWidget {
                             '$selectedCount categories selected',
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -247,7 +240,7 @@ class CategoryFabActions extends StatelessWidget {
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
                       icon: Icon(
-                        LineIcons.times,
+                        Prbal.cross,
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
                         size: 20.sp,
                       ),
@@ -265,7 +258,7 @@ class CategoryFabActions extends StatelessWidget {
                       context,
                       'Activate All',
                       'Set all selected categories as active',
-                      LineIcons.checkCircle,
+                      Prbal.checkCircle,
                       Colors.green,
                       onBulkActivate,
                     ),
@@ -274,7 +267,7 @@ class CategoryFabActions extends StatelessWidget {
                       context,
                       'Deactivate All',
                       'Set all selected categories as inactive',
-                      LineIcons.pauseCircle,
+                      Prbal.pauseCircle,
                       Colors.orange,
                       onBulkDeactivate,
                     ),
@@ -283,7 +276,7 @@ class CategoryFabActions extends StatelessWidget {
                       context,
                       'Export Selected',
                       'Export selected categories data',
-                      LineIcons.download,
+                      Prbal.download,
                       Colors.blue,
                       onBulkExport,
                     ),
@@ -292,7 +285,7 @@ class CategoryFabActions extends StatelessWidget {
                       context,
                       'Delete All',
                       'Permanently delete all selected categories',
-                      LineIcons.trash,
+                      Prbal.trash,
                       Colors.red,
                       onBulkDelete,
                     ),
@@ -322,7 +315,8 @@ class CategoryFabActions extends StatelessWidget {
       child: InkWell(
         onTap: onTap != null
             ? () {
-                debugPrint('⚡ CategoryFabActions: Bulk action "$title" pressed');
+                debugPrint(
+                    '⚡ CategoryFabActions: Bulk action "$title" pressed');
                 Navigator.of(context).pop();
                 HapticFeedback.lightImpact();
                 onTap();
@@ -387,7 +381,7 @@ class CategoryFabActions extends StatelessWidget {
                 ),
               ),
               Icon(
-                LineIcons.angleRight,
+                Prbal.angleRight,
                 color: isDark ? Colors.grey[500] : Colors.grey[400],
                 size: 16.sp,
               ),

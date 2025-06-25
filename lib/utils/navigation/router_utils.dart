@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../icon/prbal_icons.dart';
 
 /// Router utilities for common functionality
 class RouterUtils {
@@ -20,8 +21,7 @@ class RouterUtils {
         const end = Offset.zero;
         const curve = Curves.easeInOutCubic;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -60,7 +60,7 @@ class RouterUtils {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.error_outline,
+              Prbal.error,
               size: 64,
               color: Colors.red,
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/admin/subcategory_widget.dart';
 
 /// AdminSubcategoryManagerScreen - Dedicated screen for managing service subcategories
@@ -88,7 +88,7 @@ class _AdminSubcategoryManagerScreenState
             Navigator.of(context).pop();
           },
           icon: Icon(
-            LineIcons.arrowLeft,
+            Prbal.arrowLeft,
             color: isDark ? Colors.white : const Color(0xFF1F2937),
             size: 24.sp,
           ),
@@ -113,7 +113,7 @@ class _AdminSubcategoryManagerScreenState
                 ],
               ),
               child: Icon(
-                LineIcons.sitemap,
+                Prbal.openstreetmap,
                 color: Colors.white,
                 size: 20.sp,
               ),
@@ -155,7 +155,7 @@ class _AdminSubcategoryManagerScreenState
             ),
             child: PopupMenuButton<String>(
               icon: Icon(
-                LineIcons.filter,
+                Prbal.filter,
                 color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                 size: 20.sp,
               ),
@@ -236,7 +236,7 @@ class _AdminSubcategoryManagerScreenState
                 _showBulkActionsBottomSheet(isDark);
               },
               backgroundColor: const Color(0xFF8B5CF6),
-              icon: Icon(LineIcons.cogs, color: Colors.white, size: 20.sp),
+              icon: Icon(Prbal.cogs, color: Colors.white, size: 20.sp),
               label: Text(
                 'Bulk Actions (${_selectedIds.length})',
                 style: TextStyle(
@@ -304,7 +304,7 @@ class _AdminSubcategoryManagerScreenState
             color: isDark ? Colors.grey[400] : Colors.grey[500],
           ),
           prefixIcon: Icon(
-            LineIcons.search,
+            Prbal.search,
             color: const Color(0xFF8B5CF6),
             size: 20.sp,
           ),
@@ -316,7 +316,7 @@ class _AdminSubcategoryManagerScreenState
                     _searchController.clear();
                   },
                   icon: Icon(
-                    LineIcons.times,
+                    Prbal.cross,
                     color: isDark ? Colors.grey[400] : Colors.grey[500],
                     size: 18.sp,
                   ),
@@ -352,7 +352,7 @@ class _AdminSubcategoryManagerScreenState
       child: Row(
         children: [
           Icon(
-            LineIcons.checkCircle,
+            Prbal.checkCircle,
             color: const Color(0xFF8B5CF6),
             size: 20.sp,
           ),
@@ -420,7 +420,7 @@ class _AdminSubcategoryManagerScreenState
               child: Row(
                 children: [
                   Icon(
-                    LineIcons.cogs,
+                    Prbal.cogs,
                     color: const Color(0xFF8B5CF6),
                     size: 24.sp,
                   ),
@@ -442,13 +442,12 @@ class _AdminSubcategoryManagerScreenState
 
             // Actions
             _buildBulkActionTile(
-                'Activate All', LineIcons.checkCircle, Colors.green, isDark),
+                'Activate All', Prbal.checkCircle, Colors.green, isDark),
             _buildBulkActionTile(
-                'Deactivate All', LineIcons.timesCircle, Colors.orange, isDark),
+                'Deactivate All', Prbal.closeOutline, Colors.orange, isDark),
             _buildBulkActionTile(
-                'Export Selected', LineIcons.download, Colors.blue, isDark),
-            _buildBulkActionTile(
-                'Delete All', LineIcons.trash, Colors.red, isDark),
+                'Export Selected', Prbal.download, Colors.blue, isDark),
+            _buildBulkActionTile('Delete All', Prbal.trash, Colors.red, isDark),
 
             SizedBox(height: 20.h),
           ],

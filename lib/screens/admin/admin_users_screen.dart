@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// Admin Users Management Screen
 /// This screen provides comprehensive user management functionality including:
@@ -137,7 +137,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   // This could export to CSV, Excel, or PDF format
                 },
                 icon: Icon(
-                  LineIcons.download,
+                  Prbal.download,
                   color: isDark ? Colors.white : const Color(0xFF4A5568),
                 ),
               ),
@@ -183,7 +183,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
             fontSize: 16.sp,
           ),
           prefixIcon: Icon(
-            LineIcons.search,
+            Prbal.search,
             color: isDark ? Colors.grey[400] : Colors.grey[600],
           ),
           border: InputBorder.none,
@@ -416,7 +416,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                 : const Color(0xFF3B82F6)
                     .withValues(alpha: 0.1), // Blue for customers
             child: Icon(
-              isProvider ? LineIcons.tools : LineIcons.user,
+              isProvider ? Prbal.tools : Prbal.user,
               color: isProvider
                   ? const Color(0xFF10B981)
                   : const Color(0xFF3B82F6),
@@ -493,7 +493,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                 Row(
                   children: [
                     Icon(
-                      LineIcons.calendar,
+                      Prbal.calendar,
                       size: 12.sp,
                       color:
                           isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
@@ -527,7 +527,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                 value: 'view',
                 child: Row(
                   children: [
-                    Icon(LineIcons.eye),
+                    Icon(Prbal.eye),
                     SizedBox(width: 8),
                     Text('View Details'),
                   ],
@@ -539,7 +539,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   value: 'verify',
                   child: Row(
                     children: [
-                      Icon(LineIcons.checkCircle),
+                      Icon(Prbal.checkCircle),
                       SizedBox(width: 8),
                       Text('Verify'),
                     ],
@@ -551,7 +551,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                   value: 'suspend',
                   child: Row(
                     children: [
-                      Icon(LineIcons.ban),
+                      Icon(Prbal.ban),
                       SizedBox(width: 8),
                       Text('Suspend'),
                     ],
@@ -562,7 +562,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(LineIcons.trash, color: Colors.red),
+                    Icon(Prbal.trash, color: Colors.red),
                     SizedBox(width: 8),
                     Text('Delete', style: TextStyle(color: Colors.red)),
                   ],
@@ -570,7 +570,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
               ),
             ],
             child: Icon(
-              LineIcons.verticalEllipsis,
+              Prbal.moreVertical,
               color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
             ),
           ),
@@ -660,7 +660,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                       Navigator.pop(context);
                     },
                     icon: Icon(
-                      LineIcons.times,
+                      Prbal.cross,
                       color:
                           isDark ? Colors.grey[400] : const Color(0xFF6B7280),
                     ),

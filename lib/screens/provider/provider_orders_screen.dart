@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 class ProviderOrdersScreen extends ConsumerStatefulWidget {
   final int initialTabIndex;
@@ -80,7 +80,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                           // Show filter options
                         },
                         icon: Icon(
-                          LineIcons.filter,
+                          Prbal.filter,
                           color:
                               isDark ? Colors.white : const Color(0xFF4A5568),
                         ),
@@ -251,7 +251,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.clock,
+                  Prbal.clock,
                   color: const Color(0xFFED8936),
                   size: 20.sp,
                 ),
@@ -300,7 +300,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.calendar,
+                Prbal.calendar,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -318,7 +318,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -416,7 +416,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.play,
+                  Prbal.play,
                   color: const Color(0xFF4299E1),
                   size: 20.sp,
                 ),
@@ -465,7 +465,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.mapMarker,
+                Prbal.mapMarker,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -485,7 +485,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -508,7 +508,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   onPressed: () {
                     // Call customer
                   },
-                  icon: Icon(LineIcons.phone, size: 16.sp),
+                  icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call',
                     style:
@@ -592,7 +592,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
-                  LineIcons.checkCircle,
+                  Prbal.checkCircle,
                   color: const Color(0xFF48BB78),
                   size: 20.sp,
                 ),
@@ -641,7 +641,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.calendar,
+                Prbal.calendar,
                 size: 16.sp,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -659,7 +659,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
           Row(
             children: [
               Icon(
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 size: 16.sp,
                 color: const Color(0xFF48BB78),
               ),
@@ -676,7 +676,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Row(
                 children: [
                   Icon(
-                    LineIcons.star,
+                    Prbal.star,
                     size: 16.sp,
                     color: const Color(0xFFED8936),
                   ),

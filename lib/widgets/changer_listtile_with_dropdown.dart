@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// ChangerListtileWithDropdown - A reusable list tile that opens a dialog
 ///
@@ -28,7 +29,7 @@ import 'package:flutter/material.dart';
 /// **Usage:**
 /// ```dart
 /// ChangerListtileWithDropdown(
-///   icon: Icon(Icons.palette),
+///   icon: Icon(Prbal.palette),
 ///   title: 'Theme',
 ///   alertTitle: 'Select Theme',
 ///   child: ThemeChangeDropdown(),
@@ -64,27 +65,22 @@ class ChangerListtileWithDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🔧 ChangerListtileWithDropdown: Building list tile for "$title"');
+    debugPrint('🔧 ChangerListtileWithDropdown: Building list tile for "$title"');
 
     // Get current theme for adaptive styling
     final theme = Theme.of(context);
-    debugPrint(
-        '🔧 ChangerListtileWithDropdown: Current theme brightness: ${theme.brightness}');
+    debugPrint('🔧 ChangerListtileWithDropdown: Current theme brightness: ${theme.brightness}');
 
     return InkWell(
       onTap: () {
-        debugPrint(
-            '🔧 ChangerListtileWithDropdown: List tile tapped - opening dialog');
-        debugPrint(
-            '🔧 ChangerListtileWithDropdown: Dialog title: "$alertTitle"');
+        debugPrint('🔧 ChangerListtileWithDropdown: List tile tapped - opening dialog');
+        debugPrint('🔧 ChangerListtileWithDropdown: Dialog title: "$alertTitle"');
         _showDialog(context);
       },
       // Customize the splash and highlight colors for better UX
       splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
       highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
-      borderRadius:
-          BorderRadius.circular(8.0), // Rounded corners for modern look
+      borderRadius: BorderRadius.circular(8.0), // Rounded corners for modern look
       child: ListTile(
         // Leading icon with theme-aware color
         leading: IconTheme(
@@ -103,7 +99,7 @@ class ChangerListtileWithDropdown extends StatelessWidget {
         ),
         // Trailing arrow to indicate clickable action
         trailing: Icon(
-          Icons.arrow_forward_ios,
+          Prbal.arrowSync,
           size: 16,
           color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
         ),
@@ -128,8 +124,7 @@ class ChangerListtileWithDropdown extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    debugPrint(
-        '🔧 ChangerListtileWithDropdown: Dialog theme mode: ${isDark ? 'dark' : 'light'}');
+    debugPrint('🔧 ChangerListtileWithDropdown: Dialog theme mode: ${isDark ? 'dark' : 'light'}');
 
     return showDialog(
       context: context,
@@ -163,8 +158,7 @@ class ChangerListtileWithDropdown extends StatelessWidget {
         );
       },
     ).then((result) {
-      debugPrint(
-          '🔧 ChangerListtileWithDropdown: Dialog dismissed with result: $result');
+      debugPrint('🔧 ChangerListtileWithDropdown: Dialog dismissed with result: $result');
       return result;
     });
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// Full Admin Dashboard with bottom navigation bar
@@ -128,7 +128,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                     }
                   },
                   icon: Icon(
-                    LineIcons.bell,
+                    Prbal.bell,
                     color: isDark ? Colors.white : const Color(0xFF4A5568),
                   ),
                 ),
@@ -253,19 +253,19 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               _buildSystemMetric(
                   'API Response', // API performance metric
                   '99.9%',
-                  LineIcons.server,
+                  Prbal.server,
                   const Color(0xFF48BB78),
                   isDark),
               _buildSystemMetric(
                   'Database', // Database connectivity metric
                   '100%',
-                  LineIcons.database,
+                  Prbal.database,
                   const Color(0xFF4299E1),
                   isDark),
               _buildSystemMetric(
                   'Payment', // Payment gateway status
                   '98.7%',
-                  LineIcons.creditCard,
+                  Prbal.creditCard,
                   const Color(0xFF9F7AEA),
                   isDark),
             ],
@@ -291,7 +291,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Total Users', // User base size
                 '12,450',
                 '+5.2% this week', // Growth indicator
-                LineIcons.users,
+                Prbal.users,
                 const Color(0xFF4299E1),
                 isDark,
               ),
@@ -302,7 +302,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Active Bookings', // Current active bookings
                 '847',
                 '+12.3% today', // Daily growth
-                LineIcons.calendar,
+                Prbal.calendar,
                 const Color(0xFF48BB78),
                 isDark,
               ),
@@ -320,7 +320,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Revenue', // Financial performance
                 '\$84,350',
                 '+8.1% this month', // Monthly growth
-                LineIcons.dollarSign,
+                Prbal.dollarSign,
                 const Color(0xFF9F7AEA),
                 isDark,
               ),
@@ -331,7 +331,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Support Tickets', // Customer support load
                 '23',
                 '-15.4% today', // Support ticket reduction (positive trend)
-                LineIcons.questionCircle,
+                Prbal.helpCircle,
                 const Color(0xFFED8936),
                 isDark,
               ),
@@ -378,7 +378,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
           children: [
             _buildQuickActionCard(
               'Manage Users', // User management functionality
-              LineIcons.userEdit,
+              Prbal.edit3,
               const Color(0xFF4299E1),
               isDark,
               onTap: () {
@@ -398,7 +398,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             ),
             _buildQuickActionCard(
               'View Reports', // Analytics and reporting
-              LineIcons.calculator,
+              Prbal.calculator,
               const Color(0xFF48BB78),
               isDark,
               onTap: () {
@@ -417,7 +417,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             ),
             _buildQuickActionCard(
               'System Settings', // Configuration management
-              LineIcons.cogs,
+              Prbal.cogs,
               const Color(0xFF9F7AEA),
               isDark,
               onTap: () {
@@ -436,7 +436,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             ),
             _buildQuickActionCard(
               'Send Alert', // Emergency communication system
-              LineIcons.exclamationTriangle,
+              Prbal.alertTriangle,
               const Color(0xFFED8936),
               isDark,
               onTap: () {
@@ -504,7 +504,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'New user registration', // User onboarding event
                 'Sarah Johnson signed up as a provider',
                 '10 min ago',
-                LineIcons.userPlus,
+                Prbal.userPlus,
                 const Color(0xFF4299E1),
                 isDark,
               ),
@@ -513,7 +513,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Payment processed', // Financial transaction
                 'Transaction #TXN-12345 completed',
                 '25 min ago',
-                LineIcons.checkCircle,
+                Prbal.checkCircle,
                 const Color(0xFF48BB78),
                 isDark,
               ),
@@ -522,7 +522,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'Support ticket created', // Customer service event
                 'User reported booking issue #SUP-789',
                 '1 hour ago',
-                LineIcons.exclamationCircle,
+                Prbal.alertCircle,
                 const Color(0xFFED8936),
                 isDark,
               ),
@@ -531,7 +531,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 'System maintenance', // Operational event
                 'Scheduled database backup completed',
                 '3 hours ago',
-                LineIcons.server,
+                Prbal.server,
                 const Color(0xFF9F7AEA),
                 isDark,
               ),

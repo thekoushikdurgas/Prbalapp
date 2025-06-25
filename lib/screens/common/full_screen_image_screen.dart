@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class FullScreenImageScreen extends ConsumerStatefulWidget {
@@ -213,7 +213,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      LineIcons.exclamationTriangle,
+                      Prbal.exclamationTriangle,
                       color: Colors.white70,
                       size: 48.sp,
                     ),
@@ -309,7 +309,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          LineIcons.exclamationTriangle,
+                          Prbal.exclamationTriangle,
                           color: Colors.white70,
                           size: 48.sp,
                         ),
@@ -375,7 +375,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
             child: IconButton(
               onPressed: () => context.pop(),
               icon: Icon(
-                LineIcons.arrowLeft,
+                Prbal.arrowLeft,
                 color: Colors.white,
                 size: 20.sp,
               ),
@@ -420,7 +420,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                     _transformationController.value = Matrix4.identity();
                   },
                   icon: Icon(
-                    LineIcons.searchMinus,
+                    Prbal.searchMinus,
                     color: Colors.white,
                     size: 20.sp,
                   ),
@@ -440,7 +440,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                 child: IconButton(
                   onPressed: () => _shareImage(),
                   icon: Icon(
-                    LineIcons.share,
+                    Prbal.share,
                     color: Colors.white,
                     size: 20.sp,
                   ),
@@ -460,7 +460,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                 child: IconButton(
                   onPressed: () => _showMoreOptions(),
                   icon: Icon(
-                    LineIcons.verticalEllipsis,
+                    Prbal.moreVertical,
                     color: Colors.white,
                     size: 20.sp,
                   ),
@@ -530,7 +530,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                         errorBuilder: (context, error, stackTrace) => Container(
                           color: Colors.grey[800],
                           child: Icon(
-                            LineIcons.image,
+                            Prbal.image,
                             color: Colors.white54,
                             size: 24.sp,
                           ),
@@ -569,7 +569,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                         }
                       : null,
                   icon: Icon(
-                    LineIcons.angleLeft,
+                    Prbal.angleLeft,
                     color: _currentIndex > 0 ? Colors.white : Colors.white54,
                     size: 24.sp,
                   ),
@@ -613,7 +613,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
                         }
                       : null,
                   icon: Icon(
-                    LineIcons.angleRight,
+                    Prbal.angleRight,
                     color: _currentIndex < widget.imageUrls!.length - 1
                         ? Colors.white
                         : Colors.white54,
@@ -678,7 +678,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
             ),
             SizedBox(height: 24.h),
             _buildOptionItem(
-              icon: LineIcons.download,
+              icon: Prbal.download,
               title: 'Save to Gallery',
               onTap: () {
                 Navigator.pop(context);
@@ -686,7 +686,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
               },
             ),
             _buildOptionItem(
-              icon: LineIcons.copy,
+              icon: Prbal.copy,
               title: 'Copy Image URL',
               onTap: () {
                 Navigator.pop(context);
@@ -694,7 +694,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
               },
             ),
             _buildOptionItem(
-              icon: LineIcons.alternateExternalLink,
+              icon: Prbal.externalLink,
               title: 'Open in Browser',
               onTap: () {
                 Navigator.pop(context);
@@ -702,7 +702,7 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
               },
             ),
             _buildOptionItem(
-              icon: LineIcons.flag,
+              icon: Prbal.flag,
               title: 'Report Image',
               onTap: () {
                 Navigator.pop(context);

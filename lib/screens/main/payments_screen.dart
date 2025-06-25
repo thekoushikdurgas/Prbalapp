@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class PaymentsScreen extends ConsumerStatefulWidget {
@@ -163,7 +163,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
       elevation: 0,
       leading: IconButton(
         icon: Icon(
-          LineIcons.arrowLeft,
+          Prbal.arrowLeft,
           color: isDark ? Colors.white : const Color(0xFF1F2937),
         ),
         onPressed: () => context.pop(),
@@ -179,7 +179,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
       actions: [
         IconButton(
           icon: Icon(
-            LineIcons.plus,
+            Prbal.plus,
             color: isDark ? Colors.white70 : const Color(0xFF6B7280),
           ),
           onPressed: () => _showAddPaymentMethodDialog(isDark),
@@ -223,7 +223,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 ),
               ),
               Icon(
-                LineIcons.wallet,
+                Prbal.wallet,
                 color: Colors.white,
                 size: 24.sp,
               ),
@@ -558,7 +558,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 ),
               ],
               Icon(
-                isCard ? LineIcons.creditCard : LineIcons.wallet,
+                isCard ? Prbal.creditCard : Prbal.wallet,
                 color: Colors.white,
                 size: 24.sp,
               ),
@@ -574,28 +574,28 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
       padding: EdgeInsets.all(16.w),
       children: [
         _buildSettingItem(
-          icon: LineIcons.alternateShield,
+          icon: Prbal.security,
           title: 'Payment Security',
           subtitle: 'Manage payment security settings',
           isDark: isDark,
           onTap: () {},
         ),
         _buildSettingItem(
-          icon: LineIcons.bell,
+          icon: Prbal.bell,
           title: 'Payment Notifications',
           subtitle: 'Configure payment alerts',
           isDark: isDark,
           onTap: () {},
         ),
         _buildSettingItem(
-          icon: LineIcons.fileInvoice,
+          icon: Prbal.rupee,
           title: 'Transaction History',
           subtitle: 'Export transaction records',
           isDark: isDark,
           onTap: () {},
         ),
         _buildSettingItem(
-          icon: LineIcons.questionCircle,
+          icon: Prbal.questionCircle,
           title: 'Payment Help',
           subtitle: 'Get help with payments',
           isDark: isDark,
@@ -677,7 +677,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                   ),
                 ),
                 Icon(
-                  LineIcons.angleRight,
+                  Prbal.angleRight,
                   color: isDark
                       ? const Color(0xFF64748B)
                       : const Color(0xFF9CA3AF),
@@ -694,11 +694,11 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
   IconData _getTransactionIcon(String type, bool isIncome) {
     switch (type) {
       case 'service':
-        return isIncome ? LineIcons.arrowUp : LineIcons.arrowDown;
+        return isIncome ? Prbal.arrowUp : Prbal.arrowDown;
       case 'refund':
-        return LineIcons.undo;
+        return Prbal.undo;
       default:
-        return LineIcons.stackExchange;
+        return Prbal.stackExchange;
     }
   }
 
@@ -767,7 +767,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
             ),
             SizedBox(height: 24.h),
             _buildAddMethodOption(
-              icon: LineIcons.creditCard,
+              icon: Prbal.creditCard,
               title: 'Credit/Debit Card',
               subtitle: 'Add a new card',
               isDark: isDark,
@@ -775,7 +775,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
             ),
             SizedBox(height: 12.h),
             _buildAddMethodOption(
-              icon: LineIcons.paypal,
+              icon: Prbal.paypal,
               title: 'PayPal',
               subtitle: 'Connect your PayPal account',
               isDark: isDark,
@@ -783,7 +783,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
             ),
             SizedBox(height: 12.h),
             _buildAddMethodOption(
-              icon: LineIcons.university,
+              icon: Prbal.university,
               title: 'Bank Account',
               subtitle: 'Add bank account details',
               isDark: isDark,
@@ -848,7 +848,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 ),
               ),
               Icon(
-                LineIcons.angleRight,
+                Prbal.angleRight,
                 color:
                     isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
                 size: 20.sp,

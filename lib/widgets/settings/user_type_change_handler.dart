@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 // Services
 import 'package:prbal/services/service_providers.dart';
@@ -189,7 +189,7 @@ class UserTypeChangeHandler {
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Icon(
-                      Icons.swap_horiz,
+                      Prbal.arrowSync,
                       color: const Color(0xFF667EEA),
                       size: 24.sp,
                     ),
@@ -301,7 +301,7 @@ class UserTypeChangeHandler {
                             ),
                           ),
                           Icon(
-                            Icons.arrow_forward_ios,
+                            Prbal.arrowSync,
                             color: _getUserTypeColor(targetType),
                             size: 14.sp,
                           ),
@@ -606,13 +606,13 @@ class UserTypeChangeHandler {
   static IconData _getUserTypeIcon(String? userType) {
     switch (userType?.toLowerCase()) {
       case 'provider':
-        return LineIcons.toolbox;
+        return Prbal.toolbox;
       case 'admin':
-        return LineIcons.userShield;
+        return Prbal.shield4;
       case 'customer':
       case 'taker':
       default:
-        return LineIcons.user;
+        return Prbal.user;
     }
   }
 

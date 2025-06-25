@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 // import 'package:prbal/widget/modern_ui_components.dart';
 import 'package:prbal/services/health_service.dart';
 
@@ -145,9 +145,7 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget>
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
-                  isHealthy
-                      ? LineIcons.checkCircle
-                      : LineIcons.exclamationTriangle,
+                  isHealthy ? Prbal.checkCircle : Prbal.exclamationTriangle,
                   color: Colors.white,
                   size: 24.sp,
                 ),
@@ -220,7 +218,7 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget>
           child: _buildHealthMetric(
             'API',
             widget.healthData.system.status,
-            LineIcons.server,
+            Prbal.server,
           ),
         ),
         SizedBox(width: 20.w),
@@ -228,7 +226,7 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget>
           child: _buildHealthMetric(
             'Database',
             widget.healthData.database.status,
-            LineIcons.database,
+            Prbal.database,
           ),
         ),
         SizedBox(width: 20.w),
@@ -236,7 +234,7 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget>
           child: _buildHealthMetric(
             'Version',
             widget.healthData.system.version,
-            LineIcons.tag,
+            Prbal.tag,
           ),
         ),
       ],
@@ -304,7 +302,7 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LineIcons.clock,
+            Prbal.clock,
             color: Colors.white.withValues(alpha: 0.8),
             size: 16.sp,
           ),

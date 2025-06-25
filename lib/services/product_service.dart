@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'api_service.dart';
 
 /// Product status enumeration
@@ -1055,13 +1056,13 @@ class ProductService {
   IconData getProductTypeIcon(ProductType type) {
     switch (type) {
       case ProductType.physical:
-        return Icons.inventory_2;
+        return Prbal.barbell;
       case ProductType.digital:
-        return Icons.cloud_download;
+        return Prbal.cloudDownload;
       case ProductType.service:
-        return Icons.handyman;
+        return Prbal.handyman;
       case ProductType.subscription:
-        return Icons.subscriptions;
+        return Prbal.subscriptions;
     }
   }
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
 import 'package:prbal/widgets/admin/category/components/category_actions_bottom_sheet.dart';
-import 'package:prbal/widgets/admin/category/utils/meta_info.dart';
+// import 'package:prbal/widgets/admin/category/utils/meta_info.dart';
 
 /// ====================================================================
 /// CATEGORY CARD COMPONENTS
@@ -14,21 +14,21 @@ import 'package:prbal/widgets/admin/category/utils/meta_info.dart';
 /// **Purpose**: Reusable card components for displaying category information
 ///
 /// **Components Included**:
-/// - CategoryCard: Main category card with expandable content
+/// - CategoryCard: Main category card with actions
 /// - CategoryIcon: Icon component for categories
 /// - CategoryCardContent: Main content area of the card
-/// - ExpandableContent: Expandable details section
 /// - CategoryActionsMenu: Actions menu using modal bottom sheet
 ///
 /// **Features**:
 /// - Modern Material Design 3.0
 /// - Theme-aware design
+/// - Selection-aware tap behavior
 /// - Smooth animations
 /// - Haptic feedback
 /// - Comprehensive debug logging
 /// ====================================================================
 
-/// Modern category card with expandable content and actions
+/// Modern category card with actions
 class CategoryCard extends StatefulWidget {
   final ServiceCategory category;
   final bool isSelected;
@@ -38,8 +38,6 @@ class CategoryCard extends StatefulWidget {
   final Function(ServiceCategory)? onEdit;
   final Function(ServiceCategory)? onDelete;
   final Function(ServiceCategory)? onToggleStatus;
-  final Set<String> expandedCategories;
-  final Function(String) onToggleExpand;
   final bool isInSelectionMode;
 
   const CategoryCard({
@@ -52,8 +50,6 @@ class CategoryCard extends StatefulWidget {
     this.onEdit,
     this.onDelete,
     this.onToggleStatus,
-    required this.expandedCategories,
-    required this.onToggleExpand,
     required this.isInSelectionMode,
   });
 
@@ -61,14 +57,16 @@ class CategoryCard extends StatefulWidget {
   State<CategoryCard> createState() => _CategoryCardState();
 }
 
-class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMixin {
+class _CategoryCardState extends State<CategoryCard>
+    with TickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('🎴 CategoryCard: Initializing card for category "${widget.category.name}"');
+    debugPrint(
+        '🎴 CategoryCard: Initializing card for category "${widget.category.name}"');
 
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 150),
@@ -87,15 +85,18 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final isExpanded = widget.expandedCategories.contains(widget.category.id);
 
-    debugPrint('🎴 CategoryCard: Building card for "${widget.category.name}" (expanded: $isExpanded)');
+    debugPrint('🎴 CategoryCard: Building card for "${widget.category.name}"');
 
     // Theme-aware colors
-    final primaryColor = isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
+    final primaryColor =
+        isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
     final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
-    final borderColor = widget.isSelected ? primaryColor : (isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB));
-    final iconColor = CategoryUtils.getCategoryIconColor(widget.category, isDark);
+    final borderColor = widget.isSelected
+        ? primaryColor
+        : (isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB));
+    final iconColor =
+        CategoryUtils.getCategoryIconColor(widget.category, isDark);
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -106,8 +107,9 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
             margin: EdgeInsets.only(bottom: 12.h),
             child: Material(
               elevation: widget.isSelected ? 8 : 2,
-              shadowColor:
-                  widget.isSelected ? primaryColor.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.1),
+              shadowColor: widget.isSelected
+                  ? primaryColor.withValues(alpha: 0.3)
+                  : Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16.r),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
@@ -138,9 +140,11 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
                       onTap: () {
                         if (widget.isInSelectionMode) {
                           // Selection mode: tap to toggle selection
-                          debugPrint('🎴 CategoryCard: Card tapped in SELECTION MODE for "${widget.category.name}"');
+                          debugPrint(
+                              '🎴 CategoryCard: Card tapped in SELECTION MODE for "${widget.category.name}"');
                           HapticFeedback.selectionClick();
-                          widget.onTap?.call(); // This will call onSelectionChanged
+                          widget.onTap
+                              ?.call(); // This will call onSelectionChanged
                         } else {
                           // Normal mode: tap to show actions menu (handled by CategoryActionsMenu)
                           debugPrint(
@@ -156,60 +160,38 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
                         _scaleController.forward().then((_) {
                           _scaleController.reverse();
                         });
-                        widget.onLongPress?.call(); // This will call onSelectionChanged (enter/toggle selection)
+                        widget.onLongPress
+                            ?.call(); // This will call onSelectionChanged (enter/toggle selection)
                       },
                       borderRadius: BorderRadius.circular(16.r),
-                      child: AnimatedSize(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        child: Column(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Row(
                           children: [
-                            // Main card content
-                            Padding(
-                              padding: EdgeInsets.all(16.w),
-                              child: Row(
-                                children: [
-                                  // Category icon
-                                  CategoryIcon(
-                                    category: widget.category,
-                                    iconColor: iconColor,
-                                    isDark: isDark,
-                                  ),
-
-                                  SizedBox(width: 16.w),
-
-                                  // Main content
-                                  Expanded(
-                                    child: CategoryCardContent(
-                                      category: widget.category,
-                                      isDark: isDark,
-                                    ),
-                                  ),
-
-                                  // SizedBox(width: 12.w),
-
-                                  // Expand/collapse button
-                                  // _buildExpandButton(isExpanded, isDark),
-
-                                  // SizedBox(width: 8.w),
-
-                                  // Actions menu
-                                  CategoryActionsMenu(
-                                    category: widget.category,
-                                    onEdit: widget.onEdit,
-                                    onDelete: widget.onDelete,
-                                    onToggleStatus: widget.onToggleStatus,
-                                  ),
-                                ],
-                              ),
+                            // Category icon
+                            CategoryIcon(
+                              category: widget.category,
+                              iconColor: iconColor,
+                              isDark: isDark,
                             ),
 
-                            // Expandable content
-                            if (isExpanded)
-                              ExpandableContent(
+                            SizedBox(width: 16.w),
+
+                            // Main content
+                            Expanded(
+                              child: CategoryCardContent(
                                 category: widget.category,
                                 isDark: isDark,
                               ),
+                            ),
+
+                            // Actions menu
+                            CategoryActionsMenu(
+                              category: widget.category,
+                              onEdit: widget.onEdit,
+                              onDelete: widget.onDelete,
+                              onToggleStatus: widget.onToggleStatus,
+                            ),
                           ],
                         ),
                       ),
@@ -224,37 +206,10 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
     );
   }
 
-  Widget _buildExpandButton(bool isExpanded, bool isDark) {
-    final iconColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
-
-    return Container(
-      padding: EdgeInsets.all(8.w),
-      decoration: BoxDecoration(
-        color: (isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6)).withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          debugPrint('🔄 CategoryCard: Expand button tapped for "${widget.category.name}"');
-          HapticFeedback.selectionClick();
-          widget.onToggleExpand(widget.category.id);
-        },
-        child: AnimatedRotation(
-          turns: isExpanded ? 0.5 : 0.0,
-          duration: const Duration(milliseconds: 300),
-          child: Icon(
-            LineIcons.angleDown,
-            size: 16.sp,
-            color: iconColor,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
-    debugPrint('🎴 CategoryCard: Disposing card for category "${widget.category.name}"');
+    debugPrint(
+        '🎴 CategoryCard: Disposing card for category "${widget.category.name}"');
     _scaleController.dispose();
     super.dispose();
   }
@@ -275,9 +230,11 @@ class CategoryIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 CategoryIcon: Building icon for category "${category.name}" with icon "${category.icon}"');
+    debugPrint(
+        '🎨 CategoryIcon: Building icon for category "${category.name}" with icon "${category.icon}"');
 
-    final icon = CategoryUtils.getIconFromString(category.icon ?? 'list');
+    final icon = CategoryUtils.getIconFromString(
+        category.iconUrl ?? category.icon ?? 'list');
 
     return Container(
       width: 56.w,
@@ -326,10 +283,11 @@ class CategoryCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📝 CategoryCardContent: Building content for category "${category.name}"');
+    debugPrint(
+        '📝 CategoryCardContent: Building content for category "${category.name}"');
 
     final primaryTextColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    // final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
     final statusColor = CategoryUtils.getStatusColor(category.isActive, isDark);
 
     return Column(
@@ -394,7 +352,7 @@ class CategoryCardContent extends StatelessWidget {
         // Row(
         //   children: [
         //     Icon(
-        //       LineIcons.layerGroup,
+        //       Prbal.layers5,
         //       size: 12.sp,
         //       color: secondaryTextColor,
         //     ),
@@ -413,7 +371,7 @@ class CategoryCardContent extends StatelessWidget {
         //     ),
         //     SizedBox(width: 12.w),
         //     Icon(
-        //       LineIcons.clock,
+        //       Prbal.clock,
         //       size: 12.sp,
         //       color: secondaryTextColor,
         //     ),
@@ -433,100 +391,6 @@ class CategoryCardContent extends StatelessWidget {
         //   ],
         // ),
       ],
-    );
-  }
-}
-
-/// Expandable content section showing detailed information
-class ExpandableContent extends StatelessWidget {
-  final ServiceCategory category;
-  final bool isDark;
-
-  const ExpandableContent({
-    super.key,
-    required this.category,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('📋 ExpandableContent: Building expandable content for category "${category.name}"');
-
-    final dividerColor = isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB);
-    final backgroundColor = isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: dividerColor,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Detailed information header
-            Row(
-              children: [
-                Icon(
-                  LineIcons.infoCircle,
-                  size: 16.sp,
-                  color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'Detailed Information',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : const Color(0xFF111827),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 12.h),
-
-            // Metadata grid
-            Row(
-              children: [
-                Expanded(
-                  child: buildMetaInfo(
-                    icon: LineIcons.calendar,
-                    label: 'Created',
-                    value: CategoryUtils.formatFullDate(category.createdAt),
-                    isDark: isDark,
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: buildMetaInfo(
-                    icon: LineIcons.edit,
-                    label: 'Updated',
-                    value: CategoryUtils.formatFullDate(category.updatedAt),
-                    isDark: isDark,
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 12.h),
-
-            // Additional metadata
-            buildMetaInfo(
-              icon: LineIcons.hashtag,
-              label: 'Category ID',
-              value: category.id,
-              isDark: isDark,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -551,16 +415,18 @@ class CategoryActionsMenu extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    debugPrint('⚙️ CategoryActionsMenu: Building actions menu button for category "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsMenu: Building actions menu button for category "${category.name}"');
 
     return GestureDetector(
       onTap: () {
-        debugPrint('⚙️ CategoryActionsMenu: Actions menu tapped for "${category.name}"');
+        debugPrint(
+            '⚙️ CategoryActionsMenu: Actions menu tapped for "${category.name}"');
         HapticFeedback.selectionClick();
         _showActionsBottomSheet(context);
       },
       child: Icon(
-        LineIcons.verticalEllipsis,
+        Prbal.moreVertical,
         size: 25.sp,
         color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
       ),
@@ -569,7 +435,8 @@ class CategoryActionsMenu extends StatelessWidget {
 
   /// Show category actions bottom sheet
   Future<void> _showActionsBottomSheet(BuildContext context) async {
-    debugPrint('⚙️ CategoryActionsMenu: Showing actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsMenu: Showing actions bottom sheet for "${category.name}"');
 
     await CategoryActionsBottomSheet.show(
       context: context,

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/services/health_service.dart';
 import 'package:prbal/utils/navigation/navigation_route.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// Health Status Widget - Shows current system health
 class HealthStatusWidget extends StatefulWidget {
@@ -71,13 +72,13 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> {
   IconData _getStatusIcon(String status) {
     switch (status.toLowerCase()) {
       case 'healthy':
-        return Icons.check_circle;
+        return Prbal.checkCircle;
       case 'unhealthy':
-        return Icons.error;
+        return Prbal.error;
       case 'error':
-        return Icons.error_outline;
+        return Prbal.errorOutline;
       default:
-        return Icons.help;
+        return Prbal.help;
     }
   }
 
@@ -164,7 +165,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> {
                   ),
                   if (!_isLoading)
                     Icon(
-                      Icons.arrow_forward_ios,
+                      Prbal.arrowSync,
                       color: colorScheme.onSurface.withValues(alpha: 0.5),
                       size: 16.sp,
                     ),
@@ -194,8 +195,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> {
     );
   }
 
-  Widget _buildCompactWidget(
-      ThemeData theme, ColorScheme colorScheme, Color statusColor) {
+  Widget _buildCompactWidget(ThemeData theme, ColorScheme colorScheme, Color statusColor) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
@@ -261,8 +261,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> {
     );
   }
 
-  Widget _buildMetricRow(
-      String label, String value, Color valueColor, ThemeData theme) {
+  Widget _buildMetricRow(String label, String value, Color valueColor, ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 // Components
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
@@ -27,7 +27,7 @@ class SupportLegalSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Help Center',
           subtitle: 'Get help and support',
-          icon: LineIcons.questionCircle,
+          icon: Prbal.questionCircle,
           iconColor: const Color(0xFF4299E1),
           onTap: () {
             debugPrint('⚙️ Help Center tapped');
@@ -37,7 +37,7 @@ class SupportLegalSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Contact Us',
           subtitle: 'Get in touch with our team',
-          icon: LineIcons.envelope,
+          icon: Prbal.envelope,
           iconColor: const Color(0xFF48BB78),
           onTap: () {
             debugPrint('⚙️ Contact Us tapped');
@@ -47,7 +47,7 @@ class SupportLegalSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Terms of Service',
           subtitle: 'Read our terms and conditions',
-          icon: LineIcons.file,
+          icon: Prbal.file,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ Terms of Service tapped');
@@ -57,7 +57,7 @@ class SupportLegalSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Privacy Policy',
           subtitle: 'Read our privacy policy',
-          icon: LineIcons.userShield,
+          icon: Prbal.shield4,
           iconColor: const Color(0xFFED8936),
           onTap: () {
             debugPrint('⚙️ Privacy Policy tapped');

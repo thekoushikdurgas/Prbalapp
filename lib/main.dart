@@ -1,6 +1,7 @@
 import 'package:prbal/app.dart';
 // import 'package:prbal/utils/cache/onboarding/intro_caching.dart' ;
 import 'package:prbal/utils/cubit/theme_cubit.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 // import 'package:prbal/utils/theme/theme_caching.dart';
 import 'package:prbal/utils/localization/project_locales.dart';
 import 'package:prbal/utils/cubit/cubit_observer.dart';
@@ -53,7 +54,7 @@ Future<void> main() async {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error, size: 64, color: Colors.red),
+                const Icon(Prbal.error, size: 64, color: Colors.red),
                 const SizedBox(height: 16),
                 const Text(
                   'Failed to initialize app',

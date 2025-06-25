@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// ====================================================================
 /// CATEGORY STATE COMPONENTS
@@ -31,7 +31,8 @@ class CategoryLoadingState extends StatefulWidget {
   State<CategoryLoadingState> createState() => _CategoryLoadingStateState();
 }
 
-class _CategoryLoadingStateState extends State<CategoryLoadingState> with TickerProviderStateMixin {
+class _CategoryLoadingStateState extends State<CategoryLoadingState>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -76,12 +77,15 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    debugPrint('⏳ CategoryLoadingState: Building loading state (isDark: $isDark)');
+    debugPrint(
+        '⏳ CategoryLoadingState: Building loading state (isDark: $isDark)');
 
-    final primaryColor = isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
+    final primaryColor =
+        isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
     final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final secondaryTextColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Center(
       child: Container(
@@ -91,7 +95,9 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : Colors.grey.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -127,7 +133,7 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
                         ),
                       ),
                       child: Icon(
-                        LineIcons.layerGroup,
+                        Prbal.layers5,
                         size: 36.sp,
                         color: primaryColor,
                       ),
@@ -172,8 +178,10 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
                   animation: _pulseController,
                   builder: (context, child) {
                     final delay = index * 0.3;
-                    final animationValue = (_pulseController.value + delay) % 1.0;
-                    final opacity = (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
+                    final animationValue =
+                        (_pulseController.value + delay) % 1.0;
+                    final opacity =
+                        (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
 
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -218,14 +226,16 @@ class CategoryErrorState extends StatefulWidget {
   State<CategoryErrorState> createState() => _CategoryErrorStateState();
 }
 
-class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTickerProviderStateMixin {
+class _CategoryErrorStateState extends State<CategoryErrorState>
+    with SingleTickerProviderStateMixin {
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
+    debugPrint(
+        '❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
 
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -251,10 +261,12 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
 
     debugPrint('❌ CategoryErrorState: Building error state (isDark: $isDark)');
 
-    final errorColor = isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444);
+    final errorColor =
+        isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444);
     final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final secondaryTextColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Center(
       child: AnimatedBuilder(
@@ -306,7 +318,7 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                       ),
                     ),
                     child: Icon(
-                      LineIcons.exclamationTriangle,
+                      Prbal.exclamationTriangle,
                       size: 36.sp,
                       color: errorColor,
                     ),
@@ -364,7 +376,8 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              debugPrint('🔄 CategoryErrorState: Retry button tapped');
+                              debugPrint(
+                                  '🔄 CategoryErrorState: Retry button tapped');
                               HapticFeedback.mediumImpact();
                               widget.onRetry?.call();
                             },
@@ -378,7 +391,7 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    LineIcons.redo,
+                                    Prbal.redo,
                                     size: 18.sp,
                                     color: Colors.white,
                                   ),
@@ -429,7 +442,8 @@ class CategoryEmptyState extends StatefulWidget {
   State<CategoryEmptyState> createState() => _CategoryEmptyStateState();
 }
 
-class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTickerProviderStateMixin {
+class _CategoryEmptyStateState extends State<CategoryEmptyState>
+    with SingleTickerProviderStateMixin {
   late AnimationController _floatController;
   late Animation<double> _floatAnimation;
 
@@ -460,10 +474,12 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
 
     debugPrint('📭 CategoryEmptyState: Building empty state (isDark: $isDark)');
 
-    final primaryColor = isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
+    final primaryColor =
+        isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
     final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final secondaryTextColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Center(
       child: Container(
@@ -474,7 +490,9 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
           borderRadius: BorderRadius.circular(24.r),
           boxShadow: [
             BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.1),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : Colors.grey.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -508,7 +526,7 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                       ),
                     ),
                     child: Icon(
-                      LineIcons.folderOpen,
+                      Prbal.folderOpen,
                       size: 48.sp,
                       color: primaryColor.withValues(alpha: 0.7),
                     ),
@@ -574,7 +592,8 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        debugPrint('➕ CategoryEmptyState: Create category button tapped');
+                        debugPrint(
+                            '➕ CategoryEmptyState: Create category button tapped');
                         HapticFeedback.mediumImpact();
                         widget.onCreateCategory?.call();
                       },
@@ -588,7 +607,7 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              LineIcons.plus,
+                              Prbal.plus,
                               size: 20.sp,
                               color: Colors.white,
                             ),
@@ -641,7 +660,8 @@ class CategoryStatisticCards extends StatefulWidget {
   State<CategoryStatisticCards> createState() => _CategoryStatisticCardsState();
 }
 
-class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with TickerProviderStateMixin {
+class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
+    with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
 
@@ -649,7 +669,8 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with Ti
   void initState() {
     super.initState();
     debugPrint('📊 CategoryStatisticCards: Initializing statistic cards');
-    debugPrint('📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
+    debugPrint(
+        '📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
 
     _controllers = List.generate(3, (index) {
       return AnimationController(
@@ -690,19 +711,19 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with Ti
       _StatCardData(
         label: 'Total',
         value: widget.totalCount.toString(),
-        icon: LineIcons.layerGroup,
+        icon: Prbal.layers5,
         color: const Color(0xFF6366F1),
       ),
       _StatCardData(
         label: 'Active',
         value: widget.activeCount.toString(),
-        icon: LineIcons.checkCircle,
+        icon: Prbal.checkCircle,
         color: const Color(0xFF10B981),
       ),
       _StatCardData(
         label: 'Inactive',
         value: widget.inactiveCount.toString(),
-        icon: LineIcons.pauseCircle,
+        icon: Prbal.pauseCircle,
         color: const Color(0xFFF59E0B),
       ),
     ];
@@ -753,7 +774,8 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with Ti
   ) {
     final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final subtitleColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Container(
       padding: EdgeInsets.all(16.w),

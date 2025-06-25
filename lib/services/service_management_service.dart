@@ -934,15 +934,19 @@ class ServiceManagementService {
 
   /// Create a new service category (Admin only)
   /// Endpoint: POST /api/services/categories/
+  /// ✨ ENHANCED: Now supports iconUrl field for predefined category icons
   Future<ApiResponse<ServiceCategory>> createCategory({
     required String name,
     required String description,
+    String? iconUrl,
     int sortOrder = 0,
     bool isActive = true,
   }) async {
     debugPrint('🔧 ServiceManagementService: Creating new category');
     debugPrint(
         '🔧 Category details: name=$name, description=$description, sortOrder=$sortOrder');
+    debugPrint(
+        '🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
@@ -960,6 +964,7 @@ class ServiceManagementService {
         'description': description,
         'sort_order': sortOrder,
         'is_active': isActive,
+        'icon_url': iconUrl, // ✨ Using icon_url for predefined icons
       };
 
       debugPrint(
@@ -1000,10 +1005,12 @@ class ServiceManagementService {
 
   /// Update an existing category (Admin only)
   /// Endpoint: PUT /api/services/categories/{id}/
+  /// ✨ ENHANCED: Now supports iconUrl field for predefined category icons
   Future<ApiResponse<ServiceCategory>> updateCategory({
     required String categoryId,
     required String name,
     required String description,
+    String? iconUrl,
     int sortOrder = 0,
     bool isActive = true,
   }) async {
@@ -1011,6 +1018,8 @@ class ServiceManagementService {
         '🔧 ServiceManagementService: Updating category ID: $categoryId');
     debugPrint(
         '🔧 New details: name=$name, description=$description, sortOrder=$sortOrder');
+    debugPrint(
+        '🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
@@ -1026,6 +1035,7 @@ class ServiceManagementService {
       final requestBody = {
         'name': name,
         'description': description,
+        'icon_url': iconUrl, // ✨ Using icon_url for predefined icons
         'sort_order': sortOrder,
         'is_active': isActive,
       };

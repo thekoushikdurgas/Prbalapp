@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'api_service.dart';
 
 /// Payment status enumeration
@@ -673,15 +674,15 @@ class PaymentService {
   IconData getPaymentMethodIcon(PaymentMethod method) {
     switch (method) {
       case PaymentMethod.card:
-        return Icons.credit_card;
+        return Prbal.creditCard;
       case PaymentMethod.bankTransfer:
-        return Icons.account_balance;
+        return Prbal.accountBalance;
       case PaymentMethod.wallet:
-        return Icons.account_balance_wallet;
+        return Prbal.accountBalanceWallet;
       case PaymentMethod.cash:
-        return Icons.money;
+        return Prbal.money;
       case PaymentMethod.upi:
-        return Icons.qr_code;
+        return Prbal.qrCode;
     }
   }
 

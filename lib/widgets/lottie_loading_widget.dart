@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 /// A reusable Lottie loading widget with multiple animation styles
 ///
@@ -202,7 +203,7 @@ class _LottieLoadingWidgetState extends State<LottieLoadingWidget>
             borderRadius: BorderRadius.circular(size * 0.5),
           ),
           child: Icon(
-            Icons.business,
+            Prbal.business,
             size: size * 0.5,
             color: Colors.white,
           ),
@@ -217,7 +218,7 @@ class _LottieLoadingWidgetState extends State<LottieLoadingWidget>
             borderRadius: BorderRadius.circular(size * 0.5),
           ),
           child: Icon(
-            Icons.check,
+            Prbal.check,
             size: size * 0.5,
             color: Colors.white,
           ),

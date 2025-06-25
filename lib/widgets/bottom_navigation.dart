@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 
 // Import all screen files
@@ -269,25 +269,25 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation> {
     switch (userType) {
       case 'provider':
         return [
-          LineIcons.home, // Dashboard
-          LineIcons.compass, // Explore
-          LineIcons.briefcase, // Orders
-          LineIcons.cog, // Settings
+          Prbal.home, // Dashboard
+          Prbal.compass, // Explore
+          Prbal.briefcase, // Orders
+          Prbal.cog, // Settings
         ];
       case 'admin':
         return [
-          LineIcons.desktop, // Analytics
-          LineIcons.users, // Users
-          LineIcons.tools, // Moderation
-          LineIcons.cog, // Settings
+          Prbal.desktop, // Analytics
+          Prbal.users, // Users
+          Prbal.tools, // Moderation
+          Prbal.cog, // Settings
         ];
       case 'customer':
       default:
         return [
-          LineIcons.home, // Home
-          LineIcons.compass, // Explore
-          LineIcons.calendar, // Bookings
-          LineIcons.user, // Profile
+          Prbal.home, // Home
+          Prbal.compass, // Explore
+          Prbal.calendar, // Bookings
+          Prbal.user, // Profile
         ];
     }
   }

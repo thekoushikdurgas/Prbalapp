@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
@@ -81,13 +81,13 @@ class SettingsUtils {
   static IconData getUserTypeIcon(String? userType) {
     switch (userType?.toLowerCase()) {
       case 'provider':
-        return LineIcons.toolbox;
+        return Prbal.toolbox;
       case 'admin':
-        return LineIcons.userShield;
+        return Prbal.shield4;
       case 'customer':
       case 'taker':
       default:
-        return LineIcons.user;
+        return Prbal.user;
     }
   }
 

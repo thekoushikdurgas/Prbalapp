@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 
 class ProviderExploreScreen extends ConsumerStatefulWidget {
   const ProviderExploreScreen({super.key});
@@ -75,13 +75,13 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             _buildViewToggle(
-                              icon: LineIcons.map,
+                              icon: Prbal.map,
                               isSelected: _isMapView,
                               onTap: () => setState(() => _isMapView = true),
                               isDark: isDark,
                             ),
                             _buildViewToggle(
-                              icon: LineIcons.list,
+                              icon: Prbal.list,
                               isSelected: !_isMapView,
                               onTap: () => setState(() => _isMapView = false),
                               isDark: isDark,
@@ -111,13 +111,13 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                           fontSize: 16.sp,
                         ),
                         prefixIcon: Icon(
-                          LineIcons.search,
+                          Prbal.search,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
                         ),
                         suffixIcon: IconButton(
                           onPressed: _showFilterBottomSheet,
                           icon: Icon(
-                            Icons.tune,
+                            Prbal.tune,
                             color: const Color(0xFF4299E1),
                           ),
                         ),
@@ -248,7 +248,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    LineIcons.map,
+                    Prbal.map,
                     size: 64.sp,
                     color: isDark ? Colors.grey[600] : Colors.grey[500],
                   ),
@@ -342,7 +342,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  LineIcons.briefcase,
+                  Prbal.briefcase,
                   color: accentColor,
                   size: 16.sp,
                 ),
@@ -484,7 +484,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Icon(
-          LineIcons.briefcase,
+          Prbal.briefcase,
           color: colors[index % colors.length],
           size: 24.sp,
         ),

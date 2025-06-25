@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 
 /// ====================================================================
@@ -41,8 +41,10 @@ class CategoryUtils {
   /// ```
   static void initialize(ServiceManagementService serviceManagementService) {
     _serviceManagementService = serviceManagementService;
-    debugPrint('🌐 CategoryUtils: Global ServiceManagementService initialized successfully');
-    debugPrint('🌐 CategoryUtils: All CRUD functions can now use the global service instance');
+    debugPrint(
+        '🌐 CategoryUtils: Global ServiceManagementService initialized successfully');
+    debugPrint(
+        '🌐 CategoryUtils: All CRUD functions can now use the global service instance');
   }
 
   /// Get the global ServiceManagementService instance
@@ -51,7 +53,8 @@ class CategoryUtils {
   /// **Throws**: StateError if not initialized
   static ServiceManagementService get _service {
     if (_serviceManagementService == null) {
-      throw StateError('CategoryUtils not initialized. Call CategoryUtils.initialize() first.');
+      throw StateError(
+          'CategoryUtils not initialized. Call CategoryUtils.initialize() first.');
     }
     return _serviceManagementService!;
   }
@@ -74,7 +77,8 @@ class CategoryUtils {
   /// // ... perform operation
   /// CategoryUtils.completeCrudOperation(tracker, success: true);
   /// ```
-  static CrudOperationTracker startCrudOperation(String operation, String categoryName) {
+  static CrudOperationTracker startCrudOperation(
+      String operation, String categoryName) {
     final tracker = CrudOperationTracker(
       operation: operation,
       categoryName: categoryName,
@@ -86,8 +90,10 @@ class CategoryUtils {
     debugPrint('🔄 CategoryUtils.CRUD: =============================');
     debugPrint('🔄 CategoryUtils.CRUD: → Category Name: "$categoryName"');
     debugPrint('🔄 CategoryUtils.CRUD: → Operation ID: ${tracker.operationId}');
-    debugPrint('🔄 CategoryUtils.CRUD: → Start Time: ${tracker.startTime.toIso8601String()}');
-    debugPrint('🔄 CategoryUtils.CRUD: → Expected Steps: ${_getCrudSteps(operation).join(' → ')}');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → Start Time: ${tracker.startTime.toIso8601String()}');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → Expected Steps: ${_getCrudSteps(operation).join(' → ')}');
 
     return tracker;
   }
@@ -105,18 +111,22 @@ class CategoryUtils {
     final duration = endTime.difference(tracker.startTime);
 
     debugPrint('🔄 CategoryUtils.CRUD: =============================');
-    debugPrint('🔄 CategoryUtils.CRUD: COMPLETING ${tracker.operation} OPERATION');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: COMPLETING ${tracker.operation} OPERATION');
     debugPrint('🔄 CategoryUtils.CRUD: =============================');
     debugPrint('🔄 CategoryUtils.CRUD: → Operation ID: ${tracker.operationId}');
     debugPrint('🔄 CategoryUtils.CRUD: → Category: "${tracker.categoryName}"');
-    debugPrint('🔄 CategoryUtils.CRUD: → Success: ${success ? '✅ SUCCESS' : '❌ FAILED'}');
-    debugPrint('🔄 CategoryUtils.CRUD: → Duration: ${duration.inMilliseconds}ms');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → Success: ${success ? '✅ SUCCESS' : '❌ FAILED'}');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → Duration: ${duration.inMilliseconds}ms');
     debugPrint(
         '🔄 CategoryUtils.CRUD: → Performance Rating: ${_getCrudPerformanceRating(tracker.operation, duration)}');
 
     if (!success && errorMessage != null) {
       debugPrint('🔄 CategoryUtils.CRUD: → Error: $errorMessage');
-      debugPrint('🔄 CategoryUtils.CRUD: → Error Category: ${_categorizeCrudError(errorMessage)}');
+      debugPrint(
+          '🔄 CategoryUtils.CRUD: → Error Category: ${_categorizeCrudError(errorMessage)}');
       debugPrint(
           '🔄 CategoryUtils.CRUD: → Troubleshooting: ${_getCrudTroubleshootingTips(tracker.operation, errorMessage)}');
     }
@@ -135,13 +145,28 @@ class CategoryUtils {
       case 'CREATE':
         return ['Validate Input', 'API Call', 'Cache Update', 'UI Refresh'];
       case 'READ':
-        return ['Check Cache', 'API Call (if needed)', 'Parse Response', 'Update UI'];
+        return [
+          'Check Cache',
+          'API Call (if needed)',
+          'Parse Response',
+          'Update UI'
+        ];
       case 'UPDATE':
-        return ['Validate Changes', 'API Call', 'Cache Invalidation', 'UI Refresh'];
+        return [
+          'Validate Changes',
+          'API Call',
+          'Cache Invalidation',
+          'UI Refresh'
+        ];
       case 'DELETE':
         return ['Confirm Action', 'API Call', 'Cache Cleanup', 'UI Update'];
       case 'BULK':
-        return ['Validate Selection', 'Batch Processing', 'Progress Tracking', 'Bulk UI Update'];
+        return [
+          'Validate Selection',
+          'Batch Processing',
+          'Progress Tracking',
+          'Bulk UI Update'
+        ];
       default:
         return ['Initialize', 'Process', 'Complete'];
     }
@@ -160,7 +185,8 @@ class CategoryUtils {
       'BULK': {'excellent': 2000, 'good': 5000, 'acceptable': 10000},
     };
 
-    final operationThresholds = thresholds[operation.toUpperCase()] ?? thresholds['READ']!;
+    final operationThresholds =
+        thresholds[operation.toUpperCase()] ?? thresholds['READ']!;
 
     if (milliseconds <= operationThresholds['excellent']!) {
       return '🚀 EXCELLENT (${milliseconds}ms)';
@@ -177,15 +203,23 @@ class CategoryUtils {
   static String _categorizeCrudError(String errorMessage) {
     final message = errorMessage.toLowerCase();
 
-    if (message.contains('permission') || message.contains('unauthorized') || message.contains('403')) {
+    if (message.contains('permission') ||
+        message.contains('unauthorized') ||
+        message.contains('403')) {
       return '🔒 PERMISSION_ERROR - Check user authorization';
-    } else if (message.contains('validation') || message.contains('invalid') || message.contains('400')) {
+    } else if (message.contains('validation') ||
+        message.contains('invalid') ||
+        message.contains('400')) {
       return '📝 VALIDATION_ERROR - Check input data';
     } else if (message.contains('not found') || message.contains('404')) {
       return '🔍 NOT_FOUND_ERROR - Resource may have been deleted';
-    } else if (message.contains('network') || message.contains('timeout') || message.contains('connection')) {
+    } else if (message.contains('network') ||
+        message.contains('timeout') ||
+        message.contains('connection')) {
       return '🌐 NETWORK_ERROR - Check internet connection';
-    } else if (message.contains('server') || message.contains('500') || message.contains('internal')) {
+    } else if (message.contains('server') ||
+        message.contains('500') ||
+        message.contains('internal')) {
       return '🖥️ SERVER_ERROR - Backend issue detected';
     } else if (message.contains('cache') || message.contains('storage')) {
       return '💾 CACHE_ERROR - Local storage issue';
@@ -195,7 +229,8 @@ class CategoryUtils {
   }
 
   /// Get troubleshooting tips for CRUD operations
-  static String _getCrudTroubleshootingTips(String operation, String errorMessage) {
+  static String _getCrudTroubleshootingTips(
+      String operation, String errorMessage) {
     final errorCategory = _categorizeCrudError(errorMessage);
 
     switch (errorCategory.split(' ')[1]) {
@@ -217,15 +252,21 @@ class CategoryUtils {
   }
 
   /// Log CRUD metrics for performance monitoring
-  static void _logCrudMetrics(CrudOperationTracker tracker, Duration duration, bool success) {
+  static void _logCrudMetrics(
+      CrudOperationTracker tracker, Duration duration, bool success) {
     debugPrint('📊 CategoryUtils.CRUD.Metrics: ==================');
     debugPrint('📊 CategoryUtils.CRUD.Metrics: OPERATION METRICS');
     debugPrint('📊 CategoryUtils.CRUD.Metrics: ==================');
-    debugPrint('📊 CategoryUtils.CRUD.Metrics: → Operation: ${tracker.operation}');
-    debugPrint('📊 CategoryUtils.CRUD.Metrics: → Success Rate: ${success ? '100%' : '0%'}');
-    debugPrint('📊 CategoryUtils.CRUD.Metrics: → Duration: ${duration.inMilliseconds}ms');
-    debugPrint('📊 CategoryUtils.CRUD.Metrics: → Category: "${tracker.categoryName}"');
-    debugPrint('📊 CategoryUtils.CRUD.Metrics: → Timestamp: ${DateTime.now().toIso8601String()}');
+    debugPrint(
+        '📊 CategoryUtils.CRUD.Metrics: → Operation: ${tracker.operation}');
+    debugPrint(
+        '📊 CategoryUtils.CRUD.Metrics: → Success Rate: ${success ? '100%' : '0%'}');
+    debugPrint(
+        '📊 CategoryUtils.CRUD.Metrics: → Duration: ${duration.inMilliseconds}ms');
+    debugPrint(
+        '📊 CategoryUtils.CRUD.Metrics: → Category: "${tracker.categoryName}"');
+    debugPrint(
+        '📊 CategoryUtils.CRUD.Metrics: → Timestamp: ${DateTime.now().toIso8601String()}');
 
     // Calculate relative performance
     final avgDuration = _getAverageCrudDuration(tracker.operation);
@@ -269,11 +310,15 @@ class CategoryUtils {
     ServiceCategory? existingCategory,
     List<ServiceCategory>? allCategories,
   }) {
-    debugPrint('✅ CategoryUtils.CRUD.Validation: Starting validation for $operation operation');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: Starting validation for $operation operation');
     debugPrint('✅ CategoryUtils.CRUD.Validation: → Name: ${name ?? 'N/A'}');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Description length: ${description?.length ?? 0}');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Sort order: ${sortOrder ?? 'N/A'}');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Is active: ${isActive ?? 'N/A'}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Description length: ${description?.length ?? 0}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Sort order: ${sortOrder ?? 'N/A'}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Is active: ${isActive ?? 'N/A'}');
 
     final errors = <String>[];
     final warnings = <String>[];
@@ -282,14 +327,16 @@ class CategoryUtils {
     // Operation-specific validation
     switch (operation.toUpperCase()) {
       case 'CREATE':
-        _validateCreateOperation(errors, warnings, suggestions, name, description, sortOrder, allCategories);
+        _validateCreateOperation(errors, warnings, suggestions, name,
+            description, sortOrder, allCategories);
         break;
       case 'UPDATE':
-        _validateUpdateOperation(
-            errors, warnings, suggestions, name, description, sortOrder, existingCategory, allCategories);
+        _validateUpdateOperation(errors, warnings, suggestions, name,
+            description, sortOrder, existingCategory, allCategories);
         break;
       case 'DELETE':
-        _validateDeleteOperation(errors, warnings, suggestions, existingCategory, allCategories);
+        _validateDeleteOperation(
+            errors, warnings, suggestions, existingCategory, allCategories);
         break;
     }
 
@@ -324,10 +371,13 @@ class CategoryUtils {
     );
 
     debugPrint('✅ CategoryUtils.CRUD.Validation: Validation complete');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Valid: ${isValid ? '✅ YES' : '❌ NO'}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Valid: ${isValid ? '✅ YES' : '❌ NO'}');
     debugPrint('✅ CategoryUtils.CRUD.Validation: → Errors: ${errors.length}');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Warnings: ${warnings.length}');
-    debugPrint('✅ CategoryUtils.CRUD.Validation: → Suggestions: ${suggestions.length}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Warnings: ${warnings.length}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD.Validation: → Suggestions: ${suggestions.length}');
 
     return result;
   }
@@ -352,15 +402,18 @@ class CategoryUtils {
 
     // Check for duplicate names
     if (name != null && allCategories != null) {
-      final existingNames = allCategories.map((c) => c.name.toLowerCase()).toList();
+      final existingNames =
+          allCategories.map((c) => c.name.toLowerCase()).toList();
       if (existingNames.contains(name.toLowerCase())) {
-        errors.add('Category name already exists. Please choose a different name.');
+        errors.add(
+            'Category name already exists. Please choose a different name.');
       }
     }
 
     // Sort order suggestions
     if (sortOrder == null || sortOrder == 0) {
-      suggestions.add('Consider setting a specific sort order for better organization');
+      suggestions.add(
+          'Consider setting a specific sort order for better organization');
     }
   }
 
@@ -382,16 +435,20 @@ class CategoryUtils {
 
     // Check for duplicate names (excluding current category)
     if (name != null && allCategories != null) {
-      final otherCategories = allCategories.where((c) => c.id != existingCategory.id);
-      final existingNames = otherCategories.map((c) => c.name.toLowerCase()).toList();
+      final otherCategories =
+          allCategories.where((c) => c.id != existingCategory.id);
+      final existingNames =
+          otherCategories.map((c) => c.name.toLowerCase()).toList();
       if (existingNames.contains(name.toLowerCase())) {
-        errors.add('Category name already exists. Please choose a different name.');
+        errors.add(
+            'Category name already exists. Please choose a different name.');
       }
     }
 
     // Detect significant changes
     if (name != null && name != existingCategory.name) {
-      warnings.add('Changing category name may affect related subcategories and services');
+      warnings.add(
+          'Changing category name may affect related subcategories and services');
     }
 
     if (sortOrder != null && sortOrder != existingCategory.sortOrder) {
@@ -413,8 +470,10 @@ class CategoryUtils {
     }
 
     // Warn about potential impacts
-    warnings.add('Deleting this category will also affect related subcategories and services');
-    suggestions.add('Consider deactivating instead of deleting to preserve data relationships');
+    warnings.add(
+        'Deleting this category will also affect related subcategories and services');
+    suggestions.add(
+        'Consider deactivating instead of deleting to preserve data relationships');
   }
 
   /// **CRUD UI Helpers** 🎨
@@ -456,7 +515,7 @@ class CategoryUtils {
           title: Row(
             children: [
               Icon(
-                LineIcons.exclamationTriangle,
+                Prbal.exclamationTriangle,
                 color: Colors.red,
                 size: 24,
               ),
@@ -488,7 +547,9 @@ class CategoryUtils {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF4B5563) : const Color(0xFFF3F4F6),
+                  color: isDark
+                      ? const Color(0xFF4B5563)
+                      : const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: isDark ? Colors.grey[600]! : Colors.grey[300]!,
@@ -497,7 +558,7 @@ class CategoryUtils {
                 child: Row(
                   children: [
                     Icon(
-                      LineIcons.folder,
+                      Prbal.folder,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
                       size: 20,
                     ),
@@ -508,7 +569,8 @@ class CategoryUtils {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : const Color(0xFF2D3748),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF2D3748),
                         ),
                       ),
                     ),
@@ -519,16 +581,16 @@ class CategoryUtils {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Colors.red.withOpacity(0.3),
+                    color: Colors.red.withValues(alpha: 77),
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      LineIcons.infoCircle,
+                      Prbal.infoCircle,
                       color: Colors.red,
                       size: 16,
                     ),
@@ -555,7 +617,8 @@ class CategoryUtils {
                 Navigator.of(context).pop(false);
               },
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: Text(
                 'Cancel',
@@ -573,7 +636,8 @@ class CategoryUtils {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -591,7 +655,8 @@ class CategoryUtils {
     );
 
     final result = confirmed ?? false;
-    debugPrint('🗑️ CategoryUtils.UI: Delete confirmation result: ${result ? '✅ CONFIRMED' : '❌ CANCELLED'}');
+    debugPrint(
+        '🗑️ CategoryUtils.UI: Delete confirmation result: ${result ? '✅ CONFIRMED' : '❌ CANCELLED'}');
 
     return result;
   }
@@ -630,7 +695,7 @@ class CategoryUtils {
           title: Row(
             children: [
               Icon(
-                LineIcons.exclamationTriangle,
+                Prbal.exclamationTriangle,
                 color: Colors.red,
                 size: 24,
               ),
@@ -662,7 +727,9 @@ class CategoryUtils {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF4B5563) : const Color(0xFFF3F4F6),
+                  color: isDark
+                      ? const Color(0xFF4B5563)
+                      : const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: isDark ? Colors.grey[600]! : Colors.grey[300]!,
@@ -671,7 +738,7 @@ class CategoryUtils {
                 child: Row(
                   children: [
                     Icon(
-                      LineIcons.layerGroup,
+                      Prbal.layers5,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
                       size: 20,
                     ),
@@ -682,7 +749,8 @@ class CategoryUtils {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : const Color(0xFF2D3748),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF2D3748),
                         ),
                       ),
                     ),
@@ -693,16 +761,16 @@ class CategoryUtils {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Colors.red.withOpacity(0.3),
+                    color: Colors.red.withValues(alpha: 77),
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      LineIcons.infoCircle,
+                      Prbal.infoCircle,
                       color: Colors.red,
                       size: 16,
                     ),
@@ -725,11 +793,13 @@ class CategoryUtils {
           actions: [
             TextButton(
               onPressed: () {
-                debugPrint('🗑️ CategoryUtils.UI: → User cancelled bulk deletion');
+                debugPrint(
+                    '🗑️ CategoryUtils.UI: → User cancelled bulk deletion');
                 Navigator.of(context).pop(false);
               },
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: Text(
                 'Cancel',
@@ -741,13 +811,15 @@ class CategoryUtils {
             ),
             ElevatedButton(
               onPressed: () {
-                debugPrint('🗑️ CategoryUtils.UI: → User confirmed bulk deletion');
+                debugPrint(
+                    '🗑️ CategoryUtils.UI: → User confirmed bulk deletion');
                 Navigator.of(context).pop(true);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -765,7 +837,8 @@ class CategoryUtils {
     );
 
     final result = confirmed ?? false;
-    debugPrint('🗑️ CategoryUtils.UI: Bulk delete confirmation result: ${result ? '✅ CONFIRMED' : '❌ CANCELLED'}');
+    debugPrint(
+        '🗑️ CategoryUtils.UI: Bulk delete confirmation result: ${result ? '✅ CONFIRMED' : '❌ CANCELLED'}');
 
     return result;
   }
@@ -785,8 +858,10 @@ class CategoryUtils {
     Map<String, dynamic>? apiResponse,
   }) {
     debugPrint('📋 CategoryUtils.CRUD.Analysis: Analyzing $operation result');
-    debugPrint('📋 CategoryUtils.CRUD.Analysis: → Success: ${success ? '✅' : '❌'}');
-    debugPrint('📋 CategoryUtils.CRUD.Analysis: → Duration: ${operationDuration?.inMilliseconds ?? 'Unknown'}ms');
+    debugPrint(
+        '📋 CategoryUtils.CRUD.Analysis: → Success: ${success ? '✅' : '❌'}');
+    debugPrint(
+        '📋 CategoryUtils.CRUD.Analysis: → Duration: ${operationDuration?.inMilliseconds ?? 'Unknown'}ms');
 
     final report = CrudOperationReport(
       operation: operation,
@@ -810,7 +885,8 @@ class CategoryUtils {
         final errorCategory = _categorizeCrudError(errorMessage);
         report.insights.add('🔍 Error type: $errorCategory');
 
-        final troubleshooting = _getCrudTroubleshootingTips(operation, errorMessage);
+        final troubleshooting =
+            _getCrudTroubleshootingTips(operation, errorMessage);
         report.recommendations.add(troubleshooting);
       }
     }
@@ -819,8 +895,10 @@ class CategoryUtils {
     _addOperationSpecificInsights(report, operation, success, category);
 
     debugPrint('📋 CategoryUtils.CRUD.Analysis: Analysis complete');
-    debugPrint('📋 CategoryUtils.CRUD.Analysis: → Insights: ${report.insights.length}');
-    debugPrint('📋 CategoryUtils.CRUD.Analysis: → Recommendations: ${report.recommendations.length}');
+    debugPrint(
+        '📋 CategoryUtils.CRUD.Analysis: → Insights: ${report.insights.length}');
+    debugPrint(
+        '📋 CategoryUtils.CRUD.Analysis: → Recommendations: ${report.recommendations.length}');
 
     return report;
   }
@@ -835,22 +913,27 @@ class CategoryUtils {
     switch (operation.toUpperCase()) {
       case 'CREATE':
         if (success && category != null) {
-          report.insights.add('🆕 New category "${category.name}" created successfully');
-          report.recommendations.add('Consider creating related subcategories for "${category.name}"');
+          report.insights
+              .add('🆕 New category "${category.name}" created successfully');
+          report.recommendations.add(
+              'Consider creating related subcategories for "${category.name}"');
         }
         break;
       case 'UPDATE':
         if (success && category != null) {
-          report.insights.add('✏️ Category "${category.name}" updated successfully');
+          report.insights
+              .add('✏️ Category "${category.name}" updated successfully');
           if (!category.isActive) {
-            report.recommendations.add('Category is currently inactive - consider activating if needed');
+            report.recommendations.add(
+                'Category is currently inactive - consider activating if needed');
           }
         }
         break;
       case 'DELETE':
         if (success) {
           report.insights.add('🗑️ Category deleted successfully');
-          report.recommendations.add('Review related subcategories and services that may be affected');
+          report.recommendations.add(
+              'Review related subcategories and services that may be affected');
         }
         break;
     }
@@ -862,32 +945,33 @@ class CategoryUtils {
   /// Get icon from string representation
   ///
   /// **Purpose**: Convert string icon names to actual IconData
-  /// **Usage**: CategoryUtils.getIconFromString('home') -> LineIcons.home
+  /// **Usage**: CategoryUtils.getIconFromString('home') -> Prbal.home
   /// **Debug**: Logs icon resolution attempts and fallbacks
   static IconData getIconFromString(String iconName) {
     debugPrint('🎨 CategoryUtils: Resolving icon for name: "$iconName"');
 
     final icon = switch (iconName.toLowerCase()) {
-      'home' => LineIcons.home,
-      'car' => LineIcons.car,
-      'tools' => LineIcons.tools,
-      'heart' => LineIcons.heart,
-      'computer' => LineIcons.laptop,
-      'health' => LineIcons.heartbeat,
-      'education' => LineIcons.graduationCap,
-      'food' => LineIcons.utensils,
-      'shopping' => LineIcons.shoppingCart,
-      'travel' => LineIcons.plane,
-      'sports' => LineIcons.footballBall,
-      'music' => LineIcons.music,
-      'photography' => LineIcons.camera,
-      'technology' => LineIcons.microchip,
-      'finance' => LineIcons.dollarSign,
-      _ => LineIcons.list, // Default fallback
+      'home' => Prbal.home,
+      'car' => Prbal.car,
+      'tools' => Prbal.tools,
+      'heart' => Prbal.heart,
+      'computer' => Prbal.laptop,
+      'health' => Prbal.heartbeat,
+      'education' => Prbal.graduationCap,
+      'food' => Prbal.food,
+      'shopping' => Prbal.shoppingCart,
+      'travel' => Prbal.plane,
+      'sports' => Prbal.soccer,
+      'music' => Prbal.music,
+      'photography' => Prbal.camera,
+      'technology' => Prbal.microchip,
+      'finance' => Prbal.dollarSign,
+      _ => Prbal.list, // Default fallback
     };
 
-    if (iconName.toLowerCase() != 'list' && icon == LineIcons.list) {
-      debugPrint('⚠️ CategoryUtils: Unknown icon "$iconName", using default list icon');
+    if (iconName.toLowerCase() != 'list' && icon == Prbal.list) {
+      debugPrint(
+          '⚠️ CategoryUtils: Unknown icon "$iconName", using default list icon');
     } else {
       debugPrint('✅ CategoryUtils: Successfully resolved icon "$iconName"');
     }
@@ -903,22 +987,22 @@ class CategoryUtils {
     debugPrint('📋 CategoryUtils: Generating available icons list');
 
     return {
-      'home': LineIcons.home,
-      'car': LineIcons.car,
-      'tools': LineIcons.tools,
-      'heart': LineIcons.heart,
-      'computer': LineIcons.laptop,
-      'health': LineIcons.heartbeat,
-      'education': LineIcons.graduationCap,
-      'food': LineIcons.utensils,
-      'shopping': LineIcons.shoppingCart,
-      'travel': LineIcons.plane,
-      'sports': LineIcons.footballBall,
-      'music': LineIcons.music,
-      'photography': LineIcons.camera,
-      'technology': LineIcons.microchip,
-      'finance': LineIcons.dollarSign,
-      'list': LineIcons.list,
+      'home': Prbal.home,
+      'car': Prbal.car,
+      'tools': Prbal.tools,
+      'heart': Prbal.heart,
+      'computer': Prbal.laptop,
+      'health': Prbal.heartbeat,
+      'education': Prbal.graduationCap,
+      'food': Prbal.food,
+      'shopping': Prbal.shoppingCart,
+      'travel': Prbal.plane,
+      'sports': Prbal.soccer,
+      'music': Prbal.music,
+      'photography': Prbal.camera,
+      'technology': Prbal.microchip,
+      'finance': Prbal.dollarSign,
+      'list': Prbal.list,
     };
   }
 
@@ -939,7 +1023,8 @@ class CategoryUtils {
 
     debugPrint('📅 CategoryUtils: Formatting date ${date.toIso8601String()}');
     debugPrint('📅 CategoryUtils: Current time: ${now.toIso8601String()}');
-    debugPrint('📅 CategoryUtils: Difference: ${difference.inDays} days, ${difference.inHours} hours');
+    debugPrint(
+        '📅 CategoryUtils: Difference: ${difference.inDays} days, ${difference.inHours} hours');
 
     String result;
 
@@ -966,7 +1051,8 @@ class CategoryUtils {
   /// **Purpose**: Always show full date regardless of age
   /// **Format**: DD/MM/YYYY HH:MM
   static String formatFullDate(DateTime date) {
-    debugPrint('📅 CategoryUtils: Formatting full date: ${date.toIso8601String()}');
+    debugPrint(
+        '📅 CategoryUtils: Formatting full date: ${date.toIso8601String()}');
 
     final result = '${date.day.toString().padLeft(2, '0')}/'
         '${date.month.toString().padLeft(2, '0')}/'
@@ -986,14 +1072,18 @@ class CategoryUtils {
   /// **Purpose**: Provide consistent color scheme for category status
   /// **Returns**: Color based on active state and theme mode
   static Color getStatusColor(bool isActive, bool isDark) {
-    debugPrint('🎨 CategoryUtils: Getting status color for active=$isActive, isDark=$isDark');
+    debugPrint(
+        '🎨 CategoryUtils: Getting status color for active=$isActive, isDark=$isDark');
 
     final Color color;
     if (isActive) {
-      color = isDark ? const Color(0xFF10B981) : const Color(0xFF059669); // Green
+      color =
+          isDark ? const Color(0xFF10B981) : const Color(0xFF059669); // Green
       debugPrint('🎨 CategoryUtils: Using active (green) color');
     } else {
-      color = isDark ? const Color(0xFFF59E0B) : const Color(0xFFD97706); // Orange/Yellow
+      color = isDark
+          ? const Color(0xFFF59E0B)
+          : const Color(0xFFD97706); // Orange/Yellow
       debugPrint('🎨 CategoryUtils: Using inactive (orange) color');
     }
 
@@ -1004,8 +1094,10 @@ class CategoryUtils {
   ///
   /// **Purpose**: Determine icon color based on category state and theme
   static Color getCategoryIconColor(ServiceCategory category, bool isDark) {
-    debugPrint('🎨 CategoryUtils: Getting icon color for category "${category.name}"');
-    debugPrint('🎨 CategoryUtils: Category isActive=${category.isActive}, isDark=$isDark');
+    debugPrint(
+        '🎨 CategoryUtils: Getting icon color for category "${category.name}"');
+    debugPrint(
+        '🎨 CategoryUtils: Category isActive=${category.isActive}, isDark=$isDark');
 
     if (category.isActive) {
       // Use primary color for active categories
@@ -1039,12 +1131,14 @@ class CategoryUtils {
     final trimmedName = name.trim();
 
     if (trimmedName.length < 3) {
-      debugPrint('❌ CategoryUtils: Name too short (${trimmedName.length} chars)');
+      debugPrint(
+          '❌ CategoryUtils: Name too short (${trimmedName.length} chars)');
       return 'Category name must be at least 3 characters';
     }
 
     if (trimmedName.length > 50) {
-      debugPrint('❌ CategoryUtils: Name too long (${trimmedName.length} chars)');
+      debugPrint(
+          '❌ CategoryUtils: Name too long (${trimmedName.length} chars)');
       return 'Category name must not exceed 50 characters';
     }
 
@@ -1066,7 +1160,8 @@ class CategoryUtils {
   /// - Not empty
   /// - 10-200 characters
   static String? validateCategoryDescription(String? description) {
-    debugPrint('✅ CategoryUtils: Validating category description length: ${description?.length ?? 0}');
+    debugPrint(
+        '✅ CategoryUtils: Validating category description length: ${description?.length ?? 0}');
 
     if (description == null || description.trim().isEmpty) {
       debugPrint('❌ CategoryUtils: Description is empty');
@@ -1076,12 +1171,14 @@ class CategoryUtils {
     final trimmedDescription = description.trim();
 
     if (trimmedDescription.length < 10) {
-      debugPrint('❌ CategoryUtils: Description too short (${trimmedDescription.length} chars)');
+      debugPrint(
+          '❌ CategoryUtils: Description too short (${trimmedDescription.length} chars)');
       return 'Description must be at least 10 characters';
     }
 
     if (trimmedDescription.length > 200) {
-      debugPrint('❌ CategoryUtils: Description too long (${trimmedDescription.length} chars)');
+      debugPrint(
+          '❌ CategoryUtils: Description too long (${trimmedDescription.length} chars)');
       return 'Description must not exceed 200 characters';
     }
 
@@ -1133,7 +1230,9 @@ class CategoryUtils {
     final result = text
         .trim()
         .split(' ')
-        .map((word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
+        .map((word) => word.isEmpty
+            ? word
+            : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
         .join(' ');
 
     debugPrint('📝 CategoryUtils: Capitalized result: "$result"');
@@ -1144,7 +1243,8 @@ class CategoryUtils {
   ///
   /// **Purpose**: Ensure text fits in UI constraints
   static String truncateText(String text, int maxLength) {
-    debugPrint('📝 CategoryUtils: Truncating text (length=${text.length}, max=$maxLength)');
+    debugPrint(
+        '📝 CategoryUtils: Truncating text (length=${text.length}, max=$maxLength)');
 
     if (text.length <= maxLength) {
       debugPrint('📝 CategoryUtils: Text within limit, no truncation needed');
@@ -1163,12 +1263,16 @@ class CategoryUtils {
   ///
   /// **Purpose**: Filter categories based on search query
   /// **Logic**: Case-insensitive search in name and description
-  static List<ServiceCategory> applySearchFilter(List<ServiceCategory> categories, String searchQuery) {
-    debugPrint('🔍 CategoryUtils: Applying search filter with query: "$searchQuery"');
-    debugPrint('🔍 CategoryUtils: Input categories count: ${categories.length}');
+  static List<ServiceCategory> applySearchFilter(
+      List<ServiceCategory> categories, String searchQuery) {
+    debugPrint(
+        '🔍 CategoryUtils: Applying search filter with query: "$searchQuery"');
+    debugPrint(
+        '🔍 CategoryUtils: Input categories count: ${categories.length}');
 
     if (searchQuery.trim().isEmpty) {
-      debugPrint('🔍 CategoryUtils: Empty search query, returning all categories');
+      debugPrint(
+          '🔍 CategoryUtils: Empty search query, returning all categories');
       return categories;
     }
 
@@ -1177,23 +1281,28 @@ class CategoryUtils {
 
     final filtered = categories.where((category) {
       final nameMatch = category.name.toLowerCase().contains(searchLower);
-      final descMatch = category.description.toLowerCase().contains(searchLower);
+      final descMatch =
+          category.description.toLowerCase().contains(searchLower);
       final matches = nameMatch || descMatch;
 
-      debugPrint('🔍 CategoryUtils: Category "${category.name}" - name:$nameMatch, desc:$descMatch, matches:$matches');
+      debugPrint(
+          '🔍 CategoryUtils: Category "${category.name}" - name:$nameMatch, desc:$descMatch, matches:$matches');
       return matches;
     }).toList();
 
-    debugPrint('🔍 CategoryUtils: Search filter completed - ${filtered.length} categories matched');
+    debugPrint(
+        '🔍 CategoryUtils: Search filter completed - ${filtered.length} categories matched');
     return filtered;
   }
 
   /// Apply status filter to categories
   ///
   /// **Purpose**: Filter categories by active/inactive status
-  static List<ServiceCategory> applyStatusFilter(List<ServiceCategory> categories, String statusFilter) {
+  static List<ServiceCategory> applyStatusFilter(
+      List<ServiceCategory> categories, String statusFilter) {
     debugPrint('🔍 CategoryUtils: Applying status filter: "$statusFilter"');
-    debugPrint('🔍 CategoryUtils: Input categories count: ${categories.length}');
+    debugPrint(
+        '🔍 CategoryUtils: Input categories count: ${categories.length}');
 
     final List<ServiceCategory> filtered;
 
@@ -1209,11 +1318,13 @@ class CategoryUtils {
       case 'all':
       default:
         filtered = categories;
-        debugPrint('🔍 CategoryUtils: Showing all categories (no status filter)');
+        debugPrint(
+            '🔍 CategoryUtils: Showing all categories (no status filter)');
         break;
     }
 
-    debugPrint('🔍 CategoryUtils: Status filter completed - ${filtered.length} categories matched');
+    debugPrint(
+        '🔍 CategoryUtils: Status filter completed - ${filtered.length} categories matched');
     return filtered;
   }
 
@@ -1223,8 +1334,10 @@ class CategoryUtils {
   /// Calculate category statistics
   ///
   /// **Purpose**: Generate statistics for dashboard display
-  static Map<String, int> calculateStatistics(List<ServiceCategory> categories) {
-    debugPrint('📊 CategoryUtils: Calculating statistics for ${categories.length} categories');
+  static Map<String, int> calculateStatistics(
+      List<ServiceCategory> categories) {
+    debugPrint(
+        '📊 CategoryUtils: Calculating statistics for ${categories.length} categories');
 
     final total = categories.length;
     final active = categories.where((cat) => cat.isActive).length;
@@ -1236,14 +1349,16 @@ class CategoryUtils {
       'inactive': inactive,
     };
 
-    debugPrint('📊 CategoryUtils: Statistics calculated - Total: $total, Active: $active, Inactive: $inactive');
+    debugPrint(
+        '📊 CategoryUtils: Statistics calculated - Total: $total, Active: $active, Inactive: $inactive');
     return stats;
   }
 
   /// Get performance metrics
   ///
   /// **Purpose**: Calculate performance metrics for monitoring
-  static Map<String, double> calculatePerformanceMetrics(List<ServiceCategory> categories) {
+  static Map<String, double> calculatePerformanceMetrics(
+      List<ServiceCategory> categories) {
     debugPrint('📊 CategoryUtils: Calculating performance metrics');
 
     if (categories.isEmpty) {
@@ -1259,7 +1374,10 @@ class CategoryUtils {
     final active = categories.where((cat) => cat.isActive).length.toDouble();
     final activeRate = (active / total) * 100;
 
-    final avgSortOrder = categories.map((cat) => cat.sortOrder.toDouble()).reduce((a, b) => a + b) / total;
+    final avgSortOrder = categories
+            .map((cat) => cat.sortOrder.toDouble())
+            .reduce((a, b) => a + b) /
+        total;
 
     final metrics = {
       'activeRate': activeRate,
@@ -1313,11 +1431,13 @@ class CategoryUtils {
       );
 
       final duration = DateTime.now().difference(startTime);
-      debugPrint('📊 CategoryUtils.CRUD: API call completed in ${duration.inMilliseconds}ms');
+      debugPrint(
+          '📊 CategoryUtils.CRUD: API call completed in ${duration.inMilliseconds}ms');
 
       if (response.isSuccess && response.data != null) {
         final categories = response.data!;
-        debugPrint('📊 CategoryUtils.CRUD: Received ${categories.length} categories');
+        debugPrint(
+            '📊 CategoryUtils.CRUD: Received ${categories.length} categories');
 
         // Calculate statistics using CategoryUtils
         final statistics = calculateStatistics(categories);
@@ -1358,7 +1478,11 @@ class CategoryUtils {
           isSuccess: false,
           categories: [],
           statistics: {'total': 0, 'active': 0, 'inactive': 0},
-          performanceMetrics: {'activeRate': 0.0, 'avgSortOrder': 0.0, 'totalCategories': 0.0},
+          performanceMetrics: {
+            'activeRate': 0.0,
+            'avgSortOrder': 0.0,
+            'totalCategories': 0.0
+          },
           loadDuration: duration,
           totalCount: 0,
           activeCount: 0,
@@ -1367,7 +1491,8 @@ class CategoryUtils {
         );
 
         // Complete CRUD operation tracking with failure
-        completeCrudOperation(tracker, success: false, errorMessage: response.message);
+        completeCrudOperation(tracker,
+            success: false, errorMessage: response.message);
 
         return result;
       }
@@ -1379,7 +1504,11 @@ class CategoryUtils {
         isSuccess: false,
         categories: [],
         statistics: {'total': 0, 'active': 0, 'inactive': 0},
-        performanceMetrics: {'activeRate': 0.0, 'avgSortOrder': 0.0, 'totalCategories': 0.0},
+        performanceMetrics: {
+          'activeRate': 0.0,
+          'avgSortOrder': 0.0,
+          'totalCategories': 0.0
+        },
         loadDuration: duration,
         totalCount: 0,
         activeCount: 0,
@@ -1388,7 +1517,8 @@ class CategoryUtils {
       );
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       return result;
     }
@@ -1418,8 +1548,10 @@ class CategoryUtils {
     debugPrint('🔄 CategoryUtils.CRUD: TOGGLE CATEGORY STATUS');
     debugPrint('🔄 CategoryUtils.CRUD: =============================');
     debugPrint('🔄 CategoryUtils.CRUD: → Category: "${category.name}"');
-    debugPrint('🔄 CategoryUtils.CRUD: → Current Status: ${category.isActive ? 'ACTIVE' : 'INACTIVE'}');
-    debugPrint('🔄 CategoryUtils.CRUD: → New Status: ${newStatus ? 'ACTIVE' : 'INACTIVE'}');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → Current Status: ${category.isActive ? 'ACTIVE' : 'INACTIVE'}');
+    debugPrint(
+        '🔄 CategoryUtils.CRUD: → New Status: ${newStatus ? 'ACTIVE' : 'INACTIVE'}');
     debugPrint('🔄 CategoryUtils.CRUD: → Category ID: ${category.id}');
 
     // Start CRUD operation tracking
@@ -1438,7 +1570,8 @@ class CategoryUtils {
       );
 
       if (response.isSuccess) {
-        debugPrint('✅ CategoryUtils.CRUD: Category status updated successfully');
+        debugPrint(
+            '✅ CategoryUtils.CRUD: Category status updated successfully');
 
         // Show success message with CategoryUtils text formatting
         if (context.mounted) {
@@ -1446,7 +1579,8 @@ class CategoryUtils {
           final truncatedName = truncateText(displayName, 20);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Category "$truncatedName" ${newStatus ? 'activated' : 'deactivated'} successfully'),
+              content: Text(
+                  'Category "$truncatedName" ${newStatus ? 'activated' : 'deactivated'} successfully'),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 2),
             ),
@@ -1466,7 +1600,8 @@ class CategoryUtils {
 
         return true;
       } else {
-        debugPrint('❌ CategoryUtils.CRUD: Failed to update category status: ${response.message}');
+        debugPrint(
+            '❌ CategoryUtils.CRUD: Failed to update category status: ${response.message}');
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1479,12 +1614,14 @@ class CategoryUtils {
         }
 
         // Complete CRUD operation tracking with failure
-        completeCrudOperation(tracker, success: false, errorMessage: response.message);
+        completeCrudOperation(tracker,
+            success: false, errorMessage: response.message);
 
         return false;
       }
     } catch (e) {
-      debugPrint('❌ CategoryUtils.CRUD: Exception updating category status: $e');
+      debugPrint(
+          '❌ CategoryUtils.CRUD: Exception updating category status: $e');
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1497,7 +1634,8 @@ class CategoryUtils {
       }
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       return false;
     } finally {
@@ -1550,7 +1688,8 @@ class CategoryUtils {
       final response = await _service.deleteCategory(category.id);
 
       if (response.isSuccess) {
-        debugPrint('✅ CategoryUtils.CRUD: Category "${category.name}" deleted successfully');
+        debugPrint(
+            '✅ CategoryUtils.CRUD: Category "${category.name}" deleted successfully');
 
         // Show success message with CategoryUtils text formatting
         if (context.mounted) {
@@ -1567,7 +1706,8 @@ class CategoryUtils {
 
         // Remove from selection if it was selected
         if (selectedIds.contains(category.id)) {
-          debugPrint('🗑️ CategoryUtils.CRUD: → Removing category from selection...');
+          debugPrint(
+              '🗑️ CategoryUtils.CRUD: → Removing category from selection...');
           onSelectionChanged(category.id);
         }
 
@@ -1585,7 +1725,8 @@ class CategoryUtils {
 
         return true;
       } else {
-        debugPrint('❌ CategoryUtils.CRUD: Failed to delete category: ${response.message}');
+        debugPrint(
+            '❌ CategoryUtils.CRUD: Failed to delete category: ${response.message}');
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1598,7 +1739,8 @@ class CategoryUtils {
         }
 
         // Complete CRUD operation tracking with failure
-        completeCrudOperation(tracker, success: false, errorMessage: response.message);
+        completeCrudOperation(tracker,
+            success: false, errorMessage: response.message);
 
         return false;
       }
@@ -1616,7 +1758,8 @@ class CategoryUtils {
       }
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       return false;
     } finally {
@@ -1656,10 +1799,12 @@ class CategoryUtils {
     debugPrint('✅ CategoryUtils.CRUD: BULK ACTIVATE CATEGORIES');
     debugPrint('✅ CategoryUtils.CRUD: =============================');
     debugPrint('✅ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
-    debugPrint('✅ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+    debugPrint(
+        '✅ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
 
     if (selectedIds.isEmpty) {
-      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk activation');
+      debugPrint(
+          '⚠️ CategoryUtils.CRUD: No categories selected for bulk activation');
       return BulkOperationResult(
         operation: 'BULK_ACTIVATE',
         totalRequested: 0,
@@ -1671,7 +1816,8 @@ class CategoryUtils {
     }
 
     // Start CRUD operation tracking
-    final tracker = startCrudOperation('BULK_ACTIVATE', '${selectedIds.length} categories');
+    final tracker =
+        startCrudOperation('BULK_ACTIVATE', '${selectedIds.length} categories');
     onLoadingStateChange(true);
 
     final successfulActivations = <String>[];
@@ -1679,16 +1825,19 @@ class CategoryUtils {
     final skippedActivations = <String>[];
 
     try {
-      debugPrint('✅ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for activation...');
+      debugPrint(
+          '✅ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for activation...');
 
       for (String categoryId in selectedIds) {
         try {
-          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
+          final category =
+              allCategories.firstWhere((cat) => cat.id == categoryId);
           debugPrint(
               '✅ CategoryUtils.CRUD: → Processing "${category.name}" (currently ${category.isActive ? 'active' : 'inactive'})');
 
           if (category.isActive) {
-            debugPrint('⏭️ CategoryUtils.CRUD: → Category "${category.name}" already active, skipping');
+            debugPrint(
+                '⏭️ CategoryUtils.CRUD: → Category "${category.name}" already active, skipping');
             skippedActivations.add(categoryId);
             continue;
           }
@@ -1697,31 +1846,38 @@ class CategoryUtils {
           final success = await toggleCategoryStatus(
             context: context,
             category: category,
-            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
-            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+            onDataRefresh:
+                () {}, // Don't refresh for each category to avoid multiple API calls
+            onLoadingStateChange:
+                (_) {}, // Don't change loading state for each category
           );
 
           if (success) {
             successfulActivations.add(categoryId);
-            debugPrint('✅ CategoryUtils.CRUD: → Successfully activated "${category.name}"');
+            debugPrint(
+                '✅ CategoryUtils.CRUD: → Successfully activated "${category.name}"');
           } else {
             failedActivations[categoryId] = 'Failed to activate category';
-            debugPrint('❌ CategoryUtils.CRUD: → Failed to activate "${category.name}"');
+            debugPrint(
+                '❌ CategoryUtils.CRUD: → Failed to activate "${category.name}"');
           }
         } catch (e) {
           failedActivations[categoryId] = e.toString();
-          debugPrint('❌ CategoryUtils.CRUD: → Exception activating category $categoryId: $e');
+          debugPrint(
+              '❌ CategoryUtils.CRUD: → Exception activating category $categoryId: $e');
         }
       }
 
       // Clear selections after bulk action
-      debugPrint('✅ CategoryUtils.CRUD: → Clearing selections after bulk activation...');
+      debugPrint(
+          '✅ CategoryUtils.CRUD: → Clearing selections after bulk activation...');
       for (String id in selectedIds.toList()) {
         onSelectionChanged(id);
       }
 
       // Refresh data once at the end
-      debugPrint('✅ CategoryUtils.CRUD: → Refreshing data after bulk activation...');
+      debugPrint(
+          '✅ CategoryUtils.CRUD: → Refreshing data after bulk activation...');
       onDataRefresh();
 
       final result = BulkOperationResult(
@@ -1752,13 +1908,16 @@ class CategoryUtils {
       }
 
       // Complete CRUD operation tracking
-      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
-        'total_requested': result.totalRequested,
-        'successful': result.successful,
-        'failed': result.failed,
-        'skipped': result.skipped,
-        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
-      });
+      completeCrudOperation(tracker,
+          success: result.isSuccess,
+          additionalData: {
+            'total_requested': result.totalRequested,
+            'successful': result.successful,
+            'failed': result.failed,
+            'skipped': result.skipped,
+            'success_rate':
+                '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+          });
 
       debugPrint(
           '✅ CategoryUtils.CRUD: Bulk activation completed - Success: ${result.successful}, Failed: ${result.failed}, Skipped: ${result.skipped}');
@@ -1776,7 +1935,8 @@ class CategoryUtils {
       );
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1811,11 +1971,14 @@ class CategoryUtils {
     debugPrint('⏸️ CategoryUtils.CRUD: =============================');
     debugPrint('⏸️ CategoryUtils.CRUD: BULK DEACTIVATE CATEGORIES');
     debugPrint('⏸️ CategoryUtils.CRUD: =============================');
-    debugPrint('⏸️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
-    debugPrint('⏸️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+    debugPrint(
+        '⏸️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint(
+        '⏸️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
 
     if (selectedIds.isEmpty) {
-      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk deactivation');
+      debugPrint(
+          '⚠️ CategoryUtils.CRUD: No categories selected for bulk deactivation');
       return BulkOperationResult(
         operation: 'BULK_DEACTIVATE',
         totalRequested: 0,
@@ -1827,7 +1990,8 @@ class CategoryUtils {
     }
 
     // Start CRUD operation tracking
-    final tracker = startCrudOperation('BULK_DEACTIVATE', '${selectedIds.length} categories');
+    final tracker = startCrudOperation(
+        'BULK_DEACTIVATE', '${selectedIds.length} categories');
     onLoadingStateChange(true);
 
     final successfulDeactivations = <String>[];
@@ -1835,16 +1999,19 @@ class CategoryUtils {
     final skippedDeactivations = <String>[];
 
     try {
-      debugPrint('⏸️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deactivation...');
+      debugPrint(
+          '⏸️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deactivation...');
 
       for (String categoryId in selectedIds) {
         try {
-          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
+          final category =
+              allCategories.firstWhere((cat) => cat.id == categoryId);
           debugPrint(
               '⏸️ CategoryUtils.CRUD: → Processing "${category.name}" (currently ${category.isActive ? 'active' : 'inactive'})');
 
           if (!category.isActive) {
-            debugPrint('⏭️ CategoryUtils.CRUD: → Category "${category.name}" already inactive, skipping');
+            debugPrint(
+                '⏭️ CategoryUtils.CRUD: → Category "${category.name}" already inactive, skipping');
             skippedDeactivations.add(categoryId);
             continue;
           }
@@ -1853,31 +2020,38 @@ class CategoryUtils {
           final success = await toggleCategoryStatus(
             context: context,
             category: category,
-            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
-            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+            onDataRefresh:
+                () {}, // Don't refresh for each category to avoid multiple API calls
+            onLoadingStateChange:
+                (_) {}, // Don't change loading state for each category
           );
 
           if (success) {
             successfulDeactivations.add(categoryId);
-            debugPrint('✅ CategoryUtils.CRUD: → Successfully deactivated "${category.name}"');
+            debugPrint(
+                '✅ CategoryUtils.CRUD: → Successfully deactivated "${category.name}"');
           } else {
             failedDeactivations[categoryId] = 'Failed to deactivate category';
-            debugPrint('❌ CategoryUtils.CRUD: → Failed to deactivate "${category.name}"');
+            debugPrint(
+                '❌ CategoryUtils.CRUD: → Failed to deactivate "${category.name}"');
           }
         } catch (e) {
           failedDeactivations[categoryId] = e.toString();
-          debugPrint('❌ CategoryUtils.CRUD: → Exception deactivating category $categoryId: $e');
+          debugPrint(
+              '❌ CategoryUtils.CRUD: → Exception deactivating category $categoryId: $e');
         }
       }
 
       // Clear selections after bulk action
-      debugPrint('⏸️ CategoryUtils.CRUD: → Clearing selections after bulk deactivation...');
+      debugPrint(
+          '⏸️ CategoryUtils.CRUD: → Clearing selections after bulk deactivation...');
       for (String id in selectedIds.toList()) {
         onSelectionChanged(id);
       }
 
       // Refresh data once at the end
-      debugPrint('⏸️ CategoryUtils.CRUD: → Refreshing data after bulk deactivation...');
+      debugPrint(
+          '⏸️ CategoryUtils.CRUD: → Refreshing data after bulk deactivation...');
       onDataRefresh();
 
       final result = BulkOperationResult(
@@ -1908,19 +2082,23 @@ class CategoryUtils {
       }
 
       // Complete CRUD operation tracking
-      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
-        'total_requested': result.totalRequested,
-        'successful': result.successful,
-        'failed': result.failed,
-        'skipped': result.skipped,
-        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
-      });
+      completeCrudOperation(tracker,
+          success: result.isSuccess,
+          additionalData: {
+            'total_requested': result.totalRequested,
+            'successful': result.successful,
+            'failed': result.failed,
+            'skipped': result.skipped,
+            'success_rate':
+                '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+          });
 
       debugPrint(
           '⏸️ CategoryUtils.CRUD: Bulk deactivation completed - Success: ${result.successful}, Failed: ${result.failed}, Skipped: ${result.skipped}');
       return result;
     } catch (e) {
-      debugPrint('❌ CategoryUtils.CRUD: Exception during bulk deactivation: $e');
+      debugPrint(
+          '❌ CategoryUtils.CRUD: Exception during bulk deactivation: $e');
 
       final result = BulkOperationResult(
         operation: 'BULK_DEACTIVATE',
@@ -1932,7 +2110,8 @@ class CategoryUtils {
       );
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1965,11 +2144,14 @@ class CategoryUtils {
     debugPrint('📥 CategoryUtils.CRUD: =============================');
     debugPrint('📥 CategoryUtils.CRUD: BULK EXPORT CATEGORIES');
     debugPrint('📥 CategoryUtils.CRUD: =============================');
-    debugPrint('📥 CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
-    debugPrint('📥 CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+    debugPrint(
+        '📥 CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint(
+        '📥 CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
 
     if (selectedIds.isEmpty) {
-      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk export');
+      debugPrint(
+          '⚠️ CategoryUtils.CRUD: No categories selected for bulk export');
       return BulkOperationResult(
         operation: 'BULK_EXPORT',
         totalRequested: 0,
@@ -1981,13 +2163,17 @@ class CategoryUtils {
     }
 
     // Start CRUD operation tracking
-    final tracker = startCrudOperation('BULK_EXPORT', '${selectedIds.length} categories');
+    final tracker =
+        startCrudOperation('BULK_EXPORT', '${selectedIds.length} categories');
 
     try {
-      debugPrint('📥 CategoryUtils.CRUD: → Preparing export data for ${selectedIds.length} categories...');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Preparing export data for ${selectedIds.length} categories...');
 
-      final selectedCategories = allCategories.where((cat) => selectedIds.contains(cat.id)).toList();
-      debugPrint('📥 CategoryUtils.CRUD: → Found ${selectedCategories.length} categories to export');
+      final selectedCategories =
+          allCategories.where((cat) => selectedIds.contains(cat.id)).toList();
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Found ${selectedCategories.length} categories to export');
 
       // Prepare export data with enhanced formatting
       final exportData = {
@@ -2011,27 +2197,35 @@ class CategoryUtils {
                 })
             .toList(),
         'export_summary': {
-          'active_categories': selectedCategories.where((c) => c.isActive).length,
-          'inactive_categories': selectedCategories.where((c) => !c.isActive).length,
-          'category_names': selectedCategories.map((c) => capitalizeWords(c.name)).toList(),
+          'active_categories':
+              selectedCategories.where((c) => c.isActive).length,
+          'inactive_categories':
+              selectedCategories.where((c) => !c.isActive).length,
+          'category_names':
+              selectedCategories.map((c) => capitalizeWords(c.name)).toList(),
         },
       };
 
       debugPrint('📥 CategoryUtils.CRUD: → Export data prepared successfully');
-      final exportSummary = exportData['export_summary'] as Map<String, dynamic>;
-      debugPrint('📥 CategoryUtils.CRUD: → Active categories: ${exportSummary['active_categories']}');
-      debugPrint('📥 CategoryUtils.CRUD: → Inactive categories: ${exportSummary['inactive_categories']}');
+      final exportSummary =
+          exportData['export_summary'] as Map<String, dynamic>;
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Active categories: ${exportSummary['active_categories']}');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Inactive categories: ${exportSummary['inactive_categories']}');
       debugPrint(
           '📥 CategoryUtils.CRUD: → Categories to export: ${(exportSummary['category_names'] as List).join(', ')}');
 
       // TODO: Implement actual file export functionality
       // For now, we'll simulate successful export and show the data in debug
-      debugPrint('📥 CategoryUtils.CRUD: → [SIMULATED] Export data ready for file writing');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → [SIMULATED] Export data ready for file writing');
       debugPrint(
           '📥 CategoryUtils.CRUD: → [SIMULATED] Export would save to: categories_export_${DateTime.now().millisecondsSinceEpoch}.json');
 
       // Clear selections after export (optional - user preference)
-      debugPrint('📥 CategoryUtils.CRUD: → Clearing selections after export...');
+      debugPrint(
+          '📥 CategoryUtils.CRUD: → Clearing selections after export...');
       for (String id in selectedIds.toList()) {
         onSelectionChanged(id);
       }
@@ -2050,14 +2244,16 @@ class CategoryUtils {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Successfully exported ${selectedCategories.length} categories'),
+            content: Text(
+                'Successfully exported ${selectedCategories.length} categories'),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
             action: SnackBarAction(
               label: 'View Data',
               textColor: Colors.white,
               onPressed: () {
-                debugPrint('📥 CategoryUtils.CRUD: → User requested to view export data');
+                debugPrint(
+                    '📥 CategoryUtils.CRUD: → User requested to view export data');
                 // TODO: Show export data in a dialog or save to file
               },
             ),
@@ -2088,7 +2284,8 @@ class CategoryUtils {
       );
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -2120,11 +2317,14 @@ class CategoryUtils {
     debugPrint('🗑️ CategoryUtils.CRUD: =============================');
     debugPrint('🗑️ CategoryUtils.CRUD: BULK DELETE CATEGORIES');
     debugPrint('🗑️ CategoryUtils.CRUD: =============================');
-    debugPrint('🗑️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
-    debugPrint('🗑️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
+    debugPrint(
+        '🗑️ CategoryUtils.CRUD: → Selected Count: ${selectedIds.length}');
+    debugPrint(
+        '🗑️ CategoryUtils.CRUD: → Total Categories: ${allCategories.length}');
 
     if (selectedIds.isEmpty) {
-      debugPrint('⚠️ CategoryUtils.CRUD: No categories selected for bulk deletion');
+      debugPrint(
+          '⚠️ CategoryUtils.CRUD: No categories selected for bulk deletion');
       return BulkOperationResult(
         operation: 'BULK_DELETE',
         totalRequested: 0,
@@ -2137,7 +2337,8 @@ class CategoryUtils {
 
     // Show confirmation dialog first
     debugPrint('🗑️ CategoryUtils.CRUD: → Showing bulk delete confirmation...');
-    final confirmed = await showBulkDeleteConfirmation(context, selectedIds.length);
+    final confirmed =
+        await showBulkDeleteConfirmation(context, selectedIds.length);
 
     if (!confirmed) {
       debugPrint('🗑️ CategoryUtils.CRUD: → User cancelled bulk deletion');
@@ -2152,46 +2353,57 @@ class CategoryUtils {
     }
 
     // Start CRUD operation tracking
-    final tracker = startCrudOperation('BULK_DELETE', '${selectedIds.length} categories');
+    final tracker =
+        startCrudOperation('BULK_DELETE', '${selectedIds.length} categories');
     onLoadingStateChange(true);
 
     final successfulDeletions = <String>[];
     final failedDeletions = <String, String>{};
 
     try {
-      debugPrint('🗑️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deletion...');
+      debugPrint(
+          '🗑️ CategoryUtils.CRUD: → Processing ${selectedIds.length} categories for deletion...');
 
       for (String categoryId in selectedIds.toList()) {
         try {
-          final category = allCategories.firstWhere((cat) => cat.id == categoryId);
-          debugPrint('🗑️ CategoryUtils.CRUD: → Deleting "${category.name}"...');
+          final category =
+              allCategories.firstWhere((cat) => cat.id == categoryId);
+          debugPrint(
+              '🗑️ CategoryUtils.CRUD: → Deleting "${category.name}"...');
 
           // Use the existing deleteCategory method but don't refresh data for each delete
           final success = await deleteCategory(
             context: context,
             category: category,
-            selectedIds: Set<String>.from(selectedIds), // Pass current selections
+            selectedIds:
+                Set<String>.from(selectedIds), // Pass current selections
             onSelectionChanged: onSelectionChanged,
-            onDataRefresh: () {}, // Don't refresh for each category to avoid multiple API calls
+            onDataRefresh:
+                () {}, // Don't refresh for each category to avoid multiple API calls
             onDataChanged: () {}, // Don't trigger data change for each category
-            onLoadingStateChange: (_) {}, // Don't change loading state for each category
+            onLoadingStateChange:
+                (_) {}, // Don't change loading state for each category
           );
 
           if (success) {
             successfulDeletions.add(categoryId);
-            debugPrint('✅ CategoryUtils.CRUD: → Successfully deleted "${category.name}"');
+            debugPrint(
+                '✅ CategoryUtils.CRUD: → Successfully deleted "${category.name}"');
           } else {
             failedDeletions[categoryId] = 'Failed to delete category';
-            debugPrint('❌ CategoryUtils.CRUD: → Failed to delete "${category.name}"');
+            debugPrint(
+                '❌ CategoryUtils.CRUD: → Failed to delete "${category.name}"');
           }
         } catch (e) {
           failedDeletions[categoryId] = e.toString();
-          debugPrint('❌ CategoryUtils.CRUD: → Exception deleting category $categoryId: $e');
+          debugPrint(
+              '❌ CategoryUtils.CRUD: → Exception deleting category $categoryId: $e');
         }
       }
 
       // Refresh data once at the end
-      debugPrint('🗑️ CategoryUtils.CRUD: → Refreshing data after bulk deletion...');
+      debugPrint(
+          '🗑️ CategoryUtils.CRUD: → Refreshing data after bulk deletion...');
       onDataRefresh();
       onDataChanged?.call();
 
@@ -2221,12 +2433,15 @@ class CategoryUtils {
       }
 
       // Complete CRUD operation tracking
-      completeCrudOperation(tracker, success: result.isSuccess, additionalData: {
-        'total_requested': result.totalRequested,
-        'successful': result.successful,
-        'failed': result.failed,
-        'success_rate': '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
-      });
+      completeCrudOperation(tracker,
+          success: result.isSuccess,
+          additionalData: {
+            'total_requested': result.totalRequested,
+            'successful': result.successful,
+            'failed': result.failed,
+            'success_rate':
+                '${((result.successful / result.totalRequested) * 100).toStringAsFixed(1)}%',
+          });
 
       debugPrint(
           '🗑️ CategoryUtils.CRUD: Bulk deletion completed - Success: ${result.successful}, Failed: ${result.failed}');
@@ -2244,7 +2459,8 @@ class CategoryUtils {
       );
 
       // Complete CRUD operation tracking with exception
-      completeCrudOperation(tracker, success: false, errorMessage: e.toString());
+      completeCrudOperation(tracker,
+          success: false, errorMessage: e.toString());
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -2389,10 +2605,12 @@ class BulkOperationResult {
   });
 
   /// Get success rate as percentage
-  double get successRate => totalRequested > 0 ? (successful / totalRequested) * 100 : 0.0;
+  double get successRate =>
+      totalRequested > 0 ? (successful / totalRequested) * 100 : 0.0;
 
   /// Get failure rate as percentage
-  double get failureRate => totalRequested > 0 ? (failed / totalRequested) * 100 : 0.0;
+  double get failureRate =>
+      totalRequested > 0 ? (failed / totalRequested) * 100 : 0.0;
 
   /// Get a summary string of the operation result
   String get summary {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Components
@@ -36,28 +37,28 @@ class TokensSettingsWidget extends StatelessWidget {
         SettingsItemWidget(
           title: 'Active Sessions',
           subtitle: 'Manage your active login sessions',
-          icon: Icons.devices,
+          icon: Prbal.devices,
           iconColor: const Color(0xFF4299E1),
           onTap: onActiveSessionsTapped,
         ),
         // SettingsItemWidget(
         //   title: 'Access Tokens',
         //   subtitle: 'View and manage your access tokens',
-        //   icon: Icons.vpn_key,
+        //   icon: Prbal.vpn_key,
         //   iconColor: const Color(0xFF48BB78),
         //   onTap: onAccessTokensTapped,
         // ),
         SettingsItemWidget(
           title: 'Refresh Token',
           subtitle: 'Manage your refresh token',
-          icon: Icons.refresh,
+          icon: Prbal.refresh,
           iconColor: const Color(0xFF9F7AEA),
           onTap: onRefreshTokenTapped,
         ),
         // SettingsItemWidget(
         //   title: 'Revoke All Sessions',
         //   subtitle: 'Sign out from all devices',
-        //   icon: Icons.logout,
+        //   icon: Prbal.logout,
         //   iconColor: const Color(0xFFE53E3E),
         //   onTap: onRevokeAllSessionsTapped,
         // ),
