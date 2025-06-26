@@ -4,27 +4,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/services/service_providers.dart';
+// import 'package:prbal/services/service_providers.dart';
+
+// ========== ENHANCED THEME SYSTEM IMPORT ==========
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 // ========== EXTRACTED COMPONENTS ==========
-import 'package:prbal/widgets/admin/category/components/category_search_header.dart';
+import 'package:prbal/widgets/admin/category/category_search_header.dart';
 // import 'package:prbal/widgets/admin/category/components/category_cards.dart';
 // import 'package:prbal/widgets/admin/category/components/category_states.dart';
-import 'package:prbal/widgets/admin/category/components/category_selection_bar.dart';
-import 'package:prbal/widgets/admin/category/components/category_fab_actions.dart';
-import 'package:prbal/widgets/admin/category/components/create_category_modal_widget.dart';
-import 'package:prbal/widgets/admin/category/components/edit_category_modal_widget.dart';
-import 'package:prbal/widgets/admin/category/components/category_main_content.dart';
-import 'package:prbal/widgets/admin/category/components/categories_list_view.dart';
-import 'package:prbal/widgets/admin/category/components/category_filter_bottom_sheet.dart';
+import 'package:prbal/widgets/admin/category/category_selection_bar.dart';
+import 'package:prbal/widgets/admin/category/category_fab_actions.dart';
+import 'package:prbal/widgets/admin/category/create_category_modal_widget.dart';
+import 'package:prbal/widgets/admin/category/edit_category_modal_widget.dart';
+import 'package:prbal/widgets/admin/category/category_main_content.dart';
+import 'package:prbal/widgets/admin/category/categories_list_view.dart';
+import 'package:prbal/widgets/admin/category/category_filter_bottom_sheet.dart';
 
 // ========== UTILITIES ==========
-import 'package:prbal/widgets/admin/category/utils/category_utils.dart';
+import 'package:prbal/utils/category/category_utils.dart';
 
 /// ServiceCategoryCrudWidget - Modern CRUD operations for Service Categories
 ///
 /// **Purpose**: Provides advanced CRUD functionality with modern Material Design 3.0
 ///
 /// **Key Features**:
+/// - **ENHANCED THEME INTEGRATION**: Uses ThemeManager for centralized theme management
 /// - Modern Material Design 3.0 components with enhanced visual hierarchy
 /// - Advanced dark/light theme support with dynamic gradients
 /// - Comprehensive search and filtering with real-time feedback
@@ -66,13 +71,11 @@ class ServiceCategoryCrudWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceCategoryCrudWidget> createState() =>
-      _ServiceCategoryCrudWidgetState();
+  ConsumerState<ServiceCategoryCrudWidget> createState() => _ServiceCategoryCrudWidgetState();
 }
 
-class _ServiceCategoryCrudWidgetState
-    extends ConsumerState<ServiceCategoryCrudWidget>
-    with TickerProviderStateMixin {
+class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudWidget>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   // ========== STATE VARIABLES ==========
   List<ServiceCategory> _allCategories = [];
   List<ServiceCategory> _filteredCategories = [];
@@ -87,7 +90,7 @@ class _ServiceCategoryCrudWidgetState
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   String _currentFilter = 'all'; // 'all', 'active', 'inactive'
-
+  late ServiceManagementService _serviceManagementService;
   // Animation controllers
   late AnimationController _fadeController;
   late AnimationController _slideController;
@@ -99,13 +102,14 @@ class _ServiceCategoryCrudWidgetState
   late Animation<Offset> _headerSlideAnimation;
   late Animation<double> _fabScaleAnimation;
 
-  late ServiceManagementService _serviceManagementService;
-
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🏷️ ServiceCategoryCrud: Initializing FULLY MODULARIZED widget with EXTRACTED COMPONENTS');
+    debugPrint('🏷️ ServiceCategoryCrud: =============================');
+    debugPrint('🏷️ ServiceCategoryCrud: ENHANCED THEME INTEGRATION V2.0');
+    debugPrint('🏷️ ServiceCategoryCrud: =============================');
+    debugPrint('🏷️ ServiceCategoryCrud: Initializing FULLY MODULARIZED widget with EXTRACTED COMPONENTS');
+    debugPrint('🏷️ ServiceCategoryCrud: Using ThemeManager for centralized theme management');
     debugPrint(
         '🏷️ ServiceCategoryCrud: Using CategorySearchHeader, CategorySelectionBar, CategoryFabActions, and more');
 
@@ -130,22 +134,17 @@ class _ServiceCategoryCrudWidgetState
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeOutCubic),
     );
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
       CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
     );
     _headerFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-          parent: _headerAnimationController, curve: Curves.easeOutCubic),
+      CurvedAnimation(parent: _headerAnimationController, curve: Curves.easeOutCubic),
     );
-    _headerSlideAnimation =
-        Tween<Offset>(begin: const Offset(0, -0.5), end: Offset.zero).animate(
-      CurvedAnimation(
-          parent: _headerAnimationController, curve: Curves.easeOutCubic),
+    _headerSlideAnimation = Tween<Offset>(begin: const Offset(0, -0.5), end: Offset.zero).animate(
+      CurvedAnimation(parent: _headerAnimationController, curve: Curves.easeOutCubic),
     );
     _fabScaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-          parent: _fabAnimationController, curve: Curves.easeOutCubic),
+      CurvedAnimation(parent: _fabAnimationController, curve: Curves.easeOutCubic),
     );
 
     // Add search listener for real-time filtering
@@ -154,15 +153,13 @@ class _ServiceCategoryCrudWidgetState
         setState(() {
           _searchQuery = _searchController.text;
         });
-        debugPrint(
-            '🔍 ServiceCategoryCrud: Search query updated: "$_searchQuery"');
+        debugPrint('🔍 ServiceCategoryCrud: Search query updated: "$_searchQuery"');
         _applyFilters();
       }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint(
-          '🏷️ ServiceCategoryCrud: Post-frame callback - starting data load and animations');
+      debugPrint('🏷️ ServiceCategoryCrud: Post-frame callback - starting data load and animations');
       _initializeServiceAndLoadData();
       _headerAnimationController.forward();
       Future.delayed(const Duration(milliseconds: 600), () {
@@ -179,18 +176,15 @@ class _ServiceCategoryCrudWidgetState
 
   /// Initialize the service management service and load initial data
   Future<void> _initializeServiceAndLoadData() async {
-    debugPrint(
-        '🏷️ ServiceCategoryCrud: Initializing service management service');
+    debugPrint('🏷️ ServiceCategoryCrud: Initializing service management service');
 
     try {
       _serviceManagementService = ref.read(serviceManagementServiceProvider);
-      debugPrint(
-          '🏷️ ServiceCategoryCrud: Service management service obtained successfully');
+      debugPrint('🏷️ ServiceCategoryCrud: Service management service obtained successfully');
 
       // Initialize CategoryUtils with the global service
       CategoryUtils.initialize(_serviceManagementService);
-      debugPrint(
-          '🏷️ ServiceCategoryCrud: CategoryUtils initialized with global service');
+      debugPrint('🏷️ ServiceCategoryCrud: CategoryUtils initialized with global service');
 
       await _loadCategories();
     } catch (e, stackTrace) {
@@ -206,8 +200,7 @@ class _ServiceCategoryCrudWidgetState
 
   /// Load all categories using CategoryUtils
   Future<void> _loadCategories() async {
-    debugPrint(
-        '📊 ServiceCategoryCrud: Starting to load categories using CategoryUtils');
+    debugPrint('📊 ServiceCategoryCrud: Starting to load categories using CategoryUtils');
 
     setState(() {
       _isLoading = true;
@@ -215,8 +208,7 @@ class _ServiceCategoryCrudWidgetState
     });
 
     try {
-      debugPrint(
-          '🔄 ServiceCategoryCrud: Delegating to CategoryUtils.loadCategories');
+      debugPrint('🔄 ServiceCategoryCrud: Delegating to CategoryUtils.loadCategories');
 
       final result = await CategoryUtils.loadCategories(
         activeOnly: false,
@@ -228,10 +220,8 @@ class _ServiceCategoryCrudWidgetState
           '📊 ServiceCategoryCrud: CategoryUtils.loadCategories completed in ${result.loadDuration.inMilliseconds}ms');
 
       if (result.isSuccess) {
-        debugPrint(
-            '✅ ServiceCategoryCrud: Categories loaded successfully via CategoryUtils');
-        debugPrint(
-            '📊 ServiceCategoryCrud: Received ${result.categories.length} categories');
+        debugPrint('✅ ServiceCategoryCrud: Categories loaded successfully via CategoryUtils');
+        debugPrint('📊 ServiceCategoryCrud: Received ${result.categories.length} categories');
         debugPrint(
             '📊 ServiceCategoryCrud: Statistics - Total: ${result.totalCount}, Active: ${result.activeCount}, Inactive: ${result.inactiveCount}');
 
@@ -253,16 +243,14 @@ class _ServiceCategoryCrudWidgetState
         _fadeController.forward();
         _slideController.forward();
       } else {
-        debugPrint(
-            '❌ ServiceCategoryCrud: CategoryUtils.loadCategories failed: ${result.errorMessage}');
+        debugPrint('❌ ServiceCategoryCrud: CategoryUtils.loadCategories failed: ${result.errorMessage}');
         setState(() {
           _errorMessage = result.errorMessage ?? 'Unknown error occurred';
           _isLoading = false;
         });
       }
     } catch (e) {
-      debugPrint(
-          '❌ ServiceCategoryCrud: Exception in CategoryUtils.loadCategories - $e');
+      debugPrint('❌ ServiceCategoryCrud: Exception in CategoryUtils.loadCategories - $e');
       setState(() {
         _errorMessage = 'Failed to load categories: $e';
         _isLoading = false;
@@ -282,8 +270,7 @@ class _ServiceCategoryCrudWidgetState
         enableDrag: true,
         builder: (BuildContext context) => CreateCategoryModalWidget(
           onCategoryCreated: () {
-            debugPrint(
-                '✅ ServiceCategoryCrud: Category created, refreshing data');
+            debugPrint('✅ ServiceCategoryCrud: Category created, refreshing data');
             _loadCategories();
           },
         ),
@@ -303,8 +290,7 @@ class _ServiceCategoryCrudWidgetState
 
   /// Show edit category modal
   Future<void> _showEditCategoryModal(ServiceCategory category) async {
-    debugPrint(
-        '✏️ ServiceCategoryCrud: Showing edit category modal for: ${category.name}');
+    debugPrint('✏️ ServiceCategoryCrud: Showing edit category modal for: ${category.name}');
 
     try {
       await showModalBottomSheet(
@@ -315,8 +301,7 @@ class _ServiceCategoryCrudWidgetState
         builder: (BuildContext context) => EditCategoryModalWidget(
           category: category,
           onCategoryUpdated: () {
-            debugPrint(
-                '✅ ServiceCategoryCrud: Category updated, refreshing data');
+            debugPrint('✅ ServiceCategoryCrud: Category updated, refreshing data');
             _loadCategories();
           },
         ),
@@ -336,8 +321,7 @@ class _ServiceCategoryCrudWidgetState
 
   /// Apply search and filter criteria to the categories list
   void _applyFilters() {
-    debugPrint(
-        '🔍 ServiceCategoryCrud: Applying filters - search: "$_searchQuery", filter: "$_currentFilter"');
+    debugPrint('🔍 ServiceCategoryCrud: Applying filters - search: "$_searchQuery", filter: "$_currentFilter"');
 
     // Use CategoryUtils for efficient filtering
     List<ServiceCategory> filtered = List.from(_allCategories);
@@ -374,10 +358,18 @@ class _ServiceCategoryCrudWidgetState
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🎨 ServiceCategoryCrud: Building modern widget with EXTRACTED COMPONENTS');
+    // ========== ENHANCED THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
+    themeManager.logThemeInfo();
+
+    debugPrint('🎨 ServiceCategoryCrud: =============================');
+    debugPrint('🎨 ServiceCategoryCrud: BUILDING WITH THEME MANAGER');
+    debugPrint('🎨 ServiceCategoryCrud: =============================');
+    debugPrint('🎨 ServiceCategoryCrud: Building modern widget with EXTRACTED COMPONENTS');
     debugPrint(
         '🎨 ServiceCategoryCrud: Using CategorySearchHeader, CategoryMainContent, and CategoriesListView components');
+    debugPrint('🎨 ServiceCategoryCrud: Theme brightness: ${Theme.of(context).brightness.name}');
+    debugPrint('🎨 ServiceCategoryCrud: Primary color: ${themeManager.colorScheme.primary}');
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -415,8 +407,7 @@ class _ServiceCategoryCrudWidgetState
                 selectedCount: widget.selectedIds.length,
                 totalCount: _totalCount,
                 onClearSelection: () {
-                  debugPrint(
-                      '❌ ServiceCategoryCrud: Clear selection triggered from CategorySelectionBar');
+                  debugPrint('❌ ServiceCategoryCrud: Clear selection triggered from CategorySelectionBar');
                   // Clear all selections
                   for (String id in widget.selectedIds.toList()) {
                     widget.onSelectionChanged(id);
@@ -424,8 +415,7 @@ class _ServiceCategoryCrudWidgetState
                 },
                 onSelectAll: _totalCount > widget.selectedIds.length
                     ? () {
-                        debugPrint(
-                            '✅ ServiceCategoryCrud: Select all triggered from CategorySelectionBar');
+                        debugPrint('✅ ServiceCategoryCrud: Select all triggered from CategorySelectionBar');
                         // Select all filtered categories
                         for (final category in _filteredCategories) {
                           if (!widget.selectedIds.contains(category.id)) {
@@ -434,8 +424,7 @@ class _ServiceCategoryCrudWidgetState
                         }
                       }
                     : null,
-                selectionMessage:
-                    'Tap bulk actions to manage selected categories',
+                selectionMessage: 'Tap bulk actions to manage selected categories',
               ),
             ),
 
@@ -485,15 +474,13 @@ class _ServiceCategoryCrudWidgetState
 
   /// Show modern filter bottom sheet using CategoryFilterBottomSheet component
   Future<void> _showModernFilterBottomSheet() async {
-    debugPrint(
-        '🔧 ServiceCategoryCrud: Delegating to CategoryFilterBottomSheet.show');
+    debugPrint('🔧 ServiceCategoryCrud: Delegating to CategoryFilterBottomSheet.show');
 
     await CategoryFilterBottomSheet.show(
       context: context,
       currentFilter: _currentFilter,
       onFilterSelected: (selectedFilter) {
-        debugPrint(
-            '🔧 ServiceCategoryCrud: Filter selected from CategoryFilterBottomSheet: $selectedFilter');
+        debugPrint('🔧 ServiceCategoryCrud: Filter selected from CategoryFilterBottomSheet: $selectedFilter');
         setState(() {
           _currentFilter = selectedFilter;
         });
@@ -517,11 +504,9 @@ class _ServiceCategoryCrudWidgetState
 
   /// Show delete confirmation dialog for a single category using CategoryUtils
   Future<void> _showDeleteConfirmation(ServiceCategory category) async {
-    debugPrint(
-        '🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.showDeleteConfirmation for "${category.name}"');
+    debugPrint('🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.showDeleteConfirmation for "${category.name}"');
 
-    final confirmed =
-        await CategoryUtils.showDeleteConfirmation(context, category);
+    final confirmed = await CategoryUtils.showDeleteConfirmation(context, category);
 
     if (confirmed) {
       debugPrint('🗑️ ServiceCategoryCrud: Proceeding with category deletion');
@@ -533,20 +518,17 @@ class _ServiceCategoryCrudWidgetState
 
   /// Toggle category active/inactive status using CategoryUtils
   Future<void> _toggleCategoryStatus(ServiceCategory category) async {
-    debugPrint(
-        '🔄 ServiceCategoryCrud: Delegating to CategoryUtils.toggleCategoryStatus for "${category.name}"');
+    debugPrint('🔄 ServiceCategoryCrud: Delegating to CategoryUtils.toggleCategoryStatus for "${category.name}"');
 
     final success = await CategoryUtils.toggleCategoryStatus(
       context: context,
       category: category,
       onDataRefresh: () => _loadCategories(),
-      onLoadingStateChange: (isLoading) =>
-          setState(() => _isLoading = isLoading),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
     );
 
     if (success) {
-      debugPrint(
-          '✅ ServiceCategoryCrud: Category status toggle completed successfully');
+      debugPrint('✅ ServiceCategoryCrud: Category status toggle completed successfully');
     } else {
       debugPrint('❌ ServiceCategoryCrud: Category status toggle failed');
     }
@@ -554,8 +536,7 @@ class _ServiceCategoryCrudWidgetState
 
   /// Delete a category using CategoryUtils
   Future<void> _deleteCategory(ServiceCategory category) async {
-    debugPrint(
-        '🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.deleteCategory for "${category.name}"');
+    debugPrint('🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.deleteCategory for "${category.name}"');
 
     final success = await CategoryUtils.deleteCategory(
       context: context,
@@ -564,13 +545,11 @@ class _ServiceCategoryCrudWidgetState
       onSelectionChanged: (id) => widget.onSelectionChanged(id),
       onDataRefresh: () => _loadCategories(),
       onDataChanged: () => widget.onDataChanged?.call(),
-      onLoadingStateChange: (isLoading) =>
-          setState(() => _isLoading = isLoading),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
     );
 
     if (success) {
-      debugPrint(
-          '✅ ServiceCategoryCrud: Category deletion completed successfully');
+      debugPrint('✅ ServiceCategoryCrud: Category deletion completed successfully');
     } else {
       debugPrint('❌ ServiceCategoryCrud: Category deletion failed');
     }
@@ -580,8 +559,7 @@ class _ServiceCategoryCrudWidgetState
 
   /// Bulk activate selected categories using CategoryUtils
   Future<void> _bulkActivateCategories() async {
-    debugPrint(
-        '✅ ServiceCategoryCrud: Delegating to CategoryUtils.bulkActivateCategories');
+    debugPrint('✅ ServiceCategoryCrud: Delegating to CategoryUtils.bulkActivateCategories');
 
     final result = await CategoryUtils.bulkActivateCategories(
       context: context,
@@ -589,18 +567,15 @@ class _ServiceCategoryCrudWidgetState
       allCategories: _allCategories,
       onSelectionChanged: widget.onSelectionChanged,
       onDataRefresh: () => _loadCategories(),
-      onLoadingStateChange: (isLoading) =>
-          setState(() => _isLoading = isLoading),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
     );
 
-    debugPrint(
-        '✅ ServiceCategoryCrud: Bulk activation result - ${result.summary}');
+    debugPrint('✅ ServiceCategoryCrud: Bulk activation result - ${result.summary}');
   }
 
   /// Bulk deactivate selected categories using CategoryUtils
   Future<void> _bulkDeactivateCategories() async {
-    debugPrint(
-        '⏸️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeactivateCategories');
+    debugPrint('⏸️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeactivateCategories');
 
     final result = await CategoryUtils.bulkDeactivateCategories(
       context: context,
@@ -608,18 +583,15 @@ class _ServiceCategoryCrudWidgetState
       allCategories: _allCategories,
       onSelectionChanged: widget.onSelectionChanged,
       onDataRefresh: () => _loadCategories(),
-      onLoadingStateChange: (isLoading) =>
-          setState(() => _isLoading = isLoading),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
     );
 
-    debugPrint(
-        '⏸️ ServiceCategoryCrud: Bulk deactivation result - ${result.summary}');
+    debugPrint('⏸️ ServiceCategoryCrud: Bulk deactivation result - ${result.summary}');
   }
 
   /// Bulk export selected categories using CategoryUtils
   Future<void> _bulkExportCategories() async {
-    debugPrint(
-        '📥 ServiceCategoryCrud: Delegating to CategoryUtils.bulkExportCategories');
+    debugPrint('📥 ServiceCategoryCrud: Delegating to CategoryUtils.bulkExportCategories');
 
     final result = await CategoryUtils.bulkExportCategories(
       context: context,
@@ -628,14 +600,12 @@ class _ServiceCategoryCrudWidgetState
       onSelectionChanged: widget.onSelectionChanged,
     );
 
-    debugPrint(
-        '📥 ServiceCategoryCrud: Bulk export result - ${result.summary}');
+    debugPrint('📥 ServiceCategoryCrud: Bulk export result - ${result.summary}');
   }
 
   /// Bulk delete selected categories using CategoryUtils
   Future<void> _bulkDeleteCategories() async {
-    debugPrint(
-        '🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeleteCategories');
+    debugPrint('🗑️ ServiceCategoryCrud: Delegating to CategoryUtils.bulkDeleteCategories');
 
     final result = await CategoryUtils.bulkDeleteCategories(
       context: context,
@@ -644,11 +614,9 @@ class _ServiceCategoryCrudWidgetState
       onSelectionChanged: widget.onSelectionChanged,
       onDataRefresh: () => _loadCategories(),
       onDataChanged: () => widget.onDataChanged?.call(),
-      onLoadingStateChange: (isLoading) =>
-          setState(() => _isLoading = isLoading),
+      onLoadingStateChange: (isLoading) => setState(() => _isLoading = isLoading),
     );
 
-    debugPrint(
-        '🗑️ ServiceCategoryCrud: Bulk deletion result - ${result.summary}');
+    debugPrint('🗑️ ServiceCategoryCrud: Bulk deletion result - ${result.summary}');
   }
 }

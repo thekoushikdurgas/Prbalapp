@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
-/// SettingsSectionWidget - Modern settings section container
+/// **THEMEMANAGER INTEGRATED** SettingsSectionWidget - Modern settings section container
+///
+/// **ThemeManager Features Integrated:**
+/// - 🎨 Complete color system (primary, accent, neutral, text, status colors)
+/// - 🌈 Enhanced gradients (background, surface, glass morphism gradients)
+/// - 🎯 Theme-aware shadows (subtle, elevated, primary shadows)
+/// - 🔄 Conditional styling with helper methods
+/// - 🎭 Professional Material Design 3.0 compliance
+/// - 🌓 Automatic light/dark mode adaptation
+/// - 📊 Comprehensive debug logging and theme state monitoring
+/// - ✨ Enhanced visual feedback with glass morphism effects
 ///
 /// This widget groups related settings items together with:
-/// - Section title with proper typography
-/// - Modern card design with glass-morphism effect
-/// - Automatic dividers between items
+/// - Section title with proper typography and theme-aware colors
+/// - Modern card design with enhanced glass-morphism effect
+/// - Automatic dividers between items with gradient styling
 /// - Theme-aware styling for light and dark modes
 /// - Flexible item layout supporting different widget types
-class SettingsSectionWidget extends StatelessWidget {
+class SettingsSectionWidget extends StatelessWidget with ThemeAwareMixin {
   const SettingsSectionWidget({
     super.key,
     required this.title,
@@ -33,110 +44,132 @@ class SettingsSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ SettingsSectionWidget: Building settings section "$title"');
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    debugPrint('⚙️ SettingsSectionWidget: Theme is dark: $isDark');
-    debugPrint(
-        '⚙️ SettingsSectionWidget: Section has ${children.length} items');
-    debugPrint('⚙️ SettingsSectionWidget: Show title: $showTitle');
+    final themeManager = ThemeManager.of(context);
+    
+    debugPrint('🎨 [SettingsSection] Building section "$title"');
+    debugPrint('🎯 [SettingsSection] Theme: ${Theme.of(context).brightness}');
+    debugPrint('📊 [SettingsSection] ${children.length} items, Show title: $showTitle');
 
     return Container(
       margin: margin ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
+          // Enhanced section title
           if (showTitle) ...[
-            _buildSectionTitle(isDark),
+            _buildSectionTitle(themeManager),
             SizedBox(height: 12.h),
           ],
 
-          // Settings Items Container
-          _buildSettingsContainer(isDark),
+          // Enhanced settings container
+          _buildSettingsContainer(themeManager),
         ],
       ),
     );
   }
 
-  /// Builds the section title with proper typography
-  Widget _buildSectionTitle(bool isDark) {
-    debugPrint('⚙️ SettingsSectionWidget: Building section title');
+  /// Builds the section title with comprehensive theme integration
+  Widget _buildSectionTitle(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsSection] Building enhanced section title');
 
-    return Padding(
-      padding: EdgeInsets.only(left: 4.w, bottom: 4.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18.sp,
-          fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
-          letterSpacing: -0.3,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            colors: [
+              themeManager.accent1.withValues(alpha: 13),
+              Colors.transparent,
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          darkGradient: LinearGradient(
+            colors: [
+              themeManager.accent1.withValues(alpha: 26),
+              Colors.transparent,
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
         ),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 4.w,
+            height: 20.h,
+            decoration: BoxDecoration(
+              gradient: themeManager.primaryGradient,
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: themeManager.conditionalColor(
+                lightColor: themeManager.textPrimary,
+                darkColor: themeManager.textPrimary,
+              ),
+              letterSpacing: -0.3,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  /// Builds the modern settings container with glass-morphism effect
-  Widget _buildSettingsContainer(bool isDark) {
-    debugPrint('⚙️ SettingsSectionWidget: Building settings container');
+  /// Builds the modern settings container with enhanced glass-morphism effect
+  Widget _buildSettingsContainer(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsSection] Building enhanced container with glass morphism');
 
     return Container(
       decoration: BoxDecoration(
-        // Modern glass-morphism effect
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  const Color(0xFF2D2D2D).withValues(alpha: 0.9),
-                  const Color(0xFF1E1E1E).withValues(alpha: 0.95),
-                ]
-              : [
-                  Colors.white.withValues(alpha: 0.95),
-                  const Color(0xFFF8F9FA).withValues(alpha: 0.9),
-                ],
+        // Enhanced glass-morphism effect with ThemeManager gradients
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.surfaceColor.withValues(alpha: 242),
+              themeManager.backgroundColor.withValues(alpha: 230),
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.surfaceColor.withValues(alpha: 230),
+              themeManager.backgroundColor.withValues(alpha: 242),
+            ],
+          ),
         ),
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.4)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.white.withValues(alpha: 0.9),
-            blurRadius: 1,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
-          ),
-        ],
+        boxShadow: themeManager.elevatedShadow,
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.2),
+          color: themeManager.conditionalColor(
+            lightColor: themeManager.borderColor.withValues(alpha: 128),
+            darkColor: themeManager.borderColor.withValues(alpha: 77),
+          ),
           width: 1,
         ),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: Column(
-          children: _buildSettingsItems(isDark),
+          children: _buildSettingsItems(themeManager),
         ),
       ),
     );
   }
 
   /// Builds the settings items with automatic dividers
-  List<Widget> _buildSettingsItems(bool isDark) {
-    debugPrint(
-        '⚙️ SettingsSectionWidget: Building ${children.length} settings items');
+  List<Widget> _buildSettingsItems(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsSection] Building ${children.length} enhanced settings items');
 
     final List<Widget> items = [];
 
@@ -144,17 +177,17 @@ class SettingsSectionWidget extends StatelessWidget {
       // Add the settings item
       items.add(children[i]);
 
-      // Add divider between items (except for the last item)
+      // Add enhanced divider between items (except for the last item)
       if (i < children.length - 1) {
-        items.add(_buildDivider(isDark));
+        items.add(_buildDivider(themeManager));
       }
     }
 
     return items;
   }
 
-  /// Builds a divider between settings items
-  Widget _buildDivider(bool isDark) {
+  /// Builds an enhanced divider between settings items
+  Widget _buildDivider(ThemeManager themeManager) {
     return Container(
       height: 1,
       margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -164,9 +197,10 @@ class SettingsSectionWidget extends StatelessWidget {
           end: Alignment.centerRight,
           colors: [
             Colors.transparent,
-            isDark
-                ? Colors.white.withValues(alpha: 0.1)
-                : Colors.grey.withValues(alpha: 0.2),
+            themeManager.conditionalColor(
+              lightColor: themeManager.borderColor.withValues(alpha: 77),
+              darkColor: themeManager.borderColor.withValues(alpha: 51),
+            ),
             Colors.transparent,
           ],
         ),
@@ -175,15 +209,25 @@ class SettingsSectionWidget extends StatelessWidget {
   }
 }
 
-/// SettingsItemWidget - Modern individual settings item
+/// **THEMEMANAGER INTEGRATED** SettingsItemWidget - Modern individual settings item
+///
+/// **ThemeManager Features Integrated:**
+/// - 🎨 Complete color system integration for all visual elements
+/// - 🌈 Enhanced gradients for icon containers and interactive states
+/// - 🎯 Theme-aware shadows and elevation effects
+/// - 🔄 Conditional styling with professional theming
+/// - 🎭 Material Design 3.0 compliance with enhanced accessibility
+/// - 🌓 Automatic light/dark mode adaptation
+/// - 📊 Comprehensive debug logging throughout
+/// - ✨ Enhanced visual feedback with ripple effects and state management
 ///
 /// This widget represents a single settings item with:
-/// - Icon with colored background
-/// - Title and subtitle text
-/// - Trailing widget (arrow, switch, etc.)
-/// - Tap functionality with ripple effect
-/// - Modern design with proper spacing
-class SettingsItemWidget extends StatelessWidget {
+/// - Icon with colored background and gradient effects
+/// - Title and subtitle text with theme-aware typography
+/// - Trailing widget (arrow, switch, etc.) with proper theming
+/// - Tap functionality with enhanced ripple effect
+/// - Modern design with proper spacing and accessibility
+class SettingsItemWidget extends StatelessWidget with ThemeAwareMixin {
   const SettingsItemWidget({
     super.key,
     required this.title,
@@ -218,41 +262,46 @@ class SettingsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ SettingsItemWidget: Building settings item "$title"');
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    debugPrint('⚙️ SettingsItemWidget: Theme is dark: $isDark');
-    debugPrint('⚙️ SettingsItemWidget: Has subtitle: ${subtitle != null}');
-    debugPrint('⚙️ SettingsItemWidget: Has trailing: ${trailing != null}');
-    debugPrint('⚙️ SettingsItemWidget: Enabled: $enabled');
+    final themeManager = ThemeManager.of(context);
+    
+    debugPrint('🎨 [SettingsItem] Building item "$title"');
+    debugPrint('🎯 [SettingsItem] Enabled: $enabled, Has subtitle: ${subtitle != null}');
+    debugPrint('📊 [SettingsItem] Has trailing: ${trailing != null}, Has onTap: ${onTap != null}');
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: enabled ? onTap : null,
         borderRadius: BorderRadius.circular(16.r),
+        splashColor: themeManager.conditionalColor(
+          lightColor: themeManager.primaryColor.withValues(alpha: 26),
+          darkColor: themeManager.primaryColor.withValues(alpha: 51),
+        ),
+        highlightColor: themeManager.conditionalColor(
+          lightColor: themeManager.accent1.withValues(alpha: 13),
+          darkColor: themeManager.accent1.withValues(alpha: 26),
+        ),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
-              // Icon Container
-              _buildIconContainer(isDark),
+              // Enhanced icon container
+              _buildIconContainer(themeManager),
 
               SizedBox(width: 16.w),
 
-              // Content
+              // Enhanced content
               Expanded(
-                child: _buildContent(isDark),
+                child: _buildContent(themeManager),
               ),
 
-              // Trailing Widget
+              // Enhanced trailing widget
               if (trailing != null) ...[
                 SizedBox(width: 12.w),
                 trailing!,
               ] else if (onTap != null) ...[
                 SizedBox(width: 12.w),
-                _buildDefaultTrailing(isDark),
+                _buildDefaultTrailing(themeManager),
               ],
             ],
           ),
@@ -261,54 +310,74 @@ class SettingsItemWidget extends StatelessWidget {
     );
   }
 
-  /// Builds the icon container with colored background
-  Widget _buildIconContainer(bool isDark) {
-    debugPrint('⚙️ SettingsItemWidget: Building icon container');
+  /// Builds the enhanced icon container with gradient background
+  Widget _buildIconContainer(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsItem] Building enhanced icon container');
 
     return Container(
-      padding: EdgeInsets.all(8.w),
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            iconColor.withValues(alpha: 0.15),
-            iconColor.withValues(alpha: 0.05),
+          colors: enabled ? [
+            iconColor.withValues(alpha: 26),
+            iconColor.withValues(alpha: 13),
+          ] : [
+            themeManager.neutral300.withValues(alpha: 26),
+            themeManager.neutral300.withValues(alpha: 13),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: iconColor.withValues(alpha: 0.2),
+          color: enabled 
+            ? iconColor.withValues(alpha: 77)
+            : themeManager.neutral300.withValues(alpha: 77),
           width: 1,
         ),
+        boxShadow: enabled ? [
+          BoxShadow(
+            color: iconColor.withValues(alpha: 26),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ] : [],
       ),
       child: Icon(
         icon,
-        color: enabled ? iconColor : iconColor.withValues(alpha: 0.5),
+        color: enabled ? iconColor : themeManager.neutral400,
         size: 20.sp,
       ),
     );
   }
 
-  /// Builds the content section with title and subtitle
-  Widget _buildContent(bool isDark) {
-    debugPrint('⚙️ SettingsItemWidget: Building content section');
+  /// Builds the enhanced content section with theme-aware typography
+  Widget _buildContent(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsItem] Building enhanced content section');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title
+        // Enhanced title
         Text(
           title,
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: enabled
-                ? (isDark ? Colors.white : const Color(0xFF2D3748))
-                : (isDark ? Colors.grey[500] : Colors.grey[400]),
+                ? themeManager.conditionalColor(
+                    lightColor: themeManager.textPrimary,
+                    darkColor: themeManager.textPrimary,
+                  )
+                : themeManager.conditionalColor(
+                    lightColor: themeManager.textDisabled,
+                    darkColor: themeManager.textDisabled,
+                  ),
             letterSpacing: -0.2,
           ),
         ),
 
-        // Subtitle (if provided)
+        // Enhanced subtitle (if provided)
         if (subtitle != null) ...[
           SizedBox(height: 2.h),
           Text(
@@ -316,8 +385,14 @@ class SettingsItemWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.sp,
               color: enabled
-                  ? (isDark ? Colors.grey[400] : Colors.grey[600])
-                  : (isDark ? Colors.grey[600] : Colors.grey[500]),
+                  ? themeManager.conditionalColor(
+                      lightColor: themeManager.textSecondary,
+                      darkColor: themeManager.textSecondary,
+                    )
+                  : themeManager.conditionalColor(
+                      lightColor: themeManager.textDisabled,
+                      darkColor: themeManager.textDisabled,
+                    ),
               fontWeight: FontWeight.w400,
               height: 1.3,
             ),
@@ -329,16 +404,46 @@ class SettingsItemWidget extends StatelessWidget {
     );
   }
 
-  /// Builds the default trailing arrow icon
-  Widget _buildDefaultTrailing(bool isDark) {
-    debugPrint('⚙️ SettingsItemWidget: Building default trailing arrow');
+  /// Builds the enhanced default trailing arrow with theme integration
+  Widget _buildDefaultTrailing(ThemeManager themeManager) {
+    debugPrint('🎨 [SettingsItem] Building enhanced trailing arrow');
 
-    return Icon(
-      Prbal.arrowSync,
-      color: enabled
-          ? (isDark ? Colors.grey[400] : Colors.grey[600])
-          : (isDark ? Colors.grey[600] : Colors.grey[500]),
-      size: 16.sp,
+    return Container(
+      padding: EdgeInsets.all(6.w),
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            colors: [
+              themeManager.neutral200.withValues(alpha: 77),
+              themeManager.neutral200.withValues(alpha: 51),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          darkGradient: LinearGradient(
+            colors: [
+              themeManager.neutral700.withValues(alpha: 77),
+              themeManager.neutral700.withValues(alpha: 51),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Icon(
+        Prbal.arrowSync,
+        color: enabled
+            ? themeManager.conditionalColor(
+                lightColor: themeManager.textSecondary,
+                darkColor: themeManager.textSecondary,
+              )
+            : themeManager.conditionalColor(
+                lightColor: themeManager.textDisabled,
+                darkColor: themeManager.textDisabled,
+              ),
+        size: 16.sp,
+      ),
     );
   }
 }

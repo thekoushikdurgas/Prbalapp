@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 
 class BookingDetailsScreen extends ConsumerStatefulWidget {
@@ -13,12 +14,10 @@ class BookingDetailsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BookingDetailsScreen> createState() =>
-      _BookingDetailsScreenState();
+  ConsumerState<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
 }
 
-class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
-    with TickerProviderStateMixin {
+class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late AnimationController _progressController;
@@ -30,16 +29,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     'serviceName': 'House Deep Cleaning',
     'provider': {
       'name': 'Sarah Johnson',
-      'avatar':
-          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'rating': 4.8,
       'phone': '+1 (555) 123-4567',
       'email': 'sarah.johnson@email.com',
     },
     'customer': {
       'name': 'John Smith',
-      'avatar':
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'phone': '+1 (555) 987-6543',
       'email': 'john.smith@email.com',
     },
@@ -51,8 +48,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     'address': '123 Main Street, Apt 4B\nNew York, NY 10001',
     'description':
         'Deep cleaning for 3-bedroom apartment including kitchen, bathrooms, living areas, and bedrooms. Special attention to baseboards and windows.',
-    'notes':
-        'Please use eco-friendly products only. Front door key is under the flower pot.',
+    'notes': 'Please use eco-friendly products only. Front door key is under the flower pot.',
     'images': [
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300',
       'https://images.unsplash.com/photo-1556912167-f556f1b39b6b?w=300',
@@ -93,11 +89,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
   @override
   void initState() {
     super.initState();
+    debugPrint('📋 BookingDetailsScreen: Initializing booking details for ID: ${widget.bookingId}');
     _initializeAnimations();
     _startAnimations();
   }
 
   void _initializeAnimations() {
+    debugPrint('📋 BookingDetailsScreen: Setting up animation controllers');
+
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -125,14 +124,17 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
   }
 
   Future<void> _startAnimations() async {
+    debugPrint('📋 BookingDetailsScreen: Starting booking details animations');
     await Future.delayed(const Duration(milliseconds: 200));
     _fadeController.forward();
     await Future.delayed(const Duration(milliseconds: 500));
     _progressController.forward();
+    debugPrint('📋 BookingDetailsScreen: All animations started successfully');
   }
 
   @override
   void dispose() {
+    debugPrint('📋 BookingDetailsScreen: Disposing animation controllers');
     _fadeController.dispose();
     _progressController.dispose();
     super.dispose();
@@ -140,37 +142,40 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+
+    debugPrint('📋 BookingDetailsScreen: Building booking details interface');
+    debugPrint('🎨 BookingDetailsScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint('📋 BookingDetailsScreen: Booking status: ${bookingData['status']}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
           slivers: [
-            _buildSliverAppBar(isDark),
+            _buildSliverAppBar(themeManager),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildStatusCard(isDark),
+                    _buildStatusCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildServiceInfo(isDark),
+                    _buildServiceInfo(themeManager),
                     SizedBox(height: 16.h),
-                    _buildProviderInfo(isDark),
+                    _buildProviderInfo(themeManager),
                     SizedBox(height: 16.h),
-                    _buildLocationCard(isDark),
+                    _buildLocationCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildTimelineCard(isDark),
+                    _buildTimelineCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildImagesCard(isDark),
+                    _buildImagesCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildNotesCard(isDark),
+                    _buildNotesCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildActionButtons(isDark),
+                    _buildActionButtons(themeManager),
                     SizedBox(height: 24.h),
                   ],
                 ),
@@ -182,34 +187,44 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildSliverAppBar(bool isDark) {
+  Widget _buildSliverAppBar(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building sliver app bar');
+
     return SliverAppBar(
       expandedHeight: 120.h,
       floating: false,
       pinned: true,
-      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      backgroundColor: themeManager.surfaceColor,
       elevation: 0,
       leading: IconButton(
         icon: Icon(
           Prbal.arrowLeft,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
         ),
-        onPressed: () => context.pop(),
+        onPressed: () {
+          debugPrint('📋 BookingDetailsScreen: Back button pressed');
+          context.pop();
+        },
       ),
       actions: [
         IconButton(
           icon: Icon(
             Prbal.share,
-            color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+            color: themeManager.textSecondary,
           ),
-          onPressed: () {},
+          onPressed: () {
+            debugPrint('📋 BookingDetailsScreen: Share button pressed');
+          },
         ),
         IconButton(
           icon: Icon(
             Prbal.moreVertical,
-            color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+            color: themeManager.textSecondary,
           ),
-          onPressed: () => _showMoreOptions(isDark),
+          onPressed: () {
+            debugPrint('📋 BookingDetailsScreen: More options pressed');
+            _showMoreOptions(themeManager);
+          },
         ),
         SizedBox(width: 8.w),
       ],
@@ -220,35 +235,30 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
         background: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: isDark
-                  ? [const Color(0xFF1E293B), const Color(0xFF334155)]
-                  : [Colors.white, const Color(0xFFF8FAFC)],
-            ),
+            gradient: themeManager.surfaceGradient,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildStatusCard(bool isDark) {
+  Widget _buildStatusCard(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building status card for status: ${bookingData['status']}');
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        gradient: _getStatusGradient(bookingData['status']),
+        gradient: _getStatusGradient(bookingData['status'], themeManager),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color:
-                _getStatusColor(bookingData['status']).withValues(alpha: 0.3),
+            color: _getStatusColor(bookingData['status'], themeManager).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -347,8 +357,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     child: LinearProgressIndicator(
                       value: _progressAnimation.value,
                       backgroundColor: Colors.white.withValues(alpha: 0.3),
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                       minHeight: 6.h,
                     ),
                   ),
@@ -361,21 +370,19 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildServiceInfo(bool isDark) {
+  Widget _buildServiceInfo(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building service info card');
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +392,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -393,14 +400,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             icon: Prbal.clock,
             label: 'Duration',
             value: bookingData['duration'],
-            isDark: isDark,
+            themeManager: themeManager,
           ),
           SizedBox(height: 12.h),
           _buildInfoRow(
             icon: Prbal.dollarSign,
             label: 'Total Price',
             value: '\$${bookingData['price'].toStringAsFixed(2)}',
-            isDark: isDark,
+            themeManager: themeManager,
           ),
           if (bookingData['description'] != null) ...[
             SizedBox(height: 16.h),
@@ -409,8 +416,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
               ),
             ),
             SizedBox(height: 8.h),
@@ -418,8 +424,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               bookingData['description'],
               style: TextStyle(
                 fontSize: 14.sp,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -429,23 +434,20 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildProviderInfo(bool isDark) {
+  Widget _buildProviderInfo(ThemeManager themeManager) {
     final provider = bookingData['provider'];
+    debugPrint('📋 BookingDetailsScreen: Building provider info for: ${provider['name']}');
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,7 +457,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -466,15 +468,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                 height: 60.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30.r),
-                  color: const Color(0xFF3B82F6),
+                  color: themeManager.primaryColor,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30.r),
                   child: Image.network(
                     provider['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
+                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -488,7 +489,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -496,7 +497,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                       children: [
                         Icon(
                           Prbal.star,
-                          color: const Color(0xFFF59E0B),
+                          color: themeManager.warningColor,
                           size: 16.sp,
                         ),
                         SizedBox(width: 4.w),
@@ -505,7 +506,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFFF59E0B),
+                            color: themeManager.warningColor,
                           ),
                         ),
                         SizedBox(width: 8.w),
@@ -513,9 +514,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                           '• Professional Cleaner',
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF6B7280),
+                            color: themeManager.textSecondary,
                           ),
                         ),
                       ],
@@ -529,59 +528,75 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF10B981).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Prbal.phone,
-                        color: const Color(0xFF10B981),
-                        size: 20.sp,
+                child: GestureDetector(
+                  onTap: () {
+                    debugPrint('📋 BookingDetailsScreen: Call provider button pressed');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    decoration: BoxDecoration(
+                      color: themeManager.successColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: themeManager.successColor.withValues(alpha: 0.3),
                       ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'Call',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF10B981),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Prbal.phone,
+                          color: themeManager.successColor,
+                          size: 20.sp,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Call',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: themeManager.successColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Prbal.comment,
-                        color: const Color(0xFF3B82F6),
-                        size: 20.sp,
+                child: GestureDetector(
+                  onTap: () {
+                    debugPrint('📋 BookingDetailsScreen: Message provider button pressed');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    decoration: BoxDecoration(
+                      color: themeManager.primaryColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: themeManager.primaryColor.withValues(alpha: 0.3),
                       ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'Message',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF3B82F6),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Prbal.comment,
+                          color: themeManager.primaryColor,
+                          size: 20.sp,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Message',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: themeManager.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -592,21 +607,19 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildLocationCard(bool isDark) {
+  Widget _buildLocationCard(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building location card');
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,18 +632,18 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : const Color(0xFF1F2937),
+                  color: themeManager.textPrimary,
                 ),
               ),
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                  color: themeManager.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   Prbal.directions,
-                  color: const Color(0xFF3B82F6),
+                  color: themeManager.primaryColor,
                   size: 20.sp,
                 ),
               ),
@@ -642,7 +655,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             children: [
               Icon(
                 Prbal.mapMarker,
-                color: const Color(0xFFEF4444),
+                color: themeManager.errorColor,
                 size: 20.sp,
               ),
               SizedBox(width: 12.w),
@@ -651,9 +664,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   bookingData['address'],
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF6B7280),
+                    color: themeManager.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -665,21 +676,19 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildTimelineCard(bool isDark) {
+  Widget _buildTimelineCard(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building timeline card');
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -689,7 +698,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -700,7 +709,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             return _buildTimelineItem(
               item,
               isLast,
-              isDark,
+              themeManager,
             );
           }).toList(),
         ],
@@ -708,8 +717,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildTimelineItem(
-      Map<String, dynamic> item, bool isLast, bool isDark) {
+  Widget _buildTimelineItem(Map<String, dynamic> item, bool isLast, ThemeManager themeManager) {
     final isCompleted = item['completed'] as bool;
 
     return Row(
@@ -721,18 +729,10 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               width: 24.w,
               height: 24.h,
               decoration: BoxDecoration(
-                color: isCompleted
-                    ? const Color(0xFF10B981)
-                    : (isDark
-                        ? const Color(0xFF374151)
-                        : const Color(0xFFE5E7EB)),
+                color: isCompleted ? themeManager.successColor : themeManager.surfaceColor,
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: isCompleted
-                      ? const Color(0xFF10B981)
-                      : (isDark
-                          ? const Color(0xFF4B5563)
-                          : const Color(0xFFD1D5DB)),
+                  color: isCompleted ? themeManager.successColor : themeManager.borderColor,
                   width: 2,
                 ),
               ),
@@ -748,8 +748,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               Container(
                 width: 2.w,
                 height: 40.h,
-                color:
-                    isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                color: themeManager.borderColor,
               ),
           ],
         ),
@@ -765,7 +764,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -773,9 +772,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   item['description'],
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF6B7280),
+                    color: themeManager.textSecondary,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -783,9 +780,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   _formatDateTime(item['time']),
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isDark
-                        ? const Color(0xFF64748B)
-                        : const Color(0xFF9CA3AF),
+                    color: themeManager.textSecondary,
                   ),
                 ),
               ],
@@ -796,21 +791,19 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildImagesCard(bool isDark) {
+  Widget _buildImagesCard(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building images card with ${bookingData['images'].length} images');
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -820,7 +813,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -836,20 +829,15 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                   height: 80.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.r),
-                    color: isDark
-                        ? const Color(0xFF374151)
-                        : const Color(0xFFF3F4F6),
+                    color: themeManager.surfaceColor,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.r),
                     child: Image.network(
                       bookingData['images'][index],
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                          Prbal.image,
-                          color: isDark
-                              ? Colors.white70
-                              : const Color(0xFF9CA3AF)),
+                      errorBuilder: (context, error, stackTrace) =>
+                          Icon(Prbal.image, color: themeManager.textSecondary),
                     ),
                   ),
                 );
@@ -861,23 +849,24 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildNotesCard(bool isDark) {
-    if (bookingData['notes'] == null) return const SizedBox.shrink();
+  Widget _buildNotesCard(ThemeManager themeManager) {
+    if (bookingData['notes'] == null) {
+      debugPrint('📋 BookingDetailsScreen: No notes to display, returning empty widget');
+      return const SizedBox.shrink();
+    }
+
+    debugPrint('📋 BookingDetailsScreen: Building notes card');
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -887,17 +876,17 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
           Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+              color: themeManager.warningColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                color: themeManager.warningColor.withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -905,7 +894,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               children: [
                 Icon(
                   Prbal.exclamationTriangle,
-                  color: const Color(0xFFF59E0B),
+                  color: themeManager.warningColor,
                   size: 20.sp,
                 ),
                 SizedBox(width: 12.w),
@@ -914,9 +903,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
                     bookingData['notes'],
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF6B7280),
+                      color: themeManager.textSecondary,
                       height: 1.5,
                     ),
                   ),
@@ -929,17 +916,18 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  Widget _buildActionButtons(bool isDark) {
+  Widget _buildActionButtons(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Building action buttons for status: ${bookingData['status']}');
+
     return Column(
       children: [
-        if (bookingData['status'] == 'booked' ||
-            bookingData['status'] == 'assigned') ...[
+        if (bookingData['status'] == 'booked' || bookingData['status'] == 'assigned') ...[
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => _showCancelDialog(isDark),
+              onPressed: () => _showCancelDialog(themeManager),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEF4444),
+                backgroundColor: themeManager.errorColor,
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
@@ -961,9 +949,9 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => _showReviewDialog(isDark),
+              onPressed: () => _showReviewDialog(themeManager),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3B82F6),
+                backgroundColor: themeManager.primaryColor,
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
@@ -988,8 +976,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16.h),
               side: BorderSide(
-                color:
-                    isDark ? const Color(0xFF64748B) : const Color(0xFFD1D5DB),
+                color: themeManager.textSecondary,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
@@ -1000,7 +987,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
           ),
@@ -1013,7 +1000,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     required IconData icon,
     required String label,
     required String value,
-    required bool isDark,
+    required ThemeManager themeManager,
   }) {
     return Row(
       children: [
@@ -1028,7 +1015,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+            color: themeManager.textSecondary,
           ),
         ),
         const Spacer(),
@@ -1037,32 +1024,36 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
       ],
     );
   }
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(String status, ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Getting status color for: $status');
+
     switch (status) {
       case 'booked':
-        return const Color(0xFF3B82F6);
+        return themeManager.primaryColor;
       case 'assigned':
-        return const Color(0xFFF59E0B);
+        return themeManager.warningColor;
       case 'in_progress':
-        return const Color(0xFF8B5CF6);
+        return themeManager.infoColor;
       case 'completed':
-        return const Color(0xFF10B981);
+        return themeManager.successColor;
       case 'cancelled':
-        return const Color(0xFFEF4444);
+        return themeManager.errorColor;
       default:
-        return const Color(0xFF6B7280);
+        return themeManager.textSecondary;
     }
   }
 
-  LinearGradient _getStatusGradient(String status) {
-    final color = _getStatusColor(status);
+  LinearGradient _getStatusGradient(String status, ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Creating status gradient for: $status');
+
+    final color = _getStatusColor(status, themeManager);
     return LinearGradient(
       colors: [color, color.withValues(alpha: 0.8)],
       begin: Alignment.topLeft,
@@ -1119,14 +1110,16 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     }
   }
 
-  void _showMoreOptions(bool isDark) {
+  void _showMoreOptions(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Showing more options modal');
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: themeManager.surfaceColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24.r),
             topRight: Radius.circular(24.r),
@@ -1136,19 +1129,28 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Prbal.edit, color: Color(0xFF3B82F6)),
-              title: const Text('Modify Booking'),
-              onTap: () => Navigator.pop(context),
+              leading: Icon(Prbal.edit, color: themeManager.primaryColor),
+              title: Text('Modify Booking', style: TextStyle(color: themeManager.textPrimary)),
+              onTap: () {
+                debugPrint('📋 BookingDetailsScreen: Modify booking selected');
+                Navigator.pop(context);
+              },
             ),
             ListTile(
-              leading: const Icon(Prbal.calendar, color: Color(0xFFF59E0B)),
-              title: const Text('Reschedule'),
-              onTap: () => Navigator.pop(context),
+              leading: Icon(Prbal.calendar, color: themeManager.warningColor),
+              title: Text('Reschedule', style: TextStyle(color: themeManager.textPrimary)),
+              onTap: () {
+                debugPrint('📋 BookingDetailsScreen: Reschedule selected');
+                Navigator.pop(context);
+              },
             ),
             ListTile(
-              leading: const Icon(Prbal.flag, color: Color(0xFFEF4444)),
-              title: const Text('Report Issue'),
-              onTap: () => Navigator.pop(context),
+              leading: Icon(Prbal.flag, color: themeManager.errorColor),
+              title: Text('Report Issue', style: TextStyle(color: themeManager.textPrimary)),
+              onTap: () {
+                debugPrint('📋 BookingDetailsScreen: Report issue selected');
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
@@ -1156,21 +1158,23 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
     );
   }
 
-  void _showCancelDialog(bool isDark) {
+  void _showCancelDialog(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Showing cancel booking dialog');
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         title: Text(
           'Cancel Booking',
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
         content: Text(
           'Are you sure you want to cancel this booking? This action cannot be undone.',
           style: TextStyle(
-            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+            color: themeManager.textSecondary,
           ),
         ),
         actions: [
@@ -1183,25 +1187,25 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               Navigator.pop(context);
               // Handle cancellation
             },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEF4444)),
-            child: const Text('Cancel Booking',
-                style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(backgroundColor: themeManager.errorColor),
+            child: const Text('Cancel Booking', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
 
-  void _showReviewDialog(bool isDark) {
+  void _showReviewDialog(ThemeManager themeManager) {
+    debugPrint('📋 BookingDetailsScreen: Showing review dialog');
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         title: Text(
           'Leave Review',
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
         content: Column(
@@ -1210,8 +1214,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
             Text(
               'How was your experience with ${bookingData['provider']['name']}?',
               style: TextStyle(
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
               ),
             ),
             SizedBox(height: 16.h),
@@ -1220,7 +1223,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
               children: List.generate(5, (index) {
                 return Icon(
                   Prbal.star,
-                  color: const Color(0xFFF59E0B),
+                  color: themeManager.warningColor,
                   size: 32.sp,
                 );
               }),

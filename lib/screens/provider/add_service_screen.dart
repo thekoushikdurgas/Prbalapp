@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class AddServiceScreen extends ConsumerStatefulWidget {
   const AddServiceScreen({super.key});
@@ -27,19 +28,18 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         title: Text(
           'Add Service',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
       ),
@@ -50,7 +50,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
           children: [
             // Service Title
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -59,7 +59,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -68,14 +68,10 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     decoration: InputDecoration(
                       hintText: 'e.g., Professional House Cleaning',
                       hintStyle: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                       filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      fillColor: themeManager.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
@@ -86,7 +82,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                       ),
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                 ],
@@ -96,7 +92,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
 
             // Category Selection
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -105,18 +101,15 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
                   Container(
                     width: double.infinity,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: DropdownButtonHideUnderline(
@@ -125,23 +118,14 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                         isExpanded: true,
                         icon: Icon(
                           Prbal.angleDown,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                         style: TextStyle(
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                           fontSize: 16.sp,
                         ),
-                        dropdownColor:
-                            isDark ? const Color(0xFF374151) : Colors.white,
-                        items: [
-                          'Home Services',
-                          'Cleaning',
-                          'Plumbing',
-                          'Electrical',
-                          'Others'
-                        ]
+                        dropdownColor: themeManager.surfaceColor,
+                        items: ['Home Services', 'Cleaning', 'Plumbing', 'Electrical', 'Others']
                             .map((category) => DropdownMenuItem(
                                   value: category,
                                   child: Text(category),
@@ -162,7 +146,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
 
             // Description
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -171,7 +155,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -181,14 +165,10 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     decoration: InputDecoration(
                       hintText: 'Describe your service in detail...',
                       hintStyle: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                       filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      fillColor: themeManager.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
@@ -199,7 +179,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                       ),
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                 ],
@@ -209,7 +189,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
 
             // Price
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -218,7 +198,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -228,14 +208,10 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                     decoration: InputDecoration(
                       hintText: '500',
                       hintStyle: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                       filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      fillColor: themeManager.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
@@ -246,7 +222,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                       ),
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                 ],
@@ -263,7 +239,7 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                   // Handle submit
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: themeManager.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r),
                   ),

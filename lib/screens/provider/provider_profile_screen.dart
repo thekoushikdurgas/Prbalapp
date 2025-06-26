@@ -4,31 +4,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class ProviderProfileScreen extends ConsumerStatefulWidget {
   const ProviderProfileScreen({super.key});
 
   @override
-  ConsumerState<ProviderProfileScreen> createState() =>
-      _ProviderProfileScreenState();
+  ConsumerState<ProviderProfileScreen> createState() => _ProviderProfileScreenState();
 }
 
 class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 200.h,
             floating: false,
             pinned: true,
-            backgroundColor:
-                isDark ? const Color(0xFF1E293B) : const Color(0xFF3B82F6),
+            backgroundColor: themeManager.primaryColor,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Profile',
@@ -40,13 +38,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
               ),
               background: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: isDark
-                        ? [const Color(0xFF1E293B), const Color(0xFF334155)]
-                        : [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
-                  ),
+                  gradient: themeManager.primaryGradient,
                 ),
                 child: Center(
                   child: Column(
@@ -59,9 +51,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                         child: Icon(
                           Prbal.user,
                           size: 50.sp,
-                          color: isDark
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFF3B82F6),
+                          color: themeManager.primaryColor,
                         ),
                       ),
                       SizedBox(height: 12.h),
@@ -92,8 +82,8 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                           title: 'Services',
                           value: '12',
                           icon: Prbal.tools,
-                          iconColor: const Color(0xFF3B82F6),
-                          isDark: isDark,
+                          iconColor: themeManager.primaryColor,
+                          themeManager: themeManager,
                         ),
                       ),
                       SizedBox(width: 16.w),
@@ -102,8 +92,8 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
                           title: 'Rating',
                           value: '4.8',
                           icon: Prbal.star,
-                          iconColor: const Color(0xFFFBBF24),
-                          isDark: isDark,
+                          iconColor: themeManager.warningColor,
+                          themeManager: themeManager,
                         ),
                       ),
                     ],
@@ -112,35 +102,35 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
 
                   // Profile Options
                   ModernUIComponents.elevatedCard(
-                    isDark: isDark,
+                    themeManager: themeManager,
                     child: Column(
                       children: [
                         _buildProfileOption(
                           'Edit Profile',
                           Prbal.edit,
                           () => context.push('/edit-profile'),
-                          isDark,
+                          themeManager,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'My Services',
                           Prbal.list,
                           () => context.push('/my-services'),
-                          isDark,
+                          themeManager,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'Earnings',
                           Prbal.wallet3,
                           () => context.push('/earnings'),
-                          isDark,
+                          themeManager,
                         ),
                         const Divider(),
                         _buildProfileOption(
                           'Settings',
                           Prbal.cog,
                           () => context.push('/settings'),
-                          isDark,
+                          themeManager,
                         ),
                       ],
                     ),
@@ -154,24 +144,23 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
     );
   }
 
-  Widget _buildProfileOption(
-      String title, IconData icon, VoidCallback onTap, bool isDark) {
+  Widget _buildProfileOption(String title, IconData icon, VoidCallback onTap, ThemeManager themeManager) {
     return ListTile(
       leading: Icon(
         icon,
-        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+        color: themeManager.textSecondary,
       ),
       title: Text(
         title,
         style: TextStyle(
           fontSize: 16.sp,
           fontWeight: FontWeight.w500,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
         ),
       ),
       trailing: Icon(
         Prbal.angleRight,
-        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+        color: themeManager.textSecondary,
       ),
       onTap: onTap,
     );

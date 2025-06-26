@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/widgets/phone_login_bottom_sheet.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 // import 'package:easy_localization/easy_localization.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
@@ -13,8 +14,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
-    with TickerProviderStateMixin {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProviderStateMixin {
   late AnimationController _slideController;
   late AnimationController _fadeController;
   late AnimationController _buttonController;
@@ -26,11 +26,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   @override
   void initState() {
     super.initState();
+    debugPrint('🎬 WelcomeScreen: Initializing welcome screen with animations');
     _initializeAnimations();
     _startAnimations();
   }
 
   void _initializeAnimations() {
+    debugPrint('🎬 WelcomeScreen: Setting up animation controllers');
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -72,16 +75,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   Future<void> _startAnimations() async {
+    debugPrint('🎬 WelcomeScreen: Starting welcome animations sequence');
     await Future.delayed(const Duration(milliseconds: 300));
     _fadeController.forward();
     await Future.delayed(const Duration(milliseconds: 200));
     _slideController.forward();
     await Future.delayed(const Duration(milliseconds: 400));
     _buttonController.forward();
+    debugPrint('🎬 WelcomeScreen: All animations started successfully');
   }
 
   @override
   void dispose() {
+    debugPrint('🎬 WelcomeScreen: Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
     _buttonController.dispose();
@@ -90,30 +96,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 700; // Detect smaller screens
+
+    debugPrint('🎬 WelcomeScreen: Building welcome screen');
+    debugPrint('🎨 WelcomeScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint('📱 WelcomeScreen: Screen height: $screenHeight (Small: $isSmallScreen)');
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: isDark
-                ? [
-                    const Color(0xFF0F172A),
-                    const Color(0xFF1E293B),
-                    const Color(0xFF334155),
-                  ]
-                : [
-                    const Color(0xFFFFFFFF),
-                    const Color(0xFFF8FAFC),
-                    const Color(0xFFE2E8F0),
-                  ],
-          ),
+          gradient: themeManager.backgroundGradient,
         ),
         child: SafeArea(
           child: Padding(
@@ -133,7 +129,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                         opacity: _fadeAnimation,
                         child: SlideTransition(
                           position: _slideAnimation,
-                          child: _buildIllustrationSection(isDark),
+                          child: _buildIllustrationSection(themeManager),
                         ),
                       );
                     },
@@ -152,7 +148,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                           position: _slideAnimation,
                           child: SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),
-                            child: _buildContentSection(isDark),
+                            child: _buildContentSection(themeManager),
                           ),
                         ),
                       );
@@ -166,15 +162,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   builder: (context, child) {
                     return Transform.scale(
                       scale: _buttonScale.value,
-                      child: _buildActionButtons(isDark),
+                      child: _buildActionButtons(themeManager),
                     );
                   },
                 ),
 
-                SizedBox(
-                    height: isSmallScreen
-                        ? 10.h
-                        : 20.h), // Further reduced for small screens
+                SizedBox(height: isSmallScreen ? 10.h : 20.h), // Further reduced for small screens
               ],
             ),
           ),
@@ -183,7 +176,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     );
   }
 
-  Widget _buildIllustrationSection(bool isDark) {
+  Widget _buildIllustrationSection(ThemeManager themeManager) {
+    debugPrint('🎨 WelcomeScreen: Building illustration section');
+
     return Center(
       child: Stack(
         alignment: Alignment.center,
@@ -196,7 +191,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               width: 50.w,
               height: 50.w,
               decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                color: themeManager.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(25.r),
               ),
             ),
@@ -208,7 +203,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               width: 35.w,
               height: 35.w,
               decoration: BoxDecoration(
-                color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                color: themeManager.successColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(17.5.r),
               ),
             ),
@@ -233,7 +228,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     );
   }
 
-  Widget _buildContentSection(bool isDark) {
+  Widget _buildContentSection(ThemeManager themeManager) {
+    debugPrint('🎨 WelcomeScreen: Building content section');
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -244,7 +241,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           style: TextStyle(
             fontSize: 28.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF0F172A),
+            color: themeManager.textPrimary,
             height: 1.2,
           ),
           textAlign: TextAlign.center,
@@ -258,7 +255,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
-            color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+            color: themeManager.textSecondary,
             height: 1.4,
           ),
           textAlign: TextAlign.center,
@@ -273,20 +270,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             _buildFeatureHighlight(
               'Verified\nProviders',
               Prbal.checkCircle,
-              const Color(0xFF10B981),
-              isDark,
+              themeManager.successColor,
+              themeManager,
             ),
             _buildFeatureHighlight(
               'Secure\nPayments',
               Prbal.lock,
-              const Color(0xFF3B82F6),
-              isDark,
+              themeManager.primaryColor,
+              themeManager,
             ),
             _buildFeatureHighlight(
               '24/7\nSupport',
               Prbal.headset,
-              const Color(0xFF8B5CF6),
-              isDark,
+              themeManager.infoColor,
+              themeManager,
             ),
           ],
         ),
@@ -298,7 +295,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     String label,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -322,7 +319,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           style: TextStyle(
             fontSize: 11.sp,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+            color: themeManager.textTertiary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -330,7 +327,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     );
   }
 
-  Widget _buildActionButtons(bool isDark) {
+  Widget _buildActionButtons(ThemeManager themeManager) {
+    debugPrint('🎨 WelcomeScreen: Building action buttons');
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -340,14 +339,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           height: 52.h,
           child: ElevatedButton(
             onPressed: () {
-              // Navigate to login/registration
+              debugPrint('📱 WelcomeScreen: Get Started button pressed');
               _showPhoneLoginBottomSheet();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3B82F6),
+              backgroundColor: themeManager.primaryColor,
               foregroundColor: Colors.white,
               elevation: 0,
-              shadowColor: const Color(0xFF3B82F6).withValues(alpha: 0.3),
+              shadowColor: themeManager.primaryColor.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.r),
               ),
@@ -380,14 +379,13 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           height: 52.h,
           child: OutlinedButton(
             onPressed: () {
-              // Navigate to explore as guest
+              debugPrint('🧭 WelcomeScreen: Explore Services button pressed');
+              // TODO: Navigate to explore as guest
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: isDark ? Colors.white : const Color(0xFF3B82F6),
+              foregroundColor: themeManager.primaryColor,
               side: BorderSide(
-                color: isDark
-                    ? Colors.grey[600]!
-                    : const Color(0xFF3B82F6).withValues(alpha: 0.3),
+                color: themeManager.borderColor,
                 width: 1.5,
               ),
               shape: RoundedRectangleBorder(
@@ -424,18 +422,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               'By continuing, you agree to our ',
               style: TextStyle(
                 fontSize: 11.sp,
-                color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                color: themeManager.textTertiary,
               ),
             ),
             GestureDetector(
               onTap: () {
-                // Show terms
+                debugPrint('📄 WelcomeScreen: Terms of Service tapped');
+                // TODO: Show terms
               },
               child: Text(
                 'Terms of Service',
                 style: TextStyle(
                   fontSize: 11.sp,
-                  color: const Color(0xFF3B82F6),
+                  color: themeManager.primaryColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -444,18 +443,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               ' and ',
               style: TextStyle(
                 fontSize: 11.sp,
-                color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                color: themeManager.textTertiary,
               ),
             ),
             GestureDetector(
               onTap: () {
-                // Show privacy policy
+                debugPrint('🔒 WelcomeScreen: Privacy Policy tapped');
+                // TODO: Show privacy policy
               },
               child: Text(
                 'Privacy Policy',
                 style: TextStyle(
                   fontSize: 11.sp,
-                  color: const Color(0xFF3B82F6),
+                  color: themeManager.primaryColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -464,7 +464,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               '.',
               style: TextStyle(
                 fontSize: 11.sp,
-                color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                color: themeManager.textTertiary,
               ),
             ),
           ],
@@ -474,6 +474,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   void _showPhoneLoginBottomSheet() {
+    debugPrint('📱 WelcomeScreen: Showing phone login bottom sheet');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

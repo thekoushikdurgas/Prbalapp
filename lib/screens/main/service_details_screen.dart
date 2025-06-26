@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 
 class ServiceDetailsScreen extends ConsumerStatefulWidget {
@@ -13,12 +14,10 @@ class ServiceDetailsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceDetailsScreen> createState() =>
-      _ServiceDetailsScreenState();
+  ConsumerState<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
 }
 
-class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
-    with TickerProviderStateMixin {
+class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late TabController _tabController;
@@ -45,8 +44,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     'provider': {
       'id': 'PRV-001',
       'name': 'Sarah Johnson',
-      'avatar':
-          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'rating': 4.9,
       'reviewCount': 234,
       'joinDate': DateTime.now().subtract(const Duration(days: 365)),
@@ -97,32 +95,25 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     {
       'id': '1',
       'user': 'Mike Wilson',
-      'avatar':
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'rating': 5,
-      'comment':
-          'Excellent service! Sarah was very professional and thorough. My house has never been cleaner.',
+      'comment': 'Excellent service! Sarah was very professional and thorough. My house has never been cleaner.',
       'date': DateTime.now().subtract(const Duration(days: 2)),
-      'images': [
-        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200'
-      ],
+      'images': ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200'],
     },
     {
       'id': '2',
       'user': 'Emily Davis',
-      'avatar':
-          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
       'rating': 5,
-      'comment':
-          'Amazing attention to detail. Highly recommend this service to anyone!',
+      'comment': 'Amazing attention to detail. Highly recommend this service to anyone!',
       'date': DateTime.now().subtract(const Duration(days: 5)),
       'images': [],
     },
     {
       'id': '3',
       'user': 'David Chen',
-      'avatar':
-          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
       'rating': 4,
       'comment': 'Good service overall. Very punctual and professional.',
       'date': DateTime.now().subtract(const Duration(days: 8)),
@@ -133,12 +124,14 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
   @override
   void initState() {
     super.initState();
+    debugPrint('🎯 ServiceDetailsScreen: Initializing for service ${widget.serviceId}');
     _initializeAnimations();
     _startAnimations();
     _tabController = TabController(length: 3, vsync: this);
   }
 
   void _initializeAnimations() {
+    debugPrint('🎯 ServiceDetailsScreen: Setting up fade animation controller');
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -154,12 +147,14 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
   }
 
   Future<void> _startAnimations() async {
+    debugPrint('🎯 ServiceDetailsScreen: Starting entrance animations');
     await Future.delayed(const Duration(milliseconds: 200));
     _fadeController.forward();
   }
 
   @override
   void dispose() {
+    debugPrint('🎯 ServiceDetailsScreen: Disposing controllers');
     _fadeController.dispose();
     _tabController.dispose();
     super.dispose();
@@ -167,27 +162,28 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🎨 ServiceDetailsScreen: Building with theme - ${Theme.of(context).brightness}');
+    themeManager.logThemeInfo();
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
           slivers: [
-            _buildSliverAppBar(isDark),
+            _buildSliverAppBar(themeManager),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildServiceHeader(isDark),
+                    _buildServiceHeader(themeManager),
                     SizedBox(height: 16.h),
-                    _buildProviderCard(isDark),
+                    _buildProviderCard(themeManager),
                     SizedBox(height: 16.h),
-                    _buildTabSection(isDark),
+                    _buildTabSection(themeManager),
                   ],
                 ),
               ),
@@ -195,41 +191,51 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomBar(isDark),
+      bottomNavigationBar: _buildBottomBar(themeManager),
     );
   }
 
-  Widget _buildSliverAppBar(bool isDark) {
+  Widget _buildSliverAppBar(ThemeManager themeManager) {
+    debugPrint('🎨 ServiceDetailsScreen: Building sliver app bar with gradient overlay');
     return SliverAppBar(
       expandedHeight: 300.h,
       floating: false,
       pinned: true,
-      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      backgroundColor: themeManager.surfaceColor,
       elevation: 0,
       leading: Container(
         margin: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.5),
+          color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
           borderRadius: BorderRadius.circular(12.r),
+          boxShadow: themeManager.subtleShadow,
         ),
         child: IconButton(
-          icon: const Icon(Prbal.arrowLeft, color: Colors.white),
-          onPressed: () => context.pop(),
+          icon: Icon(
+            Prbal.arrowLeft,
+            color: themeManager.textPrimary,
+          ),
+          onPressed: () {
+            debugPrint('🔄 ServiceDetailsScreen: Navigating back');
+            context.pop();
+          },
         ),
       ),
       actions: [
         Container(
           margin: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
             borderRadius: BorderRadius.circular(12.r),
+            boxShadow: themeManager.subtleShadow,
           ),
           child: IconButton(
             icon: Icon(
               _isFavorite ? Prbal.heart : Prbal.heart5,
-              color: _isFavorite ? const Color(0xFFEF4444) : Colors.white,
+              color: _isFavorite ? themeManager.errorColor : themeManager.textPrimary,
             ),
             onPressed: () {
+              debugPrint('💖 ServiceDetailsScreen: Toggling favorite status');
               setState(() {
                 _isFavorite = !_isFavorite;
               });
@@ -239,12 +245,18 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
         Container(
           margin: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
             borderRadius: BorderRadius.circular(12.r),
+            boxShadow: themeManager.subtleShadow,
           ),
           child: IconButton(
-            icon: const Icon(Prbal.share, color: Colors.white),
-            onPressed: () {},
+            icon: Icon(
+              Prbal.share,
+              color: themeManager.textPrimary,
+            ),
+            onPressed: () {
+              debugPrint('📤 ServiceDetailsScreen: Sharing service');
+            },
           ),
         ),
       ],
@@ -258,8 +270,16 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                 return Image.network(
                   serviceData['images'][index],
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Container(color: const Color(0xFF374151)),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    decoration: BoxDecoration(
+                      gradient: themeManager.backgroundGradient,
+                    ),
+                    child: Icon(
+                      Prbal.image,
+                      color: themeManager.textTertiary,
+                      size: 64.sp,
+                    ),
+                  ),
                 );
               },
             ),
@@ -270,7 +290,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.3),
+                    themeManager.backgroundColor.withValues(alpha: 77), // 0.3 opacity
                   ],
                 ),
               ),
@@ -281,22 +301,26 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildServiceHeader(bool isDark) {
+  Widget _buildServiceHeader(ThemeManager themeManager) {
+    debugPrint('🎨 ServiceDetailsScreen: Building service header with theme colors');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
           decoration: BoxDecoration(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+            color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
             borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: themeManager.primaryColor.withValues(alpha: 77), // 0.3 opacity
+            ),
           ),
           child: Text(
             serviceData['category'],
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF3B82F6),
+              color: themeManager.primaryColor,
             ),
           ),
         ),
@@ -306,7 +330,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           style: TextStyle(
             fontSize: 24.sp,
             fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
             height: 1.2,
           ),
         ),
@@ -315,7 +339,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           children: [
             Icon(
               Prbal.star,
-              color: const Color(0xFFF59E0B),
+              color: themeManager.warningColor,
               size: 18.sp,
             ),
             SizedBox(width: 4.w),
@@ -324,7 +348,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(width: 8.w),
@@ -332,8 +356,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               '(${serviceData['reviewCount']} reviews)',
               style: TextStyle(
                 fontSize: 14.sp,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
               ),
             ),
           ],
@@ -345,17 +368,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               child: Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  color: themeManager.surfaceColor,
                   borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDark
-                          ? Colors.black.withValues(alpha: 0.3)
-                          : Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  boxShadow: themeManager.subtleShadow,
+                  border: Border.all(
+                    color: themeManager.borderColor,
+                    width: 0.5,
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -363,9 +382,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       'Starting at',
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -374,7 +391,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w800,
-                        color: const Color(0xFF10B981),
+                        color: themeManager.successColor,
                       ),
                     ),
                   ],
@@ -386,17 +403,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               child: Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  color: themeManager.surfaceColor,
                   borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDark
-                          ? Colors.black.withValues(alpha: 0.3)
-                          : Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  boxShadow: themeManager.subtleShadow,
+                  border: Border.all(
+                    color: themeManager.borderColor,
+                    width: 0.5,
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -404,9 +417,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       'Duration',
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -415,7 +426,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                   ],
@@ -428,23 +439,20 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildProviderCard(bool isDark) {
+  Widget _buildProviderCard(ThemeManager themeManager) {
+    debugPrint('🎨 ServiceDetailsScreen: Building provider card with gradient styling');
     final provider = serviceData['provider'];
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        gradient: themeManager.surfaceGradient,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.elevatedShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 0.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,15 +464,15 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                 height: 60.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30.r),
-                  color: const Color(0xFF3B82F6),
+                  gradient: themeManager.primaryGradient,
+                  boxShadow: themeManager.primaryShadow,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30.r),
                   child: Image.network(
                     provider['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
+                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -478,7 +486,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -486,7 +494,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       children: [
                         Icon(
                           Prbal.star,
-                          color: const Color(0xFFF59E0B),
+                          color: themeManager.warningColor,
                           size: 16.sp,
                         ),
                         SizedBox(width: 4.w),
@@ -495,17 +503,19 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFFF59E0B),
+                            color: themeManager.warningColor,
                           ),
                         ),
                         SizedBox(width: 8.w),
-                        Text(
-                          '(${provider['reviewCount']} reviews)',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF6B7280),
+                        Flexible(
+                          child: Text(
+                            '(${provider['reviewCount']} reviews)',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: themeManager.textSecondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -513,11 +523,15 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Icon(
                   Prbal.comment,
-                  color: const Color(0xFF3B82F6),
+                  color: themeManager.primaryColor,
                   size: 24.sp,
                 ),
               ),
@@ -531,7 +545,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   'Completed Jobs',
                   provider['completedJobs'].toString(),
                   Prbal.check,
-                  isDark,
+                  themeManager,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -540,7 +554,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   'Response Time',
                   provider['responseTime'],
                   Prbal.clock,
-                  isDark,
+                  themeManager,
                 ),
               ),
             ],
@@ -550,19 +564,22 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildProviderStat(
-      String label, String value, IconData icon, bool isDark) {
+  Widget _buildProviderStat(String label, String value, IconData icon, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+        color: themeManager.backgroundColor.withValues(alpha: 128), // 0.5 opacity
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 0.5,
+        ),
       ),
       child: Column(
         children: [
           Icon(
             icon,
-            color: const Color(0xFF3B82F6),
+            color: themeManager.primaryColor,
             size: 20.sp,
           ),
           SizedBox(height: 8.h),
@@ -571,7 +588,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 2.h),
@@ -579,7 +596,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             label,
             style: TextStyle(
               fontSize: 11.sp,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -588,33 +605,30 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildTabSection(bool isDark) {
+  Widget _buildTabSection(ThemeManager themeManager) {
+    debugPrint('🎨 ServiceDetailsScreen: Building tab section with theme styling');
     return Column(
       children: [
         Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(12.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: themeManager.subtleShadow,
+            border: Border.all(
+              color: themeManager.borderColor,
+              width: 0.5,
+            ),
           ),
           child: TabBar(
             controller: _tabController,
             indicator: BoxDecoration(
-              color: const Color(0xFF3B82F6),
+              gradient: themeManager.primaryGradient,
               borderRadius: BorderRadius.circular(8.r),
+              boxShadow: themeManager.primaryShadow,
             ),
             indicatorSize: TabBarIndicatorSize.tab,
             labelColor: Colors.white,
-            unselectedLabelColor:
-                isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+            unselectedLabelColor: themeManager.textTertiary,
             labelStyle: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
@@ -632,9 +646,9 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           child: TabBarView(
             controller: _tabController,
             children: [
-              _buildDetailsTab(isDark),
-              _buildReviewsTab(isDark),
-              _buildAvailabilityTab(isDark),
+              _buildDetailsTab(themeManager),
+              _buildReviewsTab(themeManager),
+              _buildAvailabilityTab(themeManager),
             ],
           ),
         ),
@@ -642,7 +656,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildDetailsTab(bool isDark) {
+  Widget _buildDetailsTab(ThemeManager themeManager) {
+    debugPrint('🎯 ServiceDetailsScreen: Building details tab');
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -650,17 +665,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              gradient: themeManager.surfaceGradient,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.3)
-                      : Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: themeManager.elevatedShadow,
+              border: Border.all(
+                color: themeManager.borderColor,
+                width: 0.5,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -670,7 +681,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(height: 12.h),
@@ -678,9 +689,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   serviceData['description'],
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF6B7280),
+                    color: themeManager.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -691,17 +700,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
           Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              gradient: themeManager.surfaceGradient,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.3)
-                      : Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: themeManager.elevatedShadow,
+              border: Border.all(
+                color: themeManager.borderColor,
+                width: 0.5,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,7 +716,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(height: 16.h),
@@ -722,7 +727,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       children: [
                         Icon(
                           Prbal.check,
-                          color: const Color(0xFF10B981),
+                          color: themeManager.successColor,
                           size: 20.sp,
                         ),
                         SizedBox(width: 12.w),
@@ -731,9 +736,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                             feature,
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: isDark
-                                  ? const Color(0xFF94A3B8)
-                                  : const Color(0xFF6B7280),
+                              color: themeManager.textSecondary,
                             ),
                           ),
                         ),
@@ -749,24 +752,21 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildReviewsTab(bool isDark) {
+  Widget _buildReviewsTab(ThemeManager themeManager) {
+    debugPrint('🎯 ServiceDetailsScreen: Building reviews tab');
     return SingleChildScrollView(
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              gradient: themeManager.surfaceGradient,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.3)
-                      : Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: themeManager.elevatedShadow,
+              border: Border.all(
+                color: themeManager.borderColor,
+                width: 0.5,
+              ),
             ),
             child: Row(
               children: [
@@ -778,8 +778,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                         style: TextStyle(
                           fontSize: 32.sp,
                           fontWeight: FontWeight.w800,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       Row(
@@ -788,10 +787,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                           return Icon(
                             Prbal.star,
                             color: index < serviceData['rating'].floor()
-                                ? const Color(0xFFF59E0B)
-                                : (isDark
-                                    ? const Color(0xFF374151)
-                                    : const Color(0xFFE5E7EB)),
+                                ? themeManager.warningColor
+                                : themeManager.borderColor,
                             size: 20.sp,
                           );
                         }),
@@ -801,9 +798,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                         '${serviceData['reviewCount']} reviews',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF6B7280),
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -829,9 +824,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                               '$rating',
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: isDark
-                                    ? const Color(0xFF94A3B8)
-                                    : const Color(0xFF6B7280),
+                                color: themeManager.textSecondary,
                               ),
                             ),
                             SizedBox(width: 8.w),
@@ -840,12 +833,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                                 borderRadius: BorderRadius.circular(4.r),
                                 child: LinearProgressIndicator(
                                   value: percentage,
-                                  backgroundColor: isDark
-                                      ? const Color(0xFF374151)
-                                      : const Color(0xFFE5E7EB),
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFF59E0B)),
+                                  backgroundColor: themeManager.borderColor,
+                                  valueColor: AlwaysStoppedAnimation<Color>(themeManager.warningColor),
                                   minHeight: 6.h,
                                 ),
                               ),
@@ -860,28 +849,24 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             ),
           ),
           SizedBox(height: 16.h),
-          ...reviews.map((review) => _buildReviewItem(review, isDark)),
+          ...reviews.map((review) => _buildReviewItem(review, themeManager)),
         ],
       ),
     );
   }
 
-  Widget _buildReviewItem(Map<String, dynamic> review, bool isDark) {
+  Widget _buildReviewItem(Map<String, dynamic> review, ThemeManager themeManager) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 0.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -893,15 +878,14 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                 height: 40.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: const Color(0xFF3B82F6),
+                  gradient: themeManager.primaryGradient,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.r),
                   child: Image.network(
                     review['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Icon(Prbal.user, color: Colors.white, size: 20.sp),
+                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 20.sp),
                   ),
                 ),
               ),
@@ -915,7 +899,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     Row(
@@ -923,11 +907,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                         ...List.generate(5, (index) {
                           return Icon(
                             Prbal.star,
-                            color: index < review['rating']
-                                ? const Color(0xFFF59E0B)
-                                : (isDark
-                                    ? const Color(0xFF374151)
-                                    : const Color(0xFFE5E7EB)),
+                            color: index < review['rating'] ? themeManager.warningColor : themeManager.borderColor,
                             size: 14.sp,
                           );
                         }),
@@ -936,9 +916,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                           _formatDate(review['date']),
                           style: TextStyle(
                             fontSize: 12.sp,
-                            color: isDark
-                                ? const Color(0xFF64748B)
-                                : const Color(0xFF9CA3AF),
+                            color: themeManager.textTertiary,
                           ),
                         ),
                       ],
@@ -953,7 +931,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             review['comment'],
             style: TextStyle(
               fontSize: 14.sp,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
               height: 1.4,
             ),
           ),
@@ -971,15 +949,22 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     height: 60.h,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
-                      color: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      color: themeManager.backgroundColor,
+                      border: Border.all(
+                        color: themeManager.borderColor,
+                        width: 0.5,
+                      ),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.r),
                       child: Image.network(
                         review['images'][index],
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Prbal.image,
+                          color: themeManager.textTertiary,
+                          size: 24.sp,
+                        ),
                       ),
                     ),
                   );
@@ -992,7 +977,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildAvailabilityTab(bool isDark) {
+  Widget _buildAvailabilityTab(ThemeManager themeManager) {
+    debugPrint('🎯 ServiceDetailsScreen: Building availability tab');
     return SingleChildScrollView(
       child: Column(
         children: serviceData['availability'].map<Widget>((dayData) {
@@ -1000,17 +986,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             margin: EdgeInsets.only(bottom: 12.h),
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              color: themeManager.surfaceColor,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.2)
-                      : Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: themeManager.subtleShadow,
+              border: Border.all(
+                color: themeManager.borderColor,
+                width: 0.5,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1020,7 +1002,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(height: 12.h),
@@ -1029,9 +1011,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     'No availability',
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark
-                          ? const Color(0xFF64748B)
-                          : const Color(0xFF9CA3AF),
+                      color: themeManager.textTertiary,
                       fontStyle: FontStyle.italic,
                     ),
                   )
@@ -1041,14 +1021,12 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     runSpacing: 8.h,
                     children: dayData['slots'].map<Widget>((slot) {
                       return Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                          color: themeManager.successColor.withValues(alpha: 26), // 0.1 opacity
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color:
-                                const Color(0xFF10B981).withValues(alpha: 0.3),
+                            color: themeManager.successColor.withValues(alpha: 77), // 0.3 opacity
                           ),
                         ),
                         child: Text(
@@ -1056,7 +1034,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF10B981),
+                            color: themeManager.successColor,
                           ),
                         ),
                       );
@@ -1070,15 +1048,17 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     );
   }
 
-  Widget _buildBottomBar(bool isDark) {
+  Widget _buildBottomBar(ThemeManager themeManager) {
+    debugPrint('🎨 ServiceDetailsScreen: Building bottom bar with gradient button');
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
+        boxShadow: themeManager.elevatedShadow,
         border: Border(
           top: BorderSide(
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
-            width: 1,
+            color: themeManager.borderColor,
+            width: 0.5,
           ),
         ),
       ),
@@ -1094,9 +1074,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     'Total Price',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF6B7280),
+                      color: themeManager.textSecondary,
                     ),
                   ),
                   Text(
@@ -1104,7 +1082,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF10B981),
+                      color: themeManager.successColor,
                     ),
                   ),
                 ],
@@ -1113,21 +1091,32 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             SizedBox(width: 16.w),
             Expanded(
               flex: 2,
-              child: ElevatedButton(
-                onPressed: () => _showBookingDialog(isDark),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: themeManager.primaryGradient,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: themeManager.primaryShadow,
                 ),
-                child: Text(
-                  'Book Now',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                child: ElevatedButton(
+                  onPressed: () {
+                    debugPrint('📅 ServiceDetailsScreen: Opening booking dialog');
+                    _showBookingDialog(themeManager);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: Text(
+                    'Book Now',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -1153,7 +1142,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
     }
   }
 
-  void _showBookingDialog(bool isDark) {
+  void _showBookingDialog(ThemeManager themeManager) {
+    debugPrint('🎯 ServiceDetailsScreen: Showing booking modal dialog');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1162,23 +1152,27 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
         height: MediaQuery.of(context).size.height * 0.7,
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          gradient: themeManager.surfaceGradient,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24.r),
             topRight: Radius.circular(24.r),
+          ),
+          boxShadow: themeManager.elevatedShadow,
+          border: Border.all(
+            color: themeManager.borderColor,
+            width: 0.5,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Drag handle
             Center(
               child: Container(
                 width: 40.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF374151)
-                      : const Color(0xFFE5E7EB),
+                  color: themeManager.borderColor,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
@@ -1189,7 +1183,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(height: 8.h),
@@ -1197,8 +1191,7 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
               serviceData['title'],
               style: TextStyle(
                 fontSize: 16.sp,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
               ),
             ),
             SizedBox(height: 24.h),
@@ -1212,37 +1205,37 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    // Add date picker and time slots here
                     Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
+                        color: themeManager.backgroundColor.withValues(alpha: 128), // 0.5 opacity
                         border: Border.all(
-                          color: isDark
-                              ? const Color(0xFF374151)
-                              : const Color(0xFFE5E7EB),
+                          color: themeManager.borderColor,
                         ),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Tomorrow, 10:00 AM',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF1F2937),
+                          Flexible(
+                            child: Text(
+                              'Tomorrow, 10:00 AM',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: themeManager.textPrimary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Icon(
                             Prbal.calendar,
-                            color: const Color(0xFF3B82F6),
+                            color: themeManager.primaryColor,
                             size: 20.sp,
                           ),
                         ],
@@ -1255,24 +1248,33 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
             SizedBox(height: 16.h),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Handle booking confirmation
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: themeManager.primaryGradient,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: themeManager.primaryShadow,
                 ),
-                child: Text(
-                  'Confirm Booking - \$${serviceData['price'].toStringAsFixed(0)}',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                child: ElevatedButton(
+                  onPressed: () {
+                    debugPrint('✅ ServiceDetailsScreen: Confirming booking');
+                    Navigator.pop(context);
+                    // Handle booking confirmation
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: Text(
+                    'Confirm Booking - \$${serviceData['price'].toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

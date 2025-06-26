@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// Admin Users Management Screen
 /// This screen provides comprehensive user management functionality including:
@@ -16,15 +17,11 @@ class AdminUsersScreen extends ConsumerStatefulWidget {
   ConsumerState<AdminUsersScreen> createState() => _AdminUsersScreenState();
 }
 
-class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
-    with TickerProviderStateMixin {
+class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with TickerProviderStateMixin {
   // ========== STATE VARIABLES ==========
-  late TabController
-      _tabController; // Controls the user type tabs (All/Providers/Customers)
-  final TextEditingController _searchController =
-      TextEditingController(); // Search input controller
-  String _selectedFilter =
-      'All'; // Currently selected filter (All/Verified/Pending/Suspended/New)
+  late TabController _tabController; // Controls the user type tabs (All/Providers/Customers)
+  final TextEditingController _searchController = TextEditingController(); // Search input controller
+  String _selectedFilter = 'All'; // Currently selected filter (All/Verified/Pending/Suspended/New)
 
   @override
   void initState() {
@@ -38,18 +35,15 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
     // Add listener to track tab changes for debugging
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        debugPrint(
-            '👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
+        debugPrint('👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
         final tabNames = ['All Users', 'Providers', 'Customers'];
-        debugPrint(
-            '👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
+        debugPrint('👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
       }
     });
 
     // Add listener to search controller for real-time search tracking
     _searchController.addListener(() {
-      debugPrint(
-          '🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
+      debugPrint('🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
     });
   }
 
@@ -64,29 +58,28 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
   @override
   Widget build(BuildContext context) {
     // Get current theme for consistent styling across the screen
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     debugPrint('👥 AdminUsersScreen: Building user management interface');
-    debugPrint('👥 AdminUsersScreen: Dark mode: $isDark');
+    debugPrint('👥 AdminUsersScreen: Dark mode: ${themeManager.themeManager}');
     debugPrint('👥 AdminUsersScreen: Current filter: $_selectedFilter');
 
     return Scaffold(
-      // Adaptive background color based on theme
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      // Use ThemeManager background color
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             // ========== HEADER SECTION ==========
             // Contains title, search bar, and tab navigation
-            _buildHeaderSection(isDark),
+            _buildHeaderSection(themeManager),
 
             // ========== FILTER CHIPS SECTION ==========
             // Horizontal scrollable filter options
-            _buildFilterSection(isDark),
+            _buildFilterSection(themeManager),
 
             // ========== USER LIST SECTION ==========
             // Tab-based user listing with different categories
-            _buildUserListSection(isDark),
+            _buildUserListSection(themeManager),
           ],
         ),
       ),
@@ -96,22 +89,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
   // ========== HEADER SECTION BUILDER ==========
   /// Builds the top section containing title, export button, search bar, and tabs
   /// This section provides the main navigation and search functionality
-  Widget _buildHeaderSection(bool isDark) {
+  Widget _buildHeaderSection(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building header section');
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        gradient: themeManager.surfaceGradient,
+        boxShadow: themeManager.primaryShadow,
       ),
       child: Column(
         children: [
@@ -123,7 +108,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                  color: themeManager.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -131,14 +116,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
               IconButton(
                 onPressed: () {
                   debugPrint('📤 AdminUsersScreen: Export button pressed');
-                  debugPrint(
-                      '📤 AdminUsersScreen: Preparing user data export...');
+                  debugPrint('📤 AdminUsersScreen: Preparing user data export...');
                   // TODO: Implement user data export functionality
                   // This could export to CSV, Excel, or PDF format
                 },
                 icon: Icon(
                   Prbal.download,
-                  color: isDark ? Colors.white : const Color(0xFF4A5568),
+                  color: themeManager.textSecondary,
                 ),
               ),
             ],
@@ -147,13 +131,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
           // ========== SEARCH BAR ==========
           // Real-time search functionality for user filtering
-          _buildSearchBar(isDark),
+          _buildSearchBar(themeManager),
 
           SizedBox(height: 16.h),
 
           // ========== TAB BAR ==========
           // User type categorization tabs
-          _buildTabBar(isDark),
+          _buildTabBar(themeManager),
         ],
       ),
     );
@@ -161,13 +145,17 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== SEARCH BAR BUILDER ==========
   /// Builds the search input field with proper theming and functionality
-  Widget _buildSearchBar(bool isDark) {
+  Widget _buildSearchBar(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building search bar');
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+        gradient: themeManager.surfaceGradient,
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: TextField(
         controller: _searchController,
@@ -179,12 +167,12 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
         decoration: InputDecoration(
           hintText: 'Search users...',
           hintStyle: TextStyle(
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            color: themeManager.textTertiary,
             fontSize: 16.sp,
           ),
           prefixIcon: Icon(
             Prbal.search,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            color: themeManager.textSecondary,
           ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
@@ -198,22 +186,26 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== TAB BAR BUILDER ==========
   /// Builds the user type categorization tab bar
-  Widget _buildTabBar(bool isDark) {
+  Widget _buildTabBar(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building tab bar');
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+        gradient: themeManager.surfaceGradient,
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
       ),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: const Color(0xFF8B5CF6), // Purple indicator for selected tab
+          gradient: themeManager.primaryGradient,
           borderRadius: BorderRadius.circular(10.r),
         ),
         labelColor: Colors.white,
-        unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey[600],
+        unselectedLabelColor: themeManager.textSecondary,
         labelStyle: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -234,10 +226,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== FILTER SECTION BUILDER ==========
   /// Builds the horizontal scrollable filter chips for user status filtering
-  Widget _buildFilterSection(bool isDark) {
+  Widget _buildFilterSection(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building filter section');
-    debugPrint(
-        '👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
+    debugPrint('👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
@@ -247,16 +238,15 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
           scrollDirection: Axis.horizontal,
           children: [
             // Filter options for different user states
-            _buildFilterChip('All', _selectedFilter == 'All', isDark),
+            _buildFilterChip('All', _selectedFilter == 'All', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('Verified', _selectedFilter == 'Verified', isDark),
+            _buildFilterChip('Verified', _selectedFilter == 'Verified', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('Pending', _selectedFilter == 'Pending', isDark),
+            _buildFilterChip('Pending', _selectedFilter == 'Pending', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip(
-                'Suspended', _selectedFilter == 'Suspended', isDark),
+            _buildFilterChip('Suspended', _selectedFilter == 'Suspended', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('New', _selectedFilter == 'New', isDark),
+            _buildFilterChip('New', _selectedFilter == 'New', themeManager),
           ],
         ),
       ),
@@ -265,16 +255,16 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== USER LIST SECTION BUILDER ==========
   /// Builds the tab view containing different user lists
-  Widget _buildUserListSection(bool isDark) {
+  Widget _buildUserListSection(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building user list section');
 
     return Expanded(
       child: TabBarView(
         controller: _tabController,
         children: [
-          _buildUserList('all', isDark), // All users regardless of type
-          _buildUserList('provider', isDark), // Service providers only
-          _buildUserList('customer', isDark), // Customers/takers only
+          _buildUserList('all', themeManager), // All users regardless of type
+          _buildUserList('provider', themeManager), // Service providers only
+          _buildUserList('customer', themeManager), // Customers/takers only
         ],
       ),
     );
@@ -282,7 +272,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== FILTER CHIP BUILDER ==========
   /// Builds individual filter chips for status filtering
-  Widget _buildFilterChip(String label, bool isSelected, bool isDark) {
+  Widget _buildFilterChip(String label, bool isSelected, ThemeManager themeManager) {
     return GestureDetector(
       onTap: () {
         debugPrint('🏷️ AdminUsersScreen: Filter chip tapped: $label');
@@ -297,14 +287,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
           // Visual feedback for selected/unselected state
-          color: isSelected
-              ? const Color(0xFF8B5CF6)
-              : (isDark ? const Color(0xFF2D2D2D) : Colors.white),
+          color: isSelected ? themeManager.primaryColor : themeManager.surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF8B5CF6)
-                : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
+            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
           ),
         ),
         child: Text(
@@ -312,9 +298,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected
-                ? Colors.white
-                : (isDark ? Colors.white : const Color(0xFF2D3748)),
+            color: isSelected ? Colors.white : themeManager.textPrimary,
           ),
         ),
       ),
@@ -323,7 +307,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== USER LIST BUILDER ==========
   /// Builds the scrollable list of users based on type and filters
-  Widget _buildUserList(String userType, bool isDark) {
+  Widget _buildUserList(String userType, ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building user list for type: $userType');
     debugPrint('👥 AdminUsersScreen: Applied filter: $_selectedFilter');
 
@@ -335,25 +319,16 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
       padding: EdgeInsets.all(20.w),
       itemCount: mockUserCount,
       itemBuilder: (context, index) {
-        debugPrint(
-            '👥 AdminUsersScreen: Building user card $index for $userType users');
+        debugPrint('👥 AdminUsersScreen: Building user card $index for $userType users');
 
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(12.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: themeManager.subtleShadow,
           ),
-          child: _buildUserCard(index, userType, isDark),
+          child: _buildUserCard(index, userType, themeManager),
         );
       },
     );
@@ -361,7 +336,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== USER CARD BUILDER ==========
   /// Builds individual user cards with all user information and actions
-  Widget _buildUserCard(int index, String userType, bool isDark) {
+  Widget _buildUserCard(int index, String userType, ThemeManager themeManager) {
     // ========== MOCK DATA ==========
     // TODO: Replace with actual user data from API
     final users = [
@@ -372,34 +347,27 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
       {'name': 'David Lee', 'type': 'customer', 'service': null},
     ];
 
-    final statuses = [
-      'verified',
-      'pending',
-      'suspended',
-      'verified',
-      'verified'
-    ];
+    final statuses = ['verified', 'pending', 'suspended', 'verified', 'verified'];
     final user = users[index % users.length];
     final status = statuses[index % statuses.length];
     final isProvider = user['type'] == 'provider';
 
-    debugPrint(
-        '👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
+    debugPrint('👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
 
     // ========== STATUS COLOR MAPPING ==========
     Color statusColor;
     switch (status) {
       case 'verified':
-        statusColor = const Color(0xFF10B981); // Green for verified
+        statusColor = themeManager.successColor; // Green for verified
         break;
       case 'pending':
-        statusColor = const Color(0xFFF59E0B); // Orange for pending
+        statusColor = themeManager.warningColor; // Orange for pending
         break;
       case 'suspended':
-        statusColor = const Color(0xFFEF4444); // Red for suspended
+        statusColor = themeManager.errorColor; // Red for suspended
         break;
       default:
-        statusColor = const Color(0xFF6B7280); // Gray for unknown
+        statusColor = themeManager.textSecondary; // Gray for unknown
     }
 
     return Padding(
@@ -411,15 +379,11 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
           CircleAvatar(
             radius: 24.r,
             backgroundColor: isProvider
-                ? const Color(0xFF10B981)
-                    .withValues(alpha: 0.1) // Green for providers
-                : const Color(0xFF3B82F6)
-                    .withValues(alpha: 0.1), // Blue for customers
+                ? themeManager.successColor.withValues(alpha: 0.1) // Green for providers
+                : themeManager.infoColor.withValues(alpha: 0.1), // Blue for customers
             child: Icon(
               isProvider ? Prbal.tools : Prbal.user,
-              color: isProvider
-                  ? const Color(0xFF10B981)
-                  : const Color(0xFF3B82F6),
+              color: isProvider ? themeManager.successColor : themeManager.infoColor,
               size: 20.sp,
             ),
           ),
@@ -439,14 +403,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF111827),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(width: 8.w),
                     // Status badge with appropriate color
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
@@ -470,8 +433,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                       isProvider ? 'Provider' : 'Customer',
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color:
-                            isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                     // Show service type for providers
@@ -480,9 +442,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                         ' • ${user['service']}',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: isDark
-                              ? Colors.grey[400]
-                              : const Color(0xFF6B7280),
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -495,16 +455,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                     Icon(
                       Prbal.calendar,
                       size: 12.sp,
-                      color:
-                          isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
+                      color: themeManager.textTertiary,
                     ),
                     SizedBox(width: 4.w),
                     Text(
                       'Joined ${index + 1} days ago',
                       style: TextStyle(
                         fontSize: 11.sp,
-                        color:
-                            isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
+                        color: themeManager.textTertiary,
                       ),
                     ),
                   ],
@@ -517,8 +475,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
           // Context menu for user management actions
           PopupMenuButton<String>(
             onSelected: (value) {
-              debugPrint(
-                  '👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
+              debugPrint('👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
               _handleUserAction(value, user, status);
             },
             itemBuilder: (context) => [
@@ -571,7 +528,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
             ],
             child: Icon(
               Prbal.moreVertical,
-              color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
             ),
           ),
         ],
@@ -581,10 +538,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== USER ACTION HANDLER ==========
   /// Handles all user management actions from the context menu
-  void _handleUserAction(
-      String action, Map<String, String?> user, String status) {
-    debugPrint(
-        '👥 AdminUsersScreen: Handling $action for user ${user['name']}');
+  void _handleUserAction(String action, Map<String, String?> user, String status) {
+    debugPrint('👥 AdminUsersScreen: Handling $action for user ${user['name']}');
 
     switch (action) {
       case 'view':
@@ -611,9 +566,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
   // ========== USER DETAILS MODAL ==========
   /// Shows detailed user information in a bottom sheet modal
   void _showUserDetails(Map<String, String?> user) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    debugPrint(
-        '👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
+    final themeManager = ThemeManager.of(context);
+    debugPrint('👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
 
     showModalBottomSheet(
       context: context,
@@ -622,7 +576,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.7,
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+          color: themeManager.surfaceColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -634,7 +588,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
               height: 4.h,
               width: 40.w,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[600] : Colors.grey[300],
+                color: themeManager.borderColor,
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -649,20 +603,18 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF111827),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      debugPrint(
-                          '👁️ AdminUsersScreen: Closing user details modal');
+                      debugPrint('👁️ AdminUsersScreen: Closing user details modal');
                       Navigator.pop(context);
                     },
                     icon: Icon(
                       Prbal.cross,
-                      color:
-                          isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                      color: themeManager.textSecondary,
                     ),
                   ),
                 ],
@@ -680,10 +632,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
                     // This should include: profile image, contact info, verification status,
                     // service history, ratings, reviews, etc.
 
-                    _buildDetailRow('Name', user['name']!, isDark),
-                    _buildDetailRow('Type', user['type']!, isDark),
-                    if (user['service'] != null)
-                      _buildDetailRow('Service', user['service']!, isDark),
+                    _buildDetailRow('Name', user['name']!, themeManager),
+                    _buildDetailRow('Type', user['type']!, themeManager),
+                    if (user['service'] != null) _buildDetailRow('Service', user['service']!, themeManager),
 
                     // TODO: Add more comprehensive user details:
                     // - Email address
@@ -706,14 +657,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
 
   // ========== DETAIL ROW BUILDER ==========
   /// Builds a single row in the user details modal
-  Widget _buildDetailRow(String label, String value, bool isDark) {
+  Widget _buildDetailRow(String label, String value, ThemeManager themeManager) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(
         '$label: $value',
         style: TextStyle(
           fontSize: 16.sp,
-          color: isDark ? Colors.white : const Color(0xFF111827),
+          color: themeManager.textPrimary,
         ),
       ),
     );

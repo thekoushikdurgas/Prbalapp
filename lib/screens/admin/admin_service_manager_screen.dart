@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:prbal/widgets/admin/service_widget.dart';
 
 /// AdminServiceManagerScreen - Comprehensive service management screen for admin users
@@ -56,18 +57,14 @@ class AdminServiceManagerScreen extends ConsumerStatefulWidget {
   const AdminServiceManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminServiceManagerScreen> createState() =>
-      _AdminServiceManagerScreenState();
+  ConsumerState<AdminServiceManagerScreen> createState() => _AdminServiceManagerScreenState();
 }
 
-class _AdminServiceManagerScreenState
-    extends ConsumerState<AdminServiceManagerScreen>
-    with TickerProviderStateMixin {
+class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerScreen> with TickerProviderStateMixin {
   // ========== STATE VARIABLES ==========
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _statusFilter =
-      'all'; // 'all', 'pending', 'active', 'inactive', 'rejected'
+  String _statusFilter = 'all'; // 'all', 'pending', 'active', 'inactive', 'rejected'
 // 'all' or specific category ID
 // 'all' or specific provider ID
 
@@ -112,15 +109,13 @@ class _AdminServiceManagerScreenState
         setState(() {
           _searchQuery = _searchController.text;
         });
-        debugPrint(
-            '🔍 AdminServiceManager: Search query updated: "$_searchQuery"');
+        debugPrint('🔍 AdminServiceManager: Search query updated: "$_searchQuery"');
       }
     });
 
     // Start entrance animation and load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint(
-          '🏢 AdminServiceManager: Post-frame callback - starting entrance animation');
+      debugPrint('🏢 AdminServiceManager: Post-frame callback - starting entrance animation');
       _slideAnimationController.forward();
       _loadInitialData();
     });
@@ -137,17 +132,15 @@ class _AdminServiceManagerScreenState
   Widget build(BuildContext context) {
     debugPrint('🎨 AdminServiceManager: Building service manager UI');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    debugPrint(
-        '🎨 AdminServiceManager: Theme mode: ${isDark ? 'dark' : 'light'}');
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🎨 AdminServiceManager: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
 
       // ========== APP BAR ==========
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         elevation: 0,
         title: Row(
           children: [
@@ -157,18 +150,8 @@ class _AdminServiceManagerScreenState
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF8B5CF6).withValues(alpha: 77),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  gradient: themeManager.primaryGradient,
+                  boxShadow: themeManager.primaryShadow,
                 ),
                 child: Icon(
                   Prbal.designServices,
@@ -187,14 +170,14 @@ class _AdminServiceManagerScreenState
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   Text(
                     'Manage platform services',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: themeManager.textSecondary,
                     ),
                   ),
                 ],
@@ -211,7 +194,7 @@ class _AdminServiceManagerScreenState
             },
             icon: Icon(
               Prbal.search,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
               size: 22.sp,
             ),
             tooltip: 'Search Services',
@@ -225,7 +208,7 @@ class _AdminServiceManagerScreenState
             },
             icon: Icon(
               Prbal.filter,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
               size: 22.sp,
             ),
             tooltip: 'Filter Services',
@@ -239,7 +222,7 @@ class _AdminServiceManagerScreenState
             },
             icon: Icon(
               Prbal.calculator,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+              color: themeManager.textSecondary,
               size: 22.sp,
             ),
             tooltip: 'View Statistics',
@@ -249,8 +232,7 @@ class _AdminServiceManagerScreenState
           if (_selectedServiceIds.isNotEmpty)
             IconButton(
               onPressed: () {
-                debugPrint(
-                    '🔧 AdminServiceManager: Bulk actions button pressed');
+                debugPrint('🔧 AdminServiceManager: Bulk actions button pressed');
                 _showBulkActionsDialog();
               },
               icon: Icon(
@@ -268,7 +250,7 @@ class _AdminServiceManagerScreenState
       // ========== MAIN CONTENT ==========
       body: SlideTransition(
         position: _slideAnimation,
-        child: _buildMainContent(isDark),
+        child: _buildMainContent(themeManager),
       ),
 
       // ========== FLOATING ACTION BUTTON ==========
@@ -277,7 +259,7 @@ class _AdminServiceManagerScreenState
           debugPrint('➕ AdminServiceManager: Add service FAB pressed');
           _showCreateServiceDialog();
         },
-        backgroundColor: const Color(0xFF8B5CF6),
+        backgroundColor: themeManager.primaryColor,
         elevation: 8,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
@@ -300,39 +282,23 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build main content area
-  Widget _buildMainContent(bool isDark) {
+  Widget _buildMainContent(ThemeManager themeManager) {
     debugPrint('🎨 AdminServiceManager: Building main content');
 
     return Container(
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
-        gradient: isDark
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF0F172A),
-                  const Color(0xFF1E293B).withValues(alpha: 204),
-                ],
-              )
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFFF8FAFC),
-                  const Color(0xFFE2E8F0).withValues(alpha: 128),
-                ],
-              ),
+        gradient: themeManager.backgroundGradient,
       ),
       child: Column(
         children: [
           // ========== HEADER WITH FILTERS ==========
-          _buildHeaderSection(isDark),
+          _buildHeaderSection(themeManager),
 
           // ========== SERVICES LIST ==========
           Expanded(
-            child: _buildServicesList(isDark),
+            child: _buildServicesList(themeManager),
           ),
         ],
       ),
@@ -340,7 +306,7 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build header section with filters and statistics
-  Widget _buildHeaderSection(bool isDark) {
+  Widget _buildHeaderSection(ThemeManager themeManager) {
     debugPrint('🎨 AdminServiceManager: Building header section');
 
     return Container(
@@ -348,38 +314,12 @@ class _AdminServiceManagerScreenState
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
-        gradient: isDark
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 26),
-                  Colors.white.withValues(alpha: 13),
-                ],
-              )
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 230),
-                  Colors.white.withValues(alpha: 153),
-                ],
-              ),
+        gradient: themeManager.surfaceGradient,
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 51)
-              : Colors.white.withValues(alpha: 204),
+          color: themeManager.borderColor,
           width: 1.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 77)
-                : Colors.grey.withValues(alpha: 26),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        boxShadow: themeManager.elevatedShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,7 +336,7 @@ class _AdminServiceManagerScreenState
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -405,7 +345,7 @@ class _AdminServiceManagerScreenState
                       'Manage all services on the platform',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: const Color(0xFF8B5CF6),
+                        color: themeManager.primaryColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -420,26 +360,24 @@ class _AdminServiceManagerScreenState
                     icon: Prbal.eye,
                     label: 'View All',
                     onPressed: () {
-                      debugPrint(
-                          '👁️ AdminServiceManager: View all button pressed');
+                      debugPrint('👁️ AdminServiceManager: View all button pressed');
                       setState(() {
                         _statusFilter = 'all';
                       });
                     },
-                    isDark: isDark,
+                    themeManager: themeManager,
                   ),
                   SizedBox(width: 8.w),
                   _buildQuickActionButton(
                     icon: Prbal.clock,
                     label: 'Pending',
                     onPressed: () {
-                      debugPrint(
-                          '⏰ AdminServiceManager: Pending filter button pressed');
+                      debugPrint('⏰ AdminServiceManager: Pending filter button pressed');
                       setState(() {
                         _statusFilter = 'pending';
                       });
                     },
-                    isDark: isDark,
+                    themeManager: themeManager,
                     isHighlighted: _statusFilter == 'pending',
                   ),
                 ],
@@ -450,7 +388,7 @@ class _AdminServiceManagerScreenState
           SizedBox(height: 20.h),
 
           // ========== STATISTICS ROW ==========
-          _buildStatisticsRow(isDark),
+          _buildStatisticsRow(themeManager),
         ],
       ),
     );
@@ -461,21 +399,18 @@ class _AdminServiceManagerScreenState
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
-    required bool isDark,
+    required ThemeManager themeManager,
     bool isHighlighted = false,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        gradient: isHighlighted
-            ? const LinearGradient(
-                colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-              )
-            : null,
+        gradient: isHighlighted ? themeManager.primaryGradient : null,
         color: !isHighlighted
-            ? (isDark
-                ? Colors.white.withValues(alpha: 26)
-                : Colors.grey.withValues(alpha: 26))
+            ? themeManager.conditionalColor(
+                lightColor: Colors.grey.withValues(alpha: 0.1),
+                darkColor: Colors.white.withValues(alpha: 0.1),
+              )
             : null,
       ),
       child: Material(
@@ -491,9 +426,7 @@ class _AdminServiceManagerScreenState
                 Icon(
                   icon,
                   size: 16.sp,
-                  color: isHighlighted
-                      ? Colors.white
-                      : (isDark ? Colors.grey[300] : Colors.grey[600]),
+                  color: isHighlighted ? Colors.white : (themeManager.textSecondary),
                 ),
                 SizedBox(width: 6.w),
                 Text(
@@ -501,9 +434,7 @@ class _AdminServiceManagerScreenState
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: isHighlighted
-                        ? Colors.white
-                        : (isDark ? Colors.grey[300] : Colors.grey[600]),
+                    color: isHighlighted ? Colors.white : (themeManager.textSecondary),
                   ),
                 ),
               ],
@@ -515,38 +446,34 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build statistics row
-  Widget _buildStatisticsRow(bool isDark) {
+  Widget _buildStatisticsRow(ThemeManager themeManager) {
     debugPrint('📊 AdminServiceManager: Building statistics row');
 
     return Row(
       children: [
-        _buildStatCard('Total', _totalServices.toString(), Colors.blue, isDark),
+        _buildStatCard('Total', _totalServices.toString(), Colors.blue, themeManager),
         SizedBox(width: 12.w),
-        _buildStatCard(
-            'Pending', _pendingServices.toString(), Colors.orange, isDark),
+        _buildStatCard('Pending', _pendingServices.toString(), Colors.orange, themeManager),
         SizedBox(width: 12.w),
-        _buildStatCard(
-            'Active', _activeServices.toString(), Colors.green, isDark),
+        _buildStatCard('Active', _activeServices.toString(), Colors.green, themeManager),
         SizedBox(width: 12.w),
-        _buildStatCard(
-            'Inactive', _inactiveServices.toString(), Colors.grey, isDark),
+        _buildStatCard('Inactive', _inactiveServices.toString(), Colors.grey, themeManager),
         if (_selectedServiceIds.isNotEmpty) ...[
           SizedBox(width: 12.w),
-          _buildStatCard('Selected', _selectedServiceIds.length.toString(),
-              Colors.purple, isDark),
+          _buildStatCard('Selected', _selectedServiceIds.length.toString(), Colors.purple, themeManager),
         ],
       ],
     );
   }
 
   /// Build individual stat card
-  Widget _buildStatCard(String label, String value, Color color, bool isDark) {
+  Widget _buildStatCard(String label, String value, Color color, ThemeManager themeManager) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
-          color: color.withValues(alpha: isDark ? 51 : 26),
+          color: color.withValues(alpha: themeManager.themeManager ? 0.2 : 0.1),
           border: Border.all(
             color: color.withValues(alpha: 77),
             width: 1,
@@ -567,7 +494,7 @@ class _AdminServiceManagerScreenState
               label,
               style: TextStyle(
                 fontSize: 11.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -578,7 +505,7 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build services list using ServiceCrudWidget
-  Widget _buildServicesList(bool isDark) {
+  Widget _buildServicesList(ThemeManager themeManager) {
     debugPrint('📋 AdminServiceManager: Building services list');
 
     return ServiceCrudWidget(
@@ -586,24 +513,20 @@ class _AdminServiceManagerScreenState
       filter: _statusFilter,
       selectedIds: _selectedServiceIds,
       onSelectionChanged: (serviceId) {
-        debugPrint(
-            '📋 AdminServiceManager: Service selection changed: $serviceId');
+        debugPrint('📋 AdminServiceManager: Service selection changed: $serviceId');
         setState(() {
           if (_selectedServiceIds.contains(serviceId)) {
             _selectedServiceIds.remove(serviceId);
-            debugPrint(
-                '📋 AdminServiceManager: Service deselected: $serviceId');
+            debugPrint('📋 AdminServiceManager: Service deselected: $serviceId');
           } else {
             _selectedServiceIds.add(serviceId);
             debugPrint('📋 AdminServiceManager: Service selected: $serviceId');
           }
         });
-        debugPrint(
-            '📋 AdminServiceManager: Total selected services: ${_selectedServiceIds.length}');
+        debugPrint('📋 AdminServiceManager: Total selected services: ${_selectedServiceIds.length}');
       },
       onDataChanged: () {
-        debugPrint(
-            '📋 AdminServiceManager: Services data changed - triggering UI update');
+        debugPrint('📋 AdminServiceManager: Services data changed - triggering UI update');
         setState(() {
           // Update statistics when data changes
           _updateStatistics();
@@ -623,12 +546,12 @@ class _AdminServiceManagerScreenState
   void _showSearchDialog() {
     debugPrint('🔍 AdminServiceManager: Showing search dialog');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -636,7 +559,7 @@ class _AdminServiceManagerScreenState
           children: [
             Icon(
               Prbal.search,
-              color: const Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
               size: 24.sp,
             ),
             SizedBox(width: 12.w),
@@ -645,7 +568,7 @@ class _AdminServiceManagerScreenState
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
           ],
@@ -656,28 +579,28 @@ class _AdminServiceManagerScreenState
           decoration: InputDecoration(
             hintText: 'Enter service name, description, or provider...',
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: const Color(0xFF8B5CF6).withValues(alpha: 77),
+                color: themeManager.primaryColor.withValues(alpha: 77),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: const BorderSide(
-                color: Color(0xFF8B5CF6),
+              borderSide: BorderSide(
+                color: themeManager.primaryColor,
                 width: 2,
               ),
             ),
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Prbal.search,
-              color: Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
             ),
           ),
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
         actions: [
@@ -686,7 +609,7 @@ class _AdminServiceManagerScreenState
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: themeManager.textSecondary,
                 fontSize: 14.sp,
               ),
             ),
@@ -694,13 +617,12 @@ class _AdminServiceManagerScreenState
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              debugPrint(
-                  '🔍 AdminServiceManager: Search initiated with: "${_searchController.text}"');
+              debugPrint('🔍 AdminServiceManager: Search initiated with: "${_searchController.text}"');
             },
             child: Text(
               'Search',
               style: TextStyle(
-                color: const Color(0xFF8B5CF6),
+                color: themeManager.primaryColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -715,12 +637,12 @@ class _AdminServiceManagerScreenState
   void _showFilterDialog() {
     debugPrint('🔧 AdminServiceManager: Showing filter dialog');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -728,7 +650,7 @@ class _AdminServiceManagerScreenState
           children: [
             Icon(
               Prbal.filter,
-              color: const Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
               size: 24.sp,
             ),
             SizedBox(width: 12.w),
@@ -737,7 +659,7 @@ class _AdminServiceManagerScreenState
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
           ],
@@ -751,18 +673,18 @@ class _AdminServiceManagerScreenState
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(height: 8.h),
             Wrap(
               spacing: 8.w,
               children: [
-                _buildFilterChip('All', 'all', _statusFilter, isDark),
-                _buildFilterChip('Pending', 'pending', _statusFilter, isDark),
-                _buildFilterChip('Active', 'active', _statusFilter, isDark),
-                _buildFilterChip('Inactive', 'inactive', _statusFilter, isDark),
-                _buildFilterChip('Rejected', 'rejected', _statusFilter, isDark),
+                _buildFilterChip('All', 'all', _statusFilter, themeManager),
+                _buildFilterChip('Pending', 'pending', _statusFilter, themeManager),
+                _buildFilterChip('Active', 'active', _statusFilter, themeManager),
+                _buildFilterChip('Inactive', 'inactive', _statusFilter, themeManager),
+                _buildFilterChip('Rejected', 'rejected', _statusFilter, themeManager),
               ],
             ),
           ],
@@ -779,7 +701,7 @@ class _AdminServiceManagerScreenState
             child: Text(
               'Clear All',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: themeManager.textSecondary,
                 fontSize: 14.sp,
               ),
             ),
@@ -789,7 +711,7 @@ class _AdminServiceManagerScreenState
             child: Text(
               'Apply',
               style: TextStyle(
-                color: const Color(0xFF8B5CF6),
+                color: themeManager.primaryColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -801,17 +723,14 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build filter chip
-  Widget _buildFilterChip(
-      String label, String value, String currentValue, bool isDark) {
+  Widget _buildFilterChip(String label, String value, String currentValue, ThemeManager themeManager) {
     final isSelected = currentValue == value;
 
     return FilterChip(
       label: Text(
         label,
         style: TextStyle(
-          color: isSelected
-              ? Colors.white
-              : (isDark ? Colors.grey[300] : Colors.grey[700]),
+          color: isSelected ? Colors.white : themeManager.textSecondary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -821,8 +740,8 @@ class _AdminServiceManagerScreenState
           _statusFilter = value;
         });
       },
-      backgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
-      selectedColor: const Color(0xFF8B5CF6),
+      backgroundColor: themeManager.surfaceColor,
+      selectedColor: themeManager.primaryColor,
       checkmarkColor: Colors.white,
     );
   }
@@ -831,12 +750,12 @@ class _AdminServiceManagerScreenState
   void _showStatisticsDialog() {
     debugPrint('📊 AdminServiceManager: Showing statistics dialog');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -844,7 +763,7 @@ class _AdminServiceManagerScreenState
           children: [
             Icon(
               Prbal.calculator,
-              color: const Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
               size: 24.sp,
             ),
             SizedBox(width: 12.w),
@@ -853,7 +772,7 @@ class _AdminServiceManagerScreenState
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
           ],
@@ -863,19 +782,13 @@ class _AdminServiceManagerScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildStatisticRow(
-                  'Total Services', _totalServices, Colors.blue, isDark),
-              _buildStatisticRow(
-                  'Pending Approval', _pendingServices, Colors.orange, isDark),
-              _buildStatisticRow(
-                  'Active Services', _activeServices, Colors.green, isDark),
-              _buildStatisticRow(
-                  'Inactive Services', _inactiveServices, Colors.grey, isDark),
-              _buildStatisticRow(
-                  'Rejected Services', _rejectedServices, Colors.red, isDark),
+              _buildStatisticRow('Total Services', _totalServices, Colors.blue, themeManager),
+              _buildStatisticRow('Pending Approval', _pendingServices, Colors.orange, themeManager),
+              _buildStatisticRow('Active Services', _activeServices, Colors.green, themeManager),
+              _buildStatisticRow('Inactive Services', _inactiveServices, Colors.grey, themeManager),
+              _buildStatisticRow('Rejected Services', _rejectedServices, Colors.red, themeManager),
               if (_selectedServiceIds.isNotEmpty)
-                _buildStatisticRow('Selected Services',
-                    _selectedServiceIds.length, Colors.purple, isDark),
+                _buildStatisticRow('Selected Services', _selectedServiceIds.length, Colors.purple, themeManager),
             ],
           ),
         ),
@@ -885,7 +798,7 @@ class _AdminServiceManagerScreenState
             child: Text(
               'Close',
               style: TextStyle(
-                color: const Color(0xFF8B5CF6),
+                color: themeManager.primaryColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -897,7 +810,7 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build statistic row for dialog
-  Widget _buildStatisticRow(String label, int value, Color color, bool isDark) {
+  Widget _buildStatisticRow(String label, int value, Color color, ThemeManager themeManager) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
@@ -916,7 +829,7 @@ class _AdminServiceManagerScreenState
               label,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
+                color: themeManager.textSecondary,
               ),
             ),
           ),
@@ -937,12 +850,12 @@ class _AdminServiceManagerScreenState
   void _showBulkActionsDialog() {
     debugPrint('🔧 AdminServiceManager: Showing bulk actions dialog');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -950,7 +863,7 @@ class _AdminServiceManagerScreenState
           children: [
             Icon(
               Prbal.cogs,
-              color: const Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
               size: 24.sp,
             ),
             SizedBox(width: 12.w),
@@ -959,7 +872,7 @@ class _AdminServiceManagerScreenState
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
           ],
@@ -972,20 +885,16 @@ class _AdminServiceManagerScreenState
               'Selected: ${_selectedServiceIds.length} services',
               style: TextStyle(
                 fontSize: 16.sp,
-                color: const Color(0xFF8B5CF6),
+                color: themeManager.primaryColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
             SizedBox(height: 16.h),
-            _buildBulkActionTile(
-                'Approve All', Prbal.checkCircle, Colors.green, isDark),
-            _buildBulkActionTile(
-                'Reject All', Prbal.closeOutline, Colors.red, isDark),
-            _buildBulkActionTile(
-                'Activate All', Prbal.toggleOn, Colors.blue, isDark),
-            _buildBulkActionTile(
-                'Deactivate All', Prbal.toggleOff, Colors.orange, isDark),
-            _buildBulkActionTile('Delete All', Prbal.trash, Colors.red, isDark),
+            _buildBulkActionTile('Approve All', Prbal.checkCircle, Colors.green, themeManager),
+            _buildBulkActionTile('Reject All', Prbal.closeOutline, Colors.red, themeManager),
+            _buildBulkActionTile('Activate All', Prbal.toggleOn, Colors.blue, themeManager),
+            _buildBulkActionTile('Deactivate All', Prbal.toggleOff, Colors.orange, themeManager),
+            _buildBulkActionTile('Delete All', Prbal.trash, Colors.red, themeManager),
           ],
         ),
         actions: [
@@ -994,7 +903,7 @@ class _AdminServiceManagerScreenState
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: themeManager.textSecondary,
                 fontSize: 14.sp,
               ),
             ),
@@ -1005,8 +914,7 @@ class _AdminServiceManagerScreenState
   }
 
   /// Build bulk action tile
-  Widget _buildBulkActionTile(
-      String title, IconData icon, Color color, bool isDark) {
+  Widget _buildBulkActionTile(String title, IconData icon, Color color, ThemeManager themeManager) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Icon(icon, color: color, size: 20.sp),
@@ -1014,7 +922,7 @@ class _AdminServiceManagerScreenState
         title,
         style: TextStyle(
           fontSize: 14.sp,
-          color: isDark ? Colors.grey[300] : Colors.grey[700],
+          color: themeManager.textSecondary,
         ),
       ),
       onTap: () {
@@ -1028,8 +936,7 @@ class _AdminServiceManagerScreenState
   /// Perform bulk action
   void _performBulkAction(String action) {
     debugPrint('🔧 AdminServiceManager: Performing bulk action: $action');
-    debugPrint(
-        '🔧 AdminServiceManager: Selected services: ${_selectedServiceIds.length}');
+    debugPrint('🔧 AdminServiceManager: Selected services: ${_selectedServiceIds.length}');
 
     // TODO: Implement actual bulk actions with ServiceManagementService
     // This would involve calling the appropriate API endpoints for each action
@@ -1061,8 +968,7 @@ class _AdminServiceManagerScreenState
   @override
   void dispose() {
     debugPrint('🏢 AdminServiceManager: Disposing service manager screen');
-    debugPrint(
-        '🏢 AdminServiceManager: Final selected services: ${_selectedServiceIds.length}');
+    debugPrint('🏢 AdminServiceManager: Final selected services: ${_selectedServiceIds.length}');
 
     _searchController.dispose();
     _slideAnimationController.dispose();

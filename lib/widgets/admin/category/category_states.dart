@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// ====================================================================
 /// CATEGORY STATE COMPONENTS
@@ -17,7 +18,7 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 ///
 /// **Features**:
 /// - Consistent Material Design 3.0 styling
-/// - Theme-aware design
+/// - **ENHANCED**: Centralized ThemeManager integration
 /// - Smooth animations and transitions
 /// - Comprehensive debug logging
 /// - Accessibility support
@@ -31,8 +32,7 @@ class CategoryLoadingState extends StatefulWidget {
   State<CategoryLoadingState> createState() => _CategoryLoadingStateState();
 }
 
-class _CategoryLoadingStateState extends State<CategoryLoadingState>
-    with TickerProviderStateMixin {
+class _CategoryLoadingStateState extends State<CategoryLoadingState> with TickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -74,34 +74,20 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // ========== ENHANCED THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
+    themeManager.logThemeInfo();
 
-    debugPrint(
-        '⏳ CategoryLoadingState: Building loading state (isDark: $isDark)');
-
-    final primaryColor =
-        isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
-    final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor =
-        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    debugPrint('⏳ CategoryLoadingState: Building loading state with ThemeManager');
+    debugPrint('⏳ CategoryLoadingState: Theme brightness: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: Container(
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          gradient: themeManager.surfaceGradient,
           borderRadius: BorderRadius.circular(20.r),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.3)
-                  : Colors.grey.withValues(alpha: 0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
+          boxShadow: themeManager.elevatedShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -122,20 +108,20 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState>
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            primaryColor.withValues(alpha: 0.2),
-                            primaryColor.withValues(alpha: 0.1),
+                            themeManager.primaryColor.withValues(alpha: 51),
+                            themeManager.primaryColor.withValues(alpha: 26),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: primaryColor.withValues(alpha: 0.3),
+                          color: themeManager.primaryColor.withValues(alpha: 77),
                           width: 2,
                         ),
                       ),
                       child: Icon(
                         Prbal.layers5,
                         size: 36.sp,
-                        color: primaryColor,
+                        color: themeManager.primaryColor,
                       ),
                     ),
                   ),
@@ -151,7 +137,7 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState>
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor,
+                color: themeManager.textPrimary,
                 letterSpacing: -0.2,
               ),
             ),
@@ -162,7 +148,7 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState>
               'Please wait while we fetch the latest category data',
               style: TextStyle(
                 fontSize: 14.sp,
-                color: secondaryTextColor,
+                color: themeManager.textSecondary,
                 height: 1.4,
               ),
               textAlign: TextAlign.center,
@@ -178,17 +164,15 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState>
                   animation: _pulseController,
                   builder: (context, child) {
                     final delay = index * 0.3;
-                    final animationValue =
-                        (_pulseController.value + delay) % 1.0;
-                    final opacity =
-                        (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
+                    final animationValue = (_pulseController.value + delay) % 1.0;
+                    final opacity = (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
 
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       width: 8.w,
                       height: 8.w,
                       decoration: BoxDecoration(
-                        color: primaryColor.withValues(alpha: opacity),
+                        color: themeManager.primaryColor.withValues(alpha: opacity),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                     );
@@ -226,16 +210,14 @@ class CategoryErrorState extends StatefulWidget {
   State<CategoryErrorState> createState() => _CategoryErrorStateState();
 }
 
-class _CategoryErrorStateState extends State<CategoryErrorState>
-    with SingleTickerProviderStateMixin {
+class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
+    debugPrint('❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
 
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -256,17 +238,11 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // ========== ENHANCED THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
 
-    debugPrint('❌ CategoryErrorState: Building error state (isDark: $isDark)');
-
-    final errorColor =
-        isDark ? const Color(0xFFF87171) : const Color(0xFFEF4444);
-    final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor =
-        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    debugPrint('❌ CategoryErrorState: Building error state with ThemeManager');
+    debugPrint('❌ CategoryErrorState: Theme brightness: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: AnimatedBuilder(
@@ -281,15 +257,15 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
               margin: EdgeInsets.all(24.w),
               padding: EdgeInsets.all(24.w),
               decoration: BoxDecoration(
-                color: backgroundColor,
+                gradient: themeManager.surfaceGradient,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: errorColor.withValues(alpha: 0.3),
+                  color: themeManager.errorColor.withValues(alpha: 77),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: errorColor.withValues(alpha: 0.1),
+                    color: themeManager.errorColor.withValues(alpha: 26),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -307,20 +283,20 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          errorColor.withValues(alpha: 0.2),
-                          errorColor.withValues(alpha: 0.1),
+                          themeManager.errorColor.withValues(alpha: 51),
+                          themeManager.errorColor.withValues(alpha: 26),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: errorColor.withValues(alpha: 0.3),
+                        color: themeManager.errorColor.withValues(alpha: 77),
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       Prbal.exclamationTriangle,
                       size: 36.sp,
-                      color: errorColor,
+                      color: themeManager.errorColor,
                     ),
                   ),
 
@@ -332,7 +308,7 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
-                      color: textColor,
+                      color: themeManager.textPrimary,
                       letterSpacing: -0.2,
                     ),
                     textAlign: TextAlign.center,
@@ -345,7 +321,7 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
                     widget.errorMessage,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: secondaryTextColor,
+                      color: themeManager.textSecondary,
                       height: 1.4,
                     ),
                     textAlign: TextAlign.center,
@@ -366,8 +342,8 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              errorColor,
-                              errorColor.withValues(alpha: 0.8),
+                              themeManager.errorColor,
+                              themeManager.errorColor.withValues(alpha: 204),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(12.r),
@@ -376,8 +352,7 @@ class _CategoryErrorStateState extends State<CategoryErrorState>
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              debugPrint(
-                                  '🔄 CategoryErrorState: Retry button tapped');
+                              debugPrint('🔄 CategoryErrorState: Retry button tapped');
                               HapticFeedback.mediumImpact();
                               widget.onRetry?.call();
                             },
@@ -442,8 +417,7 @@ class CategoryEmptyState extends StatefulWidget {
   State<CategoryEmptyState> createState() => _CategoryEmptyStateState();
 }
 
-class _CategoryEmptyStateState extends State<CategoryEmptyState>
-    with SingleTickerProviderStateMixin {
+class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _floatController;
   late Animation<double> _floatAnimation;
 
@@ -469,44 +443,30 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // ========== ENHANCED THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
 
-    debugPrint('📭 CategoryEmptyState: Building empty state (isDark: $isDark)');
-
-    final primaryColor =
-        isDark ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
-    final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final secondaryTextColor =
-        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    debugPrint('📭 CategoryEmptyState: Building empty state with ThemeManager');
+    debugPrint('📭 CategoryEmptyState: Theme brightness: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: Container(
         margin: EdgeInsets.all(24.w),
         padding: EdgeInsets.all(32.w),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          gradient: themeManager.surfaceGradient,
           borderRadius: BorderRadius.circular(24.r),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.3)
-                  : Colors.grey.withValues(alpha: 0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
+          boxShadow: themeManager.elevatedShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Floating illustration
+            // Floating empty icon
             AnimatedBuilder(
               animation: _floatAnimation,
               builder: (context, child) {
                 return Transform.translate(
-                  offset: Offset(0, -10 * _floatAnimation.value),
+                  offset: Offset(0, 10 * _floatAnimation.value),
                   child: Container(
                     width: 120.w,
                     height: 120.w,
@@ -515,20 +475,20 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          primaryColor.withValues(alpha: 0.2),
-                          primaryColor.withValues(alpha: 0.05),
+                          themeManager.primaryColor.withValues(alpha: 26),
+                          themeManager.primaryColor.withValues(alpha: 13),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(30.r),
                       border: Border.all(
-                        color: primaryColor.withValues(alpha: 0.2),
+                        color: themeManager.primaryColor.withValues(alpha: 51),
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       Prbal.folderOpen,
                       size: 48.sp,
-                      color: primaryColor.withValues(alpha: 0.7),
+                      color: themeManager.primaryColor,
                     ),
                   ),
                 );
@@ -541,10 +501,10 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
             Text(
               'No Categories Found',
               style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-                color: textColor,
-                letterSpacing: -0.3,
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+                color: themeManager.textPrimary,
+                letterSpacing: -0.5,
               ),
               textAlign: TextAlign.center,
             ),
@@ -553,10 +513,10 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
 
             // Empty state description
             Text(
-              'Get started by creating your first service category.\nCategories help organize your services.',
+              'Create your first category to organize your services and get started with managing your business offerings.',
               style: TextStyle(
-                fontSize: 15.sp,
-                color: secondaryTextColor,
+                fontSize: 16.sp,
+                color: themeManager.textSecondary,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -571,18 +531,11 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
                 borderRadius: BorderRadius.circular(16.r),
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        primaryColor,
-                        primaryColor.withValues(alpha: 0.8),
-                      ],
-                    ),
+                    gradient: themeManager.primaryGradient,
                     borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: primaryColor.withValues(alpha: 0.3),
+                        color: themeManager.primaryColor.withValues(alpha: 51),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -592,15 +545,14 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        debugPrint(
-                            '➕ CategoryEmptyState: Create category button tapped');
-                        HapticFeedback.mediumImpact();
+                        debugPrint('➕ CategoryEmptyState: Create category button tapped');
+                        HapticFeedback.lightImpact();
                         widget.onCreateCategory?.call();
                       },
                       borderRadius: BorderRadius.circular(16.r),
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 28.w,
+                          horizontal: 32.w,
                           vertical: 16.h,
                         ),
                         child: Row(
@@ -618,7 +570,7 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState>
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
-                                letterSpacing: -0.2,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
@@ -660,8 +612,7 @@ class CategoryStatisticCards extends StatefulWidget {
   State<CategoryStatisticCards> createState() => _CategoryStatisticCardsState();
 }
 
-class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
-    with TickerProviderStateMixin {
+class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
 
@@ -669,8 +620,7 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
   void initState() {
     super.initState();
     debugPrint('📊 CategoryStatisticCards: Initializing statistic cards');
-    debugPrint(
-        '📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
+    debugPrint('📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
 
     _controllers = List.generate(3, (index) {
       return AnimationController(
@@ -702,29 +652,33 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // ========== ENHANCED THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
+    themeManager.logThemeInfo();
 
-    debugPrint('📊 CategoryStatisticCards: Building statistic cards');
+    debugPrint('📊 CategoryStatisticCards: Building statistic cards with comprehensive ThemeManager');
+    debugPrint('📊 CategoryStatisticCards: → Primary: ${themeManager.primaryColor}');
+    debugPrint('📊 CategoryStatisticCards: → Background: ${themeManager.backgroundColor}');
+    debugPrint('📊 CategoryStatisticCards: → Surface: ${themeManager.surfaceColor}');
 
     final statCards = [
       _StatCardData(
         label: 'Total',
         value: widget.totalCount.toString(),
         icon: Prbal.layers5,
-        color: const Color(0xFF6366F1),
+        color: themeManager.primaryColor,
       ),
       _StatCardData(
         label: 'Active',
         value: widget.activeCount.toString(),
         icon: Prbal.checkCircle,
-        color: const Color(0xFF10B981),
+        color: themeManager.successColor,
       ),
       _StatCardData(
         label: 'Inactive',
         value: widget.inactiveCount.toString(),
         icon: Prbal.pauseCircle,
-        color: const Color(0xFFF59E0B),
+        color: themeManager.warningColor,
       ),
     ];
 
@@ -753,7 +707,7 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
                       statCard.value,
                       statCard.icon,
                       statCard.color,
-                      isDark,
+                      themeManager,
                     ),
                   ),
                 ),
@@ -770,33 +724,38 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
     String value,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
-    final backgroundColor = isDark ? const Color(0xFF1F2937) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor =
-        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
-
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.surfaceElevated,
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.backgroundTertiary,
+            ],
+          ),
+        ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: color.withValues(alpha: 0.2),
+          color: color.withValues(alpha: 51),
           width: 1.5,
         ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color.withValues(alpha: 0.05),
-            backgroundColor,
-          ],
-        ),
         boxShadow: [
+          ...themeManager.subtleShadow,
           BoxShadow(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 26),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -804,7 +763,7 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
       ),
       child: Column(
         children: [
-          // Icon container
+          // Icon container with enhanced theming
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
@@ -812,11 +771,18 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  color.withValues(alpha: 0.2),
-                  color.withValues(alpha: 0.1),
+                  color.withValues(alpha: 51),
+                  color.withValues(alpha: 26),
                 ],
               ),
               borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 26),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Icon(
               icon,
@@ -827,26 +793,26 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
 
           SizedBox(height: 12.h),
 
-          // Value
+          // Value with enhanced typography
           Text(
             value,
             style: TextStyle(
               fontSize: 24.sp,
               fontWeight: FontWeight.w700,
-              color: textColor,
+              color: themeManager.textPrimary,
               letterSpacing: -0.5,
             ),
           ),
 
           SizedBox(height: 4.h),
 
-          // Label
+          // Label with theme-aware styling
           Text(
             label,
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w500,
-              color: subtitleColor,
+              color: themeManager.textSecondary,
               letterSpacing: 0.2,
             ),
           ),

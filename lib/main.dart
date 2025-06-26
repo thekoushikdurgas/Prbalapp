@@ -30,12 +30,15 @@ Future<void> main() async {
     await _initializeAppServices().then((_) {
       debugPrint('🚀 All services initialized successfully');
 
+      // Log localization status before starting app
+      LocaleVariables.logLocalizationStatus();
+
       runApp(
         ProviderScope(
           child: EasyLocalization(
-            supportedLocales: LocaleVariables._localesList,
-            path: LocaleVariables._localesPath,
-            fallbackLocale: LocaleVariables._fallBackLocale,
+            supportedLocales: LocaleVariables.supportedLocales,
+            path: LocaleVariables.localesPath,
+            fallbackLocale: LocaleVariables.fallbackLocale,
             child: BlocProvider(
               create: (context) => ThemeCubit(),
               child: const MyApp(),
@@ -107,7 +110,6 @@ Future<void> _initializeAppServices() async {
   await healthService.initialize();
 
   debugPrint('🏥 Performance and health monitoring ready');
-  debugPrint(
-      '🏥 Note: Health checks will be performed on splash screen with caching');
+  debugPrint('🏥 Note: Health checks will be performed on splash screen with caching');
   debugPrint('📦 App services initialized');
 }

@@ -297,7 +297,7 @@ This document outlines the comprehensive modern UI design implementation across 
 ```dart
 // Modern Card Example
 ModernUIComponents.elevatedCard(
-  isDark: isDark,
+  themeManager: themeManager,
   child: Column(
     children: [
       Text('Card Content'),
@@ -320,8 +320,8 @@ ModernUIComponents.metricCard(
   value: '12,450',
   subtitle: '+5.2% this week',
   icon:  users,
-  iconColor: Color(0xFF3B82F6),
-  isDark: isDark,
+  iconColor: themeManager(0xFF3B82F6),
+  themeManager: themeManager,
 )
 ```
 

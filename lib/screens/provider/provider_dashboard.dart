@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// Full Provider Dashboard with bottom navigation bar
@@ -30,12 +31,10 @@ class ProviderDashboardContent extends ConsumerStatefulWidget {
   const ProviderDashboardContent({super.key});
 
   @override
-  ConsumerState<ProviderDashboardContent> createState() =>
-      _ProviderDashboardContentState();
+  ConsumerState<ProviderDashboardContent> createState() => _ProviderDashboardContentState();
 }
 
-class _ProviderDashboardContentState
-    extends ConsumerState<ProviderDashboardContent> {
+class _ProviderDashboardContentState extends ConsumerState<ProviderDashboardContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -46,11 +45,10 @@ class _ProviderDashboardContentState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -59,7 +57,7 @@ class _ProviderDashboardContentState
               expandedHeight: 120.h,
               floating: false,
               pinned: true,
-              backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: themeManager.surfaceColor,
               elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.only(left: 20.w, bottom: 16.h),
@@ -68,18 +66,12 @@ class _ProviderDashboardContentState
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 background: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: isDark
-                          ? [const Color(0xFF1E1E1E), const Color(0xFF2D2D2D)]
-                          : [Colors.white, const Color(0xFFF7FAFC)],
-                    ),
+                    gradient: themeManager.surfaceGradient,
                   ),
                 ),
               ),
@@ -91,7 +83,7 @@ class _ProviderDashboardContentState
                   },
                   icon: Icon(
                     Prbal.bell,
-                    color: isDark ? Colors.white : const Color(0xFF4A5568),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -108,29 +100,21 @@ class _ProviderDashboardContentState
                     // Search Bar
                     Container(
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                        color: themeManager.inputBackground,
                         borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        boxShadow: themeManager.subtleShadow,
                       ),
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
                           hintText: 'Search services or customers...',
                           hintStyle: TextStyle(
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: themeManager.textSecondary,
                             fontSize: 16.sp,
                           ),
                           prefixIcon: Icon(
                             Prbal.search,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: themeManager.textSecondary,
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -139,8 +123,7 @@ class _ProviderDashboardContentState
                             },
                             icon: Icon(
                               Prbal.tune,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: themeManager.textSecondary,
                             ),
                           ),
                           border: InputBorder.none,
@@ -158,17 +141,9 @@ class _ProviderDashboardContentState
                     Container(
                       padding: EdgeInsets.all(20.w),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                        color: themeManager.surfaceColor,
                         borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        boxShadow: themeManager.subtleShadow,
                       ),
                       child: Row(
                         children: [
@@ -177,36 +152,36 @@ class _ProviderDashboardContentState
                               'Active Services',
                               '12',
                               Prbal.tools,
-                              const Color(0xFF4299E1),
-                              isDark,
+                              themeManager.primaryColor,
+                              themeManager,
                             ),
                           ),
                           Container(
                             width: 1,
                             height: 40.h,
-                            color: isDark ? Colors.grey[700] : Colors.grey[300],
+                            color: themeManager.borderColor,
                           ),
                           Expanded(
                             child: _buildStatItem(
                               'Pending Requests',
                               '5',
                               Prbal.clock,
-                              const Color(0xFFED8936),
-                              isDark,
+                              themeManager.warningColor,
+                              themeManager,
                             ),
                           ),
                           Container(
                             width: 1,
                             height: 40.h,
-                            color: isDark ? Colors.grey[700] : Colors.grey[300],
+                            color: themeManager.borderColor,
                           ),
                           Expanded(
                             child: _buildStatItem(
                               'Rating',
                               '4.8',
                               Prbal.star,
-                              const Color(0xFF48BB78),
-                              isDark,
+                              themeManager.successColor,
+                              themeManager,
                             ),
                           ),
                         ],
@@ -223,8 +198,7 @@ class _ProviderDashboardContentState
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                     ),
@@ -245,9 +219,9 @@ class _ProviderDashboardContentState
                         _buildCategoryCard(
                           'Home Cleaning',
                           Prbal.home1,
-                          const Color(0xFF4299E1),
+                          themeManager.primaryColor,
                           '8 active listings',
-                          isDark,
+                          themeManager,
                           onTap: () {
                             // Navigate to cleaning services
                             context.push('/services/cleaning');
@@ -256,9 +230,9 @@ class _ProviderDashboardContentState
                         _buildCategoryCard(
                           'Plumbing',
                           Prbal.tools,
-                          const Color(0xFF48BB78),
+                          themeManager.successColor,
                           '3 active listings',
-                          isDark,
+                          themeManager,
                           onTap: () {
                             // Navigate to plumbing services
                             context.push('/services/plumbing');
@@ -267,9 +241,9 @@ class _ProviderDashboardContentState
                         _buildCategoryCard(
                           'Electrical',
                           Prbal.plug,
-                          const Color(0xFFED8936),
+                          themeManager.warningColor,
                           '2 active listings',
-                          isDark,
+                          themeManager,
                           onTap: () {
                             // Navigate to electrical services
                             context.push('/services/electrical');
@@ -278,9 +252,9 @@ class _ProviderDashboardContentState
                         _buildCategoryCard(
                           'Add New',
                           Prbal.plus,
-                          const Color(0xFF9F7AEA),
+                          themeManager.secondaryColor,
                           'Create service',
-                          isDark,
+                          themeManager,
                           onTap: () {
                             // Navigate to add service
                             context.push('/services/add');
@@ -294,17 +268,9 @@ class _ProviderDashboardContentState
                     // Recent Activity
                     Container(
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                        color: themeManager.surfaceColor,
                         borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.3)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        boxShadow: themeManager.subtleShadow,
                       ),
                       child: Column(
                         children: [
@@ -318,9 +284,7 @@ class _ProviderDashboardContentState
                                   style: TextStyle(
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.bold,
-                                    color: isDark
-                                        ? Colors.white
-                                        : const Color(0xFF2D3748),
+                                    color: themeManager.textPrimary,
                                   ),
                                 ),
                                 TextButton(
@@ -332,7 +296,7 @@ class _ProviderDashboardContentState
                                     'View All',
                                     style: TextStyle(
                                       fontSize: 14.sp,
-                                      color: const Color(0xFF4299E1),
+                                      color: themeManager.primaryColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -345,8 +309,8 @@ class _ProviderDashboardContentState
                             'John Doe requested home cleaning',
                             '2 hours ago',
                             Prbal.calendar,
-                            const Color(0xFF4299E1),
-                            isDark,
+                            themeManager.primaryColor,
+                            themeManager,
                           ),
                           const Divider(height: 1),
                           _buildActivityItem(
@@ -354,8 +318,8 @@ class _ProviderDashboardContentState
                             'Received \$150 from Sarah Smith',
                             '5 hours ago',
                             Prbal.dollarSign,
-                            const Color(0xFF48BB78),
-                            isDark,
+                            themeManager.successColor,
+                            themeManager,
                           ),
                           const Divider(height: 1),
                           _buildActivityItem(
@@ -363,8 +327,8 @@ class _ProviderDashboardContentState
                             'Mike Johnson left a 5-star review',
                             '1 day ago',
                             Prbal.star,
-                            const Color(0xFFED8936),
-                            isDark,
+                            themeManager.warningColor,
+                            themeManager,
                           ),
                         ],
                       ),
@@ -386,7 +350,7 @@ class _ProviderDashboardContentState
     String value,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return Column(
       children: [
@@ -401,7 +365,7 @@ class _ProviderDashboardContentState
           style: TextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF2D3748),
+            color: themeManager.textPrimary,
           ),
         ),
         SizedBox(height: 4.h),
@@ -409,7 +373,7 @@ class _ProviderDashboardContentState
           label,
           style: TextStyle(
             fontSize: 12.sp,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            color: themeManager.textSecondary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -422,22 +386,14 @@ class _ProviderDashboardContentState
     IconData icon,
     Color color,
     String subtitle,
-    bool isDark, {
+    ThemeManager themeManager, {
     VoidCallback? onTap,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -470,7 +426,7 @@ class _ProviderDashboardContentState
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -479,7 +435,7 @@ class _ProviderDashboardContentState
                   subtitle,
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: themeManager.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -497,7 +453,7 @@ class _ProviderDashboardContentState
     String time,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return ListTile(
       leading: Container(
@@ -517,21 +473,21 @@ class _ProviderDashboardContentState
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
+          color: themeManager.textPrimary,
         ),
       ),
       subtitle: Text(
         subtitle,
         style: TextStyle(
           fontSize: 12.sp,
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: themeManager.textSecondary,
         ),
       ),
       trailing: Text(
         time,
         style: TextStyle(
           fontSize: 11.sp,
-          color: isDark ? Colors.grey[500] : Colors.grey[500],
+          color: themeManager.textSecondary,
         ),
       ),
     );

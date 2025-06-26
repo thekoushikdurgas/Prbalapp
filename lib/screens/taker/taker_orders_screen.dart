@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class TakerOrdersScreen extends ConsumerStatefulWidget {
   const TakerOrdersScreen({super.key});
@@ -10,8 +11,7 @@ class TakerOrdersScreen extends ConsumerStatefulWidget {
   ConsumerState<TakerOrdersScreen> createState() => _TakerOrdersScreenState();
 }
 
-class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
-    with TickerProviderStateMixin {
+class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -28,11 +28,10 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -40,16 +39,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark
-                        ? Colors.black.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: themeManager.surfaceColor,
+                boxShadow: themeManager.subtleShadow,
               ),
               child: Column(
                 children: [
@@ -60,8 +51,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                         style: TextStyle(
                           fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       const Spacer(),
@@ -71,8 +61,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                         },
                         icon: Icon(
                           Prbal.filter,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF4A5568),
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -82,20 +71,17 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   // Tab Bar
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF2D2D2D)
-                          : const Color(0xFFF7FAFC),
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: TabBar(
                       controller: _tabController,
                       indicator: BoxDecoration(
-                        color: const Color(0xFF4299E1),
+                        color: themeManager.primaryColor,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       labelColor: Colors.white,
-                      unselectedLabelColor:
-                          isDark ? Colors.grey[400] : Colors.grey[600],
+                      unselectedLabelColor: themeManager.textTertiary,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -120,9 +106,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildUpcomingOrders(isDark),
-                  _buildActiveOrders(isDark),
-                  _buildOrderHistory(isDark),
+                  _buildUpcomingOrders(themeManager),
+                  _buildActiveOrders(themeManager),
+                  _buildOrderHistory(themeManager),
                 ],
               ),
             ),
@@ -132,7 +118,7 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
     );
   }
 
-  Widget _buildUpcomingOrders(bool isDark) {
+  Widget _buildUpcomingOrders(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 4, // Mock data
@@ -140,25 +126,17 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.subtleShadow,
           ),
-          child: _buildUpcomingOrderCard(index, isDark),
+          child: _buildUpcomingOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildActiveOrders(bool isDark) {
+  Widget _buildActiveOrders(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 2, // Mock data
@@ -166,25 +144,17 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.subtleShadow,
           ),
-          child: _buildActiveOrderCard(index, isDark),
+          child: _buildActiveOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildOrderHistory(bool isDark) {
+  Widget _buildOrderHistory(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 10, // Mock data
@@ -192,83 +162,65 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.subtleShadow,
           ),
-          child: _buildHistoryOrderCard(index, isDark),
+          child: _buildHistoryOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildUpcomingOrderCard(int index, bool isDark) {
+  Widget _buildUpcomingOrderCard(int index, ThemeManager themeManager) {
     final services = [
-      'Home Cleaning Service',
-      'AC Repair & Maintenance',
-      'Garden Maintenance',
-      'Computer Setup',
+      {'title': 'House Cleaning', 'provider': 'John Doe', 'time': '10:00 AM', 'date': 'Today'},
+      {'title': 'Plumbing Repair', 'provider': 'Jane Smith', 'time': '2:00 PM', 'date': 'Tomorrow'},
+      {'title': 'Electrical Work', 'provider': 'Mike Johnson', 'time': '11:00 AM', 'date': 'Dec 15'},
+      {'title': 'Gardening', 'provider': 'Sarah Wilson', 'time': '9:00 AM', 'date': 'Dec 16'},
     ];
 
-    final providers = [
-      'Sarah Johnson',
-      'Mike Wilson',
-      'Lisa Brown',
-      'David Lee',
-    ];
-
-    final dates = [
-      'Tomorrow, 2:00 PM',
-      'Friday, 10:00 AM',
-      'Saturday, 9:00 AM',
-      'Monday, 3:00 PM',
-    ];
+    final service = services[index];
 
     return Padding(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Service header
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(10.w),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4299E1).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: themeManager.primaryColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
-                  Prbal.calendar,
-                  color: const Color(0xFF4299E1),
-                  size: 20.sp,
+                  Prbal.clock,
+                  color: themeManager.primaryColor,
+                  size: 24.sp,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      services[index],
+                      service['title']!,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
+                    SizedBox(height: 4.h),
                     Text(
-                      'Provider: ${providers[index]}',
+                      'Provider: ${service['provider']}',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -277,120 +229,93 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4299E1).withValues(alpha: 0.1),
+                  color: themeManager.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  'Confirmed',
+                  'Upcoming',
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF4299E1),
+                    color: themeManager.warningColor,
                   ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Icon(
-                Prbal.clock,
-                size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                dates[index],
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Prbal.mapMarker,
-                size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  '${index + 123} Main Street, Downtown',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Prbal.dollarSign,
-                size: 16.sp,
-                color: const Color(0xFF48BB78),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                '\$${75 + (index * 25)}',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
                 ),
               ),
             ],
           ),
           SizedBox(height: 16.h),
+
+          // Service details
+          Row(
+            children: [
+              Icon(
+                Prbal.calendar,
+                color: themeManager.textTertiary,
+                size: 16.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                service['date']!,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: themeManager.textSecondary,
+                ),
+              ),
+              SizedBox(width: 24.w),
+              Icon(
+                Prbal.clock,
+                color: themeManager.textTertiary,
+                size: 16.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                service['time']!,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: themeManager.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+
+          // Action buttons
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Call provider
-                  },
-                  icon: Icon(Prbal.phone, size: 16.sp),
-                  label: Text(
-                    'Call',
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.message,
+                    size: 16.sp,
                   ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF4299E1),
-                    side: const BorderSide(color: Color(0xFF4299E1)),
+                  label: Text('Contact'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.surfaceColor,
+                    foregroundColor: themeManager.textPrimary,
+                    side: BorderSide(color: themeManager.borderColor),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    // Reschedule
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFED8936),
-                    side: const BorderSide(color: Color(0xFFED8936)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.close,
+                    size: 16.sp,
                   ),
-                  child: Text(
-                    'Reschedule',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
+                  label: Text('Cancel'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.errorColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
@@ -402,54 +327,53 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
     );
   }
 
-  Widget _buildActiveOrderCard(int index, bool isDark) {
+  Widget _buildActiveOrderCard(int index, ThemeManager themeManager) {
     final services = [
-      'Home Cleaning Service',
-      'AC Repair & Maintenance',
+      {'title': 'Carpet Cleaning', 'provider': 'Alex Brown', 'status': 'In Progress', 'progress': 0.6},
+      {'title': 'AC Repair', 'provider': 'Emma Davis', 'status': 'Starting Soon', 'progress': 0.2},
     ];
 
-    final providers = [
-      'Sarah Johnson',
-      'Mike Wilson',
-    ];
+    final service = services[index];
 
     return Padding(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Service header
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(10.w),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: themeManager.successColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
-                  Prbal.play,
-                  color: const Color(0xFF48BB78),
-                  size: 20.sp,
+                  Prbal.tools,
+                  color: themeManager.successColor,
+                  size: 24.sp,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      services[index],
+                      service['title'] as String,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
+                    SizedBox(height: 4.h),
                     Text(
-                      'Provider: ${providers[index]}',
+                      'Provider: ${service['provider']}',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -458,157 +382,91 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
+                  color: themeManager.successColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  'In Progress',
+                  service['status'] as String,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF48BB78),
+                    color: themeManager.successColor,
                   ),
                 ),
               ),
             ],
           ),
-
-          SizedBox(height: 12.h),
-
-          Row(
-            children: [
-              Icon(
-                Prbal.clock,
-                size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                'Started 30 minutes ago',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 8.h),
-
-          Row(
-            children: [
-              Icon(
-                Prbal.mapMarker,
-                size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  '${index + 123} Main Street, Downtown',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 8.h),
-
-          Row(
-            children: [
-              Icon(
-                Prbal.dollarSign,
-                size: 16.sp,
-                color: const Color(0xFF48BB78),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                '\$${100 + (index * 50)}',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
-                ),
-              ),
-            ],
-          ),
-
           SizedBox(height: 16.h),
 
-          // Live tracking feature
-          Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFF48BB78).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Prbal.locationArrow,
-                  color: const Color(0xFF48BB78),
-                  size: 16.sp,
+          // Progress bar
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Progress',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: themeManager.textSecondary,
                 ),
-                SizedBox(width: 8.w),
-                Text(
-                  'Provider is on the way - ETA: 5 minutes',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF48BB78),
-                  ),
+              ),
+              SizedBox(height: 8.h),
+              LinearProgressIndicator(
+                value: (service['progress'] as num).toDouble(),
+                backgroundColor: themeManager.borderColor,
+                valueColor: AlwaysStoppedAnimation<Color>(themeManager.successColor),
+                minHeight: 8.h,
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                '${(((service['progress'] as num).toDouble()) * 100).toInt()}% Complete',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: themeManager.textTertiary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+          SizedBox(height: 16.h),
 
-          SizedBox(height: 12.h),
-
+          // Action buttons
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Call provider
-                  },
-                  icon: Icon(Prbal.phone, size: 16.sp),
-                  label: Text(
-                    'Call Provider',
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.message,
+                    size: 16.sp,
                   ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF4299E1),
-                    side: const BorderSide(color: Color(0xFF4299E1)),
+                  label: Text('Chat'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Chat
-                  },
-                  icon: Icon(Prbal.comment, size: 16.sp),
-                  label: Text(
-                    'Chat',
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.mapPin,
+                    size: 16.sp,
                   ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF48BB78),
-                    side: const BorderSide(color: Color(0xFF48BB78)),
+                  label: Text('Track'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.surfaceColor,
+                    foregroundColor: themeManager.textPrimary,
+                    side: BorderSide(color: themeManager.borderColor),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
                   ),
                 ),
               ),
@@ -619,81 +477,113 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
     );
   }
 
-  Widget _buildHistoryOrderCard(int index, bool isDark) {
+  Widget _buildHistoryOrderCard(int index, ThemeManager themeManager) {
     final services = [
-      'Home Cleaning Service',
-      'AC Repair & Maintenance',
-      'Garden Maintenance',
-      'Computer Setup',
-      'Plumbing Fix',
-      'Painting Service',
-      'Beauty & Spa',
-      'Car Wash',
-      'Pet Grooming',
-      'Electrical Work',
+      {'title': 'Home Painting', 'provider': 'Lisa Johnson', 'date': 'Dec 10', 'rating': '4.8', 'amount': '\$180'},
+      {'title': 'Furniture Assembly', 'provider': 'Tom Wilson', 'date': 'Dec 8', 'rating': '4.9', 'amount': '\$120'},
+      {'title': 'Appliance Repair', 'provider': 'Maria Garcia', 'date': 'Dec 5', 'rating': '4.7', 'amount': '\$95'},
+      {'title': 'Deep Cleaning', 'provider': 'Chris Lee', 'date': 'Dec 3', 'rating': '5.0', 'amount': '\$150'},
+      {'title': 'Plumbing', 'provider': 'David Miller', 'date': 'Nov 28', 'rating': '4.6', 'amount': '\$85'},
+      {'title': 'Electrical Work', 'provider': 'Sarah Taylor', 'date': 'Nov 25', 'rating': '4.8', 'amount': '\$200'},
+      {'title': 'Gardening', 'provider': 'Jake Brown', 'date': 'Nov 20', 'rating': '4.9', 'amount': '\$70'},
+      {'title': 'Carpet Cleaning', 'provider': 'Emma Davis', 'date': 'Nov 15', 'rating': '4.7', 'amount': '\$110'},
+      {'title': 'AC Service', 'provider': 'Mark Johnson', 'date': 'Nov 10', 'rating': '4.5', 'amount': '\$130'},
+      {'title': 'House Cleaning', 'provider': 'Anna Wilson', 'date': 'Nov 5', 'rating': '5.0', 'amount': '\$90'},
     ];
 
-    final providers = [
-      'Sarah Johnson',
-      'Mike Wilson',
-      'Lisa Brown',
-      'David Lee',
-      'Emma Davis',
-      'Robert Taylor',
-      'Maria Garcia',
-      'James Wilson',
-      'Jessica Smith',
-      'Michael Brown',
-    ];
-
-    final ratings = [4.8, 4.9, 4.7, 4.6, 4.8, 4.9, 4.5, 4.7, 4.8, 4.6];
+    final service = services[index];
 
     return Padding(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Service header
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(10.w),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: themeManager.infoColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
                   Prbal.checkCircle,
-                  color: const Color(0xFF48BB78),
-                  size: 20.sp,
+                  color: themeManager.infoColor,
+                  size: 24.sp,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      services[index % services.length],
+                      service['title'] as String,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
+                    SizedBox(height: 4.h),
                     Text(
-                      'Provider: ${providers[index % providers.length]}',
+                      'Provider: ${service['provider']}',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
+              Text(
+                service['amount']!,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: themeManager.successColor,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+
+          // Service details
+          Row(
+            children: [
+              Icon(
+                Prbal.calendar,
+                color: themeManager.textTertiary,
+                size: 16.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                service['date']!,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: themeManager.textSecondary,
+                ),
+              ),
+              SizedBox(width: 24.w),
+              Icon(
+                Prbal.star,
+                color: themeManager.warningColor,
+                size: 16.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                service['rating']!,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: themeManager.textSecondary,
+                ),
+              ),
+              const Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
+                  color: themeManager.successColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -701,114 +591,51 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF48BB78),
+                    color: themeManager.successColor,
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Icon(
-                Prbal.calendar,
-                size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                'Completed ${index + 1} day${index == 0 ? '' : 's'} ago',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Icon(
-                Prbal.dollarSign,
-                size: 16.sp,
-                color: const Color(0xFF48BB78),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                '\$${75 + (index * 30)}',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Row(
-                children: [
-                  Icon(
-                    Prbal.star,
-                    size: 16.sp,
-                    color: const Color(0xFFED8936),
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    ratings[index % ratings.length].toString(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFFED8936),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
           SizedBox(height: 16.h),
+
+          // Action buttons
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    // Book again
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF4299E1),
-                    side: const BorderSide(color: Color(0xFF4299E1)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.refresh,
+                    size: 16.sp,
                   ),
-                  child: Text(
-                    'Book Again',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
+                  label: Text('Book Again'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    // View details
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor:
-                        isDark ? Colors.grey[400] : Colors.grey[600],
-                    side: BorderSide(
-                        color: isDark ? Colors.grey[600]! : Colors.grey[400]!),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Prbal.star,
+                    size: 16.sp,
                   ),
-                  child: Text(
-                    'View Details',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
+                  label: Text('Review'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeManager.surfaceColor,
+                    foregroundColor: themeManager.textPrimary,
+                    side: BorderSide(color: themeManager.borderColor),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),

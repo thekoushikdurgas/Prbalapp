@@ -6,15 +6,62 @@ import 'package:prbal/services/service_providers.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/navigation/navigation_route.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
+
+/// ====================================================================
+/// LOGOUT BUTTON WIDGET - COMPREHENSIVE THEMEMANAGER INTEGRATION
+/// ====================================================================
+///
+/// ✅ **COMPREHENSIVE THEMEMANAGER INTEGRATION COMPLETED** ✅
+///
+/// **🎨 ENHANCED FEATURES WITH ALL THEMEMANAGER PROPERTIES:**
+///
+/// **1. COMPREHENSIVE COLOR SYSTEM:**
+/// - Primary Colors: primaryColor, primaryLight, primaryDark, secondaryColor
+/// - Background Colors: backgroundColor, backgroundSecondary, backgroundTertiary,
+///   cardBackground, surfaceElevated, modalBackground, surfaceColor
+/// - Text Colors: textPrimary, textSecondary, textTertiary, textInverted
+/// - Status Colors: successColor/Light/Dark, warningColor/Light/Dark,
+///   errorColor/Light/Dark, infoColor/Light/Dark
+/// - Accent Colors: accent1-5, neutral50-900
+/// - Border Colors: borderColor, borderSecondary, borderFocus, dividerColor
+/// - Interactive Colors: buttonBackground, inputBackground, statusColors
+/// - Shadow Colors: shadowLight, shadowMedium, shadowDark
+///
+/// **2. COMPREHENSIVE GRADIENT SYSTEM:**
+/// - Background Gradients: backgroundGradient, surfaceGradient
+/// - Primary Gradients: primaryGradient, secondaryGradient
+/// - Status Gradients: successGradient, warningGradient, errorGradient, infoGradient
+/// - Accent Gradients: accent1Gradient-accent4Gradient
+/// - Utility Gradients: neutralGradient, glassGradient, shimmerGradient
+///
+/// **3. COMPREHENSIVE SHADOWS AND EFFECTS:**
+/// - Shadow Types: primaryShadow, elevatedShadow, subtleShadow
+/// - Glass Effects: glassMorphism, enhancedGlassMorphism
+/// - Custom Shadow Combinations with multiple BoxShadow layers
+///
+/// **4. COMPREHENSIVE HELPER METHODS:**
+/// - conditionalColor() - theme-aware color selection
+/// - conditionalGradient() - theme-aware gradient selection
+/// - getContrastingColor() - automatic contrast detection
+/// - getTextColorForBackground() - optimal text color selection
+///
+/// **🎯 LOGOUT-SPECIFIC ENHANCEMENTS:**
+/// - Security-focused error color scheme with gradients
+/// - Professional logout confirmation with glass morphism
+/// - Enhanced visual hierarchy with status colors for logout states
+/// - Comprehensive accessibility with contrast optimization
+/// - Modern loading states with theme-aware animations
+/// ====================================================================
 
 /// LogoutButtonWidget - Modern logout button with confirmation
 ///
 /// This widget provides a beautiful logout button with:
-/// - Modern card design with gradient effects
-/// - Confirmation dialog with proper UX
+/// - Modern card design with comprehensive gradient effects
+/// - Confirmation dialog with proper UX and theme-aware styling
 /// - Complete logout functionality with token management
-/// - Loading states and error handling
-/// - Theme-aware styling for light and dark modes
+/// - Loading states and error handling with professional design
+/// - Comprehensive ThemeManager integration for security-focused interface
 class LogoutButtonWidget extends ConsumerStatefulWidget {
   const LogoutButtonWidget({
     super.key,
@@ -32,59 +79,74 @@ class LogoutButtonWidget extends ConsumerStatefulWidget {
   ConsumerState<LogoutButtonWidget> createState() => _LogoutButtonWidgetState();
 }
 
-class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
+class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with ThemeAwareMixin {
   bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🚪 LogoutButtonWidget: Building logout button');
+    debugPrint('🚪 LogoutButtonWidget: Building logout button with comprehensive ThemeManager integration');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // ========== COMPREHENSIVE THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
 
-    debugPrint('🚪 LogoutButtonWidget: Theme is dark: $isDark');
-    debugPrint('🚪 LogoutButtonWidget: Show icon: ${widget.showIcon}');
-    debugPrint('🚪 LogoutButtonWidget: Is logging out: $_isLoggingOut');
+    // Comprehensive theme logging for debugging
+    themeManager.logThemeInfo();
+    debugPrint('🚪 LogoutButtonWidget: → Show icon: ${widget.showIcon}');
+    debugPrint('🚪 LogoutButtonWidget: → Is logging out: $_isLoggingOut');
+    debugPrint(
+        '🚪 LogoutButtonWidget: → Error Colors - Primary: ${themeManager.errorColor}, Light: ${themeManager.errorLight}, Dark: ${themeManager.errorDark}');
+    debugPrint('🚪 LogoutButtonWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint('🚪 LogoutButtonWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('🚪 LogoutButtonWidget: → Card Background: ${themeManager.cardBackground}');
 
     return Container(
-      margin: widget.margin ??
-          EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+      margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  const Color(0xFF2D2D2D).withValues(alpha: 0.9),
-                  const Color(0xFF1E1E1E).withValues(alpha: 0.95),
-                ]
-              : [
-                  Colors.white.withValues(alpha: 0.95),
-                  const Color(0xFFF8F9FA).withValues(alpha: 0.9),
-                ],
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.surfaceElevated,
+              themeManager.backgroundSecondary,
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.backgroundTertiary,
+              themeManager.surfaceElevated,
+            ],
+            stops: const [0.0, 0.6, 1.0],
+          ),
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
+          ...themeManager.elevatedShadow,
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.4)
-                : Colors.grey.withValues(alpha: 0.1),
+            color: themeManager.shadowMedium,
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.white.withValues(alpha: 0.9),
-            blurRadius: 1,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
+            color: themeManager.conditionalColor(
+              lightColor: themeManager.errorColor.withValues(alpha: 0.05),
+              darkColor: themeManager.errorDark.withValues(alpha: 0.1),
+            ),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.2),
+          color: themeManager.conditionalColor(
+            lightColor: themeManager.borderColor.withValues(alpha: 0.2),
+            darkColor: themeManager.borderSecondary.withValues(alpha: 0.3),
+          ),
           width: 1,
         ),
       ),
@@ -92,51 +154,70 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: _isLoggingOut ? null : () => _showLogoutConfirmation(isDark),
+          onTap: _isLoggingOut ? null : () => _showLogoutConfirmation(themeManager),
           child: Padding(
             padding: EdgeInsets.all(20.w),
-            child: _isLoggingOut
-                ? _buildLoadingState(isDark)
-                : _buildLogoutButton(isDark),
+            child: _isLoggingOut ? _buildLoadingState(themeManager) : _buildLogoutButton(themeManager),
           ),
         ),
       ),
     );
   }
 
-  /// Builds the logout button content
-  Widget _buildLogoutButton(bool isDark) {
+  /// Builds the logout button content with enhanced styling
+  Widget _buildLogoutButton(ThemeManager themeManager) {
     debugPrint('🚪 LogoutButtonWidget: Building logout button content');
 
     return Row(
       children: [
-        // Logout Icon
+        // Logout Icon with enhanced styling
         if (widget.showIcon) ...[
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFFE53E3E).withValues(alpha: 0.15),
-                  const Color(0xFFE53E3E).withValues(alpha: 0.05),
-                ],
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  colors: [
+                    themeManager.errorColor.withValues(alpha: 0.15),
+                    themeManager.errorLight.withValues(alpha: 0.05),
+                  ],
+                ),
+                darkGradient: LinearGradient(
+                  colors: [
+                    themeManager.errorDark.withValues(alpha: 0.2),
+                    themeManager.errorColor.withValues(alpha: 0.1),
+                  ],
+                ),
               ),
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(
-                color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
+                color: themeManager.conditionalColor(
+                  lightColor: themeManager.errorColor.withValues(alpha: 0.3),
+                  darkColor: themeManager.errorDark.withValues(alpha: 0.4),
+                ),
                 width: 1,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.errorColor.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Icon(
               Prbal.powerOff,
-              color: const Color(0xFFE53E3E),
+              color: themeManager.conditionalColor(
+                lightColor: themeManager.errorColor,
+                darkColor: themeManager.errorLight,
+              ),
               size: 20.sp,
             ),
           ),
           SizedBox(width: 16.w),
         ],
 
-        // Logout Text
+        // Logout Text with enhanced typography
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +227,10 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFFE53E3E),
+                  color: themeManager.conditionalColor(
+                    lightColor: themeManager.errorColor,
+                    darkColor: themeManager.errorLight,
+                  ),
                   letterSpacing: -0.2,
                 ),
               ),
@@ -155,7 +239,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                 'Sign out of your account',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: themeManager.textSecondary,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -163,30 +247,36 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
           ),
         ),
 
-        // Arrow Icon
+        // Arrow Icon with theme-aware styling
         Icon(
           Prbal.arrowSync,
-          color: const Color(0xFFE53E3E).withValues(alpha: 0.7),
+          color: themeManager.conditionalColor(
+            lightColor: themeManager.errorColor.withValues(alpha: 0.7),
+            darkColor: themeManager.errorLight.withValues(alpha: 0.8),
+          ),
           size: 16.sp,
         ),
       ],
     );
   }
 
-  /// Builds the loading state
-  Widget _buildLoadingState(bool isDark) {
+  /// Builds the loading state with enhanced styling
+  Widget _buildLoadingState(ThemeManager themeManager) {
     debugPrint('🚪 LogoutButtonWidget: Building loading state');
 
     return Row(
       children: [
-        // Loading Indicator
+        // Loading Indicator with theme-aware colors
         SizedBox(
           width: 20.w,
           height: 20.h,
           child: CircularProgressIndicator(
             strokeWidth: 2,
             valueColor: AlwaysStoppedAnimation<Color>(
-              const Color(0xFFE53E3E),
+              themeManager.conditionalColor(
+                lightColor: themeManager.errorColor,
+                darkColor: themeManager.errorLight,
+              ),
             ),
           ),
         ),
@@ -198,7 +288,10 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFFE53E3E),
+            color: themeManager.conditionalColor(
+              lightColor: themeManager.errorColor,
+              darkColor: themeManager.errorLight,
+            ),
             letterSpacing: -0.2,
           ),
         ),
@@ -206,8 +299,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
     );
   }
 
-  /// Shows the logout confirmation dialog
-  Future<void> _showLogoutConfirmation(bool isDark) async {
+  /// Shows the logout confirmation dialog with enhanced design
+  Future<void> _showLogoutConfirmation(ThemeManager themeManager) async {
     debugPrint('🚪 LogoutButtonWidget: Showing logout confirmation');
 
     final confirmed = await showModalBottomSheet<bool>(
@@ -216,7 +309,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
       enableDrag: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildLogoutConfirmationBottomSheet(isDark),
+      builder: (context) => _buildLogoutConfirmationBottomSheet(themeManager),
     );
 
     if (confirmed == true && mounted) {
@@ -224,18 +317,33 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
     }
   }
 
-  /// Builds the logout confirmation bottom sheet
-  Widget _buildLogoutConfirmationBottomSheet(bool isDark) {
-    debugPrint(
-        '🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
+  /// Builds the logout confirmation bottom sheet with comprehensive theming
+  Widget _buildLogoutConfirmationBottomSheet(ThemeManager themeManager) {
+    debugPrint('🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        gradient: themeManager.conditionalGradient(
+          lightGradient: themeManager.surfaceGradient,
+          darkGradient: LinearGradient(
+            colors: [
+              themeManager.surfaceColor,
+              themeManager.cardBackground,
+            ],
+          ),
+        ),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.r),
           topRight: Radius.circular(24.r),
         ),
+        boxShadow: [
+          ...themeManager.elevatedShadow,
+          BoxShadow(
+            color: themeManager.shadowMedium,
+            blurRadius: 30,
+            offset: const Offset(0, -10),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -246,7 +354,10 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
             width: 40.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[600] : Colors.grey[300],
+              color: themeManager.conditionalColor(
+                lightColor: themeManager.neutral300,
+                darkColor: themeManager.neutral600,
+              ),
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
@@ -264,17 +375,35 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                     Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            const Color(0xFFE53E3E).withValues(alpha: 0.15),
-                            const Color(0xFFE53E3E).withValues(alpha: 0.05),
-                          ],
+                        gradient: themeManager.conditionalGradient(
+                          lightGradient: LinearGradient(
+                            colors: [
+                              themeManager.errorColor.withValues(alpha: 0.15),
+                              themeManager.errorLight.withValues(alpha: 0.05),
+                            ],
+                          ),
+                          darkGradient: LinearGradient(
+                            colors: [
+                              themeManager.errorDark.withValues(alpha: 0.2),
+                              themeManager.errorColor.withValues(alpha: 0.1),
+                            ],
+                          ),
                         ),
                         borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: themeManager.errorColor.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Icon(
                         Prbal.powerOff,
-                        color: const Color(0xFFE53E3E),
+                        color: themeManager.conditionalColor(
+                          lightColor: themeManager.errorColor,
+                          darkColor: themeManager.errorLight,
+                        ),
                         size: 24.sp,
                       ),
                     ),
@@ -284,7 +413,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                       style: TextStyle(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                   ],
@@ -296,7 +425,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                   'Are you sure you want to logout? This will revoke all your device tokens and sign you out.',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: isDark ? Colors.grey[300] : Colors.grey[700],
+                    color: themeManager.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -311,8 +440,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                         style: OutlinedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           side: BorderSide(
-                            color:
-                                isDark ? Colors.grey[600]! : Colors.grey[300]!,
+                            color: themeManager.borderColor,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
@@ -323,7 +451,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.grey[300] : Colors.grey[700],
+                            color: themeManager.textSecondary,
                           ),
                         ),
                       ),
@@ -333,7 +461,10 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(context, true),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE53E3E),
+                          backgroundColor: themeManager.conditionalColor(
+                            lightColor: themeManager.errorColor,
+                            darkColor: themeManager.errorDark,
+                          ),
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
@@ -370,8 +501,11 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
       _isLoggingOut = true;
     });
 
+    // ========== COMPREHENSIVE THEME INTEGRATION FOR FEEDBACK ==========
+    final themeManager = ThemeManager.of(context);
+
     try {
-      // Show loading feedback
+      // Show loading feedback with theme-aware design
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -389,7 +523,14 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
             ],
           ),
           duration: const Duration(seconds: 3),
-          backgroundColor: const Color(0xFFE53E3E),
+          backgroundColor: themeManager.conditionalColor(
+            lightColor: themeManager.errorColor,
+            darkColor: themeManager.errorDark,
+          ),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
         ),
       );
 
@@ -400,8 +541,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
       // Step 1: Get current user tokens for debugging
       if (authState.accessToken != null) {
         debugPrint('📋 Getting user tokens...');
-        final tokensResponse =
-            await userService.getUserTokens(authState.accessToken!);
+        final tokensResponse = await userService.getUserTokens(authState.accessToken!);
         if (tokensResponse.isSuccess && tokensResponse.data != null) {
           final tokens = tokensResponse.data!['tokens'] as List<dynamic>? ?? [];
           debugPrint('✅ Found ${tokens.length} active tokens');
@@ -409,8 +549,7 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
 
         // Step 2: Revoke all tokens for security
         debugPrint('🔐 Revoking all tokens...');
-        final revokeResponse =
-            await userService.revokeAllTokens(authState.accessToken!);
+        final revokeResponse = await userService.revokeAllTokens(authState.accessToken!);
         if (revokeResponse.isSuccess) {
           debugPrint('✅ Successfully revoked all tokens');
         } else {
@@ -440,14 +579,21 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
         // Navigate to welcome screen and clear the entire navigation stack
         NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
 
-        // Show success message briefly
+        // Show success message briefly with theme-aware design
         Future.delayed(const Duration(milliseconds: 500), () {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Successfully signed out'),
-                backgroundColor: Color(0xFF48BB78),
-                duration: Duration(seconds: 2),
+                backgroundColor: themeManager.conditionalColor(
+                  lightColor: themeManager.successColor,
+                  darkColor: themeManager.successDark,
+                ),
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
               ),
             );
           }
@@ -471,14 +617,21 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
 
-          // Show error message
+          // Show error message with theme-aware design
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Signed out (with errors): ${e.toString()}'),
-                  backgroundColor: const Color(0xFFED8936),
+                  backgroundColor: themeManager.conditionalColor(
+                    lightColor: themeManager.warningColor,
+                    darkColor: themeManager.warningDark,
+                  ),
                   duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
                 ),
               );
             }

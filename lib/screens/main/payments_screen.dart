@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 
 class PaymentsScreen extends ConsumerStatefulWidget {
@@ -11,8 +12,7 @@ class PaymentsScreen extends ConsumerStatefulWidget {
   ConsumerState<PaymentsScreen> createState() => _PaymentsScreenState();
 }
 
-class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
-    with TickerProviderStateMixin {
+class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late TabController _tabController;
@@ -95,12 +95,14 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
   @override
   void initState() {
     super.initState();
+    debugPrint('🎯 PaymentsScreen: Initializing animations and controllers');
     _initializeAnimations();
     _startAnimations();
     _tabController = TabController(length: 3, vsync: this);
   }
 
   void _initializeAnimations() {
+    debugPrint('🎯 PaymentsScreen: Setting up fade animation controller');
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -116,12 +118,14 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
   }
 
   Future<void> _startAnimations() async {
+    debugPrint('🎯 PaymentsScreen: Starting entrance animations');
     await Future.delayed(const Duration(milliseconds: 200));
     _fadeController.forward();
   }
 
   @override
   void dispose() {
+    debugPrint('🎯 PaymentsScreen: Disposing controllers');
     _fadeController.dispose();
     _tabController.dispose();
     super.dispose();
@@ -129,25 +133,26 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🎨 PaymentsScreen: Building with theme - ${Theme.of(context).brightness}');
+    themeManager.logThemeInfo();
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-      appBar: _buildAppBar(isDark),
+      backgroundColor: themeManager.backgroundColor,
+      appBar: _buildAppBar(themeManager),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Column(
           children: [
-            _buildBalanceCard(isDark),
-            _buildTabBar(isDark),
+            _buildBalanceCard(themeManager),
+            _buildTabBar(themeManager),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildTransactionsTab(isDark),
-                  _buildPaymentMethodsTab(isDark),
-                  _buildSettingsTab(isDark),
+                  _buildTransactionsTab(themeManager),
+                  _buildPaymentMethodsTab(themeManager),
+                  _buildSettingsTab(themeManager),
                 ],
               ),
             ),
@@ -157,56 +162,54 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     );
   }
 
-  PreferredSizeWidget _buildAppBar(bool isDark) {
+  PreferredSizeWidget _buildAppBar(ThemeManager themeManager) {
+    debugPrint('🎨 PaymentsScreen: Building app bar with theme colors');
     return AppBar(
-      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      backgroundColor: themeManager.surfaceColor,
       elevation: 0,
       leading: IconButton(
         icon: Icon(
           Prbal.arrowLeft,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
         ),
-        onPressed: () => context.pop(),
+        onPressed: () {
+          debugPrint('🔄 PaymentsScreen: Navigating back');
+          context.pop();
+        },
       ),
       title: Text(
         'Payments',
         style: TextStyle(
           fontSize: 20.sp,
           fontWeight: FontWeight.w700,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
         ),
       ),
       actions: [
         IconButton(
           icon: Icon(
             Prbal.plus,
-            color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+            color: themeManager.textSecondary,
           ),
-          onPressed: () => _showAddPaymentMethodDialog(isDark),
+          onPressed: () {
+            debugPrint('🎯 PaymentsScreen: Opening add payment method dialog');
+            _showAddPaymentMethodDialog(themeManager);
+          },
         ),
         SizedBox(width: 8.w),
       ],
     );
   }
 
-  Widget _buildBalanceCard(bool isDark) {
+  Widget _buildBalanceCard(ThemeManager themeManager) {
+    debugPrint('🎨 PaymentsScreen: Building balance card with primary gradient');
     return Container(
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: themeManager.primaryGradient,
         borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: themeManager.primaryShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +221,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 'Wallet Balance',
                 style: TextStyle(
                   fontSize: 16.sp,
-                  color: Colors.white70,
+                  color: Colors.white.withValues(alpha: 179), // 0.7 opacity
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -245,7 +248,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 51), // 0.2 opacity
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Center(
@@ -265,7 +268,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 51), // 0.2 opacity
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Center(
@@ -287,32 +290,24 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     );
   }
 
-  Widget _buildTabBar(bool isDark) {
+  Widget _buildTabBar(ThemeManager themeManager) {
+    debugPrint('🎨 PaymentsScreen: Building tab bar with surface colors');
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: const Color(0xFF3B82F6),
+          color: themeManager.primaryColor,
           borderRadius: BorderRadius.circular(8.r),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         labelColor: Colors.white,
-        unselectedLabelColor:
-            isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+        unselectedLabelColor: themeManager.textTertiary,
         labelStyle: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -326,18 +321,19 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     );
   }
 
-  Widget _buildTransactionsTab(bool isDark) {
+  Widget _buildTransactionsTab(ThemeManager themeManager) {
+    debugPrint('🎯 PaymentsScreen: Building transactions tab with ${_transactions.length} items');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _transactions.length,
       itemBuilder: (context, index) {
         final transaction = _transactions[index];
-        return _buildTransactionItem(transaction, isDark);
+        return _buildTransactionItem(transaction, themeManager);
       },
     );
   }
 
-  Widget _buildTransactionItem(Map<String, dynamic> transaction, bool isDark) {
+  Widget _buildTransactionItem(Map<String, dynamic> transaction, ThemeManager themeManager) {
     final isIncome = transaction['amount'] > 0;
     final status = transaction['status'] as String;
 
@@ -345,17 +341,13 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 0.5,
+        ),
       ),
       child: Row(
         children: [
@@ -365,6 +357,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
             decoration: BoxDecoration(
               color: _getTransactionIconColor(transaction['type'], isIncome),
               borderRadius: BorderRadius.circular(24.r),
+              boxShadow: themeManager.subtleShadow,
             ),
             child: Icon(
               _getTransactionIcon(transaction['type'], isIncome),
@@ -382,7 +375,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -390,29 +383,28 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                   transaction['provider'],
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF6B7280),
+                    color: themeManager.textSecondary,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Row(
                   children: [
-                    Text(
-                      transaction['paymentMethod'],
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: isDark
-                            ? const Color(0xFF64748B)
-                            : const Color(0xFF9CA3AF),
+                    Flexible(
+                      child: Text(
+                        transaction['paymentMethod'],
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: themeManager.textTertiary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     SizedBox(width: 8.w),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(status).withValues(alpha: 0.1),
+                        color: _getStatusColor(status).withValues(alpha: 26), // 0.1 opacity
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
@@ -437,9 +429,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: isIncome
-                      ? const Color(0xFF10B981)
-                      : (isDark ? Colors.white : const Color(0xFF1F2937)),
+                  color: isIncome ? themeManager.successColor : themeManager.textPrimary,
                 ),
               ),
               SizedBox(height: 4.h),
@@ -447,9 +437,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 _formatDate(transaction['date']),
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: isDark
-                      ? const Color(0xFF64748B)
-                      : const Color(0xFF9CA3AF),
+                  color: themeManager.textTertiary,
                 ),
               ),
             ],
@@ -459,18 +447,19 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     );
   }
 
-  Widget _buildPaymentMethodsTab(bool isDark) {
+  Widget _buildPaymentMethodsTab(ThemeManager themeManager) {
+    debugPrint('🎯 PaymentsScreen: Building payment methods tab with ${_paymentMethods.length} methods');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _paymentMethods.length,
       itemBuilder: (context, index) {
         final method = _paymentMethods[index];
-        return _buildPaymentMethodItem(method, isDark);
+        return _buildPaymentMethodItem(method, themeManager);
       },
     );
   }
 
-  Widget _buildPaymentMethodItem(Map<String, dynamic> method, bool isDark) {
+  Widget _buildPaymentMethodItem(Map<String, dynamic> method, ThemeManager themeManager) {
     final isCard = method['type'] == 'card';
 
     return Container(
@@ -480,7 +469,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
         gradient: LinearGradient(
           colors: [
             method['color'] as Color,
-            (method['color'] as Color).withValues(alpha: 0.8),
+            (method['color'] as Color).withValues(alpha: 204), // 0.8 opacity
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -488,7 +477,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: (method['color'] as Color).withValues(alpha: 0.3),
+            color: (method['color'] as Color).withValues(alpha: 77), // 0.3 opacity
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -500,19 +489,23 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                method['name'],
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+              Flexible(
+                child: Text(
+                  method['name'],
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (method['isDefault'])
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 51), // 0.2 opacity
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
@@ -531,7 +524,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
             method['provider'],
             style: TextStyle(
               fontSize: 14.sp,
-              color: Colors.white70,
+              color: Colors.white.withValues(alpha: 179), // 0.7 opacity
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -544,7 +537,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                   'Expires ${method['expiryDate']}',
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: Colors.white70,
+                    color: Colors.white.withValues(alpha: 179), // 0.7 opacity
                   ),
                 ),
               ] else ...[
@@ -569,7 +562,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     );
   }
 
-  Widget _buildSettingsTab(bool isDark) {
+  Widget _buildSettingsTab(ThemeManager themeManager) {
+    debugPrint('🎯 PaymentsScreen: Building settings tab with theme-aware styling');
     return ListView(
       padding: EdgeInsets.all(16.w),
       children: [
@@ -577,29 +571,37 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
           icon: Prbal.security,
           title: 'Payment Security',
           subtitle: 'Manage payment security settings',
-          isDark: isDark,
-          onTap: () {},
+          themeManager: themeManager,
+          onTap: () {
+            debugPrint('🔒 PaymentsScreen: Opening payment security settings');
+          },
         ),
         _buildSettingItem(
           icon: Prbal.bell,
           title: 'Payment Notifications',
           subtitle: 'Configure payment alerts',
-          isDark: isDark,
-          onTap: () {},
+          themeManager: themeManager,
+          onTap: () {
+            debugPrint('🔔 PaymentsScreen: Opening notification settings');
+          },
         ),
         _buildSettingItem(
           icon: Prbal.rupee,
           title: 'Transaction History',
           subtitle: 'Export transaction records',
-          isDark: isDark,
-          onTap: () {},
+          themeManager: themeManager,
+          onTap: () {
+            debugPrint('📊 PaymentsScreen: Opening transaction history export');
+          },
         ),
         _buildSettingItem(
           icon: Prbal.questionCircle,
           title: 'Payment Help',
           subtitle: 'Get help with payments',
-          isDark: isDark,
-          onTap: () {},
+          themeManager: themeManager,
+          onTap: () {
+            debugPrint('❓ PaymentsScreen: Opening payment help');
+          },
         ),
       ],
     );
@@ -609,23 +611,19 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     required IconData icon,
     required String title,
     required String subtitle,
-    required bool isDark,
+    required ThemeManager themeManager,
     required VoidCallback onTap,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 0.5,
+        ),
       ),
       child: Material(
         color: Colors.transparent,
@@ -640,12 +638,12 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                   width: 48.w,
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                    color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Icon(
                     icon,
-                    color: const Color(0xFF3B82F6),
+                    color: themeManager.primaryColor,
                     size: 24.sp,
                   ),
                 ),
@@ -659,8 +657,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       SizedBox(height: 4.h),
@@ -668,9 +665,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                         subtitle,
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF6B7280),
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -678,9 +673,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                 ),
                 Icon(
                   Prbal.angleRight,
-                  color: isDark
-                      ? const Color(0xFF64748B)
-                      : const Color(0xFF9CA3AF),
+                  color: themeManager.textTertiary,
                   size: 20.sp,
                 ),
               ],
@@ -741,28 +734,40 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     }
   }
 
-  void _showAddPaymentMethodDialog(bool isDark) {
+  void _showAddPaymentMethodDialog(ThemeManager themeManager) {
+    debugPrint('🎯 PaymentsScreen: Showing add payment method modal');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: themeManager.surfaceColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24.r),
             topRight: Radius.circular(24.r),
           ),
+          boxShadow: themeManager.elevatedShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Drag handle
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: themeManager.borderColor,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 16.h),
             Text(
               'Add Payment Method',
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(height: 24.h),
@@ -770,25 +775,35 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
               icon: Prbal.creditCard,
               title: 'Credit/Debit Card',
               subtitle: 'Add a new card',
-              isDark: isDark,
-              onTap: () => Navigator.pop(context),
+              themeManager: themeManager,
+              onTap: () {
+                debugPrint('💳 PaymentsScreen: Adding credit/debit card');
+                Navigator.pop(context);
+              },
             ),
             SizedBox(height: 12.h),
             _buildAddMethodOption(
               icon: Prbal.paypal,
               title: 'PayPal',
               subtitle: 'Connect your PayPal account',
-              isDark: isDark,
-              onTap: () => Navigator.pop(context),
+              themeManager: themeManager,
+              onTap: () {
+                debugPrint('💰 PaymentsScreen: Adding PayPal account');
+                Navigator.pop(context);
+              },
             ),
             SizedBox(height: 12.h),
             _buildAddMethodOption(
               icon: Prbal.university,
               title: 'Bank Account',
               subtitle: 'Add bank account details',
-              isDark: isDark,
-              onTap: () => Navigator.pop(context),
+              themeManager: themeManager,
+              onTap: () {
+                debugPrint('🏦 PaymentsScreen: Adding bank account');
+                Navigator.pop(context);
+              },
             ),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
@@ -799,7 +814,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
     required IconData icon,
     required String title,
     required String subtitle,
-    required bool isDark,
+    required ThemeManager themeManager,
     required VoidCallback onTap,
   }) {
     return Material(
@@ -811,16 +826,24 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             border: Border.all(
-              color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+              color: themeManager.borderColor,
             ),
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: const Color(0xFF3B82F6),
-                size: 24.sp,
+              Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Icon(
+                  icon,
+                  color: themeManager.primaryColor,
+                  size: 20.sp,
+                ),
               ),
               SizedBox(width: 16.w),
               Expanded(
@@ -832,16 +855,14 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     Text(
                       subtitle,
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -849,8 +870,7 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
               ),
               Icon(
                 Prbal.angleRight,
-                color:
-                    isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+                color: themeManager.textTertiary,
                 size: 20.sp,
               ),
             ],

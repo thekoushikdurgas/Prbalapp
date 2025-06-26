@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prbal/services/service_providers.dart';
 import 'package:prbal/services/authentication_notifier.dart';
 import 'package:prbal/services/api_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// Profile Picture Handler
 ///
 /// This class provides a complete implementation for handling profile picture updates
 /// including image picking, uploading, and state management.
 class ProfilePictureHandler {
-  /// Handle profile picture update from camera or gallery
+  /// Handle enhanced profile picture update from camera or gallery
   static Future<void> handleProfilePictureUpdate(
     BuildContext context,
     ImageSource source, {
@@ -22,12 +24,17 @@ class ProfilePictureHandler {
     final ref = ProviderScope.containerOf(context);
     final authState = ref.read(authenticationStateProvider);
     final userService = ref.read(userServiceProvider);
+    final themeManager = ThemeManager.of(context);
+
+    debugPrint('📷 [ProfilePicture] Starting enhanced profile picture update');
+    debugPrint('📷 [ProfilePicture] Image source: ${source.name}');
 
     // Check authentication
     if (!authState.isAuthenticated || authState.accessToken == null) {
       final errorMessage = 'Please log in to update your profile picture';
+      debugPrint('❌ [ProfilePicture] Authentication check failed');
       onError?.call(errorMessage);
-      _showSnackBar(context, errorMessage, isError: true);
+      _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
       return;
     }
 
@@ -62,7 +69,7 @@ class ProfilePictureHandler {
         _closeLoadingDialog(context);
         const errorMessage = 'Image is too large. Please select an image smaller than 5MB.';
         onError?.call(errorMessage);
-        _showSnackBar(context, errorMessage, isError: true);
+        _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
         return;
       }
 
@@ -103,7 +110,7 @@ class ProfilePictureHandler {
           // Show success message
           const successMessage = 'Profile picture updated successfully!';
           onSuccess?.call();
-          _showSnackBar(context, successMessage, isError: false);
+          _showSnackBar(context, successMessage, isError: false, themeManager: themeManager);
 
           debugPrint('✅ ProfilePictureHandler: Profile picture updated successfully');
         } else {
@@ -119,7 +126,7 @@ class ProfilePictureHandler {
       // Show error message
       final errorMessage = 'Failed to update profile picture: $e';
       onError?.call(errorMessage);
-      _showSnackBar(context, errorMessage, isError: true);
+      _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
 
       debugPrint('❌ ProfilePictureHandler: Profile picture update failed: $e');
     }
@@ -168,8 +175,10 @@ class ProfilePictureHandler {
     debugPrint('🔄 ProfilePictureHandler: Authentication state updated');
   }
 
-  /// Show loading dialog
+  /// Show enhanced loading dialog with ThemeManager integration
   static void _showLoadingDialog(BuildContext context) {
+    final themeManager = ThemeManager.of(context);
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -178,20 +187,127 @@ class ProfilePictureHandler {
         child: Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: const EdgeInsets.all(20),
+            margin: EdgeInsets.symmetric(horizontal: 40.w),
+            padding: EdgeInsets.all(28.w),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2D2D2D) : Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              // Enhanced gradient background
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.surfaceColor.withValues(alpha: 248),
+                    themeManager.backgroundColor.withValues(alpha: 242),
+                    themeManager.infoColor.withValues(alpha: 13),
+                  ],
+                  stops: const [0.0, 0.7, 1.0],
+                ),
+                darkGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.surfaceColor.withValues(alpha: 235),
+                    themeManager.backgroundColor.withValues(alpha: 248),
+                    themeManager.infoColor.withValues(alpha: 26),
+                  ],
+                  stops: const [0.0, 0.7, 1.0],
+                ),
+              ),
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: themeManager.borderColor.withValues(alpha: 128),
+                  darkColor: themeManager.borderColor.withValues(alpha: 77),
+                ),
+                width: 1.5,
+              ),
+              boxShadow: themeManager.elevatedShadow,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
+                // Enhanced loading indicator container
+                Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    gradient: themeManager.conditionalGradient(
+                      lightGradient: LinearGradient(
+                        colors: [
+                          themeManager.infoColor.withValues(alpha: 26),
+                          themeManager.infoColor.withValues(alpha: 13),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      darkGradient: LinearGradient(
+                        colors: [
+                          themeManager.infoColor.withValues(alpha: 51),
+                          themeManager.infoColor.withValues(alpha: 26),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: themeManager.infoColor.withValues(alpha: 77),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: themeManager.infoColor.withValues(alpha: 51),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(themeManager.infoColor),
+                    strokeWidth: 3,
+                  ),
+                ),
+                SizedBox(height: 24.h),
+                // Enhanced title
                 Text(
-                  'Updating profile picture...',
+                  'Updating Profile Picture',
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: themeManager.textPrimary,
+                    letterSpacing: 0.3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8.h),
+                // Enhanced subtitle container
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    gradient: themeManager.conditionalGradient(
+                      lightGradient: LinearGradient(
+                        colors: [
+                          themeManager.infoColor.withValues(alpha: 13),
+                          themeManager.infoColor.withValues(alpha: 8),
+                        ],
+                      ),
+                      darkGradient: LinearGradient(
+                        colors: [
+                          themeManager.infoColor.withValues(alpha: 26),
+                          themeManager.infoColor.withValues(alpha: 13),
+                        ],
+                      ),
+                    ),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Text(
+                    'Please wait while we process your image...',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      color: themeManager.textSecondary,
+                      letterSpacing: 0.3,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -209,8 +325,9 @@ class ProfilePictureHandler {
     }
   }
 
-  /// Show snackbar with message
-  static void _showSnackBar(BuildContext context, String message, {required bool isError}) {
+  /// Show enhanced snackbar with ThemeManager integration
+  static void _showSnackBar(BuildContext context, String message,
+      {required bool isError, required ThemeManager themeManager}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(

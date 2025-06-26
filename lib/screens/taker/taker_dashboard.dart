@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// Full Taker Dashboard with bottom navigation bar
@@ -29,8 +30,7 @@ class TakerDashboardContent extends ConsumerStatefulWidget {
   const TakerDashboardContent({super.key});
 
   @override
-  ConsumerState<TakerDashboardContent> createState() =>
-      _TakerDashboardContentState();
+  ConsumerState<TakerDashboardContent> createState() => _TakerDashboardContentState();
 }
 
 class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
@@ -46,7 +46,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return SafeArea(
       child: CustomScrollView(
@@ -56,7 +56,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
             expandedHeight: 120.h,
             floating: false,
             pinned: true,
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            backgroundColor: themeManager.surfaceColor,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.only(left: 20.w, bottom: 16.h),
@@ -65,18 +65,12 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                  color: themeManager.textPrimary,
                 ),
               ),
               background: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: isDark
-                        ? [const Color(0xFF1E1E1E), const Color(0xFF2D2D2D)]
-                        : [Colors.white, const Color(0xFFF7FAFC)],
-                  ),
+                  gradient: themeManager.surfaceGradient,
                 ),
               ),
             ),
@@ -88,7 +82,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                 },
                 icon: Icon(
                   Prbal.bell,
-                  color: isDark ? Colors.white : const Color(0xFF4A5568),
+                  color: themeManager.textPrimary,
                 ),
               ),
               SizedBox(width: 8.w),
@@ -105,13 +99,13 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                   // Search Bar
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
-                          color: isDark
-                              ? Colors.black.withValues(alpha: 0.3)
-                              : Colors.grey.withValues(alpha: 0.1),
+                          color: themeManager.themeManager
+                              ? Colors.black.withValues(alpha: 77)
+                              : Colors.grey.withValues(alpha: 26),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -122,12 +116,12 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       decoration: InputDecoration(
                         hintText: 'What service do you need?',
                         hintStyle: TextStyle(
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                           fontSize: 16.sp,
                         ),
                         prefixIcon: Icon(
                           Prbal.search,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                         ),
                         suffixIcon: IconButton(
                           onPressed: () {
@@ -136,7 +130,7 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           },
                           icon: Icon(
                             Prbal.arrowRight,
-                            color: const Color(0xFF4299E1),
+                            color: themeManager.primaryColor,
                           ),
                         ),
                         border: InputBorder.none,
@@ -157,9 +151,9 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                       borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
-                          color: isDark
-                              ? Colors.black.withValues(alpha: 0.3)
-                              : Colors.grey.withValues(alpha: 0.1),
+                          color: themeManager.themeManager
+                              ? Colors.black.withValues(alpha: 77)
+                              : Colors.grey.withValues(alpha: 26),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -172,22 +166,22 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                           'New User Special',
                           '50% OFF your first service',
                           'Use code: WELCOME50',
-                          const Color(0xFF4299E1),
-                          isDark,
+                          themeManager.primaryColor,
+                          themeManager,
                         ),
                         _buildPromoBanner(
                           'Weekend Deal',
                           'Home cleaning starting at \$30',
                           'Book now for this weekend',
-                          const Color(0xFF48BB78),
-                          isDark,
+                          themeManager.successColor,
+                          themeManager,
                         ),
                         _buildPromoBanner(
                           'Emergency Services',
                           '24/7 urgent repairs available',
                           'Quick response guaranteed',
-                          const Color(0xFFED8936),
-                          isDark,
+                          themeManager.warningColor,
+                          themeManager,
                         ),
                       ],
                     ),
@@ -203,22 +197,20 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                          // Navigate to explore page
-                          context.go('/explore');
+                          context.push('/explore');
                         },
                         child: Text(
-                          'See All',
+                          'View All',
                           style: TextStyle(
                             fontSize: 14.sp,
+                            color: themeManager.primaryColor,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF4299E1),
                           ),
                         ),
                       ),
@@ -227,104 +219,70 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
 
                   SizedBox(height: 16.h),
 
-                  // Category Grid
+                  // Service Categories Grid
                   GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                     crossAxisSpacing: 16.w,
                     mainAxisSpacing: 16.h,
-                    childAspectRatio: 0.9,
+                    childAspectRatio: 1.2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      _buildCategoryCard(
-                        'Home\nCleaning',
-                        Prbal.home,
-                        const Color(0xFF4299E1),
-                        isDark,
-                        onTap: () {
-                          // Navigate to explore with home cleaning filter
-                          context.go('/explore');
-                        },
+                      _buildServiceCard(
+                        'Home Cleaning',
+                        Prbal.home1,
+                        themeManager.primaryColor,
+                        '150+ providers',
+                        themeManager,
                       ),
-                      _buildCategoryCard(
-                        'AC Repair\n& Service',
-                        Prbal.snowflake,
-                        const Color(0xFF48BB78),
-                        isDark,
-                        onTap: () {
-                          // Navigate to explore with AC repair filter
-                          context.go('/explore');
-                        },
+                      _buildServiceCard(
+                        'Plumbing',
+                        Prbal.tools,
+                        themeManager.successColor,
+                        '89+ providers',
+                        themeManager,
                       ),
-                      _buildCategoryCard(
-                        'Plumbing\nServices',
-                        Prbal.wrench,
-                        const Color(0xFF9F7AEA),
-                        isDark,
-                        onTap: () {
-                          // Navigate to explore with plumbing filter
-                          context.go('/explore');
-                        },
+                      _buildServiceCard(
+                        'Electrical',
+                        Prbal.plug,
+                        themeManager.warningColor,
+                        '67+ providers',
+                        themeManager,
                       ),
-                      _buildCategoryCard(
-                        'Beauty\n& Care',
-                        Prbal.cut,
-                        const Color(0xFFED64A6),
-                        isDark,
-                        onTap: () {
-                          // Navigate to explore with beauty filter
-                          context.go('/explore');
-                        },
-                      ),
-                      _buildCategoryCard(
-                        'Tech\nSupport',
-                        Prbal.laptop,
-                        const Color(0xFFED8936),
-                        isDark,
-                        onTap: () {
-                          // Navigate to explore with tech support filter
-                          context.go('/explore');
-                        },
-                      ),
-                      _buildCategoryCard(
-                        'More\nServices',
-                        Prbal.thLarge,
-                        isDark ? Colors.grey[600]! : Colors.grey[400]!,
-                        isDark,
-                        onTap: () {
-                          // Navigate to full explore page
-                          context.go('/explore');
-                        },
+                      _buildServiceCard(
+                        'Gardening',
+                        Prbal.leaf,
+                        themeManager.infoColor,
+                        '45+ providers',
+                        themeManager,
                       ),
                     ],
                   ),
 
                   SizedBox(height: 24.h),
 
-                  // Recent Services
+                  // Recent Activity
                   Row(
                     children: [
                       Text(
-                        'Recent Services',
+                        'Recent Activity',
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                          // Navigate to order history
-                          context.go('/orders');
+                          context.push('/orders');
                         },
                         child: Text(
                           'View All',
                           style: TextStyle(
                             fontSize: 14.sp,
+                            color: themeManager.primaryColor,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF4299E1),
                           ),
                         ),
                       ),
@@ -333,16 +291,16 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
 
                   SizedBox(height: 16.h),
 
-                  // Recent Services List
+                  // Activity List
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                      color: themeManager.surfaceColor,
                       borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
-                          color: isDark
-                              ? Colors.black.withValues(alpha: 0.3)
-                              : Colors.grey.withValues(alpha: 0.1),
+                          color: themeManager.themeManager
+                              ? Colors.black.withValues(alpha: 77)
+                              : Colors.grey.withValues(alpha: 26),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -350,75 +308,32 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
                     ),
                     child: Column(
                       children: [
-                        _buildRecentServiceItem(
-                          'Home Cleaning',
-                          'Completed yesterday',
-                          'by Sarah Johnson',
-                          4.8,
-                          Prbal.home,
-                          const Color(0xFF4299E1),
-                          isDark,
+                        _buildActivityItem(
+                          'Home cleaning completed',
+                          '2 hours ago',
+                          Prbal.checkCircle,
+                          themeManager.successColor,
+                          themeManager,
                         ),
-                        const Divider(height: 1),
-                        _buildRecentServiceItem(
-                          'AC Repair',
-                          'Completed 3 days ago',
-                          'by Mike Wilson',
-                          4.9,
-                          Prbal.snowflake,
-                          const Color(0xFF48BB78),
-                          isDark,
+                        _buildActivityItem(
+                          'Payment processed',
+                          '5 hours ago',
+                          Prbal.dollarSign,
+                          themeManager.primaryColor,
+                          themeManager,
                         ),
-                        const Divider(height: 1),
-                        _buildRecentServiceItem(
-                          'Garden Care',
-                          'Completed 1 week ago',
-                          'by Lisa Brown',
-                          4.7,
-                          Prbal.leaf,
-                          const Color(0xFF9F7AEA),
-                          isDark,
+                        _buildActivityItem(
+                          'Service reviewed',
+                          '1 day ago',
+                          Prbal.star,
+                          themeManager.warningColor,
+                          themeManager,
                         ),
                       ],
                     ),
                   ),
 
-                  SizedBox(height: 24.h),
-
-                  // Quick Actions
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildQuickActionCard(
-                          'Emergency',
-                          'Urgent service needed?',
-                          Prbal.exclamationTriangle,
-                          const Color(0xFFE53E3E),
-                          isDark,
-                          onTap: () {
-                            // Navigate to explore with emergency filter
-                            context.go('/explore');
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: _buildQuickActionCard(
-                          'Schedule',
-                          'Book for later',
-                          Prbal.calendar,
-                          const Color(0xFF4299E1),
-                          isDark,
-                          onTap: () {
-                            // Navigate to explore to book services
-                            context.go('/explore');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 100.h),
                 ],
               ),
             ),
@@ -431,97 +346,51 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
   Widget _buildPromoBanner(
     String title,
     String subtitle,
-    String description,
+    String action,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 2.w),
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [color, color.withValues(alpha: 0.8)],
+          colors: [
+            color,
+            color.withValues(alpha: 179), // 0.7 opacity
+          ],
         ),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Padding(
-        padding:
-            EdgeInsets.all(14.w), // Further reduced padding to prevent overflow
+        padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment
-              .spaceBetween, // Changed from center to spaceBetween
-          mainAxisSize:
-              MainAxisSize.max, // Changed to max to use full container height
           children: [
-            Flexible(
-              // Wrapped text section in Flexible
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 15.sp, // Slightly reduced
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 4.h), // Further reduced spacing
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 13.sp, // Slightly reduced
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 10.sp, // Slightly reduced
-                      color: Colors.white.withValues(alpha: 0.9),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            // Button section with fixed space
-            SizedBox(
-              height: 32.h, // Fixed height for button
-              child: ElevatedButton(
-                onPressed: () {
-                  // Apply promotion
-                  context
-                      .go('/explore'); // Navigate to explore to use promotion
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: color,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 12.w, vertical: 6.h), // Adjusted padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                ),
-                child: Text(
-                  'Claim Now',
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+            SizedBox(height: 8.h),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.white.withValues(alpha: 230), // 0.9 opacity
+              ),
+            ),
+            const Spacer(),
+            Text(
+              action,
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
           ],
@@ -530,69 +399,62 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
     );
   }
 
-  Widget _buildCategoryCard(
+  Widget _buildServiceCard(
     String title,
     IconData icon,
     Color color,
-    bool isDark, {
-    VoidCallback? onTap,
-  }) {
+    String subtitle,
+    ThemeManager themeManager,
+  ) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: onTap ??
-              () {
-                // Default navigation to explore
-                context.go('/explore');
-              },
+          onTap: () {
+            // Navigate to service category
+          },
           child: Padding(
-            padding: EdgeInsets.all(12.w), // Reduced from 16.w
+            padding: EdgeInsets.all(16.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // Added to prevent overflow
               children: [
                 Container(
-                  padding: EdgeInsets.all(10.w), // Reduced from 12.w
+                  width: 48.w,
+                  height: 48.h,
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius:
-                        BorderRadius.circular(10.r), // Reduced from 12.r
+                    color: color.withValues(alpha: 26), // 0.1 opacity
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Icon(
                     icon,
                     color: color,
-                    size: 20.sp, // Reduced from 24.sp
+                    size: 24.sp,
                   ),
                 ),
-                SizedBox(height: 8.h), // Reduced from 12.h
-                Flexible(
-                  // Added Flexible to prevent overflow
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 11.sp, // Reduced from 12.sp
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                SizedBox(height: 12.h),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                    color: themeManager.textPrimary,
                   ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: themeManager.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -602,21 +464,20 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
     );
   }
 
-  Widget _buildRecentServiceItem(
+  Widget _buildActivityItem(
     String title,
-    String date,
-    String provider,
-    double rating,
+    String time,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return ListTile(
       leading: Container(
-        padding: EdgeInsets.all(8.w),
+        width: 40.w,
+        height: 40.h,
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
+          color: color.withValues(alpha: 26), // 0.1 opacity
+          borderRadius: BorderRadius.circular(10.r),
         ),
         child: Icon(
           icon,
@@ -629,127 +490,20 @@ class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
+          color: themeManager.textPrimary,
         ),
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            date,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-            ),
-          ),
-          Text(
-            provider,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Prbal.star,
-            size: 16.sp,
-            color: const Color(0xFFED8936),
-          ),
-          SizedBox(width: 4.w),
-          Text(
-            rating.toString(),
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFFED8936),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickActionCard(
-    String title,
-    String subtitle,
-    IconData icon,
-    Color color,
-    bool isDark, {
-    VoidCallback? onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12.r),
-          onTap: onTap ??
-              () {
-                // Default action
-              },
-          child: Padding(
-            padding: EdgeInsets.all(12.w), // Reduced from 16.w
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // Added to prevent overflow
-              children: [
-                Container(
-                  padding: EdgeInsets.all(6.w), // Reduced from 8.w
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius:
-                        BorderRadius.circular(6.r), // Reduced from 8.r
-                  ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 18.sp, // Reduced from 20.sp
-                  ),
-                ),
-                SizedBox(height: 6.h), // Reduced from 8.h
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13.sp, // Reduced from 14.sp
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 3.h), // Reduced from 4.h
-                Flexible(
-                  // Added Flexible to prevent overflow
-                  child: Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 10.sp, // Reduced from 11.sp
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+      subtitle: Text(
+        time,
+        style: TextStyle(
+          fontSize: 12.sp,
+          color: themeManager.textSecondary,
         ),
+      ),
+      trailing: Icon(
+        Prbal.angleRight,
+        color: themeManager.textSecondary,
+        size: 16.sp,
       ),
     );
   }

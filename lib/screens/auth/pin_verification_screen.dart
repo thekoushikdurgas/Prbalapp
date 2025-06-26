@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'dart:math'; // Added for random number generation
 // import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/services/hive_service.dart';
@@ -16,19 +17,13 @@ class PinVerificationScreen extends ConsumerStatefulWidget {
   final bool isNewUser;
   final Map<String, dynamic>? userData;
 
-  const PinVerificationScreen(
-      {super.key,
-      required this.phoneNumber,
-      this.isNewUser = false,
-      this.userData});
+  const PinVerificationScreen({super.key, required this.phoneNumber, this.isNewUser = false, this.userData});
 
   @override
-  ConsumerState<PinVerificationScreen> createState() =>
-      _PinVerificationScreenState();
+  ConsumerState<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
-class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
-    with TickerProviderStateMixin {
+class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> with TickerProviderStateMixin {
   final List<TextEditingController> _controllers = [];
   final List<FocusNode> _focusNodes = [];
   bool _isLoading = false;
@@ -41,11 +36,14 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   @override
   void initState() {
     super.initState();
+    debugPrint('🔐 PinVerificationScreen: Initializing PIN verification for ${widget.phoneNumber}');
+    debugPrint('🔐 PinVerificationScreen: Is new user: ${widget.isNewUser}');
     _initializeControllers();
     _setupAnimations();
   }
 
   void _initializeControllers() {
+    debugPrint('🔐 PinVerificationScreen: Initializing PIN input controllers');
     for (int i = 0; i < 4; i++) {
       _controllers.add(TextEditingController());
       _focusNodes.add(FocusNode());
@@ -53,29 +51,27 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   }
 
   void _setupAnimations() {
-    _shakeController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
+    debugPrint('🔐 PinVerificationScreen: Setting up animations');
+    _shakeController = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
 
     _shakeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(
-        CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
+    ).animate(CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
 
-    _pulseController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+    _pulseController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
       end: 1.1,
-    ).animate(
-        CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
+    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
 
     _pulseController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
+    debugPrint('🔐 PinVerificationScreen: Disposing PIN verification screen');
     for (var controller in _controllers) {
       controller.dispose();
     }
@@ -93,32 +89,33 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
 
   /// Show top-right alert dialog for PIN validation errors
   void _showPinValidationAlert(String title, String message) {
-    debugPrint('🚨 Showing PIN validation alert: $title - $message');
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🚨 PinVerificationScreen: Showing PIN validation alert: $title - $message');
 
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          backgroundColor: themeManager.surfaceColor,
           elevation: 8,
           title: Row(
             children: [
               Icon(
                 Prbal.exclamationTriangle,
-                color: Theme.of(context).colorScheme.error,
+                color: themeManager.errorColor,
                 size: 24.sp,
               ),
               SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.error,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: themeManager.errorColor,
+                  ),
                 ),
               ),
             ],
@@ -127,26 +124,27 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
             constraints: BoxConstraints(maxWidth: 280.w),
             child: Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    height: 1.4,
-                  ),
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: themeManager.textPrimary,
+                height: 1.4,
+              ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r)),
+                foregroundColor: themeManager.primaryColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
               ),
               child: Text(
                 'Got it',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: themeManager.primaryColor,
+                ),
               ),
             ),
           ],
@@ -217,14 +215,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
             widget.userData!['email'] == null ||
             widget.userData!['firstName'] == null ||
             widget.userData!['lastName'] == null) {
-          debugPrint(
-              '🎲 Generating random user data for incomplete registration data');
+          debugPrint('🎲 Generating random user data for incomplete registration data');
           randomData = _generateRandomUserData();
         }
 
         // Set PIN for new user - using PIN registration with random data fallback
-        final setPinResponse =
-            await userService.pinRegister(PinRegistrationRequest(
+        final setPinResponse = await userService.pinRegister(PinRegistrationRequest(
           username: widget.userData?['username'] ?? randomData['username'],
           email: widget.userData?['email'] ?? randomData['email'],
           phoneNumber: widget.phoneNumber,
@@ -239,8 +235,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           debugPrint('🔍 Raw Errors: ${setPinResponse.errors}');
 
           // Extract specific PIN validation error and show in alert dialog
-          final specificError =
-              _extractPinValidationError(setPinResponse.errors);
+          final specificError = _extractPinValidationError(setPinResponse.errors);
           debugPrint('🎯 Extracted PIN Error: $specificError');
 
           // Show top-right alert dialog with specific error
@@ -264,35 +259,26 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           refreshToken = tokens['refresh'] as String?;
         } else {
           // Alternative token locations in response
-          accessToken = setPinResponse.data?['access_token'] as String? ??
-              setPinResponse.data?['access'] as String?;
-          refreshToken = setPinResponse.data?['refresh_token'] as String? ??
-              setPinResponse.data?['refresh'] as String?;
+          accessToken = setPinResponse.data?['access_token'] as String? ?? setPinResponse.data?['access'] as String?;
+          refreshToken = setPinResponse.data?['refresh_token'] as String? ?? setPinResponse.data?['refresh'] as String?;
         }
 
         // Extract basic user data from response
-        final responseUserData =
-            setPinResponse.data?['user'] as Map<String, dynamic>?;
-        final userType = responseUserData?['user_type'] ??
-            widget.userData?['userType'] ??
-            'customer';
+        final responseUserData = setPinResponse.data?['user'] as Map<String, dynamic>?;
+        final userType = responseUserData?['user_type'] ?? widget.userData?['userType'] ?? 'customer';
 
         // Build initial user data
         final initialUserData = {
           'userId': responseUserData?['id'],
-          'username':
-              responseUserData?['username'] ?? widget.userData?['username'],
+          'username': responseUserData?['username'] ?? widget.userData?['username'],
           'email': responseUserData?['email'] ?? widget.userData?['email'],
-          'firstName':
-              responseUserData?['first_name'] ?? widget.userData?['firstName'],
-          'lastName':
-              responseUserData?['last_name'] ?? widget.userData?['lastName'],
+          'firstName': responseUserData?['first_name'] ?? widget.userData?['firstName'],
+          'lastName': responseUserData?['last_name'] ?? widget.userData?['lastName'],
           'phoneNumber': widget.phoneNumber,
           'userType': userType,
           'isNewUser': true,
           'isVerified': responseUserData?['is_verified'] ?? false,
-          'createdAt': responseUserData?['created_at'] ??
-              DateTime.now().toIso8601String(),
+          'createdAt': responseUserData?['created_at'] ?? DateTime.now().toIso8601String(),
           ...?widget.userData, // Spread any additional data passed
         };
 
@@ -301,8 +287,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         if (accessToken != null) {
           try {
             debugPrint('🔄 Fetching complete user profile for new user...');
-            final profileResponse =
-                await userService.getCurrentUserProfile(accessToken);
+            final profileResponse = await userService.getCurrentUserProfile(accessToken);
 
             if (profileResponse.isSuccess && profileResponse.data != null) {
               final userProfile = profileResponse.data!;
@@ -332,11 +317,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                 'skills': userProfile.skills,
                 'availability': userProfile.availability,
               };
-              debugPrint(
-                  '📊 Updated user data with complete profile information');
+              debugPrint('📊 Updated user data with complete profile information');
             } else {
-              debugPrint(
-                  '⚠️ Failed to fetch complete profile, using initial data');
+              debugPrint('⚠️ Failed to fetch complete profile, using initial data');
             }
           } catch (e) {
             debugPrint('❌ Error fetching complete profile: $e');
@@ -366,8 +349,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           await HiveService.saveUserData(completeUserData);
         }
 
-        debugPrint(
-            '✅ New user data saved successfully with userType: $userType');
+        debugPrint('✅ New user data saved successfully with userType: $userType');
 
         if (mounted) {
           // Navigate to appropriate dashboard based on user type
@@ -408,13 +390,10 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           accessToken = tokens['access'] as String?;
           refreshToken = tokens['refresh'] as String?;
         } else {
-          debugPrint(
-              '⚠️ No tokens found in login response - checking alternative locations');
+          debugPrint('⚠️ No tokens found in login response - checking alternative locations');
           // Alternative token locations in response
-          accessToken = response.data?['access_token'] as String? ??
-              response.data?['access'] as String?;
-          refreshToken = response.data?['refresh_token'] as String? ??
-              response.data?['refresh'] as String?;
+          accessToken = response.data?['access_token'] as String? ?? response.data?['access'] as String?;
+          refreshToken = response.data?['refresh_token'] as String? ?? response.data?['refresh'] as String?;
         }
 
         // Get initial user data from login response
@@ -423,8 +402,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         final userType = userData?['user_type'] ?? 'customer';
 
         if (userData != null) {
-          debugPrint(
-              '✅ Successfully retrieved initial user data with type: $userType');
+          debugPrint('✅ Successfully retrieved initial user data with type: $userType');
 
           // Build initial user data from login response
           final initialUserData = {
@@ -453,10 +431,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           Map<String, dynamic> completeUserData = initialUserData;
           if (accessToken != null) {
             try {
-              debugPrint(
-                  '🔄 Fetching complete user profile for existing user...');
-              final profileResponse =
-                  await userService.getCurrentUserProfile(accessToken);
+              debugPrint('🔄 Fetching complete user profile for existing user...');
+              final profileResponse = await userService.getCurrentUserProfile(accessToken);
 
               if (profileResponse.isSuccess && profileResponse.data != null) {
                 final userProfile = profileResponse.data!;
@@ -486,11 +462,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                   'skills': userProfile.skills,
                   'availability': userProfile.availability,
                 };
-                debugPrint(
-                    '📊 Updated user data with complete, up-to-date profile information');
+                debugPrint('📊 Updated user data with complete, up-to-date profile information');
               } else {
-                debugPrint(
-                    '⚠️ Failed to fetch complete profile, using login response data');
+                debugPrint('⚠️ Failed to fetch complete profile, using login response data');
               }
             } catch (e) {
               debugPrint('❌ Error fetching complete profile: $e');
@@ -606,8 +580,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   ///
   /// @returns Map containing generated firstName, lastName, username, email
   Map<String, String> _generateRandomUserData() {
-    debugPrint(
-        '🎲 PinVerificationScreen: Generating random user data for new registration');
+    debugPrint('🎲 PinVerificationScreen: Generating random user data for new registration');
 
     final random = Random();
 
@@ -826,22 +799,26 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🔐 PinVerificationScreen: Building PIN verification UI');
+    debugPrint('🔐 PinVerificationScreen: Theme manager initialized');
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: themeManager.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Prbal.arrowLeft, color: colorScheme.onSurface),
+          icon: Icon(Prbal.arrowLeft, color: themeManager.textPrimary),
           onPressed: () => context.pop(),
         ),
         title: Text(
           widget.isNewUser ? 'Set PIN' : 'Enter PIN',
-          style: theme.textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: themeManager.textPrimary,
+          ),
         ),
         centerTitle: true,
       ),
@@ -866,20 +843,13 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                     // Header Card
                     Card(
                       elevation: 4,
-                      shadowColor: colorScheme.shadow,
+                      shadowColor: themeManager.textTertiary.withValues(alpha: 77),
                       child: Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(32.w),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.r),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              colorScheme.surfaceContainerHighest,
-                              colorScheme.surface
-                            ],
-                          ),
+                          gradient: themeManager.surfaceGradient,
                         ),
                         child: Column(
                           children: [
@@ -893,26 +863,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                                     width: 80.w,
                                     height: 80.h,
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          colorScheme.primary,
-                                          colorScheme.primaryContainer
-                                        ],
-                                      ),
+                                      gradient: themeManager.primaryGradient,
                                       shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: colorScheme.primary
-                                              .withValues(alpha: 0.3),
-                                          blurRadius: 20,
-                                          offset: const Offset(0, 10),
-                                        ),
-                                      ],
+                                      boxShadow: themeManager.primaryShadow,
                                     ),
                                     child: Icon(
-                                      widget.isNewUser
-                                          ? Prbal.lockOpen
-                                          : Prbal.lock,
+                                      widget.isNewUser ? Prbal.lockOpen : Prbal.lock,
                                       size: 40.sp,
                                       color: Colors.white,
                                     ),
@@ -924,12 +880,11 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                             SizedBox(height: 24.h),
 
                             Text(
-                              widget.isNewUser
-                                  ? 'Create Your PIN'
-                                  : 'Enter Your PIN',
-                              style: theme.textTheme.displaySmall?.copyWith(
-                                color: colorScheme.onSurface,
+                              widget.isNewUser ? 'Create Your PIN' : 'Enter Your PIN',
+                              style: TextStyle(
+                                fontSize: 28.sp,
                                 fontWeight: FontWeight.w700,
+                                color: themeManager.textPrimary,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -940,9 +895,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                               widget.isNewUser
                                   ? 'Set a 4-digit PIN to secure your account'
                                   : 'Enter your 4-digit PIN to continue',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.7),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: themeManager.textSecondary,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -950,18 +905,17 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                             SizedBox(height: 16.h),
 
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w, vertical: 8.h),
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                               decoration: BoxDecoration(
-                                color:
-                                    colorScheme.primary.withValues(alpha: 0.1),
+                                color: themeManager.primaryColor.withValues(alpha: 26),
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
                                 widget.phoneNumber,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.primary,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
                                   fontWeight: FontWeight.w600,
+                                  color: themeManager.primaryColor,
                                 ),
                               ),
                             ),
@@ -977,51 +931,23 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                       animation: _shakeAnimation,
                       builder: (context, child) {
                         return Transform.translate(
-                          offset: Offset(
-                              _shakeAnimation.value *
-                                  10 *
-                                  (1 - 2 * _shakeAnimation.value).abs(),
-                              0),
+                          offset: Offset(_shakeAnimation.value * 10 * (1 - 2 * _shakeAnimation.value).abs(), 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: List.generate(4, (index) {
-                              final isActive =
-                                  _controllers[index].text.isNotEmpty;
+                              final isActive = _controllers[index].text.isNotEmpty;
                               return Container(
                                 width: 65.w,
                                 height: 65.h,
                                 decoration: BoxDecoration(
-                                  gradient: isActive
-                                      ? LinearGradient(
-                                          colors: [
-                                            colorScheme.primary
-                                                .withValues(alpha: 0.1),
-                                            colorScheme.primaryContainer
-                                                .withValues(alpha: 0.1),
-                                          ],
-                                        )
-                                      : null,
-                                  color: isActive
-                                      ? null
-                                      : colorScheme.surfaceContainerHighest,
+                                  gradient: isActive ? themeManager.primaryGradient : null,
+                                  color: isActive ? null : themeManager.surfaceColor,
                                   border: Border.all(
-                                    color: isActive
-                                        ? colorScheme.primary
-                                        : colorScheme.outline
-                                            .withValues(alpha: 0.3),
+                                    color: isActive ? themeManager.primaryColor : themeManager.borderColor,
                                     width: isActive ? 2 : 1,
                                   ),
                                   borderRadius: BorderRadius.circular(16.r),
-                                  boxShadow: isActive
-                                      ? [
-                                          BoxShadow(
-                                            color: colorScheme.primary
-                                                .withValues(alpha: 0.2),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ]
-                                      : null,
+                                  boxShadow: isActive ? themeManager.primaryShadow : null,
                                 ),
                                 child: TextField(
                                   controller: _controllers[index],
@@ -1030,14 +956,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                                   keyboardType: TextInputType.number,
                                   maxLength: 1,
                                   obscureText: true,
-                                  style:
-                                      theme.textTheme.headlineMedium?.copyWith(
-                                    color: colorScheme.onSurface,
+                                  style: TextStyle(
+                                    fontSize: 24.sp,
                                     fontWeight: FontWeight.bold,
+                                    color: themeManager.textPrimary,
                                   ),
-                                  decoration: const InputDecoration(
-                                      counterText: '',
-                                      border: InputBorder.none),
+                                  decoration: const InputDecoration(counterText: '', border: InputBorder.none),
                                   onChanged: (value) {
                                     if (value.isNotEmpty) {
                                       if (index < 3) {
@@ -1051,9 +975,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                                     }
                                     setState(() {});
                                   },
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 ),
                               );
                             }),
@@ -1070,23 +992,21 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                         width: double.infinity,
                         padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
-                          color: colorScheme.error.withValues(alpha: 0.1),
+                          color: themeManager.errorColor.withValues(alpha: 26),
                           borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                              color: colorScheme.error.withValues(alpha: 0.3),
-                              width: 1),
+                          border: Border.all(color: themeManager.errorColor.withValues(alpha: 77), width: 1),
                         ),
                         child: Row(
                           children: [
-                            Icon(Prbal.exclamationTriangle,
-                                color: colorScheme.error, size: 20.sp),
+                            Icon(Prbal.exclamationTriangle, color: themeManager.errorColor, size: 20.sp),
                             SizedBox(width: 12.w),
                             Expanded(
                               child: Text(
                                 _errorMessage!,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.error,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
+                                  color: themeManager.errorColor,
                                 ),
                               ),
                             ),
@@ -1101,50 +1021,38 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                       width: double.infinity,
                       height: 56.h,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          colorScheme.primary,
-                          colorScheme.primaryContainer
-                        ]),
+                        gradient: themeManager.primaryGradient,
                         borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.3),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
+                        boxShadow: themeManager.primaryShadow,
                       ),
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _verifyPin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.r)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
                         ),
                         child: _isLoading
                             ? SizedBox(
                                 width: 24.w,
                                 height: 24.h,
-                                child: const CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2),
+                                child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                               )
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    widget.isNewUser
-                                        ? Prbal.check
-                                        : Prbal.unlock,
+                                    widget.isNewUser ? Prbal.check : Prbal.unlock,
                                     color: Colors.white,
                                     size: 20.sp,
                                   ),
                                   SizedBox(width: 12.w),
                                   Text(
                                     widget.isNewUser ? 'Set PIN' : 'Verify PIN',
-                                    style: theme.textTheme.titleLarge?.copyWith(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.w600,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -1158,26 +1066,22 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                     Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest
-                            .withValues(alpha: 0.5),
+                        color: themeManager.surfaceColor.withValues(alpha: 128),
                         borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                            color: colorScheme.outline.withValues(alpha: 0.2),
-                            width: 1),
+                        border: Border.all(color: themeManager.borderColor.withValues(alpha: 51), width: 1),
                       ),
                       child: Row(
                         children: [
-                          Icon(Prbal.shield4,
-                              color: colorScheme.primary, size: 20.sp),
+                          Icon(Prbal.shield4, color: themeManager.primaryColor, size: 20.sp),
                           SizedBox(width: 12.w),
                           Expanded(
                             child: Text(
                               widget.isNewUser
                                   ? 'Your PIN will be used to secure your account'
                                   : 'Keep your PIN confidential and secure',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.7),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: themeManager.textSecondary,
                               ),
                             ),
                           ),

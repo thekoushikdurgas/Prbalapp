@@ -240,7 +240,7 @@ class MainAppScreen extends StatelessWidget {
 1. Update `UserType` enum in `models/user_type.dart`
 2. Add new case in `_getScreensForUserType()`
 3. Add new case in `_getNavigationItemsForUserType()`
-4. Add color mapping in `_getUserTypeColor()`
+4. Add color mapping in `_getUserTypethemeManager()`
 5. Create corresponding screen files
 
 ### Modifying Tab Configurations
@@ -251,7 +251,7 @@ class MainAppScreen extends StatelessWidget {
 
 ### Styling Customizations
 
-- **Colors**: Modify `_getUserTypeColor()` method
+- **Colors**: Modify `_getUserTypethemeManager()` method
 - **Icons**: Update `NavigationItem` icon properties
 - **Animations**: Adjust duration and curve values
 - **Sizing**: Modify flutter_screenutil values (.w, .h, .sp, .r)

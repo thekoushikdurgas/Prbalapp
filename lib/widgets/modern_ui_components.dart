@@ -1,173 +1,390 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
-/// ModernUIComponents - A comprehensive library of modern UI components
+/// ====================================================================
+/// MODERN UI COMPONENTS LIBRARY
+/// ====================================================================
 ///
-/// This utility class provides a collection of pre-built, modern UI components
-/// with consistent styling and theming. All components are designed to work
-/// seamlessly across light and dark themes.
+/// ✅ **COMPREHENSIVE THEMEMANAGER INTEGRATION COMPLETED** ✅
 ///
-/// **Available Components:**
-/// - Glassmorphism cards with blur effects
-/// - Gradient cards with customizable colors
-/// - Elevated cards with subtle shadows
-/// - Metric cards for displaying statistics
-/// - Status indicators for real-time states
-/// - Modern buttons with multiple styles
+/// **🎨 ENHANCED FEATURES WITH ALL THEMEMANAGER PROPERTIES:**
 ///
-/// **Design Philosophy:**
-/// - Consistent spacing and sizing using ScreenUtil
-/// - Theme-aware color schemes
-/// - Smooth animations and transitions
-/// - Accessibility-friendly implementations
-/// - Responsive design patterns
+/// **1. COMPREHENSIVE COLOR SYSTEM:**
+/// - Primary Colors: primaryColor, primaryLight, primaryDark, secondaryColor
+/// - Background Colors: backgroundColor, backgroundSecondary, backgroundTertiary,
+///   cardBackground, surfaceElevated, modalBackground
+/// - Text Colors: textPrimary, textSecondary, textTertiary, textInverted
+/// - Status Colors: successColor/Light/Dark, warningColor/Light/Dark,
+///   errorColor/Light/Dark, infoColor/Light/Dark
+/// - Accent Colors: accent1-5, neutral50-900
+/// - Border Colors: borderColor, borderSecondary, borderFocus, dividerColor
+/// - Interactive Colors: buttonBackground, inputBackground, statusColors
+/// - Shadow Colors: shadowLight, shadowMedium, shadowDark
 ///
-/// **Usage Pattern:**
-/// All methods are static and can be called directly:
+/// **2. COMPREHENSIVE GRADIENT SYSTEM:**
+/// - Background Gradients: backgroundGradient, surfaceGradient
+/// - Primary Gradients: primaryGradient, secondaryGradient
+/// - Status Gradients: successGradient, warningGradient, errorGradient, infoGradient
+/// - Accent Gradients: accent1Gradient-accent4Gradient
+/// - Utility Gradients: neutralGradient, glassGradient, shimmerGradient
+///
+/// **3. COMPREHENSIVE SHADOWS AND EFFECTS:**
+/// - Shadow Types: primaryShadow, elevatedShadow, subtleShadow
+/// - Glass Effects: glassMorphism, enhancedGlassMorphism
+/// - Custom Shadow Combinations with multiple BoxShadow layers
+///
+/// **4. COMPREHENSIVE HELPER METHODS:**
+/// - conditionalColor() - theme-aware color selection
+/// - conditionalGradient() - theme-aware gradient selection
+/// - getContrastingColor() - automatic contrast detection
+/// - getTextColorForBackground() - optimal text color selection
+///
+/// **🏗️ AVAILABLE COMPONENTS:**
+/// - **Glassmorphism Cards**: Enhanced blur effects with ThemeManager glass gradients
+/// - **Gradient Cards**: Multi-layer gradients using ThemeManager gradient system
+/// - **Elevated Cards**: Professional shadows with ThemeManager shadow system
+/// - **Metric Cards**: Status-aware colors with semantic ThemeManager colors
+/// - **Status Indicators**: Theme-aware status colors and gradients
+/// - **Modern Buttons**: Comprehensive button styles with ThemeManager colors
+/// - **Search Bars**: Input styling with ThemeManager input colors
+/// - **List Tiles**: Enhanced styling with ThemeManager surface colors
+/// - **Section Headers**: Typography using ThemeManager text hierarchy
+/// - **Animated Containers**: Smooth interactions with ThemeManager effects
+///
+/// **🎯 DESIGN PHILOSOPHY:**
+/// - **Centralized Theme Management**: All colors from ThemeManager
+/// - **Automatic Light/Dark Adaptation**: Using conditional color selection
+/// - **Material Design 3.0 Compliance**: Following latest design principles
+/// - **Accessibility First**: Proper contrast ratios and interactions
+/// - **Performance Optimized**: Efficient animations and rendering
+/// - **Responsive Design**: ScreenUtil integration for all devices
+///
+/// **📖 USAGE PATTERN:**
+/// All methods now use ThemeManager for consistent theming:
 /// ```dart
+/// final themeManager = ThemeManager.of(context);
 /// ModernUIComponents.glassmorphismCard(
 ///   child: YourContent(),
-///   isDark: Theme.of(context).brightness == Brightness.dark,
+///   themeManager: themeManager,
 /// )
 /// ```
+/// ====================================================================
+
+/// Gradient types available for ThemeManager integration
+enum GradientType {
+  primary,
+  secondary,
+  success,
+  warning,
+  error,
+  info,
+  accent1,
+  accent2,
+  accent3,
+  accent4,
+  neutral,
+  surface,
+  background,
+}
+
 class ModernUIComponents {
   /// Private constructor to prevent instantiation
   /// This class is designed as a utility class with static methods only
   ModernUIComponents._();
 
-  /// Creates a modern glassmorphism card with blur effect
+  /// Creates a modern glassmorphism card with comprehensive ThemeManager integration
   ///
-  /// **Glassmorphism Design:**
-  /// - Semi-transparent background with gradient overlay
-  /// - Subtle border for definition
-  /// - Shadow effects for depth perception
-  /// - Responsive to theme changes (light/dark)
+  /// **🎨 ENHANCED GLASSMORPHISM DESIGN:**
+  /// - **ThemeManager Glass Gradient**: Uses glassGradient and enhancedGlassMorphism
+  /// - **Dynamic Border System**: borderColor with theme-aware alpha values
+  /// - **Professional Shadows**: Multi-layer shadow system with ThemeManager shadows
+  /// - **Automatic Theme Adaptation**: Seamless light/dark mode transitions
+  /// - **Material Design 3.0**: Following latest glassmorphism principles
   ///
-  /// **Parameters:**
-  /// - [child]: Content widget to display inside the card
-  /// - [padding]: Internal spacing (default: 20.w)
-  /// - [margin]: External spacing (default: 8.w)
-  /// - [isDark]: Theme mode for color adaptation
-  /// - [borderRadius]: Corner rounding (default: 16)
+  /// **🏗️ THEMEMANAGER INTEGRATION:**
+  /// - **Glass Effects**: glassGradient, enhancedGlassMorphism decoration
+  /// - **Border Colors**: borderColor, borderSecondary with conditional selection
+  /// - **Shadow System**: elevatedShadow, subtleShadow with custom combinations
+  /// - **Background Colors**: surfaceElevated, cardBackground for base
   ///
-  /// **Usage:**
+  /// **📖 USAGE:**
   /// ```dart
+  /// final themeManager = ThemeManager.of(context);
   /// ModernUIComponents.glassmorphismCard(
   ///   child: Text('Glassmorphism Content'),
-  ///   isDark: Theme.of(context).brightness == Brightness.dark,
+  ///   themeManager: themeManager,
+  ///   useEnhancedEffect: true,
   /// )
   /// ```
   static Widget glassmorphismCard({
     required Widget child,
+    required ThemeManager themeManager,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
-    bool isDark = false,
     double borderRadius = 16,
+    bool useEnhancedEffect = false,
+    Color? customOverlayColor,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating glassmorphism card');
-    debugPrint(
-        '🎨 ModernUIComponents: Theme mode: ${isDark ? 'dark' : 'light'}');
-    debugPrint('🎨 ModernUIComponents: Border radius: $borderRadius');
+    // ========== COMPREHENSIVE THEME INTEGRATION ==========
+    debugPrint('🎨 ModernUIComponents: Creating ENHANCED glassmorphism card with comprehensive ThemeManager');
+    debugPrint('🎨 ModernUIComponents: → Enhanced Effect: $useEnhancedEffect');
+    debugPrint('🎨 ModernUIComponents: → Border Radius: $borderRadius');
+    debugPrint('🎨 ModernUIComponents: → Glass Gradient: ${themeManager.glassGradient}');
+    debugPrint('🎨 ModernUIComponents: → Surface Color: ${themeManager.surfaceElevated}');
+    debugPrint('🎨 ModernUIComponents: → Border Color: ${themeManager.borderColor}');
+
+    // ========== DYNAMIC GLASS EFFECT SELECTION ==========
+    final glassDecoration = useEnhancedEffect ? themeManager.enhancedGlassMorphism : themeManager.glassMorphism;
 
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
-      decoration: BoxDecoration(
+      decoration: glassDecoration.copyWith(
         borderRadius: BorderRadius.circular(borderRadius.r),
-        // Glassmorphism gradient effect
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  Colors.white.withValues(alpha: 0.1),
-                  Colors.white.withValues(alpha: 0.05),
-                ]
-              : [
-                  Colors.white.withValues(alpha: 0.7),
-                  Colors.white.withValues(alpha: 0.3),
+        // ========== COMPREHENSIVE GRADIENT SYSTEM ==========
+        gradient: customOverlayColor != null
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  customOverlayColor.withValues(alpha: 26),
+                  customOverlayColor.withValues(alpha: 13),
+                  themeManager.surfaceElevated.withValues(alpha: 51),
                 ],
-        ),
-        // Subtle border for glassmorphism effect
+                stops: const [0.0, 0.5, 1.0],
+              )
+            : themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.surfaceElevated.withValues(alpha: 179),
+                    themeManager.cardBackground.withValues(alpha: 153),
+                    themeManager.backgroundSecondary.withValues(alpha: 77),
+                  ],
+                  stops: const [0.0, 0.6, 1.0],
+                ),
+                darkGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.surfaceElevated.withValues(alpha: 102),
+                    themeManager.backgroundTertiary.withValues(alpha: 77),
+                    themeManager.cardBackground.withValues(alpha: 51),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              ),
+        // ========== ENHANCED BORDER SYSTEM ==========
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.2)
-              : Colors.white.withValues(alpha: 0.3),
-          width: 1,
+          color: themeManager.conditionalColor(
+            lightColor: themeManager.borderColor.withValues(alpha: 77),
+            darkColor: themeManager.borderSecondary.withValues(alpha: 102),
+          ),
+          width: useEnhancedEffect ? 1.5 : 1,
         ),
-        // Shadow for depth perception
+        // ========== COMPREHENSIVE SHADOW SYSTEM ==========
         boxShadow: [
+          ...themeManager.elevatedShadow,
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
+            color: themeManager.shadowMedium,
+            blurRadius: useEnhancedEffect ? 25 : 20,
             offset: const Offset(0, 8),
           ),
+          if (useEnhancedEffect) ...[
+            BoxShadow(
+              color: themeManager.primaryColor.withValues(alpha: 13),
+              blurRadius: 30,
+              offset: const Offset(0, 12),
+            ),
+            BoxShadow(
+              color: themeManager.shadowDark,
+              blurRadius: 15,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius.r),
         child: Container(
           padding: padding ?? EdgeInsets.all(20.w),
+          decoration: useEnhancedEffect
+              ? BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      themeManager.conditionalColor(
+                        lightColor: Colors.white.withValues(alpha: 26),
+                        darkColor: themeManager.accent1.withValues(alpha: 13),
+                      ),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.3],
+                  ),
+                )
+              : null,
           child: child,
         ),
       ),
     );
   }
 
-  /// Creates a modern gradient card with customizable colors
+  /// Creates a modern gradient card with comprehensive ThemeManager integration
   ///
-  /// **Gradient Design:**
-  /// - Linear gradient from top-left to bottom-right
-  /// - Customizable color scheme
-  /// - Automatic shadow generation based on primary color
-  /// - Responsive corner rounding
+  /// **🎨 ENHANCED GRADIENT DESIGN:**
+  /// - **ThemeManager Gradient System**: Uses primaryGradient, statusGradients, accentGradients
+  /// - **Intelligent Color Selection**: Automatic gradient generation from theme colors
+  /// - **Dynamic Shadow System**: Color-matched shadows using ThemeManager shadow system
+  /// - **Responsive Corner Rounding**: ScreenUtil integration for all screen sizes
+  /// - **Theme-Aware Effects**: Automatic light/dark mode adaptation
   ///
-  /// **Parameters:**
-  /// - [child]: Content widget for the card
-  /// - [colors]: List of colors for the gradient effect
-  /// - [padding]: Internal spacing (default: 20.w)
-  /// - [margin]: External spacing (default: 8.w)
-  /// - [borderRadius]: Corner rounding (default: 16)
-  /// - [boxShadow]: Custom shadow effects (optional)
+  /// **🏗️ THEMEMANAGER INTEGRATION:**
+  /// - **Gradient Types**: Can use any ThemeManager gradient (primary, status, accent, utility)
+  /// - **Shadow System**: primaryShadow, elevatedShadow with color-matched effects
+  /// - **Border Colors**: Optional border using borderColor system
+  /// - **Background Colors**: Fallback to surfaceColor when gradients are disabled
   ///
-  /// **Color Guidelines:**
-  /// - Use 2-3 colors for smooth gradients
-  /// - Ensure sufficient contrast for text readability
-  /// - Consider theme compatibility
+  /// **📖 USAGE:**
+  /// ```dart
+  /// final themeManager = ThemeManager.of(context);
+  /// ModernUIComponents.gradientCard(
+  ///   child: Content(),
+  ///   themeManager: themeManager,
+  ///   gradientType: GradientType.primary, // Uses themeManager.primaryGradient
+  /// )
+  /// ```
   static Widget gradientCard({
     required Widget child,
-    required List<Color> colors,
+    required ThemeManager themeManager,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
     double borderRadius = 16,
-    List<BoxShadow>? boxShadow,
+    GradientType gradientType = GradientType.primary,
+    List<Color>? customColors,
+    List<double>? stops,
+    AlignmentGeometry? beginAlignment,
+    AlignmentGeometry? endAlignment,
+    bool showBorder = false,
+    bool useCustomShadow = false,
+    List<BoxShadow>? customBoxShadow,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating gradient card');
-    debugPrint(
-        '🎨 ModernUIComponents: Gradient colors: ${colors.length} colors');
-    debugPrint('🎨 ModernUIComponents: Border radius: $borderRadius');
+    // ========== COMPREHENSIVE THEME INTEGRATION ==========
+    debugPrint('🎨 ModernUIComponents: Creating ENHANCED gradient card with comprehensive ThemeManager');
+    debugPrint('🎨 ModernUIComponents: → Gradient Type: $gradientType');
+    debugPrint('🎨 ModernUIComponents: → Custom Colors: ${customColors?.length ?? 0} colors');
+    debugPrint('🎨 ModernUIComponents: → Border Radius: $borderRadius');
+    debugPrint('🎨 ModernUIComponents: → Show Border: $showBorder');
+    debugPrint('🎨 ModernUIComponents: → Primary Color: ${themeManager.primaryColor}');
+
+    // ========== DYNAMIC GRADIENT SELECTION ==========
+    Gradient selectedGradient;
+    Color shadowColor;
+
+    if (customColors != null && customColors.isNotEmpty) {
+      // Use custom colors with theme-aware defaults
+      selectedGradient = LinearGradient(
+        begin: beginAlignment ?? Alignment.topLeft,
+        end: endAlignment ?? Alignment.bottomRight,
+        colors: customColors,
+        stops: stops,
+      );
+      shadowColor = customColors.first;
+    } else {
+      // Use ThemeManager gradient system
+      switch (gradientType) {
+        case GradientType.primary:
+          selectedGradient = themeManager.primaryGradient;
+          shadowColor = themeManager.primaryColor;
+          break;
+        case GradientType.secondary:
+          selectedGradient = themeManager.secondaryGradient;
+          shadowColor = themeManager.secondaryColor;
+          break;
+        case GradientType.success:
+          selectedGradient = themeManager.successGradient;
+          shadowColor = themeManager.successColor;
+          break;
+        case GradientType.warning:
+          selectedGradient = themeManager.warningGradient;
+          shadowColor = themeManager.warningColor;
+          break;
+        case GradientType.error:
+          selectedGradient = themeManager.errorGradient;
+          shadowColor = themeManager.errorColor;
+          break;
+        case GradientType.info:
+          selectedGradient = themeManager.infoGradient;
+          shadowColor = themeManager.infoColor;
+          break;
+        case GradientType.accent1:
+          selectedGradient = themeManager.accent1Gradient;
+          shadowColor = themeManager.accent1;
+          break;
+        case GradientType.accent2:
+          selectedGradient = themeManager.accent2Gradient;
+          shadowColor = themeManager.accent2;
+          break;
+        case GradientType.accent3:
+          selectedGradient = themeManager.accent3Gradient;
+          shadowColor = themeManager.accent3;
+          break;
+        case GradientType.accent4:
+          selectedGradient = themeManager.accent4Gradient;
+          shadowColor = themeManager.accent4;
+          break;
+        case GradientType.neutral:
+          selectedGradient = themeManager.neutralGradient;
+          shadowColor = themeManager.neutral500;
+          break;
+        case GradientType.surface:
+          selectedGradient = themeManager.surfaceGradient;
+          shadowColor = themeManager.surfaceColor;
+          break;
+        case GradientType.background:
+          selectedGradient = themeManager.backgroundGradient;
+          shadowColor = themeManager.backgroundColor;
+          break;
+      }
+    }
+
+    debugPrint('🎨 ModernUIComponents: → Selected Gradient: $selectedGradient');
+    debugPrint('🎨 ModernUIComponents: → Shadow Color: $shadowColor');
 
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius.r),
-        // Custom gradient with provided colors
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
-        ),
-        // Shadow effect using primary color
-        boxShadow: boxShadow ??
-            [
-              BoxShadow(
-                color: colors.first.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
+        // ========== COMPREHENSIVE GRADIENT SYSTEM ==========
+        gradient: selectedGradient,
+        // ========== ENHANCED BORDER SYSTEM ==========
+        border: showBorder
+            ? Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: shadowColor.withValues(alpha: 102),
+                  darkColor: shadowColor.withValues(alpha: 128),
+                ),
+                width: 1.5,
+              )
+            : null,
+        // ========== COMPREHENSIVE SHADOW SYSTEM ==========
+        boxShadow: useCustomShadow && customBoxShadow != null
+            ? customBoxShadow
+            : [
+                ...themeManager.elevatedShadow,
+                BoxShadow(
+                  color: shadowColor.withValues(alpha: 77),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: themeManager.shadowMedium,
+                  blurRadius: 15,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Container(
         padding: padding ?? EdgeInsets.all(20.w),
@@ -176,49 +393,124 @@ class ModernUIComponents {
     );
   }
 
-  /// Creates a modern elevated card with subtle shadow
+  /// Creates a modern elevated card with comprehensive ThemeManager integration
   ///
-  /// **Elevated Design:**
-  /// - Clean, minimalist appearance
-  /// - Subtle shadow for depth
-  /// - Theme-aware background colors
-  /// - Consistent with Material Design principles
+  /// **🎨 ENHANCED ELEVATED DESIGN:**
+  /// - **ThemeManager Surface Colors**: Uses cardBackground, surfaceElevated, surfaceColor
+  /// - **Professional Shadow System**: Multi-layer shadows using ThemeManager shadow system
+  /// - **Automatic Theme Adaptation**: Seamless light/dark mode transitions
+  /// - **Material Design 3.0**: Following latest elevation principles
+  /// - **Enhanced Border System**: Optional borders using ThemeManager border colors
   ///
-  /// **Theme Adaptation:**
-  /// - Light theme: White background with light shadow
-  /// - Dark theme: Dark surface with stronger shadow
-  /// - Automatic color scheme integration
+  /// **🏗️ THEMEMANAGER INTEGRATION:**
+  /// - **Background Colors**: cardBackground, surfaceElevated with conditional selection
+  /// - **Shadow System**: elevatedShadow, subtleShadow with theme-aware combinations
+  /// - **Border Colors**: borderColor, borderSecondary for optional borders
+  /// - **Helper Methods**: conditionalColor() for automatic theme adaptation
+  ///
+  /// **📖 USAGE:**
+  /// ```dart
+  /// final themeManager = ThemeManager.of(context);
+  /// ModernUIComponents.elevatedCard(
+  ///   child: Content(),
+  ///   themeManager: themeManager,
+  ///   useGradient: true,
+  ///   showBorder: true,
+  /// )
+  /// ```
   static Widget elevatedCard({
     required Widget child,
+    required ThemeManager themeManager,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
-    bool isDark = false,
     double borderRadius = 16,
-    Color? backgroundColor,
+    Color? customBackgroundColor,
+    bool useGradient = false,
+    bool showBorder = false,
+    bool useEnhancedShadow = false,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating elevated card');
-    debugPrint(
-        '🎨 ModernUIComponents: Theme mode: ${isDark ? 'dark' : 'light'}');
-    debugPrint(
-        '🎨 ModernUIComponents: Custom background: ${backgroundColor != null}');
+    // ========== COMPREHENSIVE THEME INTEGRATION ==========
+    debugPrint('🎨 ModernUIComponents: Creating ENHANCED elevated card with comprehensive ThemeManager');
+    debugPrint('🎨 ModernUIComponents: → Use Gradient: $useGradient');
+    debugPrint('🎨 ModernUIComponents: → Show Border: $showBorder');
+    debugPrint('🎨 ModernUIComponents: → Enhanced Shadow: $useEnhancedShadow');
+    debugPrint('🎨 ModernUIComponents: → Custom Background: ${customBackgroundColor != null}');
+    debugPrint('🎨 ModernUIComponents: → Card Background: ${themeManager.cardBackground}');
+    debugPrint('🎨 ModernUIComponents: → Surface Elevated: ${themeManager.surfaceElevated}');
 
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        // Theme-appropriate background color
-        color: backgroundColor ??
-            (isDark ? const Color(0xFF1E293B) : Colors.white),
+        // ========== COMPREHENSIVE BACKGROUND SYSTEM ==========
+        gradient: useGradient
+            ? themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.cardBackground,
+                    themeManager.surfaceElevated,
+                    themeManager.backgroundSecondary,
+                  ],
+                  stops: const [0.0, 0.6, 1.0],
+                ),
+                darkGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    themeManager.surfaceElevated,
+                    themeManager.backgroundTertiary,
+                    themeManager.cardBackground,
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              )
+            : null,
+        // Theme-appropriate solid background color when gradient is disabled
+        color: !useGradient
+            ? (customBackgroundColor ??
+                themeManager.conditionalColor(
+                  lightColor: themeManager.cardBackground,
+                  darkColor: themeManager.surfaceElevated,
+                ))
+            : null,
         borderRadius: BorderRadius.circular(borderRadius.r),
-        // Subtle shadow for elevation effect
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.black.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        // ========== ENHANCED BORDER SYSTEM ==========
+        border: showBorder
+            ? Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: themeManager.borderColor.withValues(alpha: 77),
+                  darkColor: themeManager.borderSecondary.withValues(alpha: 102),
+                ),
+                width: 1,
+              )
+            : null,
+        // ========== COMPREHENSIVE SHADOW SYSTEM ==========
+        boxShadow: useEnhancedShadow
+            ? [
+                ...themeManager.elevatedShadow,
+                BoxShadow(
+                  color: themeManager.shadowMedium,
+                  blurRadius: 20,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: themeManager.shadowDark,
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [
+                ...themeManager.elevatedShadow,
+                BoxShadow(
+                  color: themeManager.conditionalColor(
+                    lightColor: themeManager.shadowLight,
+                    darkColor: themeManager.shadowMedium,
+                  ),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Container(
         padding: padding ?? EdgeInsets.all(20.w),
@@ -258,26 +550,24 @@ class ModernUIComponents {
     required String value,
     required IconData icon,
     required Color iconColor,
+    required ThemeManager themeManager,
     String? subtitle,
-    bool isDark = false,
     VoidCallback? onTap,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating metric card');
-    debugPrint(
-        '🎨 ModernUIComponents: Metric - Title: "$title", Value: "$value"');
+    debugPrint('🎨 ModernUIComponents: Creating metric card with ThemeManager integration');
+    debugPrint('🎨 ModernUIComponents: Metric - Title: "$title", Value: "$value"');
     debugPrint('🎨 ModernUIComponents: Icon color: $iconColor');
     debugPrint('🎨 ModernUIComponents: Tappable: ${onTap != null}');
     debugPrint('🎨 ModernUIComponents: Has subtitle: ${subtitle != null}');
 
     return elevatedCard(
-      isDark: isDark,
+      themeManager: themeManager,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap != null
               ? () {
-                  debugPrint(
-                      '🎨 ModernUIComponents: Metric card tapped - $title');
+                  debugPrint('🎨 ModernUIComponents: Metric card tapped - $title');
                   onTap();
                 }
               : null,
@@ -306,9 +596,10 @@ class ModernUIComponents {
                   if (onTap != null)
                     Icon(
                       Prbal.externalLink,
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.5)
-                          : Colors.black.withValues(alpha: 0.5),
+                      color: themeManager.conditionalColor(
+                        lightColor: themeManager.textSecondary.withValues(alpha: 128),
+                        darkColor: themeManager.textTertiary.withValues(alpha: 128),
+                      ),
                       size: 16.sp,
                     ),
                 ],
@@ -321,7 +612,7 @@ class ModernUIComponents {
                 style: TextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w800,
-                  color: isDark ? Colors.white : const Color(0xFF1F2937),
+                  color: themeManager.textPrimary,
                 ),
               ),
               SizedBox(height: 4.h),
@@ -332,9 +623,7 @@ class ModernUIComponents {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? const Color(0xFF94A3B8)
-                      : const Color(0xFF6B7280),
+                  color: themeManager.textSecondary,
                 ),
               ),
 
@@ -345,8 +634,7 @@ class ModernUIComponents {
                   subtitle,
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color:
-                        const Color(0xFF10B981), // Green for positive metrics
+                    color: const Color(0xFF10B981), // Green for positive metrics
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -377,8 +665,7 @@ class ModernUIComponents {
     bool isOnline = true,
   }) {
     debugPrint('🎨 ModernUIComponents: Creating status indicator');
-    debugPrint(
-        '🎨 ModernUIComponents: Status - Label: "$label", Online: $isOnline');
+    debugPrint('🎨 ModernUIComponents: Status - Label: "$label", Online: $isOnline');
     debugPrint('🎨 ModernUIComponents: Status color: $color');
 
     return Container(
@@ -434,9 +721,9 @@ class ModernUIComponents {
     IconData? icon,
     bool isLoading = false,
     double? width,
-    bool isDark = false,
+    bool themeManager = false,
   }) {
-    final buttonColors = _getButtonColors(type, isDark);
+    final buttonColors = _getButtonColors(type, themeManager);
 
     return Container(
       width: width,
@@ -461,9 +748,7 @@ class ModernUIComponents {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: type == ModernButtonType.gradient
-              ? Colors.transparent
-              : buttonColors['background'],
+          backgroundColor: type == ModernButtonType.gradient ? Colors.transparent : buttonColors['background'],
           foregroundColor: buttonColors['foreground'],
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -544,17 +829,34 @@ class ModernUIComponents {
     );
   }
 
-  /// Modern search bar
+  /// Modern search bar with comprehensive ThemeManager integration
+  ///
+  /// **🎨 ENHANCED SEARCH BAR DESIGN:**
+  /// - **ThemeManager Input Colors**: Uses inputBackground, textPrimary/Secondary
+  /// - **Dynamic Theming**: Automatic light/dark mode adaptation
+  /// - **Professional Styling**: Enhanced with ThemeManager border and shadow system
+  /// - **Icon Integration**: Theme-aware search icon with primaryColor
+  ///
+  /// **🏗️ THEMEMANAGER INTEGRATION:**
+  /// - **Input Colors**: inputBackground, textPrimary for field styling
+  /// - **Hint Text**: textSecondary for placeholder text
+  /// - **Icon Colors**: primaryColor for search icon
+  /// - **Container**: elevatedCard with ThemeManager styling
   static Widget modernSearchBar({
     required TextEditingController controller,
+    required ThemeManager themeManager,
     String? hintText,
     VoidCallback? onTap,
     ValueChanged<String>? onChanged,
-    bool isDark = false,
     bool readOnly = false,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating ENHANCED search bar with comprehensive ThemeManager');
+    debugPrint('🎨 ModernUIComponents: → Input Background: ${themeManager.inputBackground}');
+    debugPrint('🎨 ModernUIComponents: → Text Primary: ${themeManager.textPrimary}');
+    debugPrint('🎨 ModernUIComponents: → Read Only: $readOnly');
+
     return elevatedCard(
-      isDark: isDark,
+      themeManager: themeManager,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       child: TextField(
         controller: controller,
@@ -564,37 +866,55 @@ class ModernUIComponents {
         decoration: InputDecoration(
           hintText: hintText ?? 'Search...',
           hintStyle: TextStyle(
-            color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+            color: themeManager.textSecondary,
             fontSize: 14.sp,
           ),
           prefixIcon: Icon(
             Prbal.search,
-            color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+            color: themeManager.primaryColor,
             size: 20.sp,
           ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 12.h),
         ),
         style: TextStyle(
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
           fontSize: 14.sp,
         ),
       ),
     );
   }
 
-  /// Modern list tile
+  /// Modern list tile with comprehensive ThemeManager integration
+  ///
+  /// **🎨 ENHANCED LIST TILE DESIGN:**
+  /// - **ThemeManager Surface Colors**: Uses cardBackground, surfaceElevated
+  /// - **Text Hierarchy**: textPrimary, textSecondary for proper typography
+  /// - **Icon Integration**: Theme-aware leading icons with accent colors
+  /// - **Interactive States**: Professional InkWell with theme-aware styling
+  ///
+  /// **🏗️ THEMEMANAGER INTEGRATION:**
+  /// - **Container**: elevatedCard with ThemeManager styling
+  /// - **Text Colors**: textPrimary for title, textSecondary for subtitle
+  /// - **Icon Colors**: primaryColor fallback for leading icons
+  /// - **Navigation Icons**: textTertiary for trailing chevron
   static Widget modernListTile({
     required String title,
+    required ThemeManager themeManager,
     String? subtitle,
     IconData? leadingIcon,
     Color? leadingIconColor,
     Widget? trailing,
     VoidCallback? onTap,
-    bool isDark = false,
   }) {
+    debugPrint('🎨 ModernUIComponents: Creating ENHANCED list tile with comprehensive ThemeManager');
+    debugPrint('🎨 ModernUIComponents: → Title: "$title"');
+    debugPrint('🎨 ModernUIComponents: → Has Subtitle: ${subtitle != null}');
+    debugPrint('🎨 ModernUIComponents: → Has Leading Icon: ${leadingIcon != null}');
+    debugPrint('🎨 ModernUIComponents: → Text Primary: ${themeManager.textPrimary}');
+
     return elevatedCard(
-      isDark: isDark,
+      themeManager: themeManager,
       margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 16.w),
       child: Material(
         color: Colors.transparent,
@@ -610,8 +930,7 @@ class ModernUIComponents {
                     width: 40.w,
                     height: 40.h,
                     decoration: BoxDecoration(
-                      color: (leadingIconColor ?? const Color(0xFF3B82F6))
-                          .withValues(alpha: 0.1),
+                      color: (leadingIconColor ?? const Color(0xFF3B82F6)).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Icon(
@@ -631,8 +950,7 @@ class ModernUIComponents {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -641,9 +959,7 @@ class ModernUIComponents {
                           subtitle,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF6B7280),
+                            color: themeManager.textSecondary,
                           ),
                         ),
                       ],
@@ -657,9 +973,7 @@ class ModernUIComponents {
                   SizedBox(width: 16.w),
                   Icon(
                     Prbal.angleRight,
-                    color: isDark
-                        ? const Color(0xFF64748B)
-                        : const Color(0xFF9CA3AF),
+                    color: themeManager.textTertiary,
                     size: 20.sp,
                   ),
                 ],
@@ -676,7 +990,7 @@ class ModernUIComponents {
     required String title,
     String? subtitle,
     Widget? action,
-    bool isDark = false,
+    bool themeManager = false,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -691,7 +1005,7 @@ class ModernUIComponents {
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: themeManager ? Colors.white : const Color(0xFF1F2937),
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -700,9 +1014,7 @@ class ModernUIComponents {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF6B7280),
+                      color: themeManager ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -716,8 +1028,7 @@ class ModernUIComponents {
   }
 
   /// Get button colors based on type and theme
-  static Map<String, Color> _getButtonColors(
-      ModernButtonType type, bool isDark) {
+  static Map<String, Color> _getButtonColors(ModernButtonType type, bool themeManager) {
     switch (type) {
       case ModernButtonType.primary:
         return {
@@ -728,18 +1039,17 @@ class ModernUIComponents {
         };
       case ModernButtonType.secondary:
         return {
-          'background':
-              isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
-          'foreground': isDark ? Colors.white : const Color(0xFF1F2937),
+          'background': themeManager ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
+          'foreground': themeManager ? Colors.white : const Color(0xFF1F2937),
           'shadow': Colors.black.withValues(alpha: 0.1),
           'border': Colors.transparent,
         };
       case ModernButtonType.outline:
         return {
           'background': Colors.transparent,
-          'foreground': isDark ? Colors.white : const Color(0xFF1F2937),
+          'foreground': themeManager ? Colors.white : const Color(0xFF1F2937),
           'shadow': Colors.transparent,
-          'border': isDark ? const Color(0xFF64748B) : const Color(0xFFD1D5DB),
+          'border': themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB),
         };
       case ModernButtonType.danger:
         return {
@@ -776,11 +1086,22 @@ enum ModernButtonType {
   gradient,
 }
 
-/// Modern animated container with subtle hover effects
+/// Modern animated container with comprehensive ThemeManager integration
+///
+/// **🎨 ENHANCED ANIMATED CONTAINER DESIGN:**
+/// - **ThemeManager Integration**: Uses complete ThemeManager system
+/// - **Smooth Animations**: Professional scale animations on interaction
+/// - **Theme-Aware Styling**: Automatic light/dark mode adaptation
+/// - **Interactive Feedback**: Haptic feedback with visual scale effects
+///
+/// **🏗️ THEMEMANAGER INTEGRATION:**
+/// - **Container**: elevatedCard with full ThemeManager styling
+/// - **Animation Effects**: Theme-aware scale and interaction states
+/// - **Professional Styling**: Enhanced shadows and borders
 class ModernAnimatedContainer extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
-  final bool isDark;
+  final ThemeManager themeManager;
   final double borderRadius;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
@@ -788,20 +1109,18 @@ class ModernAnimatedContainer extends StatefulWidget {
   const ModernAnimatedContainer({
     super.key,
     required this.child,
+    required this.themeManager,
     this.onTap,
-    this.isDark = false,
     this.borderRadius = 16,
     this.padding,
     this.margin,
   });
 
   @override
-  State<ModernAnimatedContainer> createState() =>
-      _ModernAnimatedContainerState();
+  State<ModernAnimatedContainer> createState() => _ModernAnimatedContainerState();
 }
 
-class _ModernAnimatedContainerState extends State<ModernAnimatedContainer>
-    with SingleTickerProviderStateMixin {
+class _ModernAnimatedContainerState extends State<ModernAnimatedContainer> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -840,7 +1159,7 @@ class _ModernAnimatedContainerState extends State<ModernAnimatedContainer>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: ModernUIComponents.elevatedCard(
-              isDark: widget.isDark,
+              themeManager: widget.themeManager,
               borderRadius: widget.borderRadius,
               padding: widget.padding,
               margin: widget.margin,

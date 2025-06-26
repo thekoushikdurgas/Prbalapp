@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class ProviderExploreScreen extends ConsumerStatefulWidget {
   const ProviderExploreScreen({super.key});
 
   @override
-  ConsumerState<ProviderExploreScreen> createState() =>
-      _ProviderExploreScreenState();
+  ConsumerState<ProviderExploreScreen> createState() => _ProviderExploreScreenState();
 }
 
 class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
@@ -25,11 +25,15 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+
+    debugPrint(
+        '🎯 ProviderExploreScreen: Building screen with _isMapView: $_isMapView, selectedCategory: $_selectedCategory');
+    debugPrint(
+        '🎨 ProviderExploreScreen: ThemeManager - isDark: ${themeManager.themeManager}, backgroundColor: ${themeManager.backgroundColor}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -37,16 +41,8 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark
-                        ? Colors.black.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: themeManager.surfaceColor,
+                boxShadow: themeManager.subtleShadow,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -59,16 +55,13 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                         style: TextStyle(
                           fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       const Spacer(),
                       Container(
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF2D2D2D)
-                              : const Color(0xFFF7FAFC),
+                          gradient: themeManager.surfaceGradient,
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Row(
@@ -78,13 +71,13 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                               icon: Prbal.map,
                               isSelected: _isMapView,
                               onTap: () => setState(() => _isMapView = true),
-                              isDark: isDark,
+                              themeManager: themeManager,
                             ),
                             _buildViewToggle(
                               icon: Prbal.list,
                               isSelected: !_isMapView,
                               onTap: () => setState(() => _isMapView = false),
-                              isDark: isDark,
+                              themeManager: themeManager,
                             ),
                           ],
                         ),
@@ -97,9 +90,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   // Search Bar
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF2D2D2D)
-                          : const Color(0xFFF7FAFC),
+                      gradient: themeManager.surfaceGradient,
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: TextField(
@@ -107,18 +98,18 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       decoration: InputDecoration(
                         hintText: 'Search customer requests...',
                         hintStyle: TextStyle(
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                           fontSize: 16.sp,
                         ),
                         prefixIcon: Icon(
                           Prbal.search,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                         ),
                         suffixIcon: IconButton(
                           onPressed: _showFilterBottomSheet,
                           icon: Icon(
                             Prbal.tune,
-                            color: const Color(0xFF4299E1),
+                            color: themeManager.primaryColor,
                           ),
                         ),
                         border: InputBorder.none,
@@ -138,20 +129,15 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        _buildFilterChip(
-                            'All', _selectedCategory == 'All', isDark),
+                        _buildFilterChip('All', _selectedCategory == 'All', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Home Services',
-                            _selectedCategory == 'Home Services', isDark),
+                        _buildFilterChip('Home Services', _selectedCategory == 'Home Services', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Technical',
-                            _selectedCategory == 'Technical', isDark),
+                        _buildFilterChip('Technical', _selectedCategory == 'Technical', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Beauty & Care',
-                            _selectedCategory == 'Beauty & Care', isDark),
+                        _buildFilterChip('Beauty & Care', _selectedCategory == 'Beauty & Care', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip(
-                            'Urgent', _selectedCategory == 'Urgent', isDark),
+                        _buildFilterChip('Urgent', _selectedCategory == 'Urgent', themeManager),
                       ],
                     ),
                   ),
@@ -161,8 +147,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
 
             // Content Area
             Expanded(
-              child:
-                  _isMapView ? _buildMapView(isDark) : _buildListView(isDark),
+              child: _isMapView ? _buildMapView(themeManager) : _buildListView(themeManager),
             ),
           ],
         ),
@@ -174,45 +159,42 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
     required IconData icon,
     required bool isSelected,
     required VoidCallback onTap,
-    required bool isDark,
+    required ThemeManager themeManager,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF4299E1) : Colors.transparent,
+          color: isSelected ? themeManager.primaryColor : Colors.transparent,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Icon(
           icon,
-          color: isSelected
-              ? Colors.white
-              : (isDark ? Colors.grey[400] : Colors.grey[600]),
+          color: isSelected ? Colors.white : themeManager.textSecondary,
           size: 20.sp,
         ),
       ),
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, bool isDark) {
+  Widget _buildFilterChip(String label, bool isSelected, ThemeManager themeManager) {
     return GestureDetector(
       onTap: () {
+        debugPrint(
+            '🎯 ProviderExploreScreen: Filter chip tapped - label: $label, previousSelection: $_selectedCategory');
         setState(() {
           _selectedCategory = label;
         });
+        debugPrint('🎯 ProviderExploreScreen: Filter category updated to: $_selectedCategory');
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF4299E1)
-              : (isDark ? const Color(0xFF2D2D2D) : Colors.white),
+          color: isSelected ? themeManager.primaryColor : themeManager.surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF4299E1)
-                : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
+            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
           ),
         ),
         child: Text(
@@ -220,19 +202,17 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected
-                ? Colors.white
-                : (isDark ? Colors.white : const Color(0xFF2D3748)),
+            color: isSelected ? Colors.white : themeManager.textPrimary,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildMapView(bool isDark) {
+  Widget _buildMapView(ThemeManager themeManager) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.grey[300],
+        color: themeManager.surfaceColor,
       ),
       child: Stack(
         children: [
@@ -241,7 +221,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF2D2D2D) : Colors.grey[300],
+              color: themeManager.surfaceColor,
             ),
             child: Center(
               child: Column(
@@ -250,7 +230,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   Icon(
                     Prbal.map,
                     size: 64.sp,
-                    color: isDark ? Colors.grey[600] : Colors.grey[500],
+                    color: themeManager.textTertiary,
                   ),
                   SizedBox(height: 16.h),
                   Text(
@@ -258,7 +238,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: themeManager.textSecondary,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -266,7 +246,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     'Customer requests in your area',
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark ? Colors.grey[500] : Colors.grey[500],
+                      color: themeManager.textTertiary,
                     ),
                   ),
                 ],
@@ -288,16 +268,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     '0.5 km away',
                     '\$75 - \$100',
                     'Tomorrow, 2:00 PM',
-                    const Color(0xFF4299E1),
-                    isDark,
+                    themeManager.infoColor,
+                    themeManager,
                   ),
                   _buildMapRequestCard(
                     'AC Repair Urgent',
                     '1.2 km away',
                     '\$120 - \$150',
                     'Today, 6:00 PM',
-                    const Color(0xFFED8936),
-                    isDark,
+                    themeManager.warningColor,
+                    themeManager,
                   ),
                 ],
               ),
@@ -314,21 +294,15 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
     String price,
     String time,
     Color accentColor,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4.w),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.elevatedShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +312,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.1),
+                  color: accentColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
@@ -357,7 +331,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -366,7 +340,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       distance,
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -388,7 +362,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF48BB78),
+                        color: themeManager.successColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -397,7 +371,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       time,
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -413,16 +387,14 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: accentColor,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style:
-                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -432,7 +404,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
     );
   }
 
-  Widget _buildListView(bool isDark) {
+  Widget _buildListView(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 10, // Mock data
@@ -440,25 +412,17 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
-          child: _buildRequestListItem(index, isDark),
+          child: _buildRequestListItem(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildRequestListItem(int index, bool isDark) {
+  Widget _buildRequestListItem(int index, ThemeManager themeManager) {
     final titles = [
       'Home Cleaning Service',
       'AC Repair Urgent',
@@ -468,11 +432,11 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
     ];
 
     final colors = [
-      const Color(0xFF4299E1),
-      const Color(0xFFED8936),
-      const Color(0xFF48BB78),
-      const Color(0xFF9F7AEA),
-      const Color(0xFFED64A6),
+      themeManager.infoColor,
+      themeManager.warningColor,
+      themeManager.successColor,
+      themeManager.primaryColor,
+      themeManager.errorColor,
     ];
 
     return ListTile(
@@ -480,7 +444,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
       leading: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: colors[index % colors.length].withValues(alpha: 0.1),
+          color: colors[index % colors.length].withValues(alpha: 26),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Icon(
@@ -494,7 +458,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
         style: TextStyle(
           fontSize: 16.sp,
           fontWeight: FontWeight.bold,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
+          color: themeManager.textPrimary,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -507,7 +471,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
             '1.${index + 2} km away • Tomorrow, ${10 + index}:00 AM',
             style: TextStyle(
               fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -521,7 +485,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF48BB78),
+                    color: themeManager.successColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -536,16 +500,14 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: colors[index % colors.length],
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style:
-                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -565,12 +527,12 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
   }
 
   Widget _buildFilterBottomSheet() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
       ),
       child: Column(
@@ -581,7 +543,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
             height: 4.h,
             width: 40.w,
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[600] : Colors.grey[300],
+              color: themeManager.borderColor,
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
@@ -592,7 +554,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
 
@@ -610,7 +572,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -620,7 +582,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     max: 50.0,
                     divisions: 49,
                     label: '${_selectedRadius.round()} km',
-                    activeColor: const Color(0xFF4299E1),
+                    activeColor: themeManager.primaryColor,
                     onChanged: (value) {
                       setState(() {
                         _selectedRadius = value;
@@ -638,7 +600,7 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4299E1),
+                        backgroundColor: themeManager.primaryColor,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: EdgeInsets.symmetric(vertical: 16.h),

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// Full Admin Dashboard with bottom navigation bar
 /// Use this for direct route access
@@ -21,14 +22,12 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     super.initState();
     // Debug: Track when full admin dashboard is initialized
     debugPrint('🏠 AdminDashboard: Full dashboard widget initialized');
-    debugPrint(
-        '🏠 AdminDashboard: This version includes bottom navigation bar');
+    debugPrint('🏠 AdminDashboard: This version includes bottom navigation bar');
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🏠 AdminDashboard: Building full dashboard with bottom navigation');
+    debugPrint('🏠 AdminDashboard: Building full dashboard with bottom navigation');
 
     return Scaffold(
       // Main dashboard content without navigation (prevents circular dependency)
@@ -50,8 +49,7 @@ class AdminDashboardContent extends ConsumerStatefulWidget {
   const AdminDashboardContent({super.key});
 
   @override
-  ConsumerState<AdminDashboardContent> createState() =>
-      _AdminDashboardContentState();
+  ConsumerState<AdminDashboardContent> createState() => _AdminDashboardContentState();
 }
 
 class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
@@ -60,21 +58,19 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     super.initState();
     // Debug: Track when content-only dashboard is initialized
     debugPrint('📊 AdminDashboardContent: Content-only dashboard initialized');
-    debugPrint(
-        '📊 AdminDashboardContent: This version prevents circular dependency');
+    debugPrint('📊 AdminDashboardContent: This version prevents circular dependency');
   }
 
   @override
   Widget build(BuildContext context) {
     // Get current theme mode for consistent styling
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     debugPrint('📊 AdminDashboardContent: Building dashboard content');
-    debugPrint('📊 AdminDashboardContent: Dark mode: $isDark');
+    debugPrint('📊 AdminDashboardContent: Dark mode: $themeManager');
 
     return Scaffold(
       // Background color that adapts to theme
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -84,7 +80,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               expandedHeight: 120.h, // Height when expanded
               floating: false, // Don't show when scrolling up
               pinned: true, // Stay visible when collapsed
-              backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: themeManager.surfaceColor,
               elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.only(left: 20.w, bottom: 16.h),
@@ -93,19 +89,13 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 // Gradient background that adapts to theme
                 background: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: isDark
-                          ? [const Color(0xFF1E1E1E), const Color(0xFF2D2D2D)]
-                          : [Colors.white, const Color(0xFFF7FAFC)],
-                    ),
+                    gradient: themeManager.surfaceGradient,
                   ),
                 ),
               ),
@@ -113,23 +103,19 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 // Notifications button
                 IconButton(
                   onPressed: () {
-                    debugPrint(
-                        '🔔 AdminDashboard: Notifications button pressed');
-                    debugPrint(
-                        '🔔 AdminDashboard: Navigating to ${RouteEnum.notifications.rawValue}');
+                    debugPrint('🔔 AdminDashboard: Notifications button pressed');
+                    debugPrint('🔔 AdminDashboard: Navigating to ${RouteEnum.notifications.rawValue}');
                     try {
                       // Navigate to notifications - using predefined route enum for consistency
                       context.push(RouteEnum.notifications.rawValue);
-                      debugPrint(
-                          '🔔 AdminDashboard: Navigation to notifications successful');
+                      debugPrint('🔔 AdminDashboard: Navigation to notifications successful');
                     } catch (e) {
-                      debugPrint(
-                          '❌ AdminDashboard: Navigation to notifications failed: $e');
+                      debugPrint('❌ AdminDashboard: Navigation to notifications failed: $e');
                     }
                   },
                   icon: Icon(
                     Prbal.bell,
-                    color: isDark ? Colors.white : const Color(0xFF4A5568),
+                    color: themeManager.textSecondary,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -147,25 +133,25 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
 
                     // ========== SYSTEM STATUS CARD ==========
                     // Real-time system health monitoring widget
-                    _buildSystemStatusCard(isDark),
+                    _buildSystemStatusCard(themeManager),
 
                     SizedBox(height: 24.h),
 
                     // ========== KEY METRICS GRID ==========
                     // Two-row grid showing important business metrics
-                    _buildMetricsGrid(isDark),
+                    _buildMetricsGrid(themeManager),
 
                     SizedBox(height: 24.h),
 
                     // ========== QUICK ACTIONS SECTION ==========
                     // Grid of admin action buttons for common tasks
-                    _buildQuickActionsSection(isDark),
+                    _buildQuickActionsSection(themeManager),
 
                     SizedBox(height: 24.h),
 
                     // ========== RECENT ACTIVITY SECTION ==========
                     // Live feed of recent system activities and events
-                    _buildRecentActivitySection(isDark),
+                    _buildRecentActivitySection(themeManager),
 
                     SizedBox(height: 24.h),
                   ],
@@ -181,23 +167,15 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
   // ========== SYSTEM STATUS CARD BUILDER ==========
   /// Builds the system status monitoring card showing API, database, and payment health
   /// This provides real-time operational status for critical system components
-  Widget _buildSystemStatusCard(bool isDark) {
+  Widget _buildSystemStatusCard(ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building system status card');
 
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.primaryShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +188,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF2D3748),
+                  color: themeManager.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -255,19 +233,19 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                   '99.9%',
                   Prbal.server,
                   const Color(0xFF48BB78),
-                  isDark),
+                  themeManager),
               _buildSystemMetric(
                   'Database', // Database connectivity metric
                   '100%',
                   Prbal.database,
                   const Color(0xFF4299E1),
-                  isDark),
+                  themeManager),
               _buildSystemMetric(
                   'Payment', // Payment gateway status
                   '98.7%',
                   Prbal.creditCard,
                   const Color(0xFF9F7AEA),
-                  isDark),
+                  themeManager),
             ],
           ),
         ],
@@ -278,7 +256,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
   // ========== METRICS GRID BUILDER ==========
   /// Builds the key business metrics grid showing users, bookings, revenue, and support data
   /// This provides quick insights into business performance
-  Widget _buildMetricsGrid(bool isDark) {
+  Widget _buildMetricsGrid(ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building metrics grid');
 
     return Column(
@@ -293,7 +271,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '+5.2% this week', // Growth indicator
                 Prbal.users,
                 const Color(0xFF4299E1),
-                isDark,
+                themeManager,
               ),
             ),
             SizedBox(width: 16.w),
@@ -304,7 +282,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '+12.3% today', // Daily growth
                 Prbal.calendar,
                 const Color(0xFF48BB78),
-                isDark,
+                themeManager,
               ),
             ),
           ],
@@ -322,7 +300,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '+8.1% this month', // Monthly growth
                 Prbal.dollarSign,
                 const Color(0xFF9F7AEA),
-                isDark,
+                themeManager,
               ),
             ),
             SizedBox(width: 16.w),
@@ -333,7 +311,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '-15.4% today', // Support ticket reduction (positive trend)
                 Prbal.helpCircle,
                 const Color(0xFFED8936),
-                isDark,
+                themeManager,
               ),
             ),
           ],
@@ -345,7 +323,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
   // ========== QUICK ACTIONS SECTION BUILDER ==========
   /// Builds the quick actions grid for common admin tasks
   /// This provides one-tap access to frequently used admin functions
-  Widget _buildQuickActionsSection(bool isDark) {
+  Widget _buildQuickActionsSection(ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building quick actions section');
 
     return Column(
@@ -358,7 +336,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
         ),
@@ -368,31 +346,26 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         // 4-column grid of action buttons
         GridView.count(
           shrinkWrap: true, // Don't take more space than needed
-          physics:
-              const NeverScrollableScrollPhysics(), // Disable grid scrolling
+          physics: const NeverScrollableScrollPhysics(), // Disable grid scrolling
           crossAxisCount: 4, // 4 items per row
           crossAxisSpacing: 12.w,
           mainAxisSpacing: 12.h,
-          childAspectRatio:
-              0.85, // Slightly taller aspect ratio to accommodate text
+          childAspectRatio: 0.85, // Slightly taller aspect ratio to accommodate text
           children: [
             _buildQuickActionCard(
               'Manage Users', // User management functionality
               Prbal.edit3,
               const Color(0xFF4299E1),
-              isDark,
+              themeManager,
               onTap: () {
                 debugPrint('👥 AdminDashboard: Manage Users button pressed');
-                debugPrint(
-                    '👥 AdminDashboard: Navigating to ${RouteEnum.adminUsers.rawValue}');
+                debugPrint('👥 AdminDashboard: Navigating to ${RouteEnum.adminUsers.rawValue}');
                 try {
                   // Navigate to user management screen
                   context.push(RouteEnum.adminUsers.rawValue);
-                  debugPrint(
-                      '👥 AdminDashboard: Navigation to user management successful');
+                  debugPrint('👥 AdminDashboard: Navigation to user management successful');
                 } catch (e) {
-                  debugPrint(
-                      '❌ AdminDashboard: Navigation to user management failed: $e');
+                  debugPrint('❌ AdminDashboard: Navigation to user management failed: $e');
                 }
               },
             ),
@@ -400,18 +373,16 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               'View Reports', // Analytics and reporting
               Prbal.calculator,
               const Color(0xFF48BB78),
-              isDark,
+              themeManager,
               onTap: () {
                 debugPrint('📈 AdminDashboard: View Reports button pressed');
                 debugPrint('📈 AdminDashboard: Navigating to /admin/reports');
                 try {
                   // Navigate to reports section
                   context.push('/admin/reports');
-                  debugPrint(
-                      '📈 AdminDashboard: Navigation to reports successful');
+                  debugPrint('📈 AdminDashboard: Navigation to reports successful');
                 } catch (e) {
-                  debugPrint(
-                      '❌ AdminDashboard: Navigation to reports failed: $e');
+                  debugPrint('❌ AdminDashboard: Navigation to reports failed: $e');
                 }
               },
             ),
@@ -419,18 +390,16 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               'System Settings', // Configuration management
               Prbal.cogs,
               const Color(0xFF9F7AEA),
-              isDark,
+              themeManager,
               onTap: () {
                 debugPrint('⚙️ AdminDashboard: System Settings button pressed');
                 debugPrint('⚙️ AdminDashboard: Navigating to /admin/settings');
                 try {
                   // Navigate to system settings
                   context.push('/admin/settings');
-                  debugPrint(
-                      '⚙️ AdminDashboard: Navigation to settings successful');
+                  debugPrint('⚙️ AdminDashboard: Navigation to settings successful');
                 } catch (e) {
-                  debugPrint(
-                      '❌ AdminDashboard: Navigation to settings failed: $e');
+                  debugPrint('❌ AdminDashboard: Navigation to settings failed: $e');
                 }
               },
             ),
@@ -438,18 +407,16 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               'Send Alert', // Emergency communication system
               Prbal.alertTriangle,
               const Color(0xFFED8936),
-              isDark,
+              themeManager,
               onTap: () {
                 debugPrint('🚨 AdminDashboard: Send Alert button pressed');
                 debugPrint('🚨 AdminDashboard: Navigating to /admin/alerts');
                 try {
                   // Navigate to alert management
                   context.push('/admin/alerts');
-                  debugPrint(
-                      '🚨 AdminDashboard: Navigation to alerts successful');
+                  debugPrint('🚨 AdminDashboard: Navigation to alerts successful');
                 } catch (e) {
-                  debugPrint(
-                      '❌ AdminDashboard: Navigation to alerts failed: $e');
+                  debugPrint('❌ AdminDashboard: Navigation to alerts failed: $e');
                 }
               },
             ),
@@ -462,7 +429,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
   // ========== RECENT ACTIVITY SECTION BUILDER ==========
   /// Builds the recent system activity feed showing live system events
   /// This provides real-time visibility into system operations and user activities
-  Widget _buildRecentActivitySection(bool isDark) {
+  Widget _buildRecentActivitySection(ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building recent activity section');
 
     return Column(
@@ -475,7 +442,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
         ),
@@ -485,17 +452,9 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         // Activity feed container
         Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.primaryShadow,
           ),
           child: Column(
             children: [
@@ -506,7 +465,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '10 min ago',
                 Prbal.userPlus,
                 const Color(0xFF4299E1),
-                isDark,
+                themeManager,
               ),
               const Divider(height: 1),
               _buildActivityItem(
@@ -515,7 +474,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '25 min ago',
                 Prbal.checkCircle,
                 const Color(0xFF48BB78),
-                isDark,
+                themeManager,
               ),
               const Divider(height: 1),
               _buildActivityItem(
@@ -524,7 +483,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '1 hour ago',
                 Prbal.alertCircle,
                 const Color(0xFFED8936),
-                isDark,
+                themeManager,
               ),
               const Divider(height: 1),
               _buildActivityItem(
@@ -533,7 +492,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 '3 hours ago',
                 Prbal.server,
                 const Color(0xFF9F7AEA),
-                isDark,
+                themeManager,
               ),
             ],
           ),
@@ -547,8 +506,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
 
   /// Builds individual system metric display (API, Database, Payment status)
   /// Shows health percentage with icon and label
-  Widget _buildSystemMetric(
-      String label, String value, IconData icon, Color color, bool isDark) {
+  Widget _buildSystemMetric(String label, String value, IconData icon, Color color, ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building system metric for $label: $value');
 
     return Expanded(
@@ -567,7 +525,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
@@ -576,7 +534,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             label,
             style: TextStyle(
               fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -593,25 +551,16 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     String trend,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
-    debugPrint(
-        '📊 AdminDashboard: Building metric card for $title: $value ($trend)');
+    debugPrint('📊 AdminDashboard: Building metric card for $title: $value ($trend)');
 
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.primaryShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,7 +589,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             title,
             style: TextStyle(
               fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
           ),
           SizedBox(height: 4.h),
@@ -650,7 +599,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
@@ -660,9 +609,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 11.sp,
               // Green for positive trends (+), red for negative trends (-)
-              color: trend.contains('+')
-                  ? const Color(0xFF48BB78)
-                  : const Color(0xFFE53E3E),
+              color: trend.contains('+') ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -677,7 +624,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     String title,
     IconData icon,
     Color color,
-    bool isDark, {
+    ThemeManager themeManager, {
     VoidCallback? onTap,
   }) {
     debugPrint('📊 AdminDashboard: Building quick action card for $title');
@@ -689,8 +636,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         onTap: onTap ??
             () {
               // Default action if no specific onTap provided
-              debugPrint(
-                  '🔄 AdminDashboard: Default action triggered for $title');
+              debugPrint('🔄 AdminDashboard: Default action triggered for $title');
             },
         child: Container(
           padding: EdgeInsets.all(12.w),
@@ -700,8 +646,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize
-                .min, // Prevent column from taking more space than needed
+            mainAxisSize: MainAxisSize.min, // Prevent column from taking more space than needed
             children: [
               // Action icon
               Icon(
@@ -717,7 +662,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                   style: TextStyle(
                     fontSize: 10.sp, // Slightly smaller font
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2, // Allow text to wrap to 2 lines if needed
@@ -739,7 +684,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     String time,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     debugPrint('📊 AdminDashboard: Building activity item: $title - $time');
 
@@ -763,7 +708,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white : const Color(0xFF2D3748),
+          color: themeManager.textPrimary,
         ),
       ),
       // Activity description
@@ -771,7 +716,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         subtitle,
         style: TextStyle(
           fontSize: 12.sp,
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: themeManager.textSecondary,
         ),
       ),
       // Activity timestamp
@@ -779,7 +724,7 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         time,
         style: TextStyle(
           fontSize: 11.sp,
-          color: isDark ? Colors.grey[500] : Colors.grey[500],
+          color: themeManager.textTertiary,
         ),
       ),
     );

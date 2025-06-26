@@ -3,9 +3,6 @@ buildscript {
         google()
         mavenCentral()
     }
-    dependencies {
-        // No additional classpath dependencies needed
-    }
 }
 
 allprojects {

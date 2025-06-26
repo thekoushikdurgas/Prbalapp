@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/screens/admin/admin_activity_screen.dart';
 import 'package:prbal/screens/auth/health_dashboard.dart';
 import 'package:prbal/utils/navigation/router_utils.dart';
 import 'package:prbal/screens/main/messages_screen.dart';
@@ -199,8 +199,7 @@ class FeatureRoutes {
       pageBuilder: (context, state) => RouterUtils.buildPageTransition(
         context: context,
         state: state,
-        child:
-            const BottomNavigation(initialIndex: 2), // 3rd tab for admin users
+        child: const BottomNavigation(initialIndex: 2), // 3rd tab for admin users
       ),
     ),
 
@@ -347,31 +346,4 @@ class FeatureRoutes {
       },
     ),
   ];
-}
-
-// Placeholder screen for admin activity
-class AdminActivityScreen extends StatelessWidget {
-  const AdminActivityScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-        title: Text(
-          'Admin Activity',
-          style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
-          ),
-        ),
-      ),
-      body: const Center(
-        child: Text('Admin Activity Screen'),
-      ),
-    );
-  }
 }

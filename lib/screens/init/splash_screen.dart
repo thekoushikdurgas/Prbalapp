@@ -9,6 +9,7 @@ import 'package:prbal/services/performance_service.dart';
 import 'package:prbal/services/health_service.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 // TODO: Add proper theme service integration
 // TODO: Add localization support
@@ -33,8 +34,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with TickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _progressController;
@@ -121,8 +121,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _startAnimationSequence() async {
     // Start logo and lottie animations simultaneously
     _logoController.forward();
-    _lottieController.duration =
-        const Duration(milliseconds: 3000); // Set initial duration
+    _lottieController.duration = const Duration(milliseconds: 3000); // Set initial duration
     _lottieController.repeat(); // Loop the Lottie animation
 
     // Wait for logo animation to finish
@@ -200,8 +199,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         }
         debugPrint('🏥 Using cached health status: ${quickStatus.name}');
         debugPrint('🏥 Skipping network health check - recent data available');
-        await Future.delayed(
-            const Duration(milliseconds: 200)); // Shorter delay for cached data
+        await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
         // Only perform network check if no recent cached data
         _updateLoadingText('Performing health check...');
@@ -217,15 +215,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (healthStatusResult.overallStatus == HealthStatus.healthy) {
         _updateLoadingText('System healthy - Ready to launch!');
       } else {
-        _updateLoadingText(
-            'System status: ${healthStatusResult.overallStatus.name}');
+        _updateLoadingText('System status: ${healthStatusResult.overallStatus.name}');
       }
 
       if (kDebugMode) {
         final lastCheck = HiveService.getLastHealthCheck();
         if (lastCheck != null) {
-          debugPrint(
-              '🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
+          debugPrint('🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
         }
       }
 
@@ -333,28 +329,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     } else {
       // User is logged in - check user type and navigate to appropriate dashboard
       final userData = HiveService.getUserData();
-      final userType =
-          userData != null ? userData['userType'] as String : 'customer';
+      final userType = userData != null ? userData['userType'] as String : 'customer';
 
       debugPrint('👤 User type detected: $userType');
 
       switch (userType.toLowerCase()) {
         case 'admin':
           debugPrint('👑 Navigating to admin dashboard');
-          context.go(RouteEnum.adminDashboard
-              .rawValue); // Will show admin dashboard through bottom navigation
+          context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
           break;
         case 'provider':
           debugPrint('🔧 Navigating to provider dashboard');
-          context.go(RouteEnum.providerDashboard
-              .rawValue); // Will show provider dashboard through bottom navigation
+          context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
           break;
         case 'customer':
         case 'taker':
         default:
           debugPrint('🏠 Navigating to taker dashboard');
-          context.go(RouteEnum.takerDashboard
-              .rawValue); // Will show taker dashboard through bottom navigation
+          context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
           break;
       }
     }
@@ -371,323 +363,632 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+
+    // Enhanced debug logging with all ThemeManager features
+    themeManager.logThemeInfo();
+    debugPrint('🚀 SplashScreen: Building with enhanced ThemeManager features');
+    debugPrint('🚀 SplashScreen: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    const Color(0xFF0F172A), // Dark slate
-                    const Color(0xFF1E293B), // Slate 800
-                    const Color(0xFF334155), // Slate 700
-                  ]
-                : [
-                    const Color(0xFFFFFFFF), // White
-                    const Color(0xFFF8FAFC), // Slate 50
-                    const Color(0xFFF1F5F9), // Slate 100
-                  ],
+          gradient: themeManager.backgroundGradient,
+        ),
+        child: Stack(
+          children: [
+            // Background decorative elements using new accent colors and gradients
+            _buildBackgroundDecorations(themeManager),
+
+            SafeArea(
+              child: Column(
+                children: [
+                  // Enhanced header section with status indicators
+                  _buildHeaderSection(themeManager),
+
+                  // Main content with enhanced visuals
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Enhanced logo section with multiple gradients and effects
+                        _buildEnhancedLogoSection(themeManager),
+
+                        SizedBox(height: 40.h),
+
+                        // Enhanced text section with new text color variants
+                        _buildEnhancedTextSection(themeManager),
+
+                        SizedBox(height: 32.h),
+
+                        // Feature showcase using accent colors
+                        _buildFeatureShowcase(themeManager),
+                      ],
+                    ),
+                  ),
+
+                  // Enhanced bottom section with progress and status
+                  _buildEnhancedBottomSection(themeManager),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build background decorative elements using new gradients and colors
+  Widget _buildBackgroundDecorations(ThemeManager themeManager) {
+    return Stack(
+      children: [
+        // Top accent decoration
+        Positioned(
+          top: -50.h,
+          right: -50.w,
+          child: Container(
+            width: 200.w,
+            height: 200.h,
+            decoration: BoxDecoration(
+              gradient: themeManager.accent1Gradient,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.shadowLight,
+                  blurRadius: 50,
+                  offset: const Offset(0, 20),
+                ),
+              ],
+            ),
           ),
         ),
-        child: SafeArea(
+        // Bottom accent decoration
+        Positioned(
+          bottom: -100.h,
+          left: -80.w,
+          child: Container(
+            width: 250.w,
+            height: 250.h,
+            decoration: BoxDecoration(
+              gradient: themeManager.accent3Gradient,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.shadowMedium,
+                  blurRadius: 40,
+                  offset: const Offset(0, -10),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Glass morphism overlay
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: themeManager.glassMorphism.copyWith(
+            borderRadius: BorderRadius.zero,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Build enhanced header section with status indicators
+  Widget _buildHeaderSection(ThemeManager themeManager) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // App version info
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: themeManager.cardBackground,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(color: themeManager.borderSecondary),
+              boxShadow: themeManager.subtleShadow,
+            ),
+            child: Text(
+              'v1.0.0',
+              style: TextStyle(
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w600,
+                color: themeManager.textQuaternary,
+              ),
+            ),
+          ),
+          // Network status indicator
+          Container(
+            width: 12.w,
+            height: 12.h,
+            decoration: BoxDecoration(
+              color: themeManager.statusOnline,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.statusOnline.withValues(alpha: 128),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build enhanced logo section with multiple effects
+  Widget _buildEnhancedLogoSection(ThemeManager themeManager) {
+    return AnimatedBuilder(
+      animation: _logoController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _logoScale.value,
+          child: Opacity(
+            opacity: _logoOpacity.value,
+            child: Container(
+              width: 180.w,
+              height: 180.h,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [
+                    themeManager.primaryColor.withValues(alpha: 51),
+                    themeManager.accent1.withValues(alpha: 26),
+                    themeManager.accent3.withValues(alpha: 13),
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 0.3, 0.6, 1.0],
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Outer glow ring
+                  Container(
+                    width: 160.w,
+                    height: 160.h,
+                    decoration: BoxDecoration(
+                      gradient: themeManager.accent2Gradient,
+                      shape: BoxShape.circle,
+                      boxShadow: themeManager.elevatedShadow,
+                    ),
+                  ),
+                  // Middle glass morphism effect
+                  Container(
+                    width: 140.w,
+                    height: 140.h,
+                    decoration: themeManager.enhancedGlassMorphism.copyWith(
+                      borderRadius: BorderRadius.circular(70.r),
+                    ),
+                  ),
+                  // Inner gradient container
+                  Container(
+                    width: 120.w,
+                    height: 120.h,
+                    decoration: BoxDecoration(
+                      gradient: themeManager.primaryGradient,
+                      borderRadius: BorderRadius.circular(60.r),
+                      boxShadow: themeManager.primaryShadow,
+                    ),
+                    child: _buildLottieAnimation(themeManager),
+                  ),
+                  // Central icon with enhanced styling
+                  Container(
+                    width: 70.w,
+                    height: 70.h,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          themeManager.textInverted.withValues(alpha: 230),
+                          themeManager.textInverted.withValues(alpha: 179),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(35.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: themeManager.shadowDark,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Prbal.briefcase,
+                      size: 35.sp,
+                      color: themeManager.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Build Lottie animation with fallback
+  Widget _buildLottieAnimation(ThemeManager themeManager) {
+    return AnimatedBuilder(
+      animation: _lottieController,
+      builder: (context, child) {
+        return SizedBox(
+          width: 120.w,
+          height: 120.h,
+          child: Lottie.asset(
+            themeManager.themeManager ? 'assets/animations/splash_dark.json' : 'assets/animations/splash_light.json',
+            controller: _lottieController,
+            fit: BoxFit.contain,
+            repeat: true,
+            animate: true,
+            frameRate: FrameRate.max,
+            options: LottieOptions(
+              enableMergePaths: true,
+            ),
+            onLoaded: (composition) {
+              debugPrint('🎬 Lottie animation loaded: ${composition.duration}');
+              _lottieController.duration = composition.duration;
+              _lottieController.repeat();
+            },
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('❌ Lottie animation error: $error');
+              return Container(
+                width: 120.w,
+                height: 120.h,
+                decoration: BoxDecoration(
+                  gradient: themeManager.errorGradient,
+                  borderRadius: BorderRadius.circular(60.r),
+                ),
+                child: Icon(
+                  Prbal.business,
+                  size: 60.sp,
+                  color: themeManager.textInverted,
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  /// Build enhanced text section with new color variants
+  Widget _buildEnhancedTextSection(ThemeManager themeManager) {
+    return AnimatedBuilder(
+      animation: _textController,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _textOpacity.value,
           child: Column(
             children: [
-              // Status bar space
-              SizedBox(height: 60.h),
-
-              // Main content
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Logo section with Lottie animation
-                    AnimatedBuilder(
-                      animation: _logoController,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: _logoScale.value,
-                          child: Opacity(
-                            opacity: _logoOpacity.value,
-                            child: Container(
-                              width: 160.w,
-                              height: 160.h,
-                              decoration: BoxDecoration(
-                                gradient: RadialGradient(
-                                  colors: [
-                                    const Color(0xFF3B82F6)
-                                        .withValues(alpha: 0.1),
-                                    const Color(0xFF1D4ED8)
-                                        .withValues(alpha: 0.05),
-                                    Colors.transparent,
-                                  ],
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Background glow effect
-                                  Container(
-                                    width: 140.w,
-                                    height: 140.h,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.2),
-                                          const Color(0xFF1D4ED8)
-                                              .withValues(alpha: 0.1),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(70.r),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.3),
-                                          blurRadius: 30,
-                                          offset: const Offset(0, 10),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Lottie animation with better controls
-                                  AnimatedBuilder(
-                                    animation: _lottieController,
-                                    builder: (context, child) {
-                                      return SizedBox(
-                                        width: 120.w,
-                                        height: 120.h,
-                                        child: Lottie.asset(
-                                          isDark
-                                              ? 'assets/animations/splash_dark.json'
-                                              : 'assets/animations/splash_light.json',
-                                          controller: _lottieController,
-                                          fit: BoxFit.contain,
-                                          repeat: true,
-                                          animate: true,
-                                          frameRate: FrameRate.max,
-                                          options: LottieOptions(
-                                            enableMergePaths: true,
-                                          ),
-                                          onLoaded: (composition) {
-                                            debugPrint(
-                                                '🎬 Lottie animation loaded: ${composition.duration}');
-                                            // Start the animation loop
-                                            _lottieController.duration =
-                                                composition.duration;
-                                            _lottieController.repeat();
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            debugPrint(
-                                                '❌ Lottie animation error: $error');
-                                            // Fallback to fallback icon
-                                            return Container(
-                                              width: 120.w,
-                                              height: 120.h,
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                  colors: [
-                                                    const Color(0xFF3B82F6)
-                                                        .withValues(alpha: 0.8),
-                                                    const Color(0xFF1D4ED8)
-                                                        .withValues(alpha: 0.9),
-                                                  ],
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(60.r),
-                                              ),
-                                              child: Icon(
-                                                Prbal.business,
-                                                size: 60.sp,
-                                                color: Colors.white,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  // Fallback icon overlay (subtle)
-                                  Container(
-                                    width: 60.w,
-                                    height: 60.h,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.8),
-                                          const Color(0xFF1D4ED8)
-                                              .withValues(alpha: 0.9),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(30.r),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xFF3B82F6)
-                                              .withValues(alpha: 0.4),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 5),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Prbal.briefcase,
-                                      size: 30.sp,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                    SizedBox(height: 32.h),
-
-                    // App name and tagline
-                    AnimatedBuilder(
-                      animation: _textController,
-                      builder: (context, child) {
-                        return Opacity(
-                          opacity: _textOpacity.value,
-                          child: Column(
-                            children: [
-                              // App name
-                              Text(
-                                'Prbal',
-                                style: TextStyle(
-                                  fontSize: 48.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? Colors.white
-                                      : const Color(0xFF0F172A),
-                                  letterSpacing: -1.5,
-                                ),
-                              ),
-
-                              SizedBox(height: 8.h),
-
-                              // Tagline
-                              Text(
-                                'Your Service Marketplace',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: isDark
-                                      ? Colors.grey[400]
-                                      : const Color(0xFF64748B),
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-
-                              SizedBox(height: 4.h),
-
-                              // Subtitle
-                              Text(
-                                'Connect • Serve • Thrive',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : const Color(0xFF94A3B8),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+              // App name with gradient text effect
+              ShaderMask(
+                shaderCallback: (bounds) => themeManager.primaryGradient.createShader(bounds),
+                child: Text(
+                  'Prbal',
+                  style: TextStyle(
+                    fontSize: 52.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: -2.0,
+                    shadows: [
+                      Shadow(
+                        color: themeManager.shadowMedium,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-              // Bottom section with progress
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.w),
-                child: Column(
-                  children: [
-                    // Loading text
-                    AnimatedBuilder(
-                      animation: _textController,
-                      builder: (context, child) {
-                        return Opacity(
-                          opacity: _textOpacity.value,
-                          child: Text(
-                            _loadingText,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : const Color(0xFF64748B),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+              SizedBox(height: 12.h),
 
-                    SizedBox(height: 16.h),
+              // Enhanced tagline with better typography
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  gradient: themeManager.neutralGradient,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(color: themeManager.borderFocus.withValues(alpha: 77)),
+                ),
+                child: Text(
+                  'Your Service Marketplace',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: themeManager.textPrimary,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
 
-                    // Progress bar
-                    AnimatedBuilder(
-                      animation: _progressController,
-                      builder: (context, child) {
-                        return Container(
-                          width: double.infinity,
-                          height: 4.h,
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF374151)
-                                : const Color(0xFFE2E8F0),
-                            borderRadius: BorderRadius.circular(2.r),
-                          ),
-                          child: FractionallySizedBox(
-                            alignment: Alignment.centerLeft,
-                            widthFactor: _progressValue.value,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: _isInitializationComplete
-                                      ? [
-                                          const Color(0xFF10B981), // Green
-                                          const Color(0xFF059669),
-                                        ]
-                                      : [
-                                          const Color(0xFF3B82F6), // Blue
-                                          const Color(0xFF1D4ED8),
-                                        ],
-                                ),
-                                borderRadius: BorderRadius.circular(2.r),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+              SizedBox(height: 8.h),
 
-                    SizedBox(height: 60.h),
-                  ],
+              // Subtitle with quaternary text color
+              Text(
+                'Connect • Serve • Thrive',
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                  color: themeManager.textQuaternary,
+                  letterSpacing: 1.2,
+                ),
+              ),
+
+              SizedBox(height: 4.h),
+
+              // Additional tagline
+              Text(
+                'Powered by Innovation',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: themeManager.textTertiary,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  /// Build feature showcase using accent colors
+  Widget _buildFeatureShowcase(ThemeManager themeManager) {
+    return AnimatedBuilder(
+      animation: _textController,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _textOpacity.value * 0.8,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildFeatureIcon(themeManager, Prbal.users, themeManager.accent1, 'Connect'),
+              _buildFeatureIcon(themeManager, Prbal.tools, themeManager.accent2, 'Serve'),
+              _buildFeatureIcon(themeManager, Prbal.trendingUp, themeManager.accent3, 'Grow'),
+              _buildFeatureIcon(themeManager, Prbal.star, themeManager.accent4, 'Excel'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Build individual feature icon
+  Widget _buildFeatureIcon(ThemeManager themeManager, IconData icon, Color color, String label) {
+    return Column(
+      children: [
+        Container(
+          width: 40.w,
+          height: 40.h,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 26),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: color.withValues(alpha: 77)),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 51),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Icon(
+            icon,
+            size: 20.sp,
+            color: color,
+          ),
         ),
+        SizedBox(height: 4.h),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+            color: themeManager.textQuaternary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Build enhanced bottom section with progress and additional info
+  Widget _buildEnhancedBottomSection(ThemeManager themeManager) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 20.h),
+      decoration: BoxDecoration(
+        gradient: themeManager.surfaceGradient,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        boxShadow: themeManager.elevatedShadow,
+      ),
+      child: Column(
+        children: [
+          // Status and loading text
+          AnimatedBuilder(
+            animation: _textController,
+            builder: (context, child) {
+              return Opacity(
+                opacity: _textOpacity.value,
+                child: Column(
+                  children: [
+                    // Status indicator row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 8.w,
+                          height: 8.h,
+                          decoration: BoxDecoration(
+                            color: _isInitializationComplete ? themeManager.statusOnline : themeManager.statusAway,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_isInitializationComplete ? themeManager.statusOnline : themeManager.statusAway)
+                                    .withValues(alpha: 128),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          _isInitializationComplete ? 'Ready' : 'Loading',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: _isInitializationComplete ? themeManager.successColor : themeManager.warningColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    // Loading text with enhanced styling
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                      decoration: BoxDecoration(
+                        color: themeManager.cardBackground,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: themeManager.borderSecondary),
+                      ),
+                      child: Text(
+                        _loadingText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: themeManager.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Enhanced progress bar with shimmer effect
+          AnimatedBuilder(
+            animation: _progressController,
+            builder: (context, child) {
+              return Column(
+                children: [
+                  // Progress percentage
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Progress',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          color: themeManager.textTertiary,
+                        ),
+                      ),
+                      Text(
+                        '${(_progressValue.value * 100).toInt()}%',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: themeManager.accent5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  // Progress bar container
+                  Container(
+                    width: double.infinity,
+                    height: 6.h,
+                    decoration: BoxDecoration(
+                      gradient: themeManager.neutralGradient,
+                      borderRadius: BorderRadius.circular(3.r),
+                      boxShadow: themeManager.subtleShadow,
+                    ),
+                    child: Stack(
+                      children: [
+                        // Background shimmer
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: _isInitializationComplete ? null : themeManager.shimmerGradient,
+                            borderRadius: BorderRadius.circular(3.r),
+                          ),
+                        ),
+                        // Progress fill
+                        FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: _progressValue.value,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: _isInitializationComplete
+                                  ? themeManager.successGradient
+                                  : themeManager.accent1Gradient,
+                              borderRadius: BorderRadius.circular(3.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: (_isInitializationComplete ? themeManager.successColor : themeManager.accent1)
+                                      .withValues(alpha: 128),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Footer with app info
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '© 2024 Prbal',
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: themeManager.textDisabled,
+                ),
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Prbal.shield,
+                    size: 12.sp,
+                    color: themeManager.verifiedColor,
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    'Secure',
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                      color: themeManager.verifiedColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

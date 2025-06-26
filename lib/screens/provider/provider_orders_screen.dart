@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class ProviderOrdersScreen extends ConsumerStatefulWidget {
   final int initialTabIndex;
@@ -12,12 +13,10 @@ class ProviderOrdersScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProviderOrdersScreen> createState() =>
-      _ProviderOrdersScreenState();
+  ConsumerState<ProviderOrdersScreen> createState() => _ProviderOrdersScreenState();
 }
 
-class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
-    with TickerProviderStateMixin {
+class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -38,11 +37,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+
+    debugPrint('🎯 ProviderOrdersScreen: Building screen with initialTabIndex: ${widget.initialTabIndex}');
+    debugPrint(
+        '🎨 ProviderOrdersScreen: ThemeManager - isDark: ${themeManager.themeManager}, primaryColor: ${themeManager.primaryColor}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -50,16 +52,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: isDark
-                        ? Colors.black.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: themeManager.surfaceColor,
+                boxShadow: themeManager.subtleShadow,
               ),
               child: Column(
                 children: [
@@ -70,8 +64,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                         style: TextStyle(
                           fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3748),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       const Spacer(),
@@ -81,8 +74,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                         },
                         icon: Icon(
                           Prbal.filter,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF4A5568),
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -92,20 +84,17 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   // Tab Bar
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF2D2D2D)
-                          : const Color(0xFFF7FAFC),
+                      gradient: themeManager.surfaceGradient,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: TabBar(
                       controller: _tabController,
                       indicator: BoxDecoration(
-                        color: const Color(0xFF4299E1),
+                        color: themeManager.primaryColor,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       labelColor: Colors.white,
-                      unselectedLabelColor:
-                          isDark ? Colors.grey[400] : Colors.grey[600],
+                      unselectedLabelColor: themeManager.textSecondary,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -130,9 +119,9 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildPendingOrders(isDark),
-                  _buildActiveOrders(isDark),
-                  _buildCompletedOrders(isDark),
+                  _buildPendingOrders(themeManager),
+                  _buildActiveOrders(themeManager),
+                  _buildCompletedOrders(themeManager),
                 ],
               ),
             ),
@@ -142,7 +131,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
     );
   }
 
-  Widget _buildPendingOrders(bool isDark) {
+  Widget _buildPendingOrders(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 5, // Mock data
@@ -150,25 +139,17 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
-          child: _buildPendingOrderCard(index, isDark),
+          child: _buildPendingOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildActiveOrders(bool isDark) {
+  Widget _buildActiveOrders(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 3, // Mock data
@@ -176,25 +157,17 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
-          child: _buildActiveOrderCard(index, isDark),
+          child: _buildActiveOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildCompletedOrders(bool isDark) {
+  Widget _buildCompletedOrders(ThemeManager themeManager) {
     return ListView.builder(
       padding: EdgeInsets.all(20.w),
       itemCount: 8, // Mock data
@@ -202,25 +175,17 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
         return Container(
           margin: EdgeInsets.only(bottom: 16.h),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
-          child: _buildCompletedOrderCard(index, isDark),
+          child: _buildCompletedOrderCard(index, themeManager),
         );
       },
     );
   }
 
-  Widget _buildPendingOrderCard(int index, bool isDark) {
+  Widget _buildPendingOrderCard(int index, ThemeManager themeManager) {
     final titles = [
       'Home Cleaning Service',
       'AC Repair',
@@ -247,12 +212,12 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFED8936).withValues(alpha: 0.1),
+                  color: themeManager.warningColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   Prbal.clock,
-                  color: const Color(0xFFED8936),
+                  color: themeManager.warningColor,
                   size: 20.sp,
                 ),
               ),
@@ -266,14 +231,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     Text(
                       customers[index % customers.length],
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -282,7 +247,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFED8936).withValues(alpha: 0.1),
+                  color: themeManager.warningColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -290,7 +255,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFED8936),
+                    color: themeManager.warningColor,
                   ),
                 ),
               ),
@@ -302,14 +267,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.calendar,
                 size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
               ),
               SizedBox(width: 8.w),
               Text(
                 'Tomorrow, 2:00 PM - 4:00 PM',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: themeManager.textSecondary,
                 ),
               ),
             ],
@@ -320,7 +285,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.dollarSign,
                 size: 16.sp,
-                color: const Color(0xFF48BB78),
+                color: themeManager.successColor,
               ),
               SizedBox(width: 8.w),
               Text(
@@ -328,7 +293,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
+                  color: themeManager.successColor,
                 ),
               ),
             ],
@@ -342,8 +307,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                     // Decline order
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFE53E3E),
-                    side: const BorderSide(color: Color(0xFFE53E3E)),
+                    foregroundColor: themeManager.errorColor,
+                    side: BorderSide(color: themeManager.errorColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -365,7 +330,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                     // Accept order
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4299E1),
+                    backgroundColor: themeManager.primaryColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -389,7 +354,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
     );
   }
 
-  Widget _buildActiveOrderCard(int index, bool isDark) {
+  Widget _buildActiveOrderCard(int index, ThemeManager themeManager) {
     final titles = [
       'Home Cleaning Service',
       'AC Repair',
@@ -412,12 +377,12 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4299E1).withValues(alpha: 0.1),
+                  color: themeManager.infoColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   Prbal.play,
-                  color: const Color(0xFF4299E1),
+                  color: themeManager.infoColor,
                   size: 20.sp,
                 ),
               ),
@@ -431,14 +396,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     Text(
                       customers[index % customers.length],
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -447,7 +412,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4299E1).withValues(alpha: 0.1),
+                  color: themeManager.infoColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -455,7 +420,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF4299E1),
+                    color: themeManager.infoColor,
                   ),
                 ),
               ),
@@ -467,7 +432,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.mapMarker,
                 size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
               ),
               SizedBox(width: 8.w),
               Expanded(
@@ -475,7 +440,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   '${index + 123} Main Street, Downtown',
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: themeManager.textSecondary,
                   ),
                 ),
               ),
@@ -487,7 +452,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.dollarSign,
                 size: 16.sp,
-                color: const Color(0xFF48BB78),
+                color: themeManager.successColor,
               ),
               SizedBox(width: 8.w),
               Text(
@@ -495,7 +460,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
+                  color: themeManager.successColor,
                 ),
               ),
             ],
@@ -511,12 +476,11 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call',
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF4299E1),
-                    side: const BorderSide(color: Color(0xFF4299E1)),
+                    foregroundColor: themeManager.infoColor,
+                    side: BorderSide(color: themeManager.infoColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -531,7 +495,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                     // Mark as completed
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF48BB78),
+                    backgroundColor: themeManager.successColor,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -555,7 +519,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
     );
   }
 
-  Widget _buildCompletedOrderCard(int index, bool isDark) {
+  Widget _buildCompletedOrderCard(int index, ThemeManager themeManager) {
     final titles = [
       'Home Cleaning Service',
       'AC Repair',
@@ -588,12 +552,12 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
+                  color: themeManager.successColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   Prbal.checkCircle,
-                  color: const Color(0xFF48BB78),
+                  color: themeManager.successColor,
                   size: 20.sp,
                 ),
               ),
@@ -607,14 +571,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     Text(
                       customers[index % customers.length],
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -623,7 +587,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF48BB78).withValues(alpha: 0.1),
+                  color: themeManager.successColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -631,7 +595,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF48BB78),
+                    color: themeManager.successColor,
                   ),
                 ),
               ),
@@ -643,14 +607,14 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.calendar,
                 size: 16.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
               ),
               SizedBox(width: 8.w),
               Text(
                 'Completed ${index + 1} day${index == 0 ? '' : 's'} ago',
                 style: TextStyle(
                   fontSize: 12.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: themeManager.textSecondary,
                 ),
               ),
             ],
@@ -661,7 +625,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               Icon(
                 Prbal.dollarSign,
                 size: 16.sp,
-                color: const Color(0xFF48BB78),
+                color: themeManager.successColor,
               ),
               SizedBox(width: 8.w),
               Text(
@@ -669,7 +633,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF48BB78),
+                  color: themeManager.successColor,
                 ),
               ),
               SizedBox(width: 16.w),
@@ -678,7 +642,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                   Icon(
                     Prbal.star,
                     size: 16.sp,
-                    color: const Color(0xFFED8936),
+                    color: themeManager.warningColor,
                   ),
                   SizedBox(width: 4.w),
                   Text(
@@ -686,7 +650,7 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFFED8936),
+                      color: themeManager.warningColor,
                     ),
                   ),
                 ],
@@ -699,8 +663,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
               // View details or reorder
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF4299E1),
-              side: const BorderSide(color: Color(0xFF4299E1)),
+              foregroundColor: themeManager.primaryColor,
+              side: BorderSide(color: themeManager.primaryColor),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

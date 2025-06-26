@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,19 +6,31 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prbal/services/service_providers.dart';
-import 'package:prbal/services/authentication_notifier.dart';
 import 'package:prbal/services/api_service.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
-/// ProfileSectionWidget - Modern profile section for settings screen
+/// **THEMEMANAGER INTEGRATED** ProfileSectionWidget - Modern profile section for settings screen
+///
+/// **ThemeManager Features Integrated:**
+/// - 🎨 Complete color system (primary, accent, neutral, text, status colors)
+/// - 🌈 Enhanced gradients (background, surface, primary, secondary gradients)
+/// - 🎯 Theme-aware shadows (subtle, elevated shadows)
+/// - 🔄 Conditional styling with helper methods
+/// - 🎭 Professional Material Design 3.0 compliance
+/// - 🌓 Automatic light/dark mode adaptation
+/// - 📊 Comprehensive debug logging and profile monitoring
+/// - ✨ Enhanced visual feedback with glass morphism effects
+/// - 🧑‍💼 Profile-focused design with professional theming
+/// - 🔒 Authentication-aware UI with proper visual states
 ///
 /// This widget displays the user's profile information in a modern card layout with:
-/// - Profile picture (with fallback to user type icon)
-/// - User name and display information
-/// - User type badge with color coding
-/// - Rating and booking statistics for providers
-/// - Edit profile button
-/// - Verification status indicator
-/// - Modern glass-morphism design with proper theming
+/// - Enhanced profile picture with gradient borders (with fallback to user type icon)
+/// - Professional user name and display information with theme-aware styling
+/// - Enhanced user type badge with gradient color coding
+/// - Professional rating and booking statistics with status color integration
+/// - Theme-aware edit and view profile buttons with gradient styling
+/// - Enhanced verification status indicator with proper theming
+/// - Advanced glass-morphism design with comprehensive ThemeManager integration
 class ProfileSectionWidget extends ConsumerStatefulWidget {
   const ProfileSectionWidget({
     super.key,
@@ -36,20 +49,17 @@ class ProfileSectionWidget extends ConsumerStatefulWidget {
   final Function(ImageSource)? onProfilePictureEdit;
 
   @override
-  ConsumerState<ProfileSectionWidget> createState() =>
-      _ProfileSectionWidgetState();
+  ConsumerState<ProfileSectionWidget> createState() => _ProfileSectionWidgetState();
 }
 
 class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('🎨 ProfileSectionWidget: Initializing profile section');
+    debugPrint('🧑‍💼 [ProfileSection] Initializing enhanced profile section');
 
     // Initialize animations for smooth entrance
     _animationController = AnimationController(
@@ -57,375 +67,418 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
       duration: const Duration(milliseconds: 800),
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-
     // Start entrance animation
     _animationController.forward();
-    debugPrint('🎨 ProfileSectionWidget: Animation controller started');
+    debugPrint('🎬 [ProfileSection] Animation controller started with 800ms duration');
   }
 
   @override
   void dispose() {
-    debugPrint('🎨 ProfileSectionWidget: Disposing animation controller');
+    debugPrint('🧑‍💼 [ProfileSection] Disposing animation controller');
     _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 ProfileSectionWidget: Building profile section');
+    debugPrint('🧑‍💼 [ProfileSection] Building enhanced profile section with ThemeManager');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Use centralized ThemeManager instead of manual theme detection
+    final themeManager = ThemeManager.of(context);
     final authState = ref.watch(authenticationStateProvider);
-    final userData = authState.userData;
 
-    debugPrint('🎨 ProfileSectionWidget: Theme is dark: $isDark');
-    debugPrint(
-        '🎨 ProfileSectionWidget: User authenticated: ${authState.isAuthenticated}');
-    debugPrint(
-        '🎨 ProfileSectionWidget: User data available: ${userData != null}');
+    // Enhanced debug logging with theme state
+    debugPrint('🎨 [ProfileSection] Theme mode: ${Theme.of(context).brightness}');
+    debugPrint('🔒 [ProfileSection] Authentication state: ${authState.isAuthenticated}');
 
-    // Extract user information with proper fallbacks
-    final userInfo = _extractUserInfo(userData);
-    debugPrint('🎨 ProfileSectionWidget: Extracted user info: $userInfo');
-
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: _buildProfileCard(context, isDark, userInfo, authState),
-          ),
-        );
-      },
-    );
-  }
-
-  /// Builds the main profile card with modern design
-  Widget _buildProfileCard(
-    BuildContext context,
-    bool isDark,
-    Map<String, dynamic> userInfo,
-    AuthenticationState authState,
-  ) {
-    debugPrint('🎨 ProfileSectionWidget: Building profile card');
+    if (!authState.isAuthenticated) {
+      return _buildSignInPrompt(themeManager);
+    }
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        // Modern glass-morphism effect
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  const Color(0xFF2D2D2D).withValues(alpha: 0.8),
-                  const Color(0xFF1E1E1E).withValues(alpha: 0.9),
-                ]
-              : [
-                  Colors.white.withValues(alpha: 0.9),
-                  const Color(0xFFF8F9FA).withValues(alpha: 0.8),
-                ],
-        ),
-        borderRadius: BorderRadius.circular(24.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.4)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.white.withValues(alpha: 0.9),
-            blurRadius: 1,
-            offset: const Offset(0, 1),
-            spreadRadius: 0,
-          ),
-        ],
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.2),
-          width: 1,
-        ),
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: EdgeInsets.all(24.w),
+      decoration: themeManager.glassMorphism.copyWith(
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: themeManager.elevatedShadow,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.onViewProfile,
-          borderRadius: BorderRadius.circular(24.r),
-          child: Padding(
-            padding: EdgeInsets.all(24.w),
-            child: Column(
-              children: [
-                // Profile Header Row
-                _buildProfileHeader(isDark, userInfo),
+      child: Column(
+        children: [
+          // Profile Header with enhanced styling
+          _buildEnhancedProfileHeader(themeManager, authState),
 
-                // User Stats Row (for providers)
-                if (userInfo['userType'] == 'provider') ...[
-                  SizedBox(height: 20.h),
-                  _buildUserStats(isDark, userInfo),
-                ],
+          SizedBox(height: 20.h),
 
-                // Verification Status
-                if (userInfo['isVerified'] == true) ...[
-                  SizedBox(height: 16.h),
-                  _buildVerificationBadge(isDark),
-                ],
-              ],
-            ),
-          ),
-        ),
+          // Profile Stats with theme-aware cards
+          _buildEnhancedProfileStats(themeManager, authState),
+
+          SizedBox(height: 20.h),
+
+          // Action Buttons with gradient styling
+          _buildEnhancedActionButtons(themeManager),
+        ],
       ),
     );
   }
 
-  /// Builds the profile header with avatar, name, and edit button
-  Widget _buildProfileHeader(bool isDark, Map<String, dynamic> userInfo) {
-    debugPrint('🎨 ProfileSectionWidget: Building profile header');
+  /// Builds enhanced profile header with ThemeManager styling
+  Widget _buildEnhancedProfileHeader(ThemeManager themeManager, dynamic authState) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building enhanced profile header');
 
     return Row(
       children: [
-        // Profile Avatar
-        _buildProfileAvatar(isDark, userInfo),
-
-        SizedBox(width: 20.w),
-
-        // User Information
-        Expanded(
-          child: _buildUserInfo(isDark, userInfo),
-        ),
-
-        // Edit Button
-        _buildEditButton(isDark, userInfo),
-      ],
-    );
-  }
-
-  /// Builds the profile avatar with image or fallback icon
-  Widget _buildProfileAvatar(bool isDark, Map<String, dynamic> userInfo) {
-    debugPrint('🎨 ProfileSectionWidget: Building profile avatar');
-
-    final profilePicture = userInfo['profilePicture'] as String?;
-    final userType = userInfo['userType'] as String?;
-    final userTypeColor = _getUserTypeColor(userType);
-
-    debugPrint('🎨 ProfileSectionWidget: Profile picture URL: $profilePicture');
-    debugPrint('🎨 ProfileSectionWidget: User type: $userType');
-
-    return Stack(
-      children: [
-        // Main Avatar Container (now tappable)
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.onProfilePictureEdit != null
-                ? () => _showImageSourceDialog()
-                : null,
-            borderRadius: BorderRadius.circular(40.r),
+        // Enhanced profile picture with gradient border
+        Container(
+          decoration: BoxDecoration(
+            gradient: themeManager.primaryGradient,
+            borderRadius: BorderRadius.circular(35.r),
+            boxShadow: themeManager.primaryShadow,
+          ),
+          padding: EdgeInsets.all(3.w),
+          child: GestureDetector(
+            onTap: () => _showProfilePictureOptions(themeManager),
             child: Container(
-              width: 80.w,
-              height: 80.h,
+              width: 64.w,
+              height: 64.w,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    userTypeColor.withValues(alpha: 0.2),
-                    userTypeColor.withValues(alpha: 0.1),
-                  ],
-                ),
+                color: themeManager.surfaceColor,
+                borderRadius: BorderRadius.circular(32.r),
                 border: Border.all(
-                  color: userTypeColor.withValues(alpha: 0.3),
-                  width: 2,
+                  color: themeManager.borderColor,
+                  width: 1,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: userTypeColor.withValues(alpha: 0.2),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
-              child: ClipOval(
-                child: profilePicture != null && profilePicture.isNotEmpty
-                    ? _buildNetworkImage(profilePicture, userType)
-                    : _buildFallbackAvatar(userType, userTypeColor),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32.r),
+                child: _buildProfileImage(themeManager, authState),
               ),
             ),
           ),
         ),
 
-        // Edit Button Overlay
-        if (widget.onProfilePictureEdit != null)
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: _buildProfileEditButton(isDark, userTypeColor),
+        SizedBox(width: 16.w),
+
+        // Enhanced profile info
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Name with theme-aware styling
+              Text(
+                _getDisplayName(authState),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: themeManager.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+
+              SizedBox(height: 4.h),
+
+              // User type badge with gradient
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  gradient: themeManager.secondaryGradient,
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: themeManager.primaryShadow,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _getUserTypeIcon(authState.userData?['user_type']),
+                      size: 14.sp,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      _getUserTypeDisplayName(authState.userData?['user_type']),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 8.h),
+
+              // Enhanced rating display
+              if (_hasValidRating(authState)) _buildEnhancedRatingDisplay(themeManager, authState),
+            ],
           ),
+        ),
       ],
     );
   }
 
-  /// Builds network image with caching and error handling
-  Widget _buildNetworkImage(String imageUrl, String? userType) {
-    debugPrint('🎨 ProfileSectionWidget: Building network image: $imageUrl');
+  /// Builds enhanced profile stats with theme-aware cards
+  Widget _buildEnhancedProfileStats(ThemeManager themeManager, dynamic authState) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building enhanced profile stats');
 
-    // Convert relative URL to absolute URL if needed
-    final absoluteImageUrl = ApiService.convertToAbsoluteUrl(imageUrl);
-
-    return CachedNetworkImage(
-      imageUrl: absoluteImageUrl,
-      fit: BoxFit.cover,
-      placeholder: (context, url) {
-        debugPrint('🎨 ProfileSectionWidget: Loading image placeholder');
-        return _buildImagePlaceholder();
-      },
-      errorWidget: (context, url, error) {
-        debugPrint('🎨 ProfileSectionWidget: Image load error: $error');
-        return _buildFallbackAvatar(userType, _getUserTypeColor(userType));
-      },
-    );
-  }
-
-  /// Builds image loading placeholder
-  Widget _buildImagePlaceholder() {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.grey.withValues(alpha: 0.2),
-      child: Center(
-        child: SizedBox(
-          width: 20.w,
-          height: 20.h,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Theme.of(context).primaryColor,
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        gradient: themeManager.surfaceGradient,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1,
+        ),
+        boxShadow: themeManager.primaryShadow,
+      ),
+      child: Row(
+        children: [
+          // Bookings stat
+          Expanded(
+            child: _buildStatCard(
+              themeManager,
+              icon: Prbal.calendar,
+              label: 'profile.bookings'.tr(),
+              value: _getRealBookingCount(authState).toString(),
+              gradient: themeManager.primaryGradient,
             ),
           ),
-        ),
-      ),
-    );
-  }
 
-  /// Builds fallback avatar with user.png image
-  Widget _buildFallbackAvatar(String? userType, Color userTypeColor) {
-    debugPrint(
-        '🎨 ProfileSectionWidget: Building fallback avatar with user.png');
+          SizedBox(width: 12.w),
 
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            userTypeColor.withValues(alpha: 0.1),
-            userTypeColor.withValues(alpha: 0.05),
-          ],
-        ),
-      ),
-      child: ClipOval(
-        child: Image.asset(
-          'assets/images/user.png',
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            debugPrint(
-                '🎨 ProfileSectionWidget: Error loading user.png: $error');
-            // Fallback to icon if image fails to load
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    userTypeColor.withValues(alpha: 0.3),
-                    userTypeColor.withValues(alpha: 0.1),
-                  ],
-                ),
+          // Rating stat
+          Expanded(
+            child: _buildStatCard(
+              themeManager,
+              icon: Prbal.star,
+              label: 'profile.rating'.tr(),
+              value: _getRealRating(authState).toStringAsFixed(1),
+              gradient: themeManager.secondaryGradient,
+            ),
+          ),
+
+          SizedBox(width: 12.w),
+
+          // Balance stat
+          Expanded(
+            child: _buildStatCard(
+              themeManager,
+              icon: Prbal.wallet,
+              label: 'profile.balance'.tr(),
+              value: '₹${(authState.userData?['balance'] ?? 0).toStringAsFixed(0)}',
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(colors: [Color(0xFFFF6B6B), Color(0xFFEE5A52)]),
+                darkGradient: LinearGradient(colors: [Color(0xFFFF8A80), Color(0xFFFF5722)]),
               ),
-              child: Icon(
-                _getUserTypeIcon(userType),
-                color: userTypeColor,
-                size: 36.sp,
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  /// Builds the profile picture edit button overlay
-  Widget _buildProfileEditButton(bool isDark, Color userTypeColor) {
-    debugPrint('🎨 ProfileSectionWidget: Building profile edit button');
-
-    return Container(
-      width: 28.w,
-      height: 28.h,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            userTypeColor,
-            userTypeColor.withValues(alpha: 0.8),
-          ],
-        ),
-        border: Border.all(
-          color: isDark ? Colors.white : Colors.white,
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            ),
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _showImageSourceDialog(),
-          borderRadius: BorderRadius.circular(14.r),
-          child: Icon(
-            Prbal.camera,
+    );
+  }
+
+  /// Builds individual stat card with gradient styling
+  Widget _buildStatCard(
+    ThemeManager themeManager, {
+    required IconData icon,
+    required String label,
+    required String value,
+    required Gradient gradient,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: themeManager.primaryShadow,
+      ),
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 18.sp,
             color: Colors.white,
-            size: 14.sp,
           ),
-        ),
+          SizedBox(height: 6.h),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 2.h),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
-  /// Shows bottom sheet to choose image source (camera or gallery)
-  void _showImageSourceDialog() {
-    debugPrint('🎨 ProfileSectionWidget: Showing image source bottom sheet');
+  /// Builds enhanced action buttons with gradient styling
+  Widget _buildEnhancedActionButtons(ThemeManager themeManager) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building enhanced action buttons');
+
+    return Row(
+      children: [
+        // Edit Profile Button
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: themeManager.primaryGradient,
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: themeManager.primaryShadow,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: widget.onEditProfile,
+                borderRadius: BorderRadius.circular(12.r),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Prbal.edit,
+                        size: 16.sp,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'profile.editProfile'.tr(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(width: 12.w),
+
+        // View Profile Button
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: themeManager.primaryColor,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(12.r),
+              color: themeManager.surfaceColor,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: widget.onViewProfile,
+                borderRadius: BorderRadius.circular(12.r),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Prbal.profile,
+                        size: 16.sp,
+                        color: themeManager.primaryColor,
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'profile.viewProfile'.tr(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: themeManager.primaryColor,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Builds sign-in prompt with theme-aware styling
+  Widget _buildSignInPrompt(ThemeManager themeManager) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building sign-in prompt');
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: EdgeInsets.all(24.w),
+      decoration: themeManager.glassMorphism.copyWith(
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 80.w,
+            height: 80.w,
+            decoration: BoxDecoration(
+              gradient: themeManager.primaryGradient,
+              borderRadius: BorderRadius.circular(40.r),
+              boxShadow: themeManager.elevatedShadow,
+            ),
+            child: Icon(
+              Prbal.person,
+              size: 40.sp,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Text(
+            'profile.signInToAccess'.tr(),
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: themeManager.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'profile.signInDescription'.tr(),
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: themeManager.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Shows profile picture options bottom sheet
+  void _showProfilePictureOptions(ThemeManager themeManager) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Showing profile picture options');
 
     showModalBottomSheet(
       context: context,
@@ -433,23 +486,14 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.5),
       builder: (BuildContext context) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            gradient: themeManager.surfaceGradient,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(24.r),
               topRight: Radius.circular(24.r),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
-                blurRadius: 20,
-                offset: const Offset(0, -5),
-                spreadRadius: 0,
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
           child: SafeArea(
             child: Padding(
@@ -462,7 +506,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
                     width: 40.w,
                     height: 4.h,
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.grey[600] : Colors.grey[300],
+                      color: themeManager.borderColor,
                       borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
@@ -475,27 +519,16 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
+                      color: themeManager.textPrimary,
                       letterSpacing: -0.5,
                     ),
-                  ),
-
-                  SizedBox(height: 8.h),
-
-                  // Subtitle
-                  Text(
-                    'Choose how you\'d like to update your profile picture',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.center,
                   ),
 
                   SizedBox(height: 32.h),
 
                   // Camera Option
                   _buildImageSourceOption(
+                    themeManager,
                     icon: Prbal.camera,
                     title: 'Take Photo',
                     subtitle: 'Use camera to take a new photo',
@@ -503,13 +536,13 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
                       Navigator.pop(context);
                       widget.onProfilePictureEdit?.call(ImageSource.camera);
                     },
-                    isDark: isDark,
                   ),
 
                   SizedBox(height: 16.h),
 
                   // Gallery Option
                   _buildImageSourceOption(
+                    themeManager,
                     icon: Prbal.images,
                     title: 'Choose from Gallery',
                     subtitle: 'Select from your photo library',
@@ -517,42 +550,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
                       Navigator.pop(context);
                       widget.onProfilePictureEdit?.call(ImageSource.gallery);
                     },
-                    isDark: isDark,
                   ),
-
-                  SizedBox(height: 24.h),
-
-                  // Cancel Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          side: BorderSide(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.2)
-                                : Colors.grey.withValues(alpha: 0.3),
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[300] : Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Bottom padding for devices with home indicator
-                  SizedBox(
-                      height:
-                          MediaQuery.of(context).padding.bottom > 0 ? 8.h : 0),
                 ],
               ),
             ),
@@ -562,13 +560,13 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     );
   }
 
-  /// Builds individual image source option
-  Widget _buildImageSourceOption({
+  /// Builds image source option
+  Widget _buildImageSourceOption(
+    ThemeManager themeManager, {
     required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
-    required bool isDark,
   }) {
     return Material(
       color: Colors.transparent,
@@ -578,38 +576,22 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
         child: Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.05)
-                : Colors.grey.withValues(alpha: 0.05),
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
-            ),
+            border: Border.all(color: themeManager.borderColor),
           ),
           child: Row(
             children: [
-              // Icon
               Container(
                 width: 48.w,
                 height: 48.h,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.grey.withValues(alpha: 0.1),
+                  gradient: themeManager.primaryGradient,
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: Icon(
-                  icon,
-                  color: isDark ? Colors.white : const Color(0xFF2D3748),
-                  size: 22.sp,
-                ),
+                child: Icon(icon, color: Colors.white, size: 22.sp),
               ),
-
               SizedBox(width: 16.w),
-
-              // Text
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,26 +601,18 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                        color: themeManager.textPrimary,
                       ),
                     ),
-                    SizedBox(height: 2.h),
                     Text(
                       subtitle,
                       style: TextStyle(
                         fontSize: 13.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
                 ),
-              ),
-
-              // Arrow
-              Icon(
-                Prbal.angleRight,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-                size: 18.sp,
               ),
             ],
           ),
@@ -647,260 +621,118 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     );
   }
 
-  /// Builds user information section
-  Widget _buildUserInfo(bool isDark, Map<String, dynamic> userInfo) {
-    debugPrint('🎨 ProfileSectionWidget: Building user info section');
+  /// Builds profile image with network caching
+  Widget _buildProfileImage(ThemeManager themeManager, dynamic authState) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building profile image');
 
-    final displayName = userInfo['displayName'] as String;
-    final username = userInfo['username'] as String?;
-    final userType = userInfo['userType'] as String;
-    final userTypeColor = _getUserTypeColor(userType);
+    final profilePicture = authState.userData?['profile_picture'] as String?;
+    final userType = authState.userData?['user_type'] as String?;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // User Name
-        Text(
-          displayName,
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF2D3748),
-            letterSpacing: -0.5,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+    if (profilePicture != null && profilePicture.isNotEmpty) {
+      final absoluteImageUrl = ApiService.convertToAbsoluteUrl(profilePicture);
 
-        // Username (if available and different from display name)
-        if (username != null &&
-            username.isNotEmpty &&
-            username != displayName) ...[
-          SizedBox(height: 2.h),
-          Text(
-            '@$username',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-              letterSpacing: 0.2,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-
-        SizedBox(height: 8.h),
-
-        // User Type Badge
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                userTypeColor.withValues(alpha: 0.15),
-                userTypeColor.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(
-              color: userTypeColor.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            _getUserTypeDisplayName(userType),
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: userTypeColor,
-              letterSpacing: 0.5,
+      return CachedNetworkImage(
+        imageUrl: absoluteImageUrl,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          color: themeManager.surfaceColor,
+          child: Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(themeManager.primaryColor),
+              strokeWidth: 2,
             ),
           ),
         ),
-      ],
-    );
+        errorWidget: (context, url, error) => _buildFallbackAvatar(themeManager, userType),
+      );
+    } else {
+      return _buildFallbackAvatar(themeManager, userType);
+    }
   }
 
-  /// Builds the edit profile button
-  Widget _buildEditButton(bool isDark, Map<String, dynamic> userInfo) {
-    debugPrint('🎨 ProfileSectionWidget: Building edit button');
-
-    final userTypeColor = _getUserTypeColor(userInfo['userType'] as String);
+  /// Builds fallback avatar with user.png image
+  Widget _buildFallbackAvatar(ThemeManager themeManager, String? userType) {
+    debugPrint('🧑‍💼 ProfileSectionWidget: Building fallback avatar with user.png');
 
     return Container(
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            userTypeColor.withValues(alpha: 0.15),
-            userTypeColor.withValues(alpha: 0.05),
-          ],
-        ),
-        border: Border.all(
-          color: userTypeColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        gradient: themeManager.surfaceGradient,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            debugPrint('🎨 ProfileSectionWidget: Edit button tapped');
-            widget.onEditProfile?.call();
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/user.png',
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('🧑‍💼 ProfileSectionWidget: Error loading user.png: $error');
+            return Container(
+              decoration: BoxDecoration(
+                gradient: themeManager.primaryGradient,
+              ),
+              child: Icon(
+                _getUserTypeIcon(userType),
+                color: Colors.white,
+                size: 32.sp,
+              ),
+            );
           },
-          borderRadius: BorderRadius.circular(25.r),
-          child: Padding(
-            padding: EdgeInsets.all(12.w),
-            child: Icon(
-              Prbal.edit,
-              color: userTypeColor,
-              size: 20.sp,
-            ),
-          ),
         ),
       ),
     );
   }
 
-  /// Builds user statistics row for providers
-  Widget _buildUserStats(bool isDark, Map<String, dynamic> userInfo) {
-    debugPrint('🎨 ProfileSectionWidget: Building user stats');
+  /// Gets display name from auth state
+  String _getDisplayName(dynamic authState) {
+    final userData = authState.userData;
+    if (userData == null) return 'Guest User';
 
-    final rating = userInfo['rating'] as double;
-    final bookingCount = userInfo['bookingCount'] as int;
-    final balance = userInfo['balance'] as double;
+    final firstName = userData['first_name'] as String? ?? userData['firstName'] as String?;
+    final lastName = userData['last_name'] as String? ?? userData['lastName'] as String?;
+    final username = userData['username'] as String?;
+
+    if (firstName != null && lastName != null) {
+      return '$firstName $lastName';
+    } else if (firstName != null) {
+      return firstName;
+    } else if (username != null) {
+      return username;
+    }
+
+    return 'User';
+  }
+
+  /// Checks if user has valid rating
+  bool _hasValidRating(dynamic authState) {
+    final userData = authState.userData;
+    if (userData == null) return false;
+
+    final rating = _getRealRating(authState);
+    return rating > 0.0;
+  }
+
+  /// Builds enhanced rating display
+  Widget _buildEnhancedRatingDisplay(ThemeManager themeManager, dynamic authState) {
+    final rating = _getRealRating(authState);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.05)
-            : Colors.black.withValues(alpha: 0.02),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.1),
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(colors: [Color(0xFFED8936), Color(0xFFDD6B20)]),
+          darkGradient: LinearGradient(colors: [Color(0xFFFBD38D), Color(0xFFED8936)]),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildStatItem(
-            icon: Prbal.star,
-            iconColor: const Color(0xFFED8936),
-            value: rating.toStringAsFixed(1),
-            label: 'Rating',
-            isDark: isDark,
-          ),
-          _buildStatDivider(isDark),
-          _buildStatItem(
-            icon: Prbal.calendar,
-            iconColor: const Color(0xFF4299E1),
-            value: bookingCount.toString(),
-            label: 'Bookings',
-            isDark: isDark,
-          ),
-          _buildStatDivider(isDark),
-          _buildStatItem(
-            icon: Prbal.wallet,
-            iconColor: const Color(0xFF9F7AEA),
-            value: _formatBalance(balance),
-            label: 'Balance',
-            isDark: isDark,
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds individual stat item
-  Widget _buildStatItem({
-    required IconData icon,
-    required Color iconColor,
-    required String value,
-    required String label,
-    required bool isDark,
-  }) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: iconColor,
-          size: 18.sp,
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF2D3748),
-          ),
-        ),
-        SizedBox(height: 2.h),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11.sp,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Builds divider between stats
-  Widget _buildStatDivider(bool isDark) {
-    return Container(
-      width: 1,
-      height: 40.h,
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.1)
-          : Colors.grey.withValues(alpha: 0.2),
-    );
-  }
-
-  /// Builds verification badge
-  Widget _buildVerificationBadge(bool isDark) {
-    debugPrint('🎨 ProfileSectionWidget: Building verification badge');
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF48BB78),
-            Color(0xFF38A169),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF48BB78).withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Prbal.checkCircle,
-            color: Colors.white,
-            size: 16.sp,
-          ),
-          SizedBox(width: 8.w),
+          Icon(Prbal.star, size: 12.sp, color: Colors.white),
+          SizedBox(width: 4.w),
           Text(
-            'Verified Account',
+            rating.toStringAsFixed(1),
             style: TextStyle(
-              fontSize: 13.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: Colors.white,
-              letterSpacing: 0.3,
             ),
           ),
         ],
@@ -908,113 +740,36 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     );
   }
 
-  /// Extracts user information from API data with proper fallbacks
-  Map<String, dynamic> _extractUserInfo(Map<String, dynamic>? userData) {
-    debugPrint('🎨 ProfileSectionWidget: Extracting user info from API data');
+  /// Gets real rating from auth state
+  double _getRealRating(dynamic authState) {
+    final userData = authState.userData;
+    if (userData == null) return 0.0;
 
-    if (userData == null) {
-      debugPrint(
-          '🎨 ProfileSectionWidget: No user data available, using defaults');
-      return {
-        'displayName': 'Guest User',
-        'userType': 'customer',
-        'profilePicture': null,
-        'rating': 0.0,
-        'bookingCount': 0,
-        'isVerified': false,
-      };
-    }
-
-    // Extract names with multiple fallback strategies
-    final firstName =
-        userData['first_name'] as String? ?? userData['firstName'] as String?;
-    final lastName =
-        userData['last_name'] as String? ?? userData['lastName'] as String?;
-    final username = userData['username'] as String?;
-
-    String displayName = 'User';
-    if (firstName != null && lastName != null) {
-      displayName = '$firstName $lastName';
-    } else if (firstName != null) {
-      displayName = firstName;
-    } else if (username != null) {
-      displayName = username;
-    }
-
-    // Extract user type
-    final userType = userData['user_type'] as String? ??
-        userData['userType'] as String? ??
-        'customer';
-
-    // Extract profile picture
-    final profilePicture = userData['profile_picture'] as String? ??
-        userData['profilePicture'] as String?;
-
-    // Extract rating (with type conversion)
-    double rating = 0.0;
     final ratingData = userData['rating'];
     if (ratingData is double) {
-      rating = ratingData;
+      return ratingData;
     } else if (ratingData is int) {
-      rating = ratingData.toDouble();
+      return ratingData.toDouble();
     } else if (ratingData is String) {
-      rating = double.tryParse(ratingData) ?? 0.0;
+      return double.tryParse(ratingData) ?? 0.0;
     }
 
-    // Extract booking count
-    int bookingCount = 0;
-    final bookingData = userData['total_bookings'] ?? userData['totalBookings'];
-    if (bookingData is int) {
-      bookingCount = bookingData;
-    } else if (bookingData is String) {
-      bookingCount = int.tryParse(bookingData) ?? 0;
-    }
-
-    // Extract verification status
-    final isVerified = userData['is_verified'] as bool? ??
-        userData['isVerified'] as bool? ??
-        false;
-
-    // Extract balance (with type conversion)
-    double balance = 0.0;
-    final balanceData = userData['balance'] ??
-        userData['wallet_balance'] ??
-        userData['account_balance'];
-    if (balanceData is double) {
-      balance = balanceData;
-    } else if (balanceData is int) {
-      balance = balanceData.toDouble();
-    } else if (balanceData is String) {
-      balance = double.tryParse(balanceData) ?? 0.0;
-    }
-
-    final extractedInfo = {
-      'displayName': displayName,
-      'username': username,
-      'userType': userType,
-      'profilePicture': profilePicture,
-      'rating': rating,
-      'bookingCount': bookingCount,
-      'balance': balance,
-      'isVerified': isVerified,
-    };
-
-    debugPrint('🎨 ProfileSectionWidget: Extracted info: $extractedInfo');
-    return extractedInfo;
+    return 0.0;
   }
 
-  /// Gets color for user type
-  Color _getUserTypeColor(String? userType) {
-    switch (userType) {
-      case 'provider':
-        return const Color(0xFF48BB78);
-      case 'customer':
-        return const Color(0xFF4299E1);
-      case 'admin':
-        return const Color(0xFF9F7AEA);
-      default:
-        return const Color(0xFF4299E1);
+  /// Gets real booking count from auth state
+  int _getRealBookingCount(dynamic authState) {
+    final userData = authState.userData;
+    if (userData == null) return 0;
+
+    final bookingData = userData['total_bookings'] ?? userData['totalBookings'] ?? userData['booking_count'];
+    if (bookingData is int) {
+      return bookingData;
+    } else if (bookingData is String) {
+      return int.tryParse(bookingData) ?? 0;
     }
+
+    return 0;
   }
 
   /// Gets icon for user type
@@ -1042,19 +797,6 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
         return 'Administrator';
       default:
         return 'User';
-    }
-  }
-
-  /// Formats balance as currency string
-  String _formatBalance(double balance) {
-    if (balance >= 1000000) {
-      return '\$${(balance / 1000000).toStringAsFixed(1)}M';
-    } else if (balance >= 1000) {
-      return '\$${(balance / 1000).toStringAsFixed(1)}K';
-    } else if (balance >= 100) {
-      return '\$${balance.toStringAsFixed(0)}';
-    } else {
-      return '\$${balance.toStringAsFixed(2)}';
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:prbal/widgets/admin/subcategory_widget.dart';
 
 /// AdminSubcategoryManagerScreen - Dedicated screen for managing service subcategories
@@ -33,12 +34,10 @@ class AdminSubcategoryManagerScreen extends ConsumerStatefulWidget {
   const AdminSubcategoryManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminSubcategoryManagerScreen> createState() =>
-      _AdminSubcategoryManagerScreenState();
+  ConsumerState<AdminSubcategoryManagerScreen> createState() => _AdminSubcategoryManagerScreenState();
 }
 
-class _AdminSubcategoryManagerScreenState
-    extends ConsumerState<AdminSubcategoryManagerScreen> {
+class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategoryManagerScreen> {
   // ========== STATE VARIABLES ==========
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -48,8 +47,7 @@ class _AdminSubcategoryManagerScreenState
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🏷️ AdminSubcategoryManager: Initializing subcategory management screen');
+    debugPrint('🏷️ AdminSubcategoryManager: Initializing subcategory management screen');
 
     // Add search listener for real-time filtering
     _searchController.addListener(() {
@@ -57,8 +55,7 @@ class _AdminSubcategoryManagerScreenState
         setState(() {
           _searchQuery = _searchController.text;
         });
-        debugPrint(
-            '🔍 AdminSubcategoryManager: Search query updated: "$_searchQuery"');
+        debugPrint('🔍 AdminSubcategoryManager: Search query updated: "$_searchQuery"');
       }
     });
 
@@ -67,20 +64,17 @@ class _AdminSubcategoryManagerScreenState
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🎨 AdminSubcategoryManager: Building subcategory management screen');
+    debugPrint('🎨 AdminSubcategoryManager: Building subcategory management screen');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    debugPrint(
-        '🎨 AdminSubcategoryManager: Theme mode: ${isDark ? 'dark' : 'light'}');
+    final themeManager = ThemeManager.of(context);
+    debugPrint('🎨 AdminSubcategoryManager: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
 
       // ========== APP BAR WITH SEARCH ==========
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         elevation: 0,
         leading: IconButton(
           onPressed: () {
@@ -89,7 +83,7 @@ class _AdminSubcategoryManagerScreenState
           },
           icon: Icon(
             Prbal.arrowLeft,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
             size: 24.sp,
           ),
         ),
@@ -128,14 +122,14 @@ class _AdminSubcategoryManagerScreenState
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   Text(
                     'Manage service subcategories',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: themeManager.textSecondary,
                     ),
                   ),
                 ],
@@ -149,30 +143,24 @@ class _AdminSubcategoryManagerScreenState
             margin: EdgeInsets.only(right: 8.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              color: isDark
-                  ? Colors.white.withValues(alpha: 26)
-                  : Colors.grey.withValues(alpha: 26),
+              color: themeManager.surfaceColor.withValues(alpha: 0.1),
             ),
             child: PopupMenuButton<String>(
               icon: Icon(
                 Prbal.filter,
-                color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
                 size: 20.sp,
               ),
               onSelected: (value) {
-                debugPrint(
-                    '🔧 AdminSubcategoryManager: Filter changed to: $value');
+                debugPrint('🔧 AdminSubcategoryManager: Filter changed to: $value');
                 setState(() {
                   _currentFilter = value;
                 });
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
-                    value: 'all', child: Text('All Subcategories')),
-                const PopupMenuItem(
-                    value: 'active', child: Text('Active Only')),
-                const PopupMenuItem(
-                    value: 'inactive', child: Text('Inactive Only')),
+                const PopupMenuItem(value: 'all', child: Text('All Subcategories')),
+                const PopupMenuItem(value: 'active', child: Text('Active Only')),
+                const PopupMenuItem(value: 'inactive', child: Text('Inactive Only')),
               ],
             ),
           ),
@@ -181,7 +169,7 @@ class _AdminSubcategoryManagerScreenState
           preferredSize: Size.fromHeight(60.h),
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            child: _buildSearchBar(isDark),
+            child: _buildSearchBar(themeManager),
           ),
         ),
       ),
@@ -190,7 +178,7 @@ class _AdminSubcategoryManagerScreenState
       body: Column(
         children: [
           // ========== SELECTION INFO BAR ==========
-          if (_selectedIds.isNotEmpty) _buildSelectionInfoBar(isDark),
+          if (_selectedIds.isNotEmpty) _buildSelectionInfoBar(themeManager),
 
           // ========== SUBCATEGORIES CRUD WIDGET ==========
           Expanded(
@@ -199,25 +187,20 @@ class _AdminSubcategoryManagerScreenState
               filter: _currentFilter,
               selectedIds: _selectedIds,
               onSelectionChanged: (subcategoryId) {
-                debugPrint(
-                    '📋 AdminSubcategoryManager: Subcategory selection changed: $subcategoryId');
+                debugPrint('📋 AdminSubcategoryManager: Subcategory selection changed: $subcategoryId');
                 setState(() {
                   if (_selectedIds.contains(subcategoryId)) {
                     _selectedIds.remove(subcategoryId);
-                    debugPrint(
-                        '📋 AdminSubcategoryManager: Subcategory deselected: $subcategoryId');
+                    debugPrint('📋 AdminSubcategoryManager: Subcategory deselected: $subcategoryId');
                   } else {
                     _selectedIds.add(subcategoryId);
-                    debugPrint(
-                        '📋 AdminSubcategoryManager: Subcategory selected: $subcategoryId');
+                    debugPrint('📋 AdminSubcategoryManager: Subcategory selected: $subcategoryId');
                   }
                 });
-                debugPrint(
-                    '📋 AdminSubcategoryManager: Total selected subcategories: ${_selectedIds.length}');
+                debugPrint('📋 AdminSubcategoryManager: Total selected subcategories: ${_selectedIds.length}');
               },
               onDataChanged: () {
-                debugPrint(
-                    '📋 AdminSubcategoryManager: Subcategories data changed - triggering UI update');
+                debugPrint('📋 AdminSubcategoryManager: Subcategories data changed - triggering UI update');
                 setState(() {
                   // Force UI update when data changes
                 });
@@ -231,9 +214,8 @@ class _AdminSubcategoryManagerScreenState
       floatingActionButton: _selectedIds.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
-                debugPrint(
-                    '🔧 AdminSubcategoryManager: Bulk actions button pressed');
-                _showBulkActionsBottomSheet(isDark);
+                debugPrint('🔧 AdminSubcategoryManager: Bulk actions button pressed');
+                _showBulkActionsBottomSheet(themeManager);
               },
               backgroundColor: const Color(0xFF8B5CF6),
               icon: Icon(Prbal.cogs, color: Colors.white, size: 20.sp),
@@ -251,80 +233,52 @@ class _AdminSubcategoryManagerScreenState
   }
 
   /// Build modern search bar with glassmorphism design
-  Widget _buildSearchBar(bool isDark) {
+  Widget _buildSearchBar(ThemeManager themeManager) {
     debugPrint('🔍 AdminSubcategoryManager: Building search bar');
 
     return Container(
       height: 48.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
-        gradient: isDark
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 26),
-                  Colors.white.withValues(alpha: 13),
-                ],
-              )
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 230),
-                  Colors.white.withValues(alpha: 153),
-                ],
-              ),
+        gradient: themeManager.surfaceGradient,
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 51)
-              : Colors.white.withValues(alpha: 204),
+          color: themeManager.borderColor,
           width: 1.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 51)
-                : Colors.grey.withValues(alpha: 26),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: TextField(
         controller: _searchController,
         style: TextStyle(
           fontSize: 16.sp,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
         ),
         decoration: InputDecoration(
           hintText: 'Search subcategories by name, description, or category...',
           hintStyle: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.grey[400] : Colors.grey[500],
+            color: themeManager.textTertiary,
           ),
           prefixIcon: Icon(
             Prbal.search,
-            color: const Color(0xFF8B5CF6),
+            color: themeManager.primaryColor,
             size: 20.sp,
           ),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   onPressed: () {
-                    debugPrint(
-                        '🗑️ AdminSubcategoryManager: Clear search button pressed');
+                    debugPrint('🗑️ AdminSubcategoryManager: Clear search button pressed');
                     _searchController.clear();
                   },
                   icon: Icon(
                     Prbal.cross,
-                    color: isDark ? Colors.grey[400] : Colors.grey[500],
+                    color: themeManager.textSecondary,
                     size: 18.sp,
                   ),
                 )
               : null,
           border: InputBorder.none,
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         ),
         onSubmitted: (value) {
           debugPrint('🔍 AdminSubcategoryManager: Search submitted: "$value"');
@@ -334,17 +288,17 @@ class _AdminSubcategoryManagerScreenState
   }
 
   /// Build selection info bar showing selected count and actions
-  Widget _buildSelectionInfoBar(bool isDark) {
+  Widget _buildSelectionInfoBar(ThemeManager themeManager) {
     debugPrint('📊 AdminSubcategoryManager: Building selection info bar');
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF8B5CF6).withValues(alpha: 26),
+        color: themeManager.primaryColor.withValues(alpha: 0.1),
         border: Border(
           bottom: BorderSide(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 77),
+            color: themeManager.primaryColor.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -353,7 +307,7 @@ class _AdminSubcategoryManagerScreenState
         children: [
           Icon(
             Prbal.checkCircle,
-            color: const Color(0xFF8B5CF6),
+            color: themeManager.primaryColor,
             size: 20.sp,
           ),
           SizedBox(width: 8.w),
@@ -362,14 +316,13 @@ class _AdminSubcategoryManagerScreenState
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF8B5CF6),
+              color: themeManager.primaryColor,
             ),
           ),
           const Spacer(),
           TextButton(
             onPressed: () {
-              debugPrint(
-                  '🗑️ AdminSubcategoryManager: Clear selection pressed');
+              debugPrint('🗑️ AdminSubcategoryManager: Clear selection pressed');
               setState(() {
                 _selectedIds.clear();
               });
@@ -378,7 +331,7 @@ class _AdminSubcategoryManagerScreenState
               'Clear All',
               style: TextStyle(
                 fontSize: 12.sp,
-                color: const Color(0xFF8B5CF6),
+                color: themeManager.primaryColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -389,7 +342,7 @@ class _AdminSubcategoryManagerScreenState
   }
 
   /// Show bulk actions bottom sheet
-  void _showBulkActionsBottomSheet(bool isDark) {
+  void _showBulkActionsBottomSheet(ThemeManager themeManager) {
     debugPrint('🔧 AdminSubcategoryManager: Showing bulk actions bottom sheet');
 
     showModalBottomSheet(
@@ -397,7 +350,7 @@ class _AdminSubcategoryManagerScreenState
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: themeManager.surfaceColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -408,7 +361,7 @@ class _AdminSubcategoryManagerScreenState
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: Colors.grey,
+                color: themeManager.borderColor,
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -421,7 +374,7 @@ class _AdminSubcategoryManagerScreenState
                 children: [
                   Icon(
                     Prbal.cogs,
-                    color: const Color(0xFF8B5CF6),
+                    color: themeManager.primaryColor,
                     size: 24.sp,
                   ),
                   SizedBox(width: 12.w),
@@ -431,7 +384,7 @@ class _AdminSubcategoryManagerScreenState
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                   ),
@@ -441,13 +394,10 @@ class _AdminSubcategoryManagerScreenState
             SizedBox(height: 20.h),
 
             // Actions
-            _buildBulkActionTile(
-                'Activate All', Prbal.checkCircle, Colors.green, isDark),
-            _buildBulkActionTile(
-                'Deactivate All', Prbal.closeOutline, Colors.orange, isDark),
-            _buildBulkActionTile(
-                'Export Selected', Prbal.download, Colors.blue, isDark),
-            _buildBulkActionTile('Delete All', Prbal.trash, Colors.red, isDark),
+            _buildBulkActionTile('Activate All', Prbal.checkCircle, themeManager.successColor, themeManager),
+            _buildBulkActionTile('Deactivate All', Prbal.closeOutline, themeManager.warningColor, themeManager),
+            _buildBulkActionTile('Export Selected', Prbal.download, themeManager.infoColor, themeManager),
+            _buildBulkActionTile('Delete All', Prbal.trash, themeManager.errorColor, themeManager),
 
             SizedBox(height: 20.h),
           ],
@@ -457,15 +407,14 @@ class _AdminSubcategoryManagerScreenState
   }
 
   /// Build bulk action tile
-  Widget _buildBulkActionTile(
-      String title, IconData icon, Color color, bool isDark) {
+  Widget _buildBulkActionTile(String title, IconData icon, Color color, ThemeManager themeManager) {
     return ListTile(
       leading: Icon(icon, color: color, size: 20.sp),
       title: Text(
         title,
         style: TextStyle(
           fontSize: 16.sp,
-          color: isDark ? Colors.white : const Color(0xFF1F2937),
+          color: themeManager.textPrimary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -485,8 +434,7 @@ class _AdminSubcategoryManagerScreenState
 
   @override
   void dispose() {
-    debugPrint(
-        '🏷️ AdminSubcategoryManager: Disposing subcategory management screen');
+    debugPrint('🏷️ AdminSubcategoryManager: Disposing subcategory management screen');
     _searchController.dispose();
     debugPrint('🏷️ AdminSubcategoryManager: Screen disposed successfully');
     super.dispose();

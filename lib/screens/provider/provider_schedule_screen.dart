@@ -3,34 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 class ProviderScheduleScreen extends ConsumerStatefulWidget {
   const ProviderScheduleScreen({super.key});
 
   @override
-  ConsumerState<ProviderScheduleScreen> createState() =>
-      _ProviderScheduleScreenState();
+  ConsumerState<ProviderScheduleScreen> createState() => _ProviderScheduleScreenState();
 }
 
-class _ProviderScheduleScreenState
-    extends ConsumerState<ProviderScheduleScreen> {
+class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen> {
   DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         title: Text(
           'Schedule',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
         actions: [
@@ -38,7 +36,7 @@ class _ProviderScheduleScreenState
             onPressed: () {},
             icon: Icon(
               Prbal.plus,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
             ),
           ),
         ],
@@ -49,7 +47,7 @@ class _ProviderScheduleScreenState
           children: [
             // Calendar Header
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 children: [
                   Row(
@@ -66,8 +64,7 @@ class _ProviderScheduleScreenState
                         },
                         icon: Icon(
                           Prbal.angleLeft,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       Text(
@@ -75,8 +72,7 @@ class _ProviderScheduleScreenState
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                       IconButton(
@@ -90,14 +86,13 @@ class _ProviderScheduleScreenState
                         },
                         icon: Icon(
                           Prbal.angleRight,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  _buildCalendarGrid(isDark),
+                  _buildCalendarGrid(themeManager),
                 ],
               ),
             ),
@@ -106,7 +101,7 @@ class _ProviderScheduleScreenState
             // Today's Schedule
             Expanded(
               child: ModernUIComponents.elevatedCard(
-                isDark: isDark,
+                themeManager: themeManager,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,7 +110,7 @@ class _ProviderScheduleScreenState
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF1F2937),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 16.h),
@@ -126,24 +121,24 @@ class _ProviderScheduleScreenState
                             '9:00 AM',
                             'House Cleaning',
                             'John Doe',
-                            const Color(0xFF3B82F6),
-                            isDark,
+                            themeManager.primaryColor,
+                            themeManager,
                           ),
                           SizedBox(height: 12.h),
                           _buildScheduleItem(
                             '2:00 PM',
                             'Plumbing Repair',
                             'Jane Smith',
-                            const Color(0xFF10B981),
-                            isDark,
+                            themeManager.successColor,
+                            themeManager,
                           ),
                           SizedBox(height: 12.h),
                           _buildScheduleItem(
                             '4:30 PM',
                             'Electrical Work',
                             'Mike Johnson',
-                            const Color(0xFFF59E0B),
-                            isDark,
+                            themeManager.warningColor,
+                            themeManager,
                           ),
                         ],
                       ),
@@ -158,7 +153,7 @@ class _ProviderScheduleScreenState
     );
   }
 
-  Widget _buildCalendarGrid(bool isDark) {
+  Widget _buildCalendarGrid(ThemeManager themeManager) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -177,8 +172,7 @@ class _ProviderScheduleScreenState
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.textSecondary,
               ),
             ),
           );
@@ -191,31 +185,24 @@ class _ProviderScheduleScreenState
         return GestureDetector(
           onTap: () {
             setState(() {
-              selectedDate =
-                  DateTime(selectedDate.year, selectedDate.month, day);
+              selectedDate = DateTime(selectedDate.year, selectedDate.month, day);
             });
           },
           child: Container(
             margin: EdgeInsets.all(2.w),
             decoration: BoxDecoration(
               color: isToday
-                  ? const Color(0xFF3B82F6)
-                  : (selectedDate.day == day
-                      ? (isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFE5E7EB))
-                      : Colors.transparent),
+                  ? themeManager.primaryColor
+                  : (selectedDate.day == day ? themeManager.surfaceColor : Colors.transparent),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Center(
               child: Text(
-                '$day',
+                day.toString(),
                 style: TextStyle(
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: isToday
-                      ? Colors.white
-                      : (isDark ? Colors.white : const Color(0xFF1F2937)),
+                  fontWeight: FontWeight.w600,
+                  color: isToday ? Colors.white : themeManager.textPrimary,
                 ),
               ),
             ),
@@ -225,17 +212,13 @@ class _ProviderScheduleScreenState
     );
   }
 
-  Widget _buildScheduleItem(
-      String time, String service, String client, Color color, bool isDark) {
+  Widget _buildScheduleItem(String time, String service, String client, Color color, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: themeManager.borderColor),
       ),
       child: Row(
         children: [
@@ -247,39 +230,42 @@ class _ProviderScheduleScreenState
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  service,
+                  time,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                    color: color,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
+                  service,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: themeManager.textPrimary,
+                  ),
+                ),
+                Text(
                   client,
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF6B7280),
+                    color: themeManager.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          Text(
-            time,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+          Icon(
+            Prbal.angleRight,
+            color: themeManager.textSecondary,
+            size: 16.sp,
           ),
         ],
       ),
@@ -288,6 +274,7 @@ class _ProviderScheduleScreenState
 
   String _getMonthName(int month) {
     const months = [
+      '',
       'January',
       'February',
       'March',
@@ -301,6 +288,6 @@ class _ProviderScheduleScreenState
       'November',
       'December'
     ];
-    return months[month - 1];
+    return months[month];
   }
 }

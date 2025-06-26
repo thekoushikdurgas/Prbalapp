@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 // import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/modern_ui_components.dart';
 
@@ -15,12 +16,10 @@ class TakerPostRequestScreen extends ConsumerStatefulWidget {
   const TakerPostRequestScreen({super.key});
 
   @override
-  ConsumerState<TakerPostRequestScreen> createState() =>
-      _TakerPostRequestScreenState();
+  ConsumerState<TakerPostRequestScreen> createState() => _TakerPostRequestScreenState();
 }
 
-class _TakerPostRequestScreenState
-    extends ConsumerState<TakerPostRequestScreen> {
+class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen> {
   // Form controllers for capturing user input
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -34,16 +33,13 @@ class _TakerPostRequestScreenState
   void initState() {
     super.initState();
     debugPrint('🏠 TakerPostRequestScreen: Screen initialized');
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Default category set to: $selectedCategory');
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Default urgency set to: $selectedUrgency');
+    debugPrint('🏠 TakerPostRequestScreen: Default category set to: $selectedCategory');
+    debugPrint('🏠 TakerPostRequestScreen: Default urgency set to: $selectedUrgency');
   }
 
   @override
   void dispose() {
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Disposing controllers and cleaning up resources');
+    debugPrint('🏠 TakerPostRequestScreen: Disposing controllers and cleaning up resources');
     _titleController.dispose();
     _descriptionController.dispose();
     _budgetController.dispose();
@@ -61,32 +57,27 @@ class _TakerPostRequestScreenState
 
     debugPrint(
         '🏠 TakerPostRequestScreen: Form data - Title: "$title", Description length: ${description.length}, Budget: "$budget"');
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Form data - Category: "$selectedCategory", Urgency: "$selectedUrgency"');
+    debugPrint('🏠 TakerPostRequestScreen: Form data - Category: "$selectedCategory", Urgency: "$selectedUrgency"');
 
     if (title.isEmpty) {
-      debugPrint(
-          '❌ TakerPostRequestScreen: Validation failed - Title is empty');
+      debugPrint('❌ TakerPostRequestScreen: Validation failed - Title is empty');
       return false;
     }
 
     if (description.isEmpty) {
-      debugPrint(
-          '❌ TakerPostRequestScreen: Validation failed - Description is empty');
+      debugPrint('❌ TakerPostRequestScreen: Validation failed - Description is empty');
       return false;
     }
 
     if (budget.isEmpty) {
-      debugPrint(
-          '❌ TakerPostRequestScreen: Validation failed - Budget is empty');
+      debugPrint('❌ TakerPostRequestScreen: Validation failed - Budget is empty');
       return false;
     }
 
     // Validate budget is a valid number
     final budgetValue = double.tryParse(budget);
     if (budgetValue == null || budgetValue <= 0) {
-      debugPrint(
-          '❌ TakerPostRequestScreen: Validation failed - Invalid budget value: "$budget"');
+      debugPrint('❌ TakerPostRequestScreen: Validation failed - Invalid budget value: "$budget"');
       return false;
     }
 
@@ -96,12 +87,10 @@ class _TakerPostRequestScreenState
 
   /// Handles form submission - validates data and processes the request
   void _submitRequest() {
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Submit button pressed - starting request submission');
+    debugPrint('🏠 TakerPostRequestScreen: Submit button pressed - starting request submission');
 
     if (!_validateForm()) {
-      debugPrint(
-          '❌ TakerPostRequestScreen: Submission aborted due to validation failure');
+      debugPrint('❌ TakerPostRequestScreen: Submission aborted due to validation failure');
       // TODO: Show user-friendly validation error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -122,15 +111,13 @@ class _TakerPostRequestScreenState
       'timestamp': DateTime.now().toIso8601String(),
     };
 
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Request data prepared for submission:');
+    debugPrint('🏠 TakerPostRequestScreen: Request data prepared for submission:');
     debugPrint('📝 Request Details: $requestData');
 
     // TODO: Implement actual API call to submit request
     // await _apiService.submitServiceRequest(requestData);
 
-    debugPrint(
-        '✅ TakerPostRequestScreen: Request submission completed successfully');
+    debugPrint('✅ TakerPostRequestScreen: Request submission completed successfully');
 
     // Show success feedback to user
     ScaffoldMessenger.of(context).showSnackBar(
@@ -146,8 +133,7 @@ class _TakerPostRequestScreenState
 
   /// Clears all form fields and resets to default values
   void _clearForm() {
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Clearing form and resetting to defaults');
+    debugPrint('🏠 TakerPostRequestScreen: Clearing form and resetting to defaults');
     _titleController.clear();
     _descriptionController.clear();
     _budgetController.clear();
@@ -160,21 +146,17 @@ class _TakerPostRequestScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    debugPrint(
-        '🏠 TakerPostRequestScreen: Building UI with theme mode: ${isDark ? "Dark" : "Light"}');
-
+    final themeManager = ThemeManager.of(context);
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         title: Text(
           'Post a Request',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.textPrimary,
           ),
         ),
       ),
@@ -186,7 +168,7 @@ class _TakerPostRequestScreenState
             // Service Category Selection Section
             // Allows users to choose the type of service they need
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,18 +177,15 @@ class _TakerPostRequestScreenState
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
                   Container(
                     width: double.infinity,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: DropdownButtonHideUnderline(
@@ -215,23 +194,14 @@ class _TakerPostRequestScreenState
                         isExpanded: true,
                         icon: Icon(
                           Prbal.angleDown,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                         ),
                         style: TextStyle(
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
+                          color: themeManager.textPrimary,
                           fontSize: 16.sp,
                         ),
-                        dropdownColor:
-                            isDark ? const Color(0xFF374151) : Colors.white,
-                        items: [
-                          'Home Services',
-                          'Cleaning',
-                          'Plumbing',
-                          'Electrical',
-                          'Others'
-                        ]
+                        dropdownColor: themeManager.surfaceColor,
+                        items: ['Home Services', 'Cleaning', 'Plumbing', 'Electrical', 'Others']
                             .map((category) => DropdownMenuItem(
                                   value: category,
                                   child: Text(category),
@@ -243,8 +213,7 @@ class _TakerPostRequestScreenState
                           setState(() {
                             selectedCategory = value!;
                           });
-                          debugPrint(
-                              '🏠 TakerPostRequestScreen: Category selection updated in UI');
+                          debugPrint('🏠 TakerPostRequestScreen: Category selection updated in UI');
                         },
                       ),
                     ),
@@ -257,7 +226,7 @@ class _TakerPostRequestScreenState
             // Request Title Input Section
             // Captures the main title/summary of the service request
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -266,7 +235,7 @@ class _TakerPostRequestScreenState
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -275,14 +244,10 @@ class _TakerPostRequestScreenState
                     decoration: InputDecoration(
                       hintText: 'e.g., Need house cleaning this weekend',
                       hintStyle: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                       filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      fillColor: themeManager.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
@@ -293,11 +258,10 @@ class _TakerPostRequestScreenState
                       ),
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                     onChanged: (value) {
-                      debugPrint(
-                          '🏠 TakerPostRequestScreen: Title input changed - Length: ${value.length}');
+                      debugPrint('🏠 TakerPostRequestScreen: Title input changed - Length: ${value.length}');
                     },
                   ),
                 ],
@@ -308,7 +272,7 @@ class _TakerPostRequestScreenState
             // Detailed Description Input Section
             // Allows users to provide comprehensive details about their service needs
             ModernUIComponents.elevatedCard(
-              isDark: isDark,
+              themeManager: themeManager,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -317,7 +281,7 @@ class _TakerPostRequestScreenState
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -327,14 +291,10 @@ class _TakerPostRequestScreenState
                     decoration: InputDecoration(
                       hintText: 'Describe your requirements in detail...',
                       hintStyle: TextStyle(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: themeManager.textSecondary,
                       ),
                       filled: true,
-                      fillColor: isDark
-                          ? const Color(0xFF374151)
-                          : const Color(0xFFF3F4F6),
+                      fillColor: themeManager.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
@@ -345,11 +305,10 @@ class _TakerPostRequestScreenState
                       ),
                     ),
                     style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF1F2937),
+                      color: themeManager.textPrimary,
                     ),
                     onChanged: (value) {
-                      debugPrint(
-                          '🏠 TakerPostRequestScreen: Description input changed - Length: ${value.length}');
+                      debugPrint('🏠 TakerPostRequestScreen: Description input changed - Length: ${value.length}');
                     },
                   ),
                 ],
@@ -364,7 +323,7 @@ class _TakerPostRequestScreenState
                 // Budget Input Section
                 Expanded(
                   child: ModernUIComponents.elevatedCard(
-                    isDark: isDark,
+                    themeManager: themeManager,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -373,26 +332,20 @@ class _TakerPostRequestScreenState
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color:
-                                isDark ? Colors.white : const Color(0xFF1F2937),
+                            color: themeManager.textPrimary,
                           ),
                         ),
                         SizedBox(height: 12.h),
                         TextField(
                           controller: _budgetController,
-                          keyboardType:
-                              TextInputType.number, // Numeric input only
+                          keyboardType: TextInputType.number, // Numeric input only
                           decoration: InputDecoration(
                             hintText: '500',
                             hintStyle: TextStyle(
-                              color: isDark
-                                  ? const Color(0xFF9CA3AF)
-                                  : const Color(0xFF6B7280),
+                              color: themeManager.textSecondary,
                             ),
                             filled: true,
-                            fillColor: isDark
-                                ? const Color(0xFF374151)
-                                : const Color(0xFFF3F4F6),
+                            fillColor: themeManager.inputBackground,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.r),
                               borderSide: BorderSide.none,
@@ -403,20 +356,16 @@ class _TakerPostRequestScreenState
                             ),
                           ),
                           style: TextStyle(
-                            color:
-                                isDark ? Colors.white : const Color(0xFF1F2937),
+                            color: themeManager.textPrimary,
                           ),
                           onChanged: (value) {
-                            debugPrint(
-                                '🏠 TakerPostRequestScreen: Budget input changed - Value: "$value"');
+                            debugPrint('🏠 TakerPostRequestScreen: Budget input changed - Value: "$value"');
                             // Validate budget input in real-time
                             final budgetValue = double.tryParse(value);
                             if (budgetValue != null) {
-                              debugPrint(
-                                  '🏠 TakerPostRequestScreen: Valid budget entered: ₹$budgetValue');
+                              debugPrint('🏠 TakerPostRequestScreen: Valid budget entered: ₹$budgetValue');
                             } else if (value.isNotEmpty) {
-                              debugPrint(
-                                  '⚠️ TakerPostRequestScreen: Invalid budget format entered');
+                              debugPrint('⚠️ TakerPostRequestScreen: Invalid budget format entered');
                             }
                           },
                         ),
@@ -428,7 +377,7 @@ class _TakerPostRequestScreenState
                 // Urgency Level Selection Section
                 Expanded(
                   child: ModernUIComponents.elevatedCard(
-                    isDark: isDark,
+                    themeManager: themeManager,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -437,19 +386,15 @@ class _TakerPostRequestScreenState
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color:
-                                isDark ? Colors.white : const Color(0xFF1F2937),
+                            color: themeManager.textPrimary,
                           ),
                         ),
                         SizedBox(height: 12.h),
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF374151)
-                                : const Color(0xFFF3F4F6),
+                            color: themeManager.inputBackground,
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: DropdownButtonHideUnderline(
@@ -458,19 +403,13 @@ class _TakerPostRequestScreenState
                               isExpanded: true,
                               icon: Icon(
                                 Prbal.angleDown,
-                                color: isDark
-                                    ? Colors.white
-                                    : const Color(0xFF1F2937),
+                                color: themeManager.textPrimary,
                               ),
                               style: TextStyle(
-                                color: isDark
-                                    ? Colors.white
-                                    : const Color(0xFF1F2937),
+                                color: themeManager.textPrimary,
                                 fontSize: 16.sp,
                               ),
-                              dropdownColor: isDark
-                                  ? const Color(0xFF374151)
-                                  : Colors.white,
+                              dropdownColor: themeManager.surfaceColor,
                               items: ['Low', 'Normal', 'High', 'Urgent']
                                   .map((urgency) => DropdownMenuItem(
                                         value: urgency,
@@ -483,8 +422,7 @@ class _TakerPostRequestScreenState
                                 setState(() {
                                   selectedUrgency = value!;
                                 });
-                                debugPrint(
-                                    '🏠 TakerPostRequestScreen: Urgency selection updated in UI');
+                                debugPrint('🏠 TakerPostRequestScreen: Urgency selection updated in UI');
                               },
                             ),
                           ),
@@ -504,12 +442,11 @@ class _TakerPostRequestScreenState
               height: 56.h,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint(
-                      '🏠 TakerPostRequestScreen: Post Request button tapped');
+                  debugPrint('🏠 TakerPostRequestScreen: Post Request button tapped');
                   _submitRequest();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: themeManager.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r),
                   ),

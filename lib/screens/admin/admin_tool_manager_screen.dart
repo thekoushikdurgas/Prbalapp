@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
@@ -36,12 +37,10 @@ class AdminToolManagerScreen extends ConsumerStatefulWidget {
   const AdminToolManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminToolManagerScreen> createState() =>
-      _AdminToolManagerScreenState();
+  ConsumerState<AdminToolManagerScreen> createState() => _AdminToolManagerScreenState();
 }
 
-class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
-    with TickerProviderStateMixin {
+class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen> with TickerProviderStateMixin {
   // Services for admin features
   final HealthService _healthService = HealthService();
   final PerformanceService _performanceService = PerformanceService.instance;
@@ -72,8 +71,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🛠️ AdminToolManager: Initializing modern admin dashboard with enhanced features');
+    debugPrint('🛠️ AdminToolManager: Initializing modern admin dashboard with enhanced features');
 
     _initializeAnimations();
     _loadAllAdminData();
@@ -151,8 +149,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         setState(() {
           _healthData = health!;
         });
-        debugPrint(
-            '🛠️ AdminToolManager: Health data loaded - Status: ${health?.overallStatus}');
+        debugPrint('🛠️ AdminToolManager: Health data loaded - Status: ${health?.overallStatus}');
       }
     } catch (e) {
       debugPrint('❌ AdminToolManager: Error loading health data: $e');
@@ -180,16 +177,14 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   Widget build(BuildContext context) {
     debugPrint('🛠️ AdminToolManager: Building modern admin dashboard UI');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     final authState = ref.watch(authenticationStateProvider);
 
-    debugPrint('🛠️ AdminToolManager: Theme is dark: $isDark');
-    debugPrint(
-        '🛠️ AdminToolManager: User authenticated: ${authState.isAuthenticated}');
+    debugPrint('🛠️ AdminToolManager: Theme manager initialized');
+    debugPrint('🛠️ AdminToolManager: User authenticated: ${authState.isAuthenticated}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -199,7 +194,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               physics: const BouncingScrollPhysics(),
               slivers: [
                 // Modern App Bar
-                _buildModernAppBar(isDark),
+                _buildModernAppBar(themeManager),
 
                 // Main Content
                 SliverToBoxAdapter(
@@ -208,16 +203,16 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
                       SizedBox(height: 20.h),
 
                       // Loading Indicator
-                      if (_isLoadingData) _buildLoadingIndicator(isDark),
+                      if (_isLoadingData) _buildLoadingIndicator(themeManager),
 
                       // System Health Widget (Admin only)
                       SystemHealthWidget(healthData: _healthData),
 
                       // Performance Metrics Widget (Admin only)
-                      _buildPerformanceWidget(isDark),
+                      _buildPerformanceWidget(themeManager),
 
                       // Admin Tools Section
-                      _buildAdminToolsSection(isDark),
+                      _buildAdminToolsSection(themeManager),
 
                       // Admin Settings Section (existing content)
                       _buildAdminSettings(),
@@ -235,7 +230,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   }
 
   /// Builds modern app bar with gradient background (matching settings screen)
-  Widget _buildModernAppBar(bool isDark) {
+  Widget _buildModernAppBar(ThemeManager themeManager) {
     debugPrint('🛠️ AdminToolManager: Building modern app bar');
 
     return SliverAppBar(
@@ -246,19 +241,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
       elevation: 0,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    const Color(0xFF1A1A1A),
-                    const Color(0xFF2D2D2D),
-                  ]
-                : [
-                    Colors.white,
-                    const Color(0xFFF7FAFC),
-                  ],
-          ),
+          gradient: themeManager.surfaceGradient,
         ),
         child: FlexibleSpaceBar(
           titlePadding: EdgeInsets.only(left: 20.w, bottom: 16.h),
@@ -267,7 +250,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             style: TextStyle(
               fontSize: 28.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
               letterSpacing: -1.0,
             ),
           ),
@@ -283,7 +266,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             },
             icon: Icon(
               Prbal.cog,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
               size: 20.sp,
             ),
           ),
@@ -341,7 +324,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         // Container(
         //   margin: EdgeInsets.symmetric(vertical: 8.h),
         //   height: 1,
-        //   color: Theme.of(context).dividerColor.withValues(alpha: 77),
+        //   color: ThemeManager.of(context).dividerColor.withValues(alpha: 77),
         // ),
 
         // ========== GENERAL ADMIN SETTINGS ==========
@@ -483,6 +466,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
 
   // ========== PERMISSION ITEM HELPER ==========
   Widget _buildPermissionItem(String permission, bool granted) {
+    final themeManager = ThemeManager.of(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
@@ -498,7 +483,12 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               permission,
               style: TextStyle(
                 fontSize: 13.sp,
-                color: granted ? null : Theme.of(context).disabledColor,
+                color: granted
+                    ? null
+                    : themeManager.conditionalColor(
+                        lightColor: Colors.grey[600]!,
+                        darkColor: Colors.grey[400]!,
+                      ),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -510,35 +500,26 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   }
 
   /// Builds loading indicator (matching settings screen design)
-  Widget _buildLoadingIndicator(bool isDark) {
+  Widget _buildLoadingIndicator(ThemeManager themeManager) {
     debugPrint('🛠️ AdminToolManager: Building loading indicator');
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: 20.w,
             height: 20.h,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isDark ? Colors.white : const Color(0xFF4299E1),
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(themeManager.primaryColor),
             ),
           ),
           SizedBox(width: 16.w),
@@ -547,7 +528,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               'Loading admin dashboard...',
               style: TextStyle(
                 fontSize: 16.sp,
-                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                color: themeManager.textPrimary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -559,39 +540,30 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   }
 
   /// Builds performance widget (matching settings screen design)
-  Widget _buildPerformanceWidget(bool isDark) {
+  Widget _buildPerformanceWidget(ThemeManager themeManager) {
     debugPrint('🛠️ AdminToolManager: Building performance widget');
 
-    final performanceScore =
-        _performanceMetrics['performance_score'] as double? ?? 95.0;
+    final performanceScore = _performanceMetrics['performance_score'] as double? ?? 95.0;
     final frameDrops = _performanceMetrics['frame_drops'] as int? ?? 0;
-    final avgFrameTime =
-        _performanceMetrics['average_frame_time'] as double? ?? 16.5;
+    final avgFrameTime = _performanceMetrics['average_frame_time'] as double? ?? 16.5;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.4)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: themeManager.elevatedShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Prbal.tachometer,
-                color: const Color(0xFF4299E1),
+                color: themeManager.primaryColor,
                 size: 24.sp,
               ),
               SizedBox(width: 12.w),
@@ -601,7 +573,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -611,8 +583,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: _getPerformanceColor(performanceScore)
-                      .withValues(alpha: 0.1),
+                  color: _getPerformanceColor(performanceScore).withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
@@ -630,13 +601,11 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildPerformanceMetric(
-                  'Frame Drops', frameDrops.toString(), isDark),
+              _buildPerformanceMetric('Frame Drops', frameDrops.toString(), themeManager),
               SizedBox(width: 16.w),
-              _buildPerformanceMetric('Avg Frame Time',
-                  '${avgFrameTime.toStringAsFixed(1)}ms', isDark),
+              _buildPerformanceMetric('Avg Frame Time', '${avgFrameTime.toStringAsFixed(1)}ms', themeManager),
               SizedBox(width: 16.w),
-              _buildPerformanceMetric('Target', '16.7ms', isDark),
+              _buildPerformanceMetric('Target', '16.7ms', themeManager),
             ],
           ),
         ],
@@ -652,7 +621,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   }
 
   /// Builds performance metric item
-  Widget _buildPerformanceMetric(String label, String value, bool isDark) {
+  Widget _buildPerformanceMetric(String label, String value, ThemeManager themeManager) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -663,7 +632,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -673,7 +642,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             label,
             style: TextStyle(
               fontSize: 9.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -684,7 +653,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   }
 
   /// Builds admin tools section with modern card design
-  Widget _buildAdminToolsSection(bool isDark) {
+  Widget _buildAdminToolsSection(ThemeManager themeManager) {
     debugPrint('🛠️ AdminToolManager: Building admin tools section');
 
     return SettingsSectionWidget(
@@ -694,7 +663,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           title: 'Category Management',
           subtitle: 'Create, edit, and organize service categories',
           icon: Prbal.tags,
-          iconColor: const Color(0xFF3182CE),
+          iconColor: themeManager.primaryColor,
           onTap: () {
             debugPrint('🛠️ Category Management tapped');
             HapticFeedback.lightImpact();
@@ -705,7 +674,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           title: 'Subcategory Management',
           subtitle: 'Manage subcategories within service categories',
           icon: Prbal.openstreetmap,
-          iconColor: const Color(0xFF319795),
+          iconColor: themeManager.successColor,
           onTap: () {
             debugPrint('🛠️ Subcategory Management tapped');
             HapticFeedback.lightImpact();
@@ -716,7 +685,7 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
           title: 'Service Management',
           subtitle: 'View, moderate, and manage all platform services',
           icon: Prbal.layers5,
-          iconColor: const Color(0xFF38A169),
+          iconColor: themeManager.infoColor,
           onTap: () {
             debugPrint('🛠️ Service Management tapped');
             HapticFeedback.lightImpact();

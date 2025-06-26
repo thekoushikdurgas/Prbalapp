@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:go_router/go_router.dart';
 
 class MessagesScreen extends ConsumerStatefulWidget {
@@ -24,8 +25,7 @@ class MessagesScreen extends ConsumerStatefulWidget {
   ConsumerState<MessagesScreen> createState() => _MessagesScreenState();
 }
 
-class _MessagesScreenState extends ConsumerState<MessagesScreen>
-    with TickerProviderStateMixin {
+class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -42,8 +42,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       'lastMessage': 'Thanks for the great service!',
       'time': '2 min ago',
       'unread': 2,
-      'avatar':
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'isOnline': true,
     },
     {
@@ -52,8 +51,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       'lastMessage': 'When can you start the project?',
       'time': '15 min ago',
       'unread': 0,
-      'avatar':
-          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'isOnline': true,
     },
     {
@@ -62,8 +60,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       'lastMessage': 'Your device is ready for pickup',
       'time': '1 hour ago',
       'unread': 1,
-      'avatar':
-          'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150',
       'isOnline': false,
     },
     {
@@ -72,8 +69,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
       'lastMessage': 'Perfect timing, see you tomorrow',
       'time': '3 hours ago',
       'unread': 0,
-      'avatar':
-          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      'avatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
       'isOnline': false,
     },
   ];
@@ -89,38 +85,31 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     },
     {
       'id': '2',
-      'text':
-          'Hello! I\'d be happy to help. What type of cleaning do you need?',
+      'text': 'Hello! I\'d be happy to help. What type of cleaning do you need?',
       'isMe': true,
       'time': '10:32 AM',
-      'timestamp':
-          DateTime.now().subtract(const Duration(hours: 2, minutes: -2)),
+      'timestamp': DateTime.now().subtract(const Duration(hours: 2, minutes: -2)),
     },
     {
       'id': '3',
-      'text':
-          'I need a deep clean for my 3-bedroom apartment. When are you available?',
+      'text': 'I need a deep clean for my 3-bedroom apartment. When are you available?',
       'isMe': false,
       'time': '10:35 AM',
-      'timestamp':
-          DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
+      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
     },
     {
       'id': '4',
-      'text':
-          'I can do it this weekend. The rate would be \$150 for deep cleaning',
+      'text': 'I can do it this weekend. The rate would be \$150 for deep cleaning',
       'isMe': true,
       'time': '10:37 AM',
-      'timestamp':
-          DateTime.now().subtract(const Duration(hours: 1, minutes: 53)),
+      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 53)),
     },
     {
       'id': '5',
       'text': 'That sounds perfect! Can we schedule for Saturday morning?',
       'isMe': false,
       'time': '10:40 AM',
-      'timestamp':
-          DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
+      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
     },
   ];
 
@@ -165,187 +154,372 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+
+    debugPrint('💬 MessagesScreen: Building with enhanced ThemeManager');
+    debugPrint('💬 MessagesScreen: Dark mode: ${themeManager.themeManager}');
+    debugPrint('💬 MessagesScreen: In chat mode: $_isInChat');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-      appBar: _buildAppBar(isDark),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: _isInChat
-            ? _buildChatView(isDark)
-            : _buildConversationsView(isDark),
+      backgroundColor: themeManager.backgroundColor,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeManager.backgroundGradient,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // ========== ENHANCED APP BAR ==========
+              _buildEnhancedAppBar(themeManager),
+
+              // ========== MAIN CONTENT ==========
+              Expanded(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: _isInChat ? _buildChatView(themeManager) : _buildConversationsView(themeManager),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(bool isDark) {
-    return AppBar(
-      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-      elevation: 0,
-      leading: _isInChat
-          ? IconButton(
-              icon: Icon(
-                Prbal.arrowLeft,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
-              ),
-              onPressed: () {
-                setState(() {
-                  _isInChat = false;
-                });
-              },
-            )
-          : IconButton(
-              icon: Icon(
-                Prbal.arrowLeft,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
-              ),
-              onPressed: () => context.pop(),
+  // ========== ENHANCED APP BAR BUILDER ==========
+  /// Builds the enhanced app bar with comprehensive ThemeManager integration
+  Widget _buildEnhancedAppBar(ThemeManager themeManager) {
+    debugPrint('💬 MessagesScreen: Building enhanced app bar');
+    debugPrint('💬 MessagesScreen: Chat mode: $_isInChat');
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        gradient: themeManager.surfaceGradient,
+        boxShadow: themeManager.elevatedShadow,
+        border: Border(
+          bottom: BorderSide(
+            color: themeManager.borderColor,
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // ========== BACK BUTTON ==========
+          Container(
+            decoration: BoxDecoration(
+              gradient: themeManager.neutralGradient,
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: themeManager.subtleShadow,
             ),
-      title: _isInChat
-          ? Row(
-              children: [
-                Container(
-                  width: 40.w,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: const Color(0xFF3B82F6),
-                  ),
-                  child: widget.avatarUrl != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(20.r),
-                          child: Image.network(
-                            widget.avatarUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Icon(
-                                Prbal.user,
-                                color: Colors.white,
-                                size: 20.sp),
-                          ),
-                        )
-                      : Icon(Prbal.user, color: Colors.white, size: 20.sp),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.conversationName,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF1F2937),
-                        ),
-                      ),
-                      Text(
-                        'Online',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF10B981),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12.r),
+                onTap: () {
+                  debugPrint('💬 MessagesScreen: Back button pressed');
+                  if (_isInChat) {
+                    debugPrint('💬 MessagesScreen: Returning to conversations list');
+                    setState(() {
+                      _isInChat = false;
+                    });
+                  } else {
+                    debugPrint('💬 MessagesScreen: Navigating back to previous screen');
+                    context.pop();
+                  }
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: Icon(
+                    Prbal.arrowLeft,
+                    color: themeManager.textPrimary,
+                    size: 20.sp,
                   ),
                 ),
-              ],
-            )
-          : Text(
-              'Messages',
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : const Color(0xFF1F2937),
               ),
             ),
-      actions: [
-        if (_isInChat) ...[
-          IconButton(
-            icon: Icon(
-              Prbal.phone,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
-            ),
-            onPressed: () {},
           ),
-          IconButton(
-            icon: Icon(
-              Prbal.video,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
-            ),
-            onPressed: () {},
+
+          SizedBox(width: 12.w),
+
+          // ========== TITLE SECTION ==========
+          Expanded(
+            child: _isInChat ? _buildChatHeader(themeManager) : _buildMessagesHeader(themeManager),
           ),
-        ] else ...[
-          IconButton(
-            icon: Icon(
-              Prbal.plus,
-              color: isDark ? Colors.white70 : const Color(0xFF6B7280),
-            ),
-            onPressed: () {},
-          ),
+
+          // ========== ACTION BUTTONS ==========
+          if (_isInChat) ...[
+            _buildActionButton(Prbal.phone, themeManager.accent1, themeManager),
+            SizedBox(width: 8.w),
+            _buildActionButton(Prbal.video, themeManager.accent2, themeManager),
+          ] else ...[
+            _buildActionButton(Prbal.plus, themeManager.primaryColor, themeManager),
+          ],
         ],
-        SizedBox(width: 8.w),
+      ),
+    );
+  }
+
+  // ========== CHAT HEADER BUILDER ==========
+  /// Builds the chat header when in individual conversation
+  Widget _buildChatHeader(ThemeManager themeManager) {
+    return Row(
+      children: [
+        // ========== CONTACT AVATAR ==========
+        Container(
+          width: 40.w,
+          height: 40.h,
+          decoration: BoxDecoration(
+            gradient: themeManager.primaryGradient,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: themeManager.primaryShadow,
+          ),
+          child: widget.avatarUrl != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(20.r),
+                  child: Image.network(
+                    widget.avatarUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      Prbal.user,
+                      color: Colors.white,
+                      size: 20.sp,
+                    ),
+                  ),
+                )
+              : Icon(Prbal.user, color: Colors.white, size: 20.sp),
+        ),
+
+        SizedBox(width: 12.w),
+
+        // ========== CONTACT INFO ==========
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.conversationName,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: themeManager.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 8.w,
+                    height: 8.h,
+                    decoration: BoxDecoration(
+                      color: themeManager.successColor,
+                      borderRadius: BorderRadius.circular(4.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: themeManager.successColor.withValues(alpha: 0.4),
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    'Online',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: themeManager.successColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildConversationsView(bool isDark) {
+  // ========== MESSAGES HEADER BUILDER ==========
+  /// Builds the messages header when viewing conversations list
+  Widget _buildMessagesHeader(ThemeManager themeManager) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Messages',
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w700,
+            color: themeManager.textPrimary,
+          ),
+        ),
+        Text(
+          'Stay connected with your network',
+          style: TextStyle(
+            fontSize: 12.sp,
+            color: themeManager.textSecondary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ========== ACTION BUTTON BUILDER ==========
+  /// Builds action buttons with enhanced styling
+  Widget _buildActionButton(IconData icon, Color accentColor, ThemeManager themeManager) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentColor.withValues(alpha: 0.1),
+            accentColor.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12.r),
+          onTap: () {
+            debugPrint('💬 MessagesScreen: Action button pressed: $icon');
+          },
+          child: Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Icon(
+              icon,
+              color: accentColor,
+              size: 20.sp,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ========== CONVERSATIONS VIEW BUILDER ==========
+  /// Builds the conversations list view with enhanced ThemeManager styling
+  Widget _buildConversationsView(ThemeManager themeManager) {
+    debugPrint('💬 MessagesScreen: Building conversations view');
+    themeManager.logThemeInfo(); // Debug theme information
     return Column(
       children: [
-        // Search bar
+        // ========== ENHANCED SEARCH BAR ==========
         Container(
           margin: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E293B) : Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            gradient: themeManager.surfaceGradient,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: themeManager.elevatedShadow,
+            border: Border.all(
+              color: themeManager.borderColor,
+              width: 1,
+            ),
           ),
           child: TextField(
+            onChanged: (value) {
+              debugPrint('💬 MessagesScreen: Search query: "$value"');
+            },
             decoration: InputDecoration(
               hintText: 'Search conversations...',
               hintStyle: TextStyle(
-                color:
-                    isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+                color: themeManager.textTertiary,
                 fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
-              prefixIcon: Icon(
-                Prbal.search,
-                color:
-                    isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
-                size: 20.sp,
+              prefixIcon: Container(
+                padding: EdgeInsets.all(8.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: themeManager.accent4Gradient,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Icon(
+                    Prbal.search,
+                    color: Colors.white,
+                    size: 16.sp,
+                  ),
+                ),
               ),
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 16.w,
-                vertical: 12.h,
+                vertical: 16.h,
               ),
             ),
             style: TextStyle(
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.textPrimary,
               fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
 
-        // Conversations list
+        // ========== CONVERSATIONS STATISTICS ==========
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            gradient: themeManager.accent3Gradient,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: themeManager.primaryShadow,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Prbal.messageCircle,
+                color: Colors.white,
+                size: 20.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                '${_conversations.length} Active Conversations',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  '${_conversations.where((c) => c['unread'] > 0).length} New',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // ========== CONVERSATIONS LIST ==========
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             itemCount: _conversations.length,
             itemBuilder: (context, index) {
               final conversation = _conversations[index];
-              return _buildConversationItem(conversation, isDark);
+              debugPrint('💬 MessagesScreen: Building conversation item ${index + 1}/${_conversations.length}');
+              return _buildConversationItem(conversation, themeManager);
             },
           ),
         ),
@@ -353,28 +527,32 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     );
   }
 
-  Widget _buildConversationItem(
-      Map<String, dynamic> conversation, bool isDark) {
+  // ========== CONVERSATION ITEM BUILDER ==========
+  /// Builds individual conversation items with enhanced ThemeManager styling
+  Widget _buildConversationItem(Map<String, dynamic> conversation, ThemeManager themeManager) {
+    final hasUnread = conversation['unread'] > 0;
+    final isOnline = conversation['isOnline'] as bool;
+
+    debugPrint('💬 MessagesScreen: Building conversation item: ${conversation['name']}');
+    debugPrint('💬 MessagesScreen: Unread messages: ${conversation['unread']}, Online: $isOnline');
+
     return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        gradient: hasUnread ? themeManager.accent1Gradient : themeManager.surfaceGradient,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: hasUnread ? themeManager.primaryShadow : themeManager.subtleShadow,
+        border: Border.all(
+          color: hasUnread ? themeManager.accent1.withValues(alpha: 0.3) : themeManager.borderColor,
+          width: hasUnread ? 2 : 1,
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(20.r),
           onTap: () {
+            debugPrint('💬 MessagesScreen: Opening conversation with ${conversation['name']}');
             setState(() {
               _isInChat = true;
             });
@@ -383,43 +561,79 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
             padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
-                // Avatar
+                // ========== ENHANCED AVATAR ==========
                 Stack(
                   children: [
                     Container(
-                      width: 50.w,
-                      height: 50.h,
+                      width: 56.w,
+                      height: 56.h,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.r),
-                        color: const Color(0xFF3B82F6),
+                        gradient: isOnline ? themeManager.successGradient : themeManager.neutralGradient,
+                        borderRadius: BorderRadius.circular(28.r),
+                        boxShadow: isOnline ? themeManager.primaryShadow : themeManager.subtleShadow,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25.r),
+                        borderRadius: BorderRadius.circular(28.r),
                         child: Image.network(
                           conversation['avatar'],
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Icon(
-                              Prbal.user,
-                              color: Colors.white,
-                              size: 24.sp),
+                            Prbal.user,
+                            color: Colors.white,
+                            size: 28.sp,
+                          ),
                         ),
                       ),
                     ),
-                    if (conversation['isOnline'])
+                    // Online indicator
+                    if (isOnline)
                       Positioned(
                         bottom: 2,
                         right: 2,
                         child: Container(
-                          width: 12.w,
-                          height: 12.h,
+                          width: 16.w,
+                          height: 16.h,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF10B981),
-                            borderRadius: BorderRadius.circular(6.r),
+                            gradient: themeManager.successGradient,
+                            borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: isDark
-                                  ? const Color(0xFF1E293B)
-                                  : Colors.white,
+                              color: themeManager.surfaceColor,
                               width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: themeManager.successColor.withValues(alpha: 0.5),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    // Unread indicator
+                    if (hasUnread)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20.w,
+                          height: 20.h,
+                          decoration: BoxDecoration(
+                            gradient: themeManager.errorGradient,
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(
+                              color: themeManager.surfaceColor,
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              conversation['unread'].toString(),
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
@@ -427,9 +641,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                   ],
                 ),
 
-                SizedBox(width: 12.w),
+                SizedBox(width: 16.w),
 
-                // Conversation details
+                // ========== CONVERSATION DETAILS ==========
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,63 +651,69 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            conversation['name'],
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF1F2937),
-                            ),
-                          ),
-                          Text(
-                            conversation['time'],
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: isDark
-                                  ? const Color(0xFF64748B)
-                                  : const Color(0xFF9CA3AF),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
                           Expanded(
                             child: Text(
-                              conversation['lastMessage'],
+                              conversation['name'],
                               style: TextStyle(
-                                fontSize: 14.sp,
-                                color: isDark
-                                    ? const Color(0xFF94A3B8)
-                                    : const Color(0xFF6B7280),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                color: hasUnread ? Colors.white : themeManager.textPrimary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (conversation['unread'] > 0)
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3B82F6),
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: Text(
-                                conversation['unread'].toString(),
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              gradient: themeManager.accent4Gradient,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              conversation['time'],
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
+                          ),
                         ],
+                      ),
+                      SizedBox(height: 6.h),
+                      // Last message with enhanced styling
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          color: hasUnread ? Colors.white.withValues(alpha: 0.1) : themeManager.backgroundSecondary,
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: hasUnread ? Colors.white.withValues(alpha: 0.2) : themeManager.borderColor,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Prbal.messageCircle,
+                              size: 12.sp,
+                              color: hasUnread ? Colors.white70 : themeManager.textTertiary,
+                            ),
+                            SizedBox(width: 6.w),
+                            Expanded(
+                              child: Text(
+                                conversation['lastMessage'],
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: hasUnread ? Colors.white70 : themeManager.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -506,112 +726,209 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     );
   }
 
-  Widget _buildChatView(bool isDark) {
+  // ========== CHAT VIEW BUILDER ==========
+  /// Builds the individual chat view with enhanced ThemeManager styling
+  Widget _buildChatView(ThemeManager themeManager) {
+    debugPrint('💬 MessagesScreen: Building chat view');
+    debugPrint('💬 MessagesScreen: Messages count: ${_messages.length}');
+
     return Column(
       children: [
-        // Messages list
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.all(16.w),
-            itemCount: _messages.length,
-            itemBuilder: (context, index) {
-              final message = _messages[index];
-              return _buildMessageBubble(message, isDark);
-            },
+        // ========== CHAT HEADER INFO ==========
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            gradient: themeManager.accent2Gradient,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: themeManager.primaryShadow,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Prbal.shield,
+                color: Colors.white,
+                size: 16.sp,
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                'End-to-end encrypted conversation',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: Text(
+                  '${_messages.length}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
 
-        // Message input
-        _buildMessageInput(isDark),
+        // ========== MESSAGES LIST ==========
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: themeManager.backgroundGradient,
+            ),
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final message = _messages[index];
+                debugPrint('💬 MessagesScreen: Building message ${index + 1}/${_messages.length}');
+                return _buildMessageBubble(message, themeManager);
+              },
+            ),
+          ),
+        ),
+
+        // ========== MESSAGE INPUT ==========
+        _buildMessageInput(themeManager),
       ],
     );
   }
 
-  Widget _buildMessageBubble(Map<String, dynamic> message, bool isDark) {
+  // ========== MESSAGE BUBBLE BUILDER ==========
+  /// Builds individual message bubbles with enhanced ThemeManager styling
+  Widget _buildMessageBubble(Map<String, dynamic> message, ThemeManager themeManager) {
     final isMe = message['isMe'] as bool;
+    final messageText = message['text'] as String;
+    final messageTime = message['time'] as String;
+
+    debugPrint('💬 MessagesScreen: Building message bubble - isMe: $isMe, text length: ${messageText.length}');
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
+      margin: EdgeInsets.only(bottom: 16.h),
       child: Row(
-        mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
+            // ========== SENDER AVATAR ==========
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 36.w,
+              height: 36.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6),
-                borderRadius: BorderRadius.circular(16.r),
+                gradient: themeManager.accent3Gradient,
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: themeManager.subtleShadow,
               ),
               child: Icon(
                 Prbal.user,
                 color: Colors.white,
-                size: 16.sp,
+                size: 18.sp,
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 12.w),
           ],
+
+          // ========== MESSAGE CONTENT ==========
           Flexible(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              decoration: BoxDecoration(
-                color: isMe
-                    ? const Color(0xFF3B82F6)
-                    : (isDark
-                        ? const Color(0xFF374151)
-                        : const Color(0xFFF3F4F6)),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(18.r),
-                  topRight: Radius.circular(18.r),
-                  bottomLeft: Radius.circular(isMe ? 18.r : 4.r),
-                  bottomRight: Radius.circular(isMe ? 4.r : 18.r),
-                ),
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.75,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    message['text'],
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: isMe
-                          ? Colors.white
-                          : (isDark ? Colors.white : const Color(0xFF1F2937)),
-                      height: 1.4,
+                  // Message bubble
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    decoration: BoxDecoration(
+                      gradient: isMe ? themeManager.primaryGradient : themeManager.surfaceGradient,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.r),
+                        topRight: Radius.circular(20.r),
+                        bottomLeft: Radius.circular(isMe ? 20.r : 6.r),
+                        bottomRight: Radius.circular(isMe ? 6.r : 20.r),
+                      ),
+                      boxShadow: isMe ? themeManager.primaryShadow : themeManager.subtleShadow,
+                      border: Border.all(
+                        color: isMe ? themeManager.primaryColor.withValues(alpha: 0.3) : themeManager.borderColor,
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    message['time'],
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: isMe
-                          ? Colors.white70
-                          : (isDark
-                              ? const Color(0xFF9CA3AF)
-                              : const Color(0xFF6B7280)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Message text
+                        Text(
+                          messageText,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: isMe ? Colors.white : themeManager.textPrimary,
+                            height: 1.4,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        // Message time and status
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Prbal.clock,
+                              size: 10.sp,
+                              color: isMe ? Colors.white.withValues(alpha: 0.7) : themeManager.textTertiary,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              messageTime,
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: isMe ? Colors.white.withValues(alpha: 0.7) : themeManager.textTertiary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            if (isMe) ...[
+                              SizedBox(width: 6.w),
+                              Icon(
+                                Prbal.check,
+                                size: 12.sp,
+                                color: themeManager.successColor,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
           ),
+
           if (isMe) ...[
-            SizedBox(width: 8.w),
+            SizedBox(width: 12.w),
+            // ========== MY AVATAR ==========
             Container(
-              width: 32.w,
-              height: 32.h,
+              width: 36.w,
+              height: 36.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF10B981),
-                borderRadius: BorderRadius.circular(16.r),
+                gradient: themeManager.successGradient,
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: themeManager.primaryShadow,
               ),
               child: Icon(
                 Prbal.user,
                 color: Colors.white,
-                size: 16.sp,
+                size: 18.sp,
               ),
             ),
           ],
@@ -620,43 +937,76 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
     );
   }
 
-  Widget _buildMessageInput(bool isDark) {
+  // ========== MESSAGE INPUT BUILDER ==========
+  /// Builds the message input area with enhanced ThemeManager styling
+  Widget _buildMessageInput(ThemeManager themeManager) {
+    debugPrint('💬 MessagesScreen: Building message input area');
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        gradient: themeManager.surfaceGradient,
         border: Border(
           top: BorderSide(
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            color: themeManager.borderColor,
             width: 1,
           ),
         ),
+        boxShadow: themeManager.elevatedShadow,
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: Icon(
-              Prbal.paperclip,
-              color: isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+          // ========== ATTACHMENT BUTTON ==========
+          Container(
+            decoration: BoxDecoration(
+              gradient: themeManager.accent4Gradient,
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: themeManager.subtleShadow,
             ),
-            onPressed: () {},
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12.r),
+                onTap: () {
+                  debugPrint('💬 MessagesScreen: Attachment button pressed');
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(10.w),
+                  child: Icon(
+                    Prbal.paperclip,
+                    color: Colors.white,
+                    size: 18.sp,
+                  ),
+                ),
+              ),
+            ),
           ),
+
+          SizedBox(width: 12.w),
+
+          // ========== MESSAGE INPUT FIELD ==========
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color:
-                    isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                gradient: themeManager.backgroundGradient,
                 borderRadius: BorderRadius.circular(24.r),
+                border: Border.all(
+                  color: themeManager.borderColor,
+                  width: 1,
+                ),
+                boxShadow: themeManager.subtleShadow,
               ),
               child: TextField(
                 controller: _messageController,
+                onChanged: (value) {
+                  debugPrint('💬 MessagesScreen: Message input changed: "${value.length} characters"');
+                },
                 decoration: InputDecoration(
-                  hintText: 'Type a message...',
+                  hintText: 'Type your message...',
                   hintStyle: TextStyle(
-                    color: isDark
-                        ? const Color(0xFF64748B)
-                        : const Color(0xFF9CA3AF),
+                    color: themeManager.textTertiary,
                     fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
                   ),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(
@@ -665,29 +1015,39 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen>
                   ),
                 ),
                 style: TextStyle(
-                  color: isDark ? Colors.white : const Color(0xFF1F2937),
+                  color: themeManager.textPrimary,
                   fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
                 ),
                 maxLines: null,
+                textCapitalization: TextCapitalization.sentences,
               ),
             ),
           ),
-          SizedBox(width: 8.w),
+
+          SizedBox(width: 12.w),
+
+          // ========== SEND BUTTON ==========
           Container(
-            width: 44.w,
-            height: 44.h,
+            width: 48.w,
+            height: 48.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF3B82F6),
-              borderRadius: BorderRadius.circular(22.r),
+              gradient: themeManager.primaryGradient,
+              borderRadius: BorderRadius.circular(24.r),
+              boxShadow: themeManager.primaryShadow,
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(22.r),
+                borderRadius: BorderRadius.circular(24.r),
                 onTap: () {
-                  if (_messageController.text.trim().isNotEmpty) {
-                    // Send message logic here
+                  final messageText = _messageController.text.trim();
+                  if (messageText.isNotEmpty) {
+                    debugPrint('💬 MessagesScreen: Sending message: "$messageText"');
+                    // TODO: Implement actual message sending logic
                     _messageController.clear();
+                  } else {
+                    debugPrint('💬 MessagesScreen: Empty message, not sending');
                   }
                 },
                 child: Icon(

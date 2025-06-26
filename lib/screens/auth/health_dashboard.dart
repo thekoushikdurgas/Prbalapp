@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/health_service.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// Health Dashboard Widget
 class HealthDashboard extends ConsumerStatefulWidget {
@@ -12,8 +13,7 @@ class HealthDashboard extends ConsumerStatefulWidget {
   ConsumerState<HealthDashboard> createState() => _HealthDashboardState();
 }
 
-class _HealthDashboardState extends ConsumerState<HealthDashboard>
-    with TickerProviderStateMixin {
+class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerProviderStateMixin {
   final HealthService _healthService = HealthService();
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -27,12 +27,14 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
   @override
   void initState() {
     super.initState();
+    debugPrint('💊 HealthDashboard: Initializing health monitoring dashboard');
     _initializeAnimations();
     _startAnimations();
     _initializeHealthMonitoring();
   }
 
   void _initializeAnimations() {
+    debugPrint('💊 HealthDashboard: Initializing animations');
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -53,15 +55,18 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
   }
 
   Future<void> _initializeHealthMonitoring() async {
+    debugPrint('💊 HealthDashboard: Initializing health monitoring');
     try {
       await _healthService.initialize();
       await _refreshHealthData();
+      debugPrint('💊 HealthDashboard: Health monitoring initialized successfully');
     } catch (e) {
-      debugPrint('Health monitoring initialization failed: $e');
+      debugPrint('❌ HealthDashboard: Health monitoring initialization failed: $e');
     }
   }
 
   Future<void> _refreshHealthData() async {
+    debugPrint('💊 HealthDashboard: Refreshing health data');
     setState(() {
       _isLoading = true;
     });
@@ -76,8 +81,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
         _lastUpdate = DateTime.now();
         _isLoading = false;
       });
+      debugPrint('💊 HealthDashboard: Health data refreshed successfully');
     } catch (e) {
-      debugPrint('Health data refresh failed: $e');
+      debugPrint('❌ HealthDashboard: Health data refresh failed: $e');
       setState(() {
         _isLoading = false;
       });
@@ -88,6 +94,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
 
   @override
   void dispose() {
+    debugPrint('💊 HealthDashboard: Disposing health dashboard');
     _fadeController.dispose();
     _healthService.dispose();
     super.dispose();
@@ -95,11 +102,11 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
+    debugPrint('💊 HealthDashboard: Building health dashboard UI');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.backgroundColor,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SafeArea(
@@ -107,27 +114,27 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             slivers: [
               // Header
               SliverToBoxAdapter(
-                child: _buildHeader(isDark),
+                child: _buildHeader(themeManager),
               ),
 
               // System status overview
               SliverToBoxAdapter(
-                child: _buildSystemStatus(isDark),
+                child: _buildSystemStatus(themeManager),
               ),
 
               // Health metrics
               SliverToBoxAdapter(
-                child: _buildHealthMetrics(isDark),
+                child: _buildHealthMetrics(themeManager),
               ),
 
               // Service health
               SliverToBoxAdapter(
-                child: _buildServiceHealth(isDark),
+                child: _buildServiceHealth(themeManager),
               ),
 
               // Recent alerts
               SliverToBoxAdapter(
-                child: _buildRecentAlerts(isDark),
+                child: _buildRecentAlerts(themeManager),
               ),
 
               // Bottom padding
@@ -141,7 +148,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     );
   }
 
-  Widget _buildHeader(bool isDark) {
+  Widget _buildHeader(ThemeManager themeManager) {
+    debugPrint('💊 HealthDashboard: Building header section');
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
       child: Column(
@@ -151,27 +160,22 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             children: [
               // Back button
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () {
+                  debugPrint('💊 HealthDashboard: Back button pressed');
+                  Navigator.pop(context);
+                },
                 child: Container(
                   width: 44.w,
                   height: 44.h,
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    color: themeManager.surfaceColor,
                     borderRadius: BorderRadius.circular(22.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: isDark
-                            ? Colors.black.withValues(alpha: 0.3)
-                            : Colors.grey.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    boxShadow: themeManager.subtleShadow,
                   ),
                   child: Icon(
                     Prbal.arrowLeft,
                     size: 20.sp,
-                    color: isDark ? Colors.white : const Color(0xFF374151),
+                    color: themeManager.textPrimary,
                   ),
                 ),
               ),
@@ -188,7 +192,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -196,8 +200,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       'Monitor system performance and health',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color:
-                            isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -207,20 +210,19 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
               // Auto refresh toggle
               GestureDetector(
                 onTap: () {
+                  debugPrint('💊 HealthDashboard: Auto refresh toggled: ${!_autoRefresh}');
                   setState(() {
                     _autoRefresh = !_autoRefresh;
                   });
                 },
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    color: _autoRefresh
-                        ? const Color(0xFF10B981)
-                        : (isDark
-                            ? const Color(0xFF374151)
-                            : const Color(0xFFF3F4F6)),
+                    color: _autoRefresh ? themeManager.successColor : themeManager.surfaceColor,
                     borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: _autoRefresh ? themeManager.successColor : themeManager.borderColor,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -228,11 +230,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       Icon(
                         Prbal.redo,
                         size: 16.sp,
-                        color: _autoRefresh
-                            ? Colors.white
-                            : (isDark
-                                ? Colors.grey[400]
-                                : const Color(0xFF6B7280)),
+                        color: _autoRefresh ? Colors.white : themeManager.textSecondary,
                       ),
                       SizedBox(width: 6.w),
                       Text(
@@ -240,11 +238,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: _autoRefresh
-                              ? Colors.white
-                              : (isDark
-                                  ? Colors.grey[400]
-                                  : const Color(0xFF6B7280)),
+                          color: _autoRefresh ? Colors.white : themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -258,7 +252,8 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     );
   }
 
-  Widget _buildSystemStatus(bool isDark) {
+  Widget _buildSystemStatus(ThemeManager themeManager) {
+    debugPrint('💊 HealthDashboard: Building system status section');
     final isHealthy = _healthData?.overallStatus == HealthStatus.healthy;
 
     return Padding(
@@ -270,16 +265,13 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isHealthy
-                ? [const Color(0xFF10B981), const Color(0xFF059669)]
-                : [const Color(0xFFEF4444), const Color(0xFFDC2626)],
+                ? [themeManager.successColor, themeManager.successColor.withValues(alpha: 204)]
+                : [themeManager.errorColor, themeManager.errorColor.withValues(alpha: 204)],
           ),
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: (isHealthy
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFFEF4444))
-                  .withValues(alpha: 0.3),
+              color: (isHealthy ? themeManager.successColor : themeManager.errorColor).withValues(alpha: 77),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -294,7 +286,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                   width: 48.w,
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 51),
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Icon(
@@ -309,11 +301,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _isLoading
-                            ? 'Loading...'
-                            : (isHealthy
-                                ? 'All Systems Operational'
-                                : 'System Issues Detected'),
+                        _isLoading ? 'Loading...' : (isHealthy ? 'All Systems Operational' : 'System Issues Detected'),
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
@@ -325,7 +313,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                         'Last updated: ${_lastUpdate?.toString().substring(0, 16) ?? 'Never'}',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: Colors.white.withValues(alpha: 204),
                         ),
                       ),
                     ],
@@ -334,7 +322,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 Container(
                   width: 12.w,
                   height: 12.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),
@@ -344,13 +332,11 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             SizedBox(height: 20.h),
             Row(
               children: [
-                _buildStatusMetric(
-                    isHealthy ? '99.9%' : '95.2%', 'Uptime', Colors.white),
+                _buildStatusMetric(isHealthy ? '99.9%' : '95.2%', 'Uptime', Colors.white),
                 SizedBox(width: 24.w),
                 _buildStatusMetric('< 50ms', 'Response Time', Colors.white),
                 SizedBox(width: 24.w),
-                _buildStatusMetric(_healthData?.system.version ?? '1.0.0',
-                    'Version', Colors.white),
+                _buildStatusMetric(_healthData?.system.version ?? '1.0.0', 'Version', Colors.white),
               ],
             ),
           ],
@@ -376,14 +362,16 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
           label,
           style: TextStyle(
             fontSize: 12.sp,
-            color: color.withValues(alpha: 0.8),
+            color: color.withValues(alpha: 204),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildHealthMetrics(bool isDark) {
+  Widget _buildHealthMetrics(ThemeManager themeManager) {
+    debugPrint('💊 HealthDashboard: Building health metrics section');
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 8.h),
       child: Column(
@@ -394,7 +382,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -406,7 +394,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                   _healthData?.system.status ?? 'Unknown',
                   Prbal.server,
                   _getHealthColor(_healthData?.system.status),
-                  isDark,
+                  themeManager,
                 ),
               ),
               SizedBox(width: 16.w),
@@ -416,7 +404,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                   _healthData?.database.status ?? 'Unknown',
                   Prbal.database,
                   _getHealthColor(_healthData?.database.status),
-                  isDark,
+                  themeManager,
                 ),
               ),
             ],
@@ -443,22 +431,14 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     String status,
     IconData icon,
     Color color,
-    bool isDark,
+    ThemeManager themeManager,
   ) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: themeManager.subtleShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -469,7 +449,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 width: 36.w,
                 height: 36.h,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(18.r),
                 ),
                 child: Icon(
@@ -482,7 +462,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
@@ -502,7 +482,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
@@ -510,7 +490,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
             _getHealthDescription(status),
             style: TextStyle(
               fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+              color: themeManager.textSecondary,
             ),
           ),
         ],
@@ -531,26 +511,22 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     }
   }
 
-  Widget _buildServiceHealth(bool isDark) {
+  Widget _buildServiceHealth(ThemeManager themeManager) {
+    debugPrint('💊 HealthDashboard: Building service health section');
+
     final services = [
       {
         'name': 'API Server',
-        'status':
-            _healthData?.system.status == 'healthy' ? 'Healthy' : 'Warning',
+        'status': _healthData?.system.status == 'healthy' ? 'Healthy' : 'Warning',
         'responseTime': '45ms',
-        'color': _healthData?.system.status == 'healthy'
-            ? const Color(0xFF10B981)
-            : const Color(0xFFF59E0B)
+        'color': _healthData?.system.status == 'healthy' ? themeManager.successColor : themeManager.warningColor
       },
       {
         'name': 'Database',
-        'status': _healthData?.database.status == 'database_connected'
-            ? 'Connected'
-            : 'Disconnected',
+        'status': _healthData?.database.status == 'database_connected' ? 'Connected' : 'Disconnected',
         'responseTime': '12ms',
-        'color': _healthData?.database.status == 'database_connected'
-            ? const Color(0xFF10B981)
-            : const Color(0xFFEF4444)
+        'color':
+            _healthData?.database.status == 'database_connected' ? themeManager.successColor : themeManager.errorColor
       },
     ];
 
@@ -567,16 +543,18 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: themeManager.textPrimary,
                 ),
               ),
               GestureDetector(
-                onTap: _refreshHealthData,
+                onTap: () {
+                  debugPrint('💊 HealthDashboard: Refresh button pressed');
+                  _refreshHealthData();
+                },
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B82F6),
+                    color: themeManager.primaryColor,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Row(
@@ -605,17 +583,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
           SizedBox(height: 16.h),
           Container(
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              color: themeManager.surfaceColor,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.3)
-                      : Colors.grey.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: themeManager.subtleShadow,
             ),
             child: Column(
               children: services.asMap().entries.map((entry) {
@@ -628,7 +598,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                   service['status'] as String,
                   service['responseTime'] as String,
                   service['color'] as Color,
-                  isDark,
+                  themeManager,
                   !isLast,
                 );
               }).toList(),
@@ -644,7 +614,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     String status,
     String responseTime,
     Color statusColor,
-    bool isDark,
+    ThemeManager themeManager,
     bool showDivider,
   ) {
     return Column(
@@ -671,7 +641,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -689,7 +659,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
+                  color: statusColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
@@ -707,13 +677,15 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
         if (showDivider)
           Divider(
             height: 1,
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            color: themeManager.borderColor,
           ),
       ],
     );
   }
 
-  Widget _buildRecentAlerts(bool isDark) {
+  Widget _buildRecentAlerts(ThemeManager themeManager) {
+    debugPrint('💊 HealthDashboard: Building recent alerts section');
+
     final alerts = [
       {
         'title': 'High Memory Usage',
@@ -751,19 +723,20 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: themeManager.textPrimary,
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigate to all alerts
+                  debugPrint('💊 HealthDashboard: View all alerts pressed');
+                  // TODO: Navigate to all alerts
                 },
                 child: Text(
                   'View All',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF3B82F6),
+                    color: themeManager.primaryColor,
                   ),
                 ),
               ),
@@ -772,17 +745,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
           SizedBox(height: 16.h),
           Container(
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              color: themeManager.surfaceColor,
               borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.3)
-                      : Colors.grey.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: themeManager.subtleShadow,
             ),
             child: Column(
               children: alerts.asMap().entries.map((entry) {
@@ -790,7 +755,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 final alert = entry.value;
                 final isLast = index == alerts.length - 1;
 
-                return _buildAlertItem(alert, isDark, !isLast);
+                return _buildAlertItem(alert, themeManager, !isLast);
               }).toList(),
             ),
           ),
@@ -799,18 +764,17 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
     );
   }
 
-  Widget _buildAlertItem(
-      Map<String, dynamic> alert, bool isDark, bool showDivider) {
+  Widget _buildAlertItem(Map<String, dynamic> alert, ThemeManager themeManager, bool showDivider) {
     Color getAlertColor(String severity) {
       switch (severity) {
         case 'warning':
-          return const Color(0xFFF59E0B);
+          return themeManager.warningColor;
         case 'error':
-          return const Color(0xFFEF4444);
+          return themeManager.errorColor;
         case 'success':
-          return const Color(0xFF10B981);
+          return themeManager.successColor;
         default:
-          return const Color(0xFF3B82F6);
+          return themeManager.infoColor;
       }
     }
 
@@ -826,7 +790,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 width: 40.w,
                 height: 40.h,
                 decoration: BoxDecoration(
-                  color: alertColor.withValues(alpha: 0.1),
+                  color: alertColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Icon(
@@ -845,7 +809,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        color: themeManager.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -853,8 +817,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                       alert['description'],
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color:
-                            isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ],
@@ -864,7 +827,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
                 alert['time'],
                 style: TextStyle(
                   fontSize: 10.sp,
-                  color: isDark ? Colors.grey[500] : const Color(0xFF9CA3AF),
+                  color: themeManager.textTertiary,
                 ),
               ),
             ],
@@ -873,7 +836,7 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard>
         if (showDivider)
           Divider(
             height: 1,
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            color: themeManager.borderColor,
           ),
       ],
     );

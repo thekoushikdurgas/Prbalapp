@@ -17,7 +17,7 @@ import 'package:prbal/services/user_service.dart';
 
 // Components
 // Theme
-// import 'package:prbal/utils/theme/theme_caching.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 
 // Navigation
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
@@ -44,16 +44,17 @@ import 'package:prbal/widgets/settings/support_legal_settings_widget.dart';
 import 'package:prbal/widgets/settings/tokens_settings_widget.dart';
 import 'package:prbal/widgets/settings/user_type_change_handler.dart';
 
-/// SettingsScreen - Redesigned settings screen with component-based architecture
+/// SettingsScreen - Enhanced settings screen with centralized theme management
 ///
 /// This screen provides a modern, responsive settings interface with:
-/// - Component-based architecture for better maintainability
-/// - Modern UI design with glass-morphism effects
-/// - Proper API data integration with real-time updates
-/// - Theme-aware styling for light and dark modes
-/// - Responsive layout with proper spacing and typography
-/// - Comprehensive debug logging for development
-/// - Performance optimization with lazy loading
+/// - **Centralized ThemeManager** integration for consistent styling
+/// - **ThemeAwareMixin** for easy theme access and responsive design
+/// - **Material Design 3.0** gradients and glass morphism effects
+/// - **Component-based architecture** for better maintainability
+/// - **Real-time theme adaptation** with automatic light/dark mode switching
+/// - **Performance optimization** with proper theme access patterns
+/// - **Comprehensive debug logging** for theme operations and state tracking
+/// - **Enhanced visual design** with theme-aware colors and effects
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -61,8 +62,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen>
-    with TickerProviderStateMixin {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProviderStateMixin, ThemeAwareMixin {
   // State variables
   bool _notificationsEnabled = true;
   bool _biometricsEnabled = false;
@@ -78,7 +78,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint('⚙️ SettingsScreen: Initializing modern settings screen');
+    debugPrint('⚙️ SettingsScreen: Initializing enhanced settings screen with ThemeManager');
 
     _initializeAnimations();
     _loadAllSettings();
@@ -172,23 +172,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ SettingsScreen: Building modern settings screen');
+    debugPrint('⚙️ SettingsScreen: Building enhanced settings screen with ThemeManager');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Use centralized ThemeManager instead of manual theme detection
+    final themeManager = ThemeManager.of(context);
     final userType = HiveService.getUserType();
     final authState = ref.watch(authenticationStateProvider);
 
-    debugPrint('⚙️ SettingsScreen: Theme is dark: $isDark');
+    // Enhanced debug logging with theme state
+    themeManager.logThemeInfo();
     debugPrint('⚙️ SettingsScreen: User type: $userType');
-    debugPrint(
-        '⚙️ SettingsScreen: User authenticated: ${authState.isAuthenticated}');
-
-    // Enhanced theme debugging and monitoring
-    // _logEnhancedThemeState(context, isDark);
+    debugPrint('⚙️ SettingsScreen: User authenticated: ${authState.isAuthenticated}');
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF8F9FA),
+      backgroundColor: themeManager.backgroundColor,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -197,8 +194,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // Modern App Bar
-                _buildModernAppBar(isDark),
+                // Enhanced App Bar with ThemeManager
+                _buildEnhancedAppBar(themeManager),
 
                 // Main Content
                 SliverToBoxAdapter(
@@ -207,16 +204,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       SizedBox(height: 20.h),
 
                       // Loading Indicator
-                      if (_isLoadingData)
-                        const SettingsLoadingIndicatorWidget(),
+                      if (_isLoadingData) const SettingsLoadingIndicatorWidget(),
 
                       // Profile Section
                       ProfileSectionWidget(
                         onEditProfile: () => _showEditProfileBottomSheet(),
                         onViewProfile: () => _navigateToViewProfile(),
                         onProfilePictureEdit: (ImageSource source) async {
-                          debugPrint(
-                              '🖼️ ProfileSectionWidget: Profile picture edit requested');
+                          debugPrint('🖼️ ProfileSectionWidget: Profile picture edit requested');
                           debugPrint('🖼️ Image source: ${source.name}');
                           await _handleProfilePictureUpdate(source);
                         },
@@ -226,8 +221,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       AccountSettingsWidget(
                         userType: userType,
                         authState: authState,
-                        onUserTypeChange: () =>
-                            UserTypeChangeHandler.showUserTypeChangeDialog(
+                        onUserTypeChange: () => UserTypeChangeHandler.showUserTypeChangeDialog(
                           context: context,
                           ref: ref,
                           currentUserType: userType,
@@ -245,7 +239,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           });
                           await _saveNotificationPreference(value);
                         },
-                        onSecurityTapped: () => _showSecuritySettings(isDark),
+                        onSecurityTapped: () => _showSecuritySettings(themeManager),
                         onAnalyticsChanged: (value) async {
                           setState(() {
                             _analyticsEnabled = value;
@@ -267,11 +261,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
                       // Tokens Management
                       TokensSettingsWidget(
-                        onActiveSessionsTapped: () =>
-                            _showActiveSessionsBottomSheet(),
+                        onActiveSessionsTapped: () => _showActiveSessionsBottomSheet(),
                         // onAccessTokensTapped: () => _showAccessTokensBottomSheet(),
-                        onRefreshTokenTapped: () =>
-                            _showRefreshTokenBottomSheet(),
+                        onRefreshTokenTapped: () => _showRefreshTokenBottomSheet(),
                         // onRevokeAllSessionsTapped: () => _showRevokeAllSessionsDialog(),
                       ),
 
@@ -293,9 +285,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     );
   }
 
-  /// Builds modern app bar with gradient background
-  Widget _buildModernAppBar(bool isDark) {
-    debugPrint('⚙️ SettingsScreen: Building modern app bar');
+  /// Builds enhanced app bar with ThemeManager gradients and effects
+  Widget _buildEnhancedAppBar(ThemeManager themeManager) {
+    debugPrint('⚙️ SettingsScreen: Building enhanced app bar with ThemeManager');
 
     return SliverAppBar(
       expandedHeight: 120.h,
@@ -305,19 +297,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       elevation: 0,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    const Color(0xFF1A1A1A),
-                    const Color(0xFF2D2D2D),
-                  ]
-                : [
-                    Colors.white,
-                    const Color(0xFFF7FAFC),
-                  ],
-          ),
+          gradient: themeManager.backgroundGradient,
+          boxShadow: themeManager.primaryShadow,
         ),
         child: FlexibleSpaceBar(
           titlePadding: EdgeInsets.only(left: 20.w, bottom: 16.h),
@@ -326,7 +307,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             style: TextStyle(
               fontSize: 28.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
               letterSpacing: -1.0,
             ),
           ),
@@ -335,9 +316,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     );
   }
 
-  /// Shows security settings bottom sheet
-  Future<void> _showSecuritySettings(bool isDark) async {
-    debugPrint('⚙️ SettingsScreen: Showing security settings');
+  /// Shows security settings bottom sheet with ThemeManager
+  Future<void> _showSecuritySettings(ThemeManager themeManager) async {
+    debugPrint('⚙️ SettingsScreen: Showing security settings with theme-aware styling');
 
     await SettingsBottomSheets.showSecurityBottomSheet(
       context,
@@ -356,8 +337,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   Future<void> _showClearCacheDialog() async {
     debugPrint('⚙️ SettingsScreen: Showing clear cache dialog');
 
-    final confirmed =
-        await SettingsBottomSheets.showClearCacheBottomSheet(context);
+    final confirmed = await SettingsBottomSheets.showClearCacheBottomSheet(context);
 
     if (confirmed == true && mounted) {
       // TODO: Implement cache clearing logic
@@ -391,66 +371,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   // PROFILE PICTURE HANDLING METHODS
   // ============================================================================
 
-  /// COMPLETE PROFILE PICTURE UPDATE IMPLEMENTATION
+  /// ENHANCED PROFILE PICTURE UPDATE IMPLEMENTATION WITH THEMEMANAGER
   ///
   /// This method provides a comprehensive profile picture update workflow that includes:
   ///
   /// **FEATURES IMPLEMENTED:**
+  /// ✅ **ThemeManager Integration** - Uses centralized theme management for consistent styling
   /// ✅ Authentication validation with detailed error handling
-  /// ✅ Modern loading dialog with theme-aware styling
+  /// ✅ **Enhanced loading dialog** with theme-aware styling and glass morphism effects
   /// ✅ Image compression and resizing (85% quality, max 1024x1024px)
   /// ✅ File size validation (5MB limit) with user-friendly error messages
   /// ✅ Robust API response parsing handling multiple response structures
   /// ✅ Real-time authentication state updates with local storage persistence
   /// ✅ Comprehensive error handling with detailed debug logging
-  /// ✅ User feedback via styled SnackBars with icons and haptic feedback
+  /// ✅ **Theme-aware user feedback** via styled SnackBars with proper colors
   /// ✅ Proper memory management and dialog cleanup
-  /// ✅ Detailed debug logging for development and troubleshooting
+  /// ✅ **Enhanced debug logging** with theme state tracking
   ///
-  /// **INTEGRATION POINTS:**
-  /// - Uses existing UserService.uploadProfileImage() API method
-  /// - Integrates with Riverpod authentication state management
-  /// - Updates both in-memory and persistent (Hive) user data storage
-  /// - Follows app's theme and styling conventions
-  /// - Compatible with ProfileSectionWidget component architecture
-  ///
-  /// **WORKFLOW STEPS:**
-  /// 1. 🔐 Authentication Validation - Verifies user is logged in with valid tokens
-  /// 2. 🔄 Loading State Management - Shows/hides loading dialog with proper cleanup
-  /// 3. 📷 Image Selection - Uses ImagePicker with optimal compression settings
-  /// 4. ✅ File Validation - Checks file existence, size limits, and format
-  /// 5. 🌐 API Upload - Uploads via UserService with detailed response logging
-  /// 6. 🔄 State Updates - Updates authentication state and local storage
-  /// 7. 📢 User Feedback - Shows success/error messages with haptic feedback
-  ///
-  /// **DEBUG LOGGING:**
-  /// All steps include comprehensive debug prints with emoji prefixes for easy identification:
-  /// - 🖼️ Profile picture operations
-  /// - 📄 File system operations
-  /// - 📊 Performance metrics
-  /// - ✅ Success operations
-  /// - ❌ Error conditions
-  ///
-  /// **ERROR HANDLING:**
-  /// - Authentication failures
-  /// - Network connectivity issues
-  /// - File system errors
-  /// - API response parsing errors
-  /// - Image format/size validation
-  /// - Server-side upload failures
+  /// **THEMEMANAGER INTEGRATION POINTS:**
+  /// - Uses themeManager.surfaceColor for dialog backgrounds
+  /// - Applies themeManager.textPrimary for consistent text colors
+  /// - Leverages themeManager.glassMorphism for modern dialog effects
+  /// - Uses themeManager.primaryColor for accent elements
+  /// - Integrates themeManager.conditionalColor() for dynamic theming
   ///
   /// @param source ImageSource.camera for camera capture, ImageSource.gallery for gallery selection
   Future<void> _handleProfilePictureUpdate(ImageSource source) async {
-    debugPrint('🖼️ SettingsScreen: Starting profile picture update');
-    debugPrint(
-        '🖼️ Image source: ${source == ImageSource.camera ? 'Camera' : 'Gallery'}');
+    debugPrint('🖼️ SettingsScreen: Starting enhanced profile picture update with ThemeManager');
+    debugPrint('🖼️ Image source: ${source == ImageSource.camera ? 'Camera' : 'Gallery'}');
 
-    // Get current authentication state and services
+    // Get current authentication state, services, and theme manager
     final authState = ref.read(authenticationStateProvider);
     final userService = ref.read(userServiceProvider);
+    final themeManager = ThemeManager.of(context);
 
     debugPrint('🖼️ Authentication state: ${authState.isAuthenticated}');
     debugPrint('🖼️ Access token available: ${authState.accessToken != null}');
+    themeManager.logThemeInfo();
 
     // Step 1: Validate user authentication
     if (!authState.isAuthenticated || authState.accessToken == null) {
@@ -470,7 +427,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 Text('profile.loginToUpdatePicture'.tr()),
               ],
             ),
-            backgroundColor: const Color(0xFFE53E3E),
+            backgroundColor: themeManager.conditionalColor(
+              lightColor: const Color(0xFFE53E3E),
+              darkColor: const Color(0xFFFC8181),
+            ),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
@@ -483,8 +443,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     }
 
     try {
-      // Step 2: Show loading indicator
-      debugPrint('🖼️ Showing loading dialog');
+      // Step 2: Show enhanced loading indicator with ThemeManager styling
+      debugPrint('🖼️ Showing enhanced loading dialog with theme-aware styling');
       if (mounted) {
         showDialog(
           context: context,
@@ -494,29 +454,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             child: Center(
               child: Container(
                 padding: EdgeInsets.all(20.w),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? const Color(0xFF2D2D2D)
-                      : Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
+                decoration: themeManager.glassMorphism,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        _getUserTypeColor(authState.userData?['user_type']),
+                        themeManager.primaryColor,
                       ),
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'loading.processingImage'.tr(),
+                      'profile.updatingPicture'.tr(),
                       style: TextStyle(
+                        color: themeManager.textPrimary,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : const Color(0xFF2D3748),
                       ),
                     ),
                   ],
@@ -539,8 +492,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         maxHeight: 1024, // Limit maximum height to 1024 pixels
       );
 
-      debugPrint(
-          '🖼️ Image picker result: ${pickedFile != null ? 'Image selected' : 'No image selected'}');
+      debugPrint('🖼️ Image picker result: ${pickedFile != null ? 'Image selected' : 'No image selected'}');
 
       // Check if user cancelled image selection
       if (pickedFile == null) {
@@ -571,14 +523,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       // Optional: Check file size limit (e.g., 5MB)
       const int maxFileSizeBytes = 5 * 1024 * 1024; // 5MB
       if (fileSize > maxFileSizeBytes) {
-        throw Exception(
-            'Image file too large. Please select an image smaller than 5MB.');
+        throw Exception('Image file too large. Please select an image smaller than 5MB.');
       }
 
       // Step 5: Upload profile image via API
       debugPrint('🖼️ Starting API upload');
-      debugPrint(
-          '🖼️ Using access token: ${authState.accessToken!.substring(0, 20)}...');
+      debugPrint('🖼️ Using access token: ${authState.accessToken!.substring(0, 20)}...');
 
       final uploadResponse = await userService.uploadProfileImage(
         imageFile,
@@ -608,12 +558,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           debugPrint('🖼️ Response data keys: ${data.keys.toList()}');
 
           // Try different possible paths for the profile picture URL
-          newProfilePictureUrl =
-              data['data']?['user']?['profile_picture'] as String? ??
-                  data['user']?['profile_picture'] as String? ??
-                  data['profile_picture'] as String? ??
-                  data['profilePicture'] as String? ??
-                  data['url'] as String?;
+          newProfilePictureUrl = data['data']?['user']?['profile_picture'] as String? ??
+              data['user']?['profile_picture'] as String? ??
+              data['profile_picture'] as String? ??
+              data['profilePicture'] as String? ??
+              data['url'] as String?;
         } else if (uploadResponse.data is String) {
           newProfilePictureUrl = uploadResponse.data as String;
         }
@@ -622,20 +571,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
         if (newProfilePictureUrl != null && newProfilePictureUrl.isNotEmpty) {
           // Step 7: Update authentication state with new profile picture
-          debugPrint(
-              '🖼️ Updating authentication state with new profile picture');
+          debugPrint('🖼️ Updating authentication state with new profile picture');
 
           final authNotifier = ref.read(authenticationStateProvider.notifier);
           final updatedUserData = {
             ...authState.userData ?? {},
             'profile_picture': newProfilePictureUrl,
-            'profilePicture':
-                newProfilePictureUrl, // Both formats for compatibility
+            'profilePicture': newProfilePictureUrl, // Both formats for compatibility
             'updated_at': DateTime.now().toIso8601String(),
           };
 
-          debugPrint(
-              '🖼️ Updated user data keys: ${updatedUserData.keys.toList()}');
+          debugPrint('🖼️ Updated user data keys: ${updatedUserData.keys.toList()}');
 
           await authNotifier.setAuthenticated(
             accessToken: authState.accessToken!,
@@ -680,8 +626,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           debugPrint('✅ Profile picture update completed successfully');
           debugPrint('🖼️ New profile picture URL: $newProfilePictureUrl');
         } else {
-          throw Exception(
-              'No profile picture URL received from server response');
+          throw Exception('No profile picture URL received from server response');
         }
       } else {
         throw Exception(uploadResponse.message);
@@ -750,8 +695,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   // ============================================================================
 
   /// Shows error snackbar
-  void _showErrorSnackBar(String message) =>
-      FeedbackUtils.showError(context: context, message: message);
+  void _showErrorSnackBar(String message) => FeedbackUtils.showError(context: context, message: message);
 
   // ============================================================================
   // ENHANCED USER TYPE CHANGE SERVICE METHODS
@@ -833,8 +777,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     required String context,
   }) {
     if (controller == null) {
-      debugPrint(
-          '🎮 SettingsScreen: No controller to dispose for $controllerName in $context');
+      debugPrint('🎮 SettingsScreen: No controller to dispose for $controllerName in $context');
       return;
     }
 
@@ -845,29 +788,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           // Check if controller is still valid before disposing
           if (controller.text.isEmpty || controller.text.isNotEmpty) {
             // This is a safe way to check if controller is still valid
-            debugPrint(
-                '🎮 SettingsScreen: Disposing $controllerName in $context');
-            debugPrint(
-                '   📝 Controller text length: ${controller.text.length} characters');
+            debugPrint('🎮 SettingsScreen: Disposing $controllerName in $context');
+            debugPrint('   📝 Controller text length: ${controller.text.length} characters');
 
             // Dispose the controller
             controller.dispose();
 
-            debugPrint(
-                '✅ SettingsScreen: Successfully disposed $controllerName in $context');
+            debugPrint('✅ SettingsScreen: Successfully disposed $controllerName in $context');
           } else {
-            debugPrint(
-                '⚠️ SettingsScreen: Controller $controllerName already disposed in $context');
+            debugPrint('⚠️ SettingsScreen: Controller $controllerName already disposed in $context');
           }
         } catch (disposeError) {
-          debugPrint(
-              '❌ SettingsScreen: Error disposing $controllerName in $context: $disposeError');
+          debugPrint('❌ SettingsScreen: Error disposing $controllerName in $context: $disposeError');
           // Continue execution even if disposal fails to prevent app crashes
         }
       });
     } catch (e) {
-      debugPrint(
-          '❌ SettingsScreen: Failed to schedule disposal for $controllerName in $context: $e');
+      debugPrint('❌ SettingsScreen: Failed to schedule disposal for $controllerName in $context: $e');
     }
   }
 
@@ -885,8 +822,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     required Map<String, TextEditingController?> controllers,
     required String context,
   }) {
-    debugPrint(
-        '🎮 SettingsScreen: Disposing ${controllers.length} controllers in $context');
+    debugPrint('🎮 SettingsScreen: Disposing ${controllers.length} controllers in $context');
 
     int successCount = 0;
     int errorCount = 0;
@@ -904,8 +840,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           );
           successCount++;
         } catch (e) {
-          debugPrint(
-              '❌ SettingsScreen: Failed to dispose $controllerName in $context: $e');
+          debugPrint('❌ SettingsScreen: Failed to dispose $controllerName in $context: $e');
           errorCount++;
         }
       }
@@ -913,11 +848,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       debugPrint('✅ SettingsScreen: Disposal summary for $context:');
       debugPrint('   ✅ Successful: $successCount');
       debugPrint('   ❌ Failed: $errorCount');
-      debugPrint(
-          '   📊 Success rate: ${((successCount / controllers.length) * 100).toStringAsFixed(1)}%');
+      debugPrint('   📊 Success rate: ${((successCount / controllers.length) * 100).toStringAsFixed(1)}%');
     } catch (e) {
-      debugPrint(
-          '❌ SettingsScreen: Critical error in batch disposal for $context: $e');
+      debugPrint('❌ SettingsScreen: Critical error in batch disposal for $context: $e');
     }
   }
 
@@ -926,8 +859,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   // ============================================================================
 
   /// Helper methods for user data extraction
-  bool _isVerified(Map<String, dynamic>? userData) =>
-      SettingsUtils.isVerified(userData);
+  bool _isVerified(Map<String, dynamic>? userData) => SettingsUtils.isVerified(userData);
 
   /// Saves notification preference
   Future<void> _saveNotificationPreference(bool enabled) async {
@@ -981,11 +913,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
     try {
       _showEditProfileForm();
-      debugPrint(
-          '⚙️ SettingsScreen: Successfully opened edit profile bottom sheet');
+      debugPrint('⚙️ SettingsScreen: Successfully opened edit profile bottom sheet');
     } catch (e) {
-      debugPrint(
-          '❌ SettingsScreen: Failed to show edit profile bottom sheet: $e');
+      debugPrint('❌ SettingsScreen: Failed to show edit profile bottom sheet: $e');
 
       // Show error message to user
       if (mounted) {
@@ -1003,31 +933,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   Future<void> _showProfileBottomSheet() async {
     debugPrint('⚙️ SettingsScreen: Building profile bottom sheet');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     final authState = ref.read(authenticationStateProvider);
     final userData = authState.userData;
 
     // Extract user information
     final displayName = _getDisplayName(userData);
-    final userType =
-        userData?['user_type'] ?? userData?['userType'] ?? 'customer';
-    final profilePicture =
-        userData?['profile_picture'] ?? userData?['profilePicture'];
+    final userType = userData?['user_type'] ?? userData?['userType'] ?? 'customer';
+    final profilePicture = userData?['profile_picture'] ?? userData?['profilePicture'];
     final isVerified = _isVerified(userData);
     final rating = _getRealRating(userData);
     final bookingCount = _getRealBookingCount(userData);
-    final userTypeColor = _getUserTypeColor(userType);
+    final userTypeColor = themeManager.getUserTypeColor(userType);
 
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(24.r),
               topRight: Radius.circular(24.r),
@@ -1042,7 +969,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 width: 40.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[600] : Colors.grey[300],
+                  color: themeManager.borderColor,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
@@ -1059,7 +986,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         Container(
                           padding: EdgeInsets.all(12.w),
                           decoration: BoxDecoration(
-                            color: userTypeColor.withValues(alpha: 0.1),
+                            color: userTypeColor.withValues(alpha: 26),
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Icon(
@@ -1075,9 +1002,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF2D3748),
+                              color: themeManager.textPrimary,
                             ),
                           ),
                         ),
@@ -1099,23 +1024,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                userTypeColor.withValues(alpha: 0.2),
-                                userTypeColor.withValues(alpha: 0.1),
+                                userTypeColor.withValues(alpha: 51),
+                                userTypeColor.withValues(alpha: 26),
                               ],
                             ),
                             border: Border.all(
-                              color: userTypeColor.withValues(alpha: 0.3),
+                              color: userTypeColor.withValues(alpha: 77),
                               width: 2,
                             ),
                           ),
                           child: ClipOval(
-                            child: profilePicture != null &&
-                                    profilePicture.isNotEmpty
+                            child: profilePicture != null && profilePicture.isNotEmpty
                                 ? Image.network(
                                     profilePicture,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Icon(
+                                    errorBuilder: (context, error, stackTrace) => Icon(
                                       _getUserTypeIcon(userType),
                                       color: userTypeColor,
                                       size: 36.sp,
@@ -1145,9 +1068,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                       style: TextStyle(
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.bold,
-                                        color: isDark
-                                            ? Colors.white
-                                            : const Color(0xFF2D3748),
+                                        color: themeManager.textPrimary,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -1156,7 +1077,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   if (isVerified)
                                     Icon(
                                       Prbal.verified,
-                                      color: const Color(0xFF48BB78),
+                                      color: themeManager.successColor,
                                       size: 20.sp,
                                     ),
                                 ],
@@ -1166,18 +1087,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
                               // User type badge
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w, vertical: 6.h),
+                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      userTypeColor.withValues(alpha: 0.15),
-                                      userTypeColor.withValues(alpha: 0.05),
+                                      userTypeColor.withValues(alpha: 38),
+                                      userTypeColor.withValues(alpha: 13),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(20.r),
                                   border: Border.all(
-                                    color: userTypeColor.withValues(alpha: 0.3),
+                                    color: userTypeColor.withValues(alpha: 77),
                                     width: 1,
                                   ),
                                 ),
@@ -1207,8 +1127,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               'Rating',
                               rating.toStringAsFixed(1),
                               Prbal.star,
-                              const Color(0xFFFBBF24),
-                              isDark,
+                              themeManager.warningColor,
+                              themeManager,
                             ),
                           ),
                           SizedBox(width: 16.w),
@@ -1217,8 +1137,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               'Bookings',
                               bookingCount.toString(),
                               Prbal.bookmark,
-                              const Color(0xFF4299E1),
-                              isDark,
+                              themeManager.infoColor,
+                              themeManager,
                             ),
                           ),
                         ],
@@ -1264,25 +1184,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   Future<void> _showEditProfileForm() async {
     debugPrint('⚙️ SettingsScreen: Building edit profile form');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     final authState = ref.read(authenticationStateProvider);
     final userData = authState.userData;
 
     // Form controllers with current data
-    final firstNameController = TextEditingController(
-        text: userData?['first_name'] ?? userData?['firstName'] ?? '');
-    final lastNameController = TextEditingController(
-        text: userData?['last_name'] ?? userData?['lastName'] ?? '');
-    final usernameController =
-        TextEditingController(text: userData?['username'] ?? '');
+    final firstNameController = TextEditingController(text: userData?['first_name'] ?? userData?['firstName'] ?? '');
+    final lastNameController = TextEditingController(text: userData?['last_name'] ?? userData?['lastName'] ?? '');
+    final usernameController = TextEditingController(text: userData?['username'] ?? '');
     final bioController = TextEditingController(text: userData?['bio'] ?? '');
-    final locationController =
-        TextEditingController(text: userData?['location'] ?? '');
+    final locationController = TextEditingController(text: userData?['location'] ?? '');
 
     // Form key for validation
     final formKey = GlobalKey<FormState>();
-    final userTypeColor = _getUserTypeColor(
-        userData?['user_type'] ?? userData?['userType'] ?? 'customer');
+    final userTypeColor = themeManager.getUserTypeColor(userData?['user_type'] ?? userData?['userType'] ?? 'customer');
 
     // State management
     bool isLoading = false;
@@ -1293,12 +1208,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) => StatefulBuilder(
         builder: (context, setModalState) => Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             height: MediaQuery.of(context).size.height * 0.85,
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+              color: themeManager.surfaceColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24.r),
                 topRight: Radius.circular(24.r),
@@ -1312,21 +1226,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   width: 40.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[600] : Colors.grey[300],
+                    color: themeManager.borderColor,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
 
                 // Header
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                   child: Row(
                     children: [
                       Container(
                         padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
-                          color: userTypeColor.withValues(alpha: 0.1),
+                          color: userTypeColor.withValues(alpha: 26),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(
@@ -1342,8 +1255,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color:
-                                isDark ? Colors.white : const Color(0xFF2D3748),
+                            color: themeManager.textPrimary,
                           ),
                         ),
                       ),
@@ -1352,7 +1264,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(
                           Prbal.cross,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                           size: 24.sp,
                         ),
                       ),
@@ -1374,7 +1286,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             label: 'First Name',
                             controller: firstNameController,
                             hint: 'Enter your first name',
-                            isDark: isDark,
+                            themeManager: themeManager,
                             validator: (value) {
                               if (value?.trim().isEmpty ?? true) {
                                 return 'First name is required';
@@ -1390,7 +1302,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             label: 'Last Name',
                             controller: lastNameController,
                             hint: 'Enter your last name',
-                            isDark: isDark,
+                            themeManager: themeManager,
                             validator: (value) {
                               if (value?.trim().isEmpty ?? true) {
                                 return 'Last name is required';
@@ -1406,7 +1318,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             label: 'Username',
                             controller: usernameController,
                             hint: 'Enter your username',
-                            isDark: isDark,
+                            themeManager: themeManager,
                             validator: (value) {
                               if (value?.trim().isEmpty ?? true) {
                                 return 'Username is required';
@@ -1425,7 +1337,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             label: 'Bio',
                             controller: bioController,
                             hint: 'Tell us about yourself',
-                            isDark: isDark,
+                            themeManager: themeManager,
                             maxLines: 3,
                             required: false,
                           ),
@@ -1437,7 +1349,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             label: 'Location',
                             controller: locationController,
                             hint: 'Your city or area',
-                            isDark: isDark,
+                            themeManager: themeManager,
                             required: false,
                           ),
 
@@ -1456,16 +1368,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       // Cancel button
                       Expanded(
                         child: TextButton(
-                          onPressed:
-                              isLoading ? null : () => Navigator.pop(context),
+                          onPressed: isLoading ? null : () => Navigator.pop(context),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 16.h),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                               side: BorderSide(
-                                color: isDark
-                                    ? Colors.grey[600]!
-                                    : Colors.grey[300]!,
+                                color: themeManager.borderColor,
                               ),
                             ),
                           ),
@@ -1474,8 +1383,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: themeManager.textSecondary,
                             ),
                           ),
                         ),
@@ -1523,9 +1431,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   height: 20.h,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor:
-                                        const AlwaysStoppedAnimation<Color>(
-                                            Colors.white),
+                                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
                                 )
                               : Text(
@@ -1566,7 +1472,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     required String label,
     required TextEditingController controller,
     required String hint,
-    required bool isDark,
+    required ThemeManager themeManager,
     int maxLines = 1,
     bool required = true,
     String? Function(String?)? validator,
@@ -1581,7 +1487,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                color: themeManager.textPrimary,
               ),
             ),
             if (required) ...[
@@ -1591,7 +1497,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFFE53E3E),
+                  color: themeManager.errorColor,
                 ),
               ),
             ],
@@ -1604,52 +1510,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           validator: validator,
           style: TextStyle(
             fontSize: 16.sp,
-            color: isDark ? Colors.white : const Color(0xFF2D3748),
+            color: themeManager.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[500] : Colors.grey[400],
+              color: themeManager.textTertiary,
               fontSize: 14.sp,
             ),
             filled: true,
-            fillColor:
-                isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+            fillColor: themeManager.inputBackground,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                color: themeManager.borderColor,
                 width: 1,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[600]! : const Color(0xFFD1D5DB),
+                color: themeManager.borderColor,
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: _getUserTypeColor(ref
-                        .read(authenticationStateProvider)
-                        .userData?['user_type'] ??
-                    'customer'),
+                color: themeManager
+                    .getUserTypeColor(ref.read(authenticationStateProvider).userData?['user_type'] ?? 'customer'),
                 width: 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: const BorderSide(
-                color: Color(0xFFE53E3E),
+              borderSide: BorderSide(
+                color: themeManager.errorColor,
                 width: 1,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: const BorderSide(
-                color: Color(0xFFE53E3E),
+              borderSide: BorderSide(
+                color: themeManager.errorColor,
                 width: 2,
               ),
             ),
@@ -1697,12 +1600,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
         username: usernameController.text.trim(),
-        bio: bioController.text.trim().isEmpty
-            ? null
-            : bioController.text.trim(),
-        location: locationController.text.trim().isEmpty
-            ? null
-            : locationController.text.trim(),
+        bio: bioController.text.trim().isEmpty ? null : bioController.text.trim(),
+        location: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
       );
 
       debugPrint('⚙️ SettingsScreen: Sending profile update request');
@@ -1712,8 +1611,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       final userService = ref.read(userServiceProvider);
 
       // Call API to update profile
-      final response =
-          await userService.updateProfilePartial(updateRequest, authToken);
+      final response = await userService.updateProfilePartial(updateRequest, authToken);
 
       // Close loading dialog
       if (mounted && Navigator.of(context).canPop()) {
@@ -1805,15 +1703,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Builds a stat item widget for the profile bottom sheet
-  Widget _buildStatItem(
-      String label, String value, IconData icon, Color color, bool isDark) {
+  Widget _buildStatItem(String label, String value, IconData icon, Color color, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 26),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: color.withValues(alpha: 0.2),
+          color: color.withValues(alpha: 51),
           width: 1,
         ),
       ),
@@ -1830,7 +1727,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF2D3748),
+              color: themeManager.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
@@ -1838,7 +1735,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             label,
             style: TextStyle(
               fontSize: 12.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: themeManager.textSecondary,
             ),
           ),
         ],
@@ -1847,23 +1744,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Helper methods for user data extraction
-  String _getDisplayName(Map<String, dynamic>? userData) =>
-      SettingsUtils.getDisplayName(userData);
+  String _getDisplayName(Map<String, dynamic>? userData) => SettingsUtils.getDisplayName(userData);
 
-  double _getRealRating(Map<String, dynamic>? userData) =>
-      SettingsUtils.getRealRating(userData);
+  double _getRealRating(Map<String, dynamic>? userData) => SettingsUtils.getRealRating(userData);
 
-  int _getRealBookingCount(Map<String, dynamic>? userData) =>
-      SettingsUtils.getRealBookingCount(userData);
+  int _getRealBookingCount(Map<String, dynamic>? userData) => SettingsUtils.getRealBookingCount(userData);
 
-  Color _getUserTypeColor(String? userType) =>
-      SettingsUtils.getUserTypeColor(userType);
+  IconData _getUserTypeIcon(String? userType) => SettingsUtils.getUserTypeIcon(userType);
 
-  IconData _getUserTypeIcon(String? userType) =>
-      SettingsUtils.getUserTypeIcon(userType);
-
-  String _getUserTypeDisplayName(String? userType) =>
-      SettingsUtils.getUserTypeDisplayName(userType);
+  String _getUserTypeDisplayName(String? userType) => SettingsUtils.getUserTypeDisplayName(userType);
 
   // ============================================================================
   // TOKEN MANAGEMENT METHODS
@@ -1902,11 +1791,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
       if (response.isSuccess && mounted) {
         final tokens = response.data ?? [];
-        _showTokensBottomSheet('Active Sessions', tokens,
-            showRevokeOption: true);
+        _showTokensBottomSheet('Active Sessions', tokens, showRevokeOption: true);
       } else {
-        _showErrorSnackBar(
-            'Failed to load active sessions: ${response.message}');
+        _showErrorSnackBar('Failed to load active sessions: ${response.message}');
       }
     } catch (e) {
       // Hide loading dialog
@@ -1925,7 +1812,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       return;
     }
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
     final refreshToken = authState.refreshToken;
 
     showModalBottomSheet(
@@ -1935,7 +1822,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       builder: (context) => Container(
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+          color: themeManager.surfaceColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -1947,7 +1834,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               children: [
                 Icon(
                   Prbal.refresh,
-                  color: const Color(0xFF9F7AEA),
+                  color: themeManager.primaryColor,
                   size: 24.sp,
                 ),
                 SizedBox(width: 12.w),
@@ -1956,7 +1843,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                    color: themeManager.textPrimary,
                   ),
                 ),
                 const Spacer(),
@@ -1964,7 +1851,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
                     Prbal.close,
-                    color: isDark ? Colors.white70 : Colors.grey[600],
+                    color: themeManager.textSecondary,
                   ),
                 ),
               ],
@@ -1975,11 +1862,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color:
-                    isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF7FAFC),
+                color: themeManager.backgroundColor,
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                  color: themeManager.borderColor,
                 ),
               ),
               child: Column(
@@ -1990,7 +1876,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -2000,9 +1886,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         width: 8.w,
                         height: 8.h,
                         decoration: BoxDecoration(
-                          color: refreshToken != null
-                              ? const Color(0xFF48BB78)
-                              : const Color(0xFFE53E3E),
+                          color: refreshToken != null ? themeManager.successColor : themeManager.errorColor,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -2011,7 +1895,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         refreshToken != null ? 'Active' : 'Not Available',
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: isDark ? Colors.white70 : Colors.grey[700],
+                          color: themeManager.textSecondary,
                         ),
                       ),
                     ],
@@ -2022,25 +1906,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
+                      color: themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 8.h),
                   Container(
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color:
-                          isDark ? const Color(0xFF000000) : Colors.grey[100],
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      refreshToken != null
-                          ? '${refreshToken.substring(0, 20)}...'
-                          : 'No refresh token available',
+                      refreshToken != null ? '${refreshToken.substring(0, 20)}...' : 'No refresh token available',
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontFamily: 'monospace',
-                        color: isDark ? Colors.white70 : Colors.grey[700],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ),
@@ -2059,7 +1940,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   icon: Icon(Prbal.refresh, size: 18.sp),
                   label: const Text('Refresh Access Token'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9F7AEA),
+                    backgroundColor: themeManager.primaryColor,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
@@ -2077,9 +1958,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Shows tokens bottom sheet with modern design
-  void _showTokensBottomSheet(String title, List<Map<String, dynamic>> tokens,
-      {bool showRevokeOption = false}) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  void _showTokensBottomSheet(String title, List<Map<String, dynamic>> tokens, {bool showRevokeOption = false}) {
+    final themeManager = ThemeManager.of(context);
 
     showModalBottomSheet(
       context: context,
@@ -2092,17 +1972,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         minChildSize: 0.5,
         builder: (context, scrollController) => Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            color: themeManager.surfaceColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-            boxShadow: [
-              BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, -5),
-              ),
-            ],
+            boxShadow: themeManager.elevatedShadow,
           ),
           child: Column(
             children: [
@@ -2112,7 +1984,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 width: 60.w,
                 height: 5.h,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[600] : Colors.grey[300],
+                  color: themeManager.borderColor,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
               ),
@@ -2123,7 +1995,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+                      color: themeManager.borderColor,
                       width: 1,
                     ),
                   ),
@@ -2138,19 +2010,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            const Color(0xFF48BB78).withValues(alpha: 0.2),
-                            const Color(0xFF38B2AC).withValues(alpha: 0.1),
+                            themeManager.successColor.withValues(alpha: 51),
+                            themeManager.infoColor.withValues(alpha: 26),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: const Color(0xFF48BB78).withValues(alpha: 0.3),
+                          color: themeManager.successColor.withValues(alpha: 77),
                           width: 1,
                         ),
                       ),
                       child: Icon(
                         Prbal.security,
-                        color: const Color(0xFF48BB78),
+                        color: themeManager.successColor,
                         size: 28.sp,
                       ),
                     ),
@@ -2166,9 +2038,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             style: TextStyle(
                               fontSize: 22.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF2D3748),
+                              color: themeManager.textPrimary,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -2177,8 +2047,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             '${tokens.length} ${tokens.length == 1 ? 'session' : 'sessions'} found',
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: themeManager.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2189,14 +2058,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     // Modern close button
                     Container(
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.grey[800] : Colors.grey[100],
+                        color: themeManager.inputBackground,
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: IconButton(
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(
                           Prbal.cross,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: themeManager.textSecondary,
                           size: 20.sp,
                         ),
                         padding: EdgeInsets.all(8.w),
@@ -2213,17 +2082,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               // Tokens list with enhanced design
               Expanded(
                 child: tokens.isEmpty
-                    ? _buildEmptyTokensState(isDark)
+                    ? _buildEmptyTokensState(themeManager)
                     : ListView.separated(
                         controller: scrollController,
                         padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                         itemCount: tokens.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 16.h),
+                        separatorBuilder: (context, index) => SizedBox(height: 16.h),
                         itemBuilder: (context, index) {
                           final token = tokens[index];
-                          return _buildModernTokenCard(
-                              token, isDark, showRevokeOption, index);
+                          return _buildModernTokenCard(token, themeManager, showRevokeOption, index);
                         },
                         physics: const BouncingScrollPhysics(),
                       ),
@@ -2239,7 +2106,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Builds empty state for tokens list
-  Widget _buildEmptyTokensState(bool isDark) {
+  Widget _buildEmptyTokensState(ThemeManager themeManager) {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 40.w),
@@ -2251,18 +2118,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               width: 120.w,
               height: 120.h,
               decoration: BoxDecoration(
-                color:
-                    isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+                color: themeManager.inputBackground,
                 borderRadius: BorderRadius.circular(60.r),
                 border: Border.all(
-                  color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
+                  color: themeManager.borderColor,
                   width: 2,
                 ),
               ),
               child: Icon(
                 Prbal.exclamationTriangle,
                 size: 48.sp,
-                color: isDark ? Colors.grey[500] : Colors.grey[400],
+                color: themeManager.textTertiary,
               ),
             ),
             SizedBox(height: 24.h),
@@ -2273,7 +2139,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(height: 8.h),
@@ -2282,7 +2148,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -2293,19 +2159,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Builds modern individual token card with enhanced design
-  Widget _buildModernTokenCard(Map<String, dynamic> token, bool isDark,
-      bool showRevokeOption, int index) {
+  Widget _buildModernTokenCard(
+      Map<String, dynamic> token, ThemeManager themeManager, bool showRevokeOption, int index) {
     // Extract token data
-    final tokenId =
-        token['id'] as String? ?? token['jti'] as String? ?? 'Unknown';
+    final tokenId = token['id'] as String? ?? token['jti'] as String? ?? 'Unknown';
     final isActive = token['is_active'] as bool? ?? false;
     final createdAt = token['created_at'] as String?;
-    final lastUsed =
-        token['last_used_at'] as String? ?? token['last_used'] as String?;
+    final lastUsed = token['last_used_at'] as String? ?? token['last_used'] as String?;
     final deviceType = token['device_type'] as String? ?? 'unknown';
     final deviceName = token['device_name'] as String? ?? 'Unknown Device';
-    final deviceTypeDisplay =
-        token['device_type_display'] as String? ?? 'Unknown';
+    final deviceTypeDisplay = token['device_type_display'] as String? ?? 'Unknown';
     final ipAddress = token['ip_address'] as String?;
 
     // Device info (handle both nested and flat structures)
@@ -2313,9 +2176,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     // Safe token preview
     String getSafeTokenPreview(String tokenStr) {
       if (tokenStr.isEmpty || tokenStr == 'Unknown') return tokenStr;
-      return tokenStr.length > 12
-          ? '${tokenStr.substring(0, 12)}...'
-          : tokenStr;
+      return tokenStr.length > 12 ? '${tokenStr.substring(0, 12)}...' : tokenStr;
     }
 
     // Get device icon and color
@@ -2361,32 +2222,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     return Container(
       margin: EdgeInsets.only(bottom: 4.h),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        color: themeManager.surfaceColor,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: isActive
-              ? deviceColor.withValues(alpha: 0.3)
-              : isDark
-                  ? Colors.grey[700]!
-                  : Colors.grey[200]!,
+          color: isActive ? deviceColor.withValues(alpha: 77) : themeManager.borderColor,
           width: isActive ? 1.5 : 1,
         ),
-        boxShadow: [
-          if (isActive) ...[
-            BoxShadow(
-              color: deviceColor.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.grey.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: isActive ? themeManager.elevatedShadow : themeManager.subtleShadow,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20.r),
@@ -2431,9 +2273,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? Colors.white
-                                    : const Color(0xFF2D3748),
+                                color: themeManager.textPrimary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -2442,21 +2282,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
                             // Status badge
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 color: isActive
-                                    ? const Color(0xFF48BB78)
-                                        .withValues(alpha: 0.15)
-                                    : const Color(0xFFE53E3E)
-                                        .withValues(alpha: 0.15),
+                                    ? const Color(0xFF48BB78).withValues(alpha: 0.15)
+                                    : const Color(0xFFE53E3E).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
                                   color: isActive
-                                      ? const Color(0xFF48BB78)
-                                          .withValues(alpha: 0.3)
-                                      : const Color(0xFFE53E3E)
-                                          .withValues(alpha: 0.3),
+                                      ? const Color(0xFF48BB78).withValues(alpha: 0.3)
+                                      : const Color(0xFFE53E3E).withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                               ),
@@ -2467,9 +2302,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     width: 6.w,
                                     height: 6.h,
                                     decoration: BoxDecoration(
-                                      color: isActive
-                                          ? const Color(0xFF48BB78)
-                                          : const Color(0xFFE53E3E),
+                                      color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -2479,9 +2312,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w600,
-                                      color: isActive
-                                          ? const Color(0xFF48BB78)
-                                          : const Color(0xFFE53E3E),
+                                      color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -2496,18 +2327,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       if (showRevokeOption && isActive)
                         Container(
                           decoration: BoxDecoration(
-                            color:
-                                const Color(0xFFE53E3E).withValues(alpha: 0.1),
+                            color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: const Color(0xFFE53E3E)
-                                  .withValues(alpha: 0.3),
+                              color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
                           child: IconButton(
-                            onPressed: () => _showRevokeTokenDialog(
-                                tokenId, deviceTypeDisplay),
+                            onPressed: () => _showRevokeTokenDialog(tokenId, deviceTypeDisplay),
                             icon: Icon(
                               Prbal.trash,
                               color: const Color(0xFFE53E3E),
@@ -2530,12 +2358,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   Container(
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF1A1A1A)
-                          : const Color(0xFFF8F9FA),
+                      color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
+                        color: themeManager.borderColor,
                         width: 1,
                       ),
                     ),
@@ -2547,8 +2373,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             Icon(
                               Prbal.key,
                               size: 16.sp,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: themeManager.textSecondary,
                             ),
                             SizedBox(width: 8.w),
                             Text(
@@ -2556,9 +2381,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
-                                color: isDark
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
+                                color: themeManager.textSecondary,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -2566,17 +2389,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         ),
                         SizedBox(height: 8.h),
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 8.h),
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF000000)
-                                : Colors.grey[50],
+                            color: themeManager.backgroundColor,
                             borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: isDark
-                                  ? Colors.grey[800]!
-                                  : Colors.grey[200]!,
+                              color: themeManager.borderColor.withValues(alpha: 128),
                               width: 1,
                             ),
                           ),
@@ -2588,16 +2406,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     fontFamily: 'monospace',
-                                    color: isDark
-                                        ? Colors.white70
-                                        : Colors.grey[700],
+                                    color: themeManager.textTertiary,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => _copyToClipboard(
-                                    tokenId, 'Session ID copied'),
+                                onTap: () => _copyToClipboard(tokenId, 'Session ID copied'),
                                 child: Container(
                                   padding: EdgeInsets.all(6.w),
                                   decoration: BoxDecoration(
@@ -2628,9 +2443,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         child: _buildInfoCard(
                           icon: Prbal.laptop,
                           title: 'Device',
-                          value: deviceName.replaceAll(
-                              'Dart/3.8 (dart:io)', 'Mobile App'),
-                          isDark: isDark,
+                          value: deviceName.replaceAll('Dart/3.8 (dart:io)', 'Mobile App'),
+                          themeManager: themeManager,
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -2642,7 +2456,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                             icon: Prbal.globe,
                             title: 'Location',
                             value: ipAddress,
-                            isDark: isDark,
+                            themeManager: themeManager,
                           ),
                         ),
                     ],
@@ -2659,11 +2473,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               icon: Prbal.clock,
                               title: 'Created',
                               value: _formatRelativeTime(createdAt),
-                              isDark: isDark,
+                              themeManager: themeManager,
                             ),
                           ),
-                        if (createdAt != null && lastUsed != null)
-                          SizedBox(width: 12.w),
+                        if (createdAt != null && lastUsed != null) SizedBox(width: 12.w),
 
                         // Last used
                         if (lastUsed != null)
@@ -2672,7 +2485,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                               icon: Prbal.history,
                               title: 'Last Used',
                               value: _formatRelativeTime(lastUsed),
-                              isDark: isDark,
+                              themeManager: themeManager,
                             ),
                           ),
                       ],
@@ -2692,15 +2505,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     required IconData icon,
     required String title,
     required String value,
-    required bool isDark,
+    required ThemeManager themeManager,
   }) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF8F9FA),
+        color: themeManager.inputBackground,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
+          color: themeManager.borderColor,
           width: 1,
         ),
       ),
@@ -2712,7 +2525,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               Icon(
                 icon,
                 size: 14.sp,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: themeManager.textSecondary,
               ),
               SizedBox(width: 6.w),
               Text(
@@ -2720,7 +2533,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 style: TextStyle(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: themeManager.textSecondary,
                   letterSpacing: 0.3,
                 ),
               ),
@@ -2732,7 +2545,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w500,
-              color: isDark ? Colors.white70 : Colors.grey[700],
+              color: themeManager.textTertiary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -2744,12 +2557,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
   /// Shows modern revoke token confirmation dialog
   Future<void> _showRevokeTokenDialog(String tokenId, String deviceName) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+        backgroundColor: themeManager.surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
@@ -2761,16 +2574,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
+                color: themeManager.errorColor.withValues(alpha: 26),
                 borderRadius: BorderRadius.circular(50.r),
                 border: Border.all(
-                  color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
+                  color: themeManager.errorColor.withValues(alpha: 77),
                   width: 2,
                 ),
               ),
               child: Icon(
                 Prbal.exclamationTriangle,
-                color: const Color(0xFFE53E3E),
+                color: themeManager.errorColor,
                 size: 32.sp,
               ),
             ),
@@ -2782,7 +2595,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                color: themeManager.textPrimary,
               ),
             ),
             SizedBox(height: 12.h),
@@ -2793,7 +2606,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
               text: TextSpan(
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: themeManager.textSecondary,
                   height: 1.5,
                 ),
                 children: [
@@ -2802,12 +2615,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                     text: deviceName,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF2D3748),
+                      color: themeManager.textPrimary,
                     ),
                   ),
-                  const TextSpan(
-                      text:
-                          ' and invalidate the session. This action cannot be undone.'),
+                  const TextSpan(text: ' and invalidate the session. This action cannot be undone.'),
                 ],
               ),
             ),
@@ -2824,7 +2635,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         side: BorderSide(
-                          color: isDark ? Colors.grey[600]! : Colors.grey[300]!,
+                          color: themeManager.borderColor,
                         ),
                       ),
                     ),
@@ -2833,7 +2644,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textSecondary,
                       ),
                     ),
                   ),
@@ -2965,8 +2776,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     final userService = ref.read(userServiceProvider);
 
     try {
-      final response =
-          await userService.revokeToken(tokenId, authState.accessToken!);
+      final response = await userService.revokeToken(tokenId, authState.accessToken!);
 
       if (mounted) {
         if (response.isSuccess) {
@@ -2984,16 +2794,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   /// Shows authentication required snackbar
-  void _showAuthenticationRequiredSnackBar() =>
-      FeedbackUtils.showAuthenticationRequired(context: context);
+  void _showAuthenticationRequiredSnackBar() => FeedbackUtils.showAuthenticationRequired(context: context);
 
   /// Shows success snackbar
-  void _showSuccessSnackBar(String message) =>
-      FeedbackUtils.showSuccess(context: context, message: message);
+  void _showSuccessSnackBar(String message) => FeedbackUtils.showSuccess(context: context, message: message);
 
   /// Formats datetime string
-  String _formatDateTime(String dateTimeStr) =>
-      SettingsUtils.formatDateTime(dateTimeStr);
+  String _formatDateTime(String dateTimeStr) => SettingsUtils.formatDateTime(dateTimeStr);
 
   // ============================================================================
   // ENHANCED THEME DEBUGGING METHODS
@@ -3007,17 +2814,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   /// - Performance metrics for theme operations
   /// - Cache state validation
   /// - Theme transition monitoring
-//   void _logEnhancedThemeState(BuildContext context, bool isDark) {
+//   void _logEnhancedThemeState(BuildContext context, bool themeManager) {
 //     debugPrint('🎨 SettingsScreen: === ENHANCED THEME STATE ANALYSIS ===');
 
-//     final theme = Theme.of(context);
+//     final theme = ThemeManager.of(context);
 //     final colorScheme = theme.colorScheme;
 //     final systemBrightness = MediaQuery.of(context).platformBrightness;
 
 //     // Basic theme information
 //     debugPrint('🎨 SettingsScreen: App brightness: ${theme.brightness.name}');
 //     debugPrint('🎨 SettingsScreen: System brightness: ${systemBrightness.name}');
-//     debugPrint('🎨 SettingsScreen: isDark flag: $isDark');
+//     debugPrint('🎨 SettingsScreen: themeManager flag: $themeManager');
 
 //     // Color scheme analysis
 //     debugPrint('🎨 SettingsScreen: Primary: ${colorScheme.primary}');
@@ -3027,7 +2834,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
 //     // Theme consistency validation
 //     final expectedDark = systemBrightness == Brightness.dark;
-//     final consistent = (isDark && expectedDark) || (!isDark && !expectedDark);
+//     final consistent = (themeManager && expectedDark) || (!themeManager && !expectedDark);
 //     debugPrint('🎨 SettingsScreen: Theme consistency: ${consistent ? '✅ Consistent' : '⚠️ Inconsistent'}');
 
 //     // Cache state validation

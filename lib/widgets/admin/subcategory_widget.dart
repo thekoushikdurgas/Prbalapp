@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
+import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/services/service_providers.dart';
 
@@ -102,18 +103,14 @@ class ServiceSubcategoryCrudWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceSubcategoryCrudWidget> createState() =>
-      _ServiceSubcategoryCrudWidgetState();
+  ConsumerState<ServiceSubcategoryCrudWidget> createState() => _ServiceSubcategoryCrudWidgetState();
 }
 
-class _ServiceSubcategoryCrudWidgetState
-    extends ConsumerState<ServiceSubcategoryCrudWidget> {
+class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategoryCrudWidget> with ThemeAwareMixin {
   // ========== STATE VARIABLES ==========
   List<ServiceSubcategory> _allSubcategories = []; // Complete list from API
-  List<ServiceSubcategory> _filteredSubcategories =
-      []; // Filtered list for display
-  List<ServiceCategory> _allCategories =
-      []; // Categories for dropdown/filtering
+  List<ServiceSubcategory> _filteredSubcategories = []; // Filtered list for display
+  List<ServiceCategory> _allCategories = []; // Categories for dropdown/filtering
   bool _isLoading = false; // Loading state for API calls
   bool _isInitialLoad = true; // Track if this is the first load
   String? _errorMessage; // Store error messages for user display
@@ -122,8 +119,7 @@ class _ServiceSubcategoryCrudWidgetState
   int _inactiveCount = 0; // Inactive subcategories count
 
   // Category distribution tracking
-  final Map<String, int> _categoryDistribution =
-      {}; // Category ID -> Count mapping
+  final Map<String, int> _categoryDistribution = {}; // Category ID -> Count mapping
 
   // Performance tracking
   // DateTime? _lastLoadTime;
@@ -136,19 +132,14 @@ class _ServiceSubcategoryCrudWidgetState
   void initState() {
     super.initState();
     debugPrint('🏷️ ServiceSubcategoryCrud: Initializing CRUD widget');
-    debugPrint(
-        '🏷️ ServiceSubcategoryCrud: Initial search query: "${widget.searchQuery}"');
-    debugPrint(
-        '🏷️ ServiceSubcategoryCrud: Initial filter: "${widget.filter}"');
-    debugPrint(
-        '🏷️ ServiceSubcategoryCrud: Parent category filter: "${widget.parentCategoryId}"');
-    debugPrint(
-        '🏷️ ServiceSubcategoryCrud: Selected IDs count: ${widget.selectedIds.length}');
+    debugPrint('🏷️ ServiceSubcategoryCrud: Initial search query: "${widget.searchQuery}"');
+    debugPrint('🏷️ ServiceSubcategoryCrud: Initial filter: "${widget.filter}"');
+    debugPrint('🏷️ ServiceSubcategoryCrud: Parent category filter: "${widget.parentCategoryId}"');
+    debugPrint('🏷️ ServiceSubcategoryCrud: Selected IDs count: ${widget.selectedIds.length}');
 
     // Initialize service and load data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint(
-          '🏷️ ServiceSubcategoryCrud: Post-frame callback - starting data load');
+      debugPrint('🏷️ ServiceSubcategoryCrud: Post-frame callback - starting data load');
       _initializeServiceAndLoadData();
     });
   }
@@ -160,8 +151,7 @@ class _ServiceSubcategoryCrudWidgetState
     debugPrint('🏷️ ServiceSubcategoryCrud: Widget updated');
     debugPrint(
         '🏷️ ServiceSubcategoryCrud: Search query changed: "${oldWidget.searchQuery}" -> "${widget.searchQuery}"');
-    debugPrint(
-        '🏷️ ServiceSubcategoryCrud: Filter changed: "${oldWidget.filter}" -> "${widget.filter}"');
+    debugPrint('🏷️ ServiceSubcategoryCrud: Filter changed: "${oldWidget.filter}" -> "${widget.filter}"');
     debugPrint(
         '🏷️ ServiceSubcategoryCrud: Parent category changed: "${oldWidget.parentCategoryId}" -> "${widget.parentCategoryId}"');
 
@@ -169,29 +159,25 @@ class _ServiceSubcategoryCrudWidgetState
     if (oldWidget.searchQuery != widget.searchQuery ||
         oldWidget.filter != widget.filter ||
         oldWidget.parentCategoryId != widget.parentCategoryId) {
-      debugPrint(
-          '🏷️ ServiceSubcategoryCrud: Filter parameters changed, reapplying filters');
+      debugPrint('🏷️ ServiceSubcategoryCrud: Filter parameters changed, reapplying filters');
       _applyFilters();
     }
   }
 
   /// Initialize service and start loading data
   Future<void> _initializeServiceAndLoadData() async {
-    debugPrint(
-        '🔧 ServiceSubcategoryCrud: Initializing service management service');
+    debugPrint('🔧 ServiceSubcategoryCrud: Initializing service management service');
 
     try {
       // Get service management service from provider
       _serviceManagementService = ref.read(serviceManagementServiceProvider);
-      debugPrint(
-          '🔧 ServiceSubcategoryCrud: Service management service initialized');
+      debugPrint('🔧 ServiceSubcategoryCrud: Service management service initialized');
 
       // Load categories first, then subcategories
       await _loadCategories();
       await _loadSubcategories();
     } catch (e, stackTrace) {
-      debugPrint(
-          '❌ ServiceSubcategoryCrud: Service initialization failed - $e');
+      debugPrint('❌ ServiceSubcategoryCrud: Service initialization failed - $e');
       debugPrint('❌ ServiceSubcategoryCrud: Stack trace: $stackTrace');
 
       setState(() {
@@ -218,15 +204,12 @@ class _ServiceSubcategoryCrudWidgetState
       );
 
       final duration = DateTime.now().difference(startTime);
-      debugPrint(
-          '📊 ServiceSubcategoryCrud: Categories API call completed in ${duration.inMilliseconds}ms');
-      debugPrint(
-          '📊 ServiceSubcategoryCrud: Categories response success: ${response.isSuccess}');
+      debugPrint('📊 ServiceSubcategoryCrud: Categories API call completed in ${duration.inMilliseconds}ms');
+      debugPrint('📊 ServiceSubcategoryCrud: Categories response success: ${response.isSuccess}');
 
       if (response.isSuccess && response.data != null) {
         final categories = response.data!;
-        debugPrint(
-            '📊 ServiceSubcategoryCrud: Received ${categories.length} categories');
+        debugPrint('📊 ServiceSubcategoryCrud: Received ${categories.length} categories');
 
         setState(() {
           _allCategories = categories;
@@ -235,8 +218,7 @@ class _ServiceSubcategoryCrudWidgetState
         // Log each category for debugging
         for (int i = 0; i < categories.length; i++) {
           final cat = categories[i];
-          debugPrint(
-              '📊 ServiceSubcategoryCrud: Category [$i] ${cat.name} (ID: ${cat.id})');
+          debugPrint('📊 ServiceSubcategoryCrud: Category [$i] ${cat.name} (ID: ${cat.id})');
         }
 
         debugPrint('✅ ServiceSubcategoryCrud: Categories loaded successfully');
@@ -247,10 +229,8 @@ class _ServiceSubcategoryCrudWidgetState
       }
     } catch (e, stackTrace) {
       final duration = DateTime.now().difference(startTime);
-      debugPrint(
-          '❌ ServiceSubcategoryCrud: Exception loading categories (${duration.inMilliseconds}ms) - $e');
-      debugPrint(
-          '❌ ServiceSubcategoryCrud: Categories stack trace: $stackTrace');
+      debugPrint('❌ ServiceSubcategoryCrud: Exception loading categories (${duration.inMilliseconds}ms) - $e');
+      debugPrint('❌ ServiceSubcategoryCrud: Categories stack trace: $stackTrace');
       // Continue with subcategories loading even if categories fail
     }
   }
@@ -267,13 +247,11 @@ class _ServiceSubcategoryCrudWidgetState
 
     try {
       debugPrint('🔄 ServiceSubcategoryCrud: Calling getSubcategories API');
-      debugPrint(
-          '🔄 ServiceSubcategoryCrud: Parent category filter: ${widget.parentCategoryId}');
+      debugPrint('🔄 ServiceSubcategoryCrud: Parent category filter: ${widget.parentCategoryId}');
 
       // Call the service to get subcategories
       final response = await _serviceManagementService.getSubcategories(
-        categoryId:
-            widget.parentCategoryId, // Filter by parent category if provided
+        categoryId: widget.parentCategoryId, // Filter by parent category if provided
         activeOnly: false, // Load both active and inactive subcategories
         useCache: !_isInitialLoad, // Use cache for subsequent loads
       );
@@ -282,17 +260,13 @@ class _ServiceSubcategoryCrudWidgetState
       // _lastLoadTime = DateTime.now();
       // _lastLoadDuration = duration;
 
-      debugPrint(
-          '📊 ServiceSubcategoryCrud: Subcategories API call completed in ${duration.inMilliseconds}ms');
-      debugPrint(
-          '📊 ServiceSubcategoryCrud: Subcategories response success: ${response.isSuccess}');
-      debugPrint(
-          '📊 ServiceSubcategoryCrud: Subcategories response message: ${response.message}');
+      debugPrint('📊 ServiceSubcategoryCrud: Subcategories API call completed in ${duration.inMilliseconds}ms');
+      debugPrint('📊 ServiceSubcategoryCrud: Subcategories response success: ${response.isSuccess}');
+      debugPrint('📊 ServiceSubcategoryCrud: Subcategories response message: ${response.message}');
 
       if (response.isSuccess && response.data != null) {
         final subcategories = response.data!;
-        debugPrint(
-            '📊 ServiceSubcategoryCrud: Received ${subcategories.length} subcategories');
+        debugPrint('📊 ServiceSubcategoryCrud: Received ${subcategories.length} subcategories');
 
         // Calculate statistics
         _totalCount = subcategories.length;
@@ -302,16 +276,14 @@ class _ServiceSubcategoryCrudWidgetState
         // Calculate category distribution
         _categoryDistribution.clear();
         for (final sub in subcategories) {
-          _categoryDistribution[sub.category] =
-              (_categoryDistribution[sub.category] ?? 0) + 1;
+          _categoryDistribution[sub.category] = (_categoryDistribution[sub.category] ?? 0) + 1;
         }
 
         debugPrint('📊 ServiceSubcategoryCrud: Subcategories breakdown:');
         debugPrint('📊 ServiceSubcategoryCrud: - Total: $_totalCount');
         debugPrint('📊 ServiceSubcategoryCrud: - Active: $_activeCount');
         debugPrint('📊 ServiceSubcategoryCrud: - Inactive: $_inactiveCount');
-        debugPrint(
-            '📊 ServiceSubcategoryCrud: - Category distribution: $_categoryDistribution');
+        debugPrint('📊 ServiceSubcategoryCrud: - Category distribution: $_categoryDistribution');
 
         // Log each subcategory for debugging
         for (int i = 0; i < subcategories.length; i++) {
@@ -334,10 +306,8 @@ class _ServiceSubcategoryCrudWidgetState
       } else {
         // Handle API error
         final errorMsg = response.message;
-        debugPrint(
-            '❌ ServiceSubcategoryCrud: Subcategories API error: $errorMsg');
-        debugPrint(
-            '❌ ServiceSubcategoryCrud: Status code: ${response.statusCode}');
+        debugPrint('❌ ServiceSubcategoryCrud: Subcategories API error: $errorMsg');
+        debugPrint('❌ ServiceSubcategoryCrud: Status code: ${response.statusCode}');
         debugPrint('❌ ServiceSubcategoryCrud: Errors: ${response.errors}');
 
         setState(() {
@@ -347,8 +317,7 @@ class _ServiceSubcategoryCrudWidgetState
       }
     } catch (e, stackTrace) {
       final duration = DateTime.now().difference(startTime);
-      debugPrint(
-          '❌ ServiceSubcategoryCrud: Exception loading subcategories (${duration.inMilliseconds}ms) - $e');
+      debugPrint('❌ ServiceSubcategoryCrud: Exception loading subcategories (${duration.inMilliseconds}ms) - $e');
       debugPrint('❌ ServiceSubcategoryCrud: Stack trace: $stackTrace');
 
       setState(() {
@@ -361,30 +330,22 @@ class _ServiceSubcategoryCrudWidgetState
   /// Apply search and filter criteria to the subcategories list
   void _applyFilters() {
     debugPrint('🔍 ServiceSubcategoryCrud: Applying filters');
-    debugPrint(
-        '🔍 ServiceSubcategoryCrud: Search query: "${widget.searchQuery}"');
+    debugPrint('🔍 ServiceSubcategoryCrud: Search query: "${widget.searchQuery}"');
     debugPrint('🔍 ServiceSubcategoryCrud: Filter: "${widget.filter}"');
-    debugPrint(
-        '🔍 ServiceSubcategoryCrud: Parent category filter: "${widget.parentCategoryId}"');
-    debugPrint(
-        '🔍 ServiceSubcategoryCrud: Total subcategories to filter: ${_allSubcategories.length}');
+    debugPrint('🔍 ServiceSubcategoryCrud: Parent category filter: "${widget.parentCategoryId}"');
+    debugPrint('🔍 ServiceSubcategoryCrud: Total subcategories to filter: ${_allSubcategories.length}');
 
     List<ServiceSubcategory> filtered = List.from(_allSubcategories);
 
     // Step 1: Apply parent category filter (if provided)
-    debugPrint(
-        '🔍 ServiceSubcategoryCrud: Step 1 - Applying parent category filter');
-    if (widget.parentCategoryId != null &&
-        widget.parentCategoryId!.isNotEmpty) {
+    debugPrint('🔍 ServiceSubcategoryCrud: Step 1 - Applying parent category filter');
+    if (widget.parentCategoryId != null && widget.parentCategoryId!.isNotEmpty) {
       final beforeCategoryCount = filtered.length;
-      filtered = filtered
-          .where((sub) => sub.category == widget.parentCategoryId)
-          .toList();
+      filtered = filtered.where((sub) => sub.category == widget.parentCategoryId).toList();
       debugPrint(
           '🔍 ServiceSubcategoryCrud: After parent category filter: ${filtered.length} subcategories (was $beforeCategoryCount)');
     } else {
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: No parent category filter applied');
+      debugPrint('🔍 ServiceSubcategoryCrud: No parent category filter applied');
     }
 
     // Step 2: Apply status filter (all, active, inactive)
@@ -400,23 +361,20 @@ class _ServiceSubcategoryCrudWidgetState
       debugPrint(
           '🔍 ServiceSubcategoryCrud: After inactive filter: ${filtered.length} subcategories (was $beforeStatusCount)');
     } else {
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: No status filter applied (showing all)');
+      debugPrint('🔍 ServiceSubcategoryCrud: No status filter applied (showing all)');
     }
 
     // Step 3: Apply search filter (only if search query is not empty)
     debugPrint('🔍 ServiceSubcategoryCrud: Step 3 - Applying search filter');
     if (widget.searchQuery.isNotEmpty) {
       final searchLower = widget.searchQuery.toLowerCase();
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: Search term (lowercase): "$searchLower"');
+      debugPrint('🔍 ServiceSubcategoryCrud: Search term (lowercase): "$searchLower"');
 
       final beforeSearchCount = filtered.length;
       filtered = filtered.where((sub) {
         final nameMatch = sub.name.toLowerCase().contains(searchLower);
         final descMatch = sub.description.toLowerCase().contains(searchLower);
-        final categoryMatch =
-            sub.categoryName.toLowerCase().contains(searchLower);
+        final categoryMatch = sub.categoryName.toLowerCase().contains(searchLower);
         final matches = nameMatch || descMatch || categoryMatch;
 
         if (matches) {
@@ -427,19 +385,16 @@ class _ServiceSubcategoryCrudWidgetState
         return matches;
       }).toList();
 
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: Search filtering: $beforeSearchCount -> ${filtered.length} subcategories');
+      debugPrint('🔍 ServiceSubcategoryCrud: Search filtering: $beforeSearchCount -> ${filtered.length} subcategories');
     } else {
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: Empty search query - showing all subcategories matching other filters');
+      debugPrint('🔍 ServiceSubcategoryCrud: Empty search query - showing all subcategories matching other filters');
     }
 
     // Step 4: Sort by sort_order for consistent display
     debugPrint('🔍 ServiceSubcategoryCrud: Step 4 - Sorting by sort_order');
     filtered.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
-    debugPrint(
-        '🔍 ServiceSubcategoryCrud: Final filtered results: ${filtered.length} subcategories');
+    debugPrint('🔍 ServiceSubcategoryCrud: Final filtered results: ${filtered.length} subcategories');
 
     // Log final results for debugging
     for (int i = 0; i < filtered.length && i < 10; i++) {
@@ -449,8 +404,7 @@ class _ServiceSubcategoryCrudWidgetState
           '🔍 ServiceSubcategoryCrud: Result [$i]: ${sub.name} (${sub.isActive ? "Active" : "Inactive"}) - ${sub.categoryName}');
     }
     if (filtered.length > 10) {
-      debugPrint(
-          '🔍 ServiceSubcategoryCrud: ... and ${filtered.length - 10} more results');
+      debugPrint('🔍 ServiceSubcategoryCrud: ... and ${filtered.length - 10} more results');
     }
 
     setState(() {
@@ -472,205 +426,516 @@ class _ServiceSubcategoryCrudWidgetState
     debugPrint('🎨 ServiceSubcategoryCrud: Building UI');
     debugPrint('🎨 ServiceSubcategoryCrud: Loading state: $_isLoading');
     debugPrint('🎨 ServiceSubcategoryCrud: Error state: $_errorMessage');
-    debugPrint(
-        '🎨 ServiceSubcategoryCrud: Filtered subcategories count: ${_filteredSubcategories.length}');
+    debugPrint('🎨 ServiceSubcategoryCrud: Filtered subcategories count: ${_filteredSubcategories.length}');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // ========== COMPREHENSIVE THEME INTEGRATION ==========
+    final themeManager = ThemeManager.of(context);
+
+    // Comprehensive theme logging for debugging
+    themeManager.logThemeInfo();
+    debugPrint('🎨 ServiceSubcategoryCrud: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Primary: ${themeManager.primaryColor}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Background: ${themeManager.backgroundColor}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Card Background: ${themeManager.cardBackground}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Surface Elevated: ${themeManager.surfaceElevated}');
+    debugPrint('🎨 ServiceSubcategoryCrud: → Input Background: ${themeManager.inputBackground}');
     debugPrint(
-        '🎨 ServiceSubcategoryCrud: Theme mode: ${isDark ? 'dark' : 'light'}');
+        '🎨 ServiceSubcategoryCrud: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: → Stats - Total: $_totalCount, Active: $_activeCount, Inactive: $_inactiveCount');
 
     if (_errorMessage != null) {
-      return _buildErrorState(isDark);
+      return _buildErrorState(themeManager);
     }
 
     if (_isLoading && _isInitialLoad) {
-      return _buildLoadingState(isDark);
+      return _buildLoadingState(themeManager);
     }
 
     if (_filteredSubcategories.isEmpty && !_isLoading) {
-      return _buildEmptyState(isDark);
+      return _buildEmptyState(themeManager);
     }
 
-    return _buildSubcategoryList(isDark);
+    return _buildSubcategoryList(themeManager);
   }
 
-  /// Build error state UI
-  Widget _buildErrorState(bool isDark) {
-    debugPrint('❌ ServiceSubcategoryCrud: Building error state UI');
+  /// Build error state UI with comprehensive ThemeManager integration
+  Widget _buildErrorState(ThemeManager themeManager) {
+    debugPrint('❌ ServiceSubcategoryCrud: Building enhanced error state UI with comprehensive theming');
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(32.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Prbal.exclamationTriangle,
-            size: 64.sp,
-            color: Colors.red.withValues(alpha: 179),
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundSecondary,
+            ],
           ),
-          SizedBox(height: 24.h),
-          Text(
-            'Error Loading Subcategories',
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundTertiary,
+            ],
           ),
-          SizedBox(height: 12.h),
-          Text(
-            _errorMessage ?? 'Unknown error occurred',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: isDark ? Colors.grey[300] : Colors.grey[600],
-            ),
-          ),
-          SizedBox(height: 24.h),
-          ElevatedButton.icon(
-            onPressed: () {
-              debugPrint('🔄 ServiceSubcategoryCrud: Retry button pressed');
-              setState(() {
-                _errorMessage = null;
-              });
-              _initializeServiceAndLoadData();
-            },
-            icon: Icon(Prbal.redo, size: 18.sp),
-            label: Text('Retry'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF8B5CF6),
-              foregroundColor: Colors.white,
-            ),
-          ),
-        ],
+        ),
       ),
-    );
-  }
-
-  /// Build loading state UI
-  Widget _buildLoadingState(bool isDark) {
-    debugPrint('⏳ ServiceSubcategoryCrud: Building loading state UI');
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(32.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(
-            color: Color(0xFF8B5CF6),
-          ),
-          SizedBox(height: 24.h),
-          Text(
-            'Loading Subcategories...',
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'Please wait while we fetch the data',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: isDark ? Colors.grey[300] : Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Build empty state UI
-  Widget _buildEmptyState(bool isDark) {
-    debugPrint('📭 ServiceSubcategoryCrud: Building empty state UI');
-    debugPrint(
-        '📭 ServiceSubcategoryCrud: Search query: "${widget.searchQuery}"');
-    debugPrint('📭 ServiceSubcategoryCrud: Filter: "${widget.filter}"');
-
-    // Determine empty state type
-    final isSearchResult = widget.searchQuery.isNotEmpty;
-    final isFiltered =
-        widget.filter != 'all' || widget.parentCategoryId != null;
-
-    String title;
-    String subtitle;
-    IconData icon;
-
-    if (isSearchResult) {
-      title = 'No Search Results';
-      subtitle = 'No subcategories found for "${widget.searchQuery}"';
-      icon = Prbal.search;
-    } else if (isFiltered) {
-      title = 'No Subcategories';
-      subtitle = 'No subcategories match the current filter';
-      icon = Prbal.filter;
-    } else {
-      title = 'No Subcategories';
-      subtitle = 'Start by creating your first subcategory';
-      icon = Prbal.openstreetmap;
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(32.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+          // Enhanced error icon with gradient container
           Container(
             width: 100.w,
             height: 100.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF8B5CF6).withValues(alpha: 204),
-                  const Color(0xFF7C3AED).withValues(alpha: 153),
-                ],
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  colors: [
+                    themeManager.errorColor,
+                    themeManager.errorLight,
+                  ],
+                ),
+                darkGradient: LinearGradient(
+                  colors: [
+                    themeManager.errorDark,
+                    themeManager.errorColor,
+                  ],
+                ),
               ),
+              boxShadow: [
+                ...themeManager.elevatedShadow,
+                BoxShadow(
+                  color: themeManager.errorColor.withValues(alpha: 77),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
             child: Icon(
-              icon,
+              Prbal.exclamationTriangle,
               size: 48.sp,
-              color: Colors.white,
+              color: themeManager.getContrastingColor(themeManager.errorColor),
             ),
           ),
           SizedBox(height: 32.h),
+
+          // Enhanced title with proper theme colors
           Text(
-            title,
+            'Error Loading Subcategories',
             style: TextStyle(
               fontSize: 24.sp,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+              color: themeManager.textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
           SizedBox(height: 12.h),
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16.sp,
-              color: isDark ? Colors.grey[300] : Colors.grey[600],
+
+          // Enhanced error message with theme-aware styling
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              color: themeManager.conditionalColor(
+                lightColor: themeManager.errorColor.withValues(alpha: 26),
+                darkColor: themeManager.errorDark.withValues(alpha: 51),
+              ),
+              border: Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: themeManager.errorColor.withValues(alpha: 77),
+                  darkColor: themeManager.errorColor.withValues(alpha: 102),
+                ),
+              ),
+            ),
+            child: Text(
+              _errorMessage ?? 'Unknown error occurred',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: themeManager.textSecondary,
+                height: 1.4,
+              ),
             ),
           ),
-          if (!isSearchResult && !isFiltered) ...[
-            SizedBox(height: 32.h),
-            ElevatedButton.icon(
+          SizedBox(height: 32.h),
+
+          // Enhanced retry button with comprehensive theming
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              gradient: themeManager.primaryGradient,
+              boxShadow: [
+                ...themeManager.primaryShadow,
+                BoxShadow(
+                  color: themeManager.shadowMedium,
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
               onPressed: () {
-                debugPrint(
-                    '➕ ServiceSubcategoryCrud: Create subcategory button pressed');
-                _showCreateSubcategoryDialog();
+                debugPrint('🔄 ServiceSubcategoryCrud: Retry button pressed');
+                setState(() {
+                  _errorMessage = null;
+                });
+                _initializeServiceAndLoadData();
               },
-              icon: Icon(Prbal.plus, size: 18.sp),
-              label: Text('Create Subcategory'),
+              icon: Icon(Prbal.redo, size: 18.sp),
+              label: Text(
+                'Retry',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.sp,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8B5CF6),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                backgroundColor: Colors.transparent,
+                foregroundColor: themeManager.getContrastingColor(themeManager.primaryColor),
+                shadowColor: Colors.transparent,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build loading state UI with comprehensive ThemeManager integration
+  Widget _buildLoadingState(ThemeManager themeManager) {
+    debugPrint('⏳ ServiceSubcategoryCrud: Building enhanced loading state UI with comprehensive theming');
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(32.w),
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundSecondary,
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundTertiary,
+            ],
+          ),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Enhanced loading indicator with gradient container
+          Container(
+            width: 80.w,
+            height: 80.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  colors: [
+                    themeManager.primaryColor.withValues(alpha: 51),
+                    themeManager.primaryLight.withValues(alpha: 26),
+                  ],
+                ),
+                darkGradient: LinearGradient(
+                  colors: [
+                    themeManager.primaryDark.withValues(alpha: 77),
+                    themeManager.primaryColor.withValues(alpha: 51),
+                  ],
+                ),
+              ),
+              boxShadow: [
+                ...themeManager.subtleShadow,
+                BoxShadow(
+                  color: themeManager.primaryColor.withValues(alpha: 51),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: themeManager.primaryColor,
+                strokeWidth: 3,
+              ),
+            ),
+          ),
+          SizedBox(height: 32.h),
+
+          // Enhanced title with proper theme colors
+          Text(
+            'Loading Subcategories...',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: themeManager.textPrimary,
+              letterSpacing: -0.3,
+            ),
+          ),
+          SizedBox(height: 12.h),
+
+          // Enhanced description with theme-aware styling
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: themeManager.conditionalColor(
+                lightColor: themeManager.infoColor.withValues(alpha: 26),
+                darkColor: themeManager.infoDark.withValues(alpha: 51),
+              ),
+              border: Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: themeManager.infoColor.withValues(alpha: 77),
+                  darkColor: themeManager.infoColor.withValues(alpha: 102),
+                ),
+              ),
+            ),
+            child: Text(
+              'Please wait while we fetch the data',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: themeManager.textSecondary,
+                height: 1.3,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+
+          // Loading progress dots with theme colors
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(3, (index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                width: 8.w,
+                height: 8.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: themeManager.primaryColor.withValues(
+                    alpha: index == 0
+                        ? 204
+                        : index == 1
+                            ? 153
+                            : 102,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build empty state UI with comprehensive ThemeManager integration
+  Widget _buildEmptyState(ThemeManager themeManager) {
+    debugPrint('📭 ServiceSubcategoryCrud: Building enhanced empty state UI with comprehensive theming');
+    debugPrint('📭 ServiceSubcategoryCrud: Search query: "${widget.searchQuery}"');
+    debugPrint('📭 ServiceSubcategoryCrud: Filter: "${widget.filter}"');
+
+    // Determine empty state type
+    final isSearchResult = widget.searchQuery.isNotEmpty;
+    final isFiltered = widget.filter != 'all' || widget.parentCategoryId != null;
+
+    String title;
+    String subtitle;
+    IconData icon;
+    Color primaryColor;
+    Color lightColor;
+    Color darkColor;
+
+    if (isSearchResult) {
+      title = 'No Search Results';
+      subtitle = 'No subcategories found for "${widget.searchQuery}"';
+      icon = Prbal.search;
+      primaryColor = themeManager.infoColor;
+      lightColor = themeManager.infoLight;
+      darkColor = themeManager.infoDark;
+    } else if (isFiltered) {
+      title = 'No Subcategories';
+      subtitle = 'No subcategories match the current filter';
+      icon = Prbal.filter;
+      primaryColor = themeManager.warningColor;
+      lightColor = themeManager.warningLight;
+      darkColor = themeManager.warningDark;
+    } else {
+      title = 'No Subcategories';
+      subtitle = 'Start by creating your first subcategory';
+      icon = Prbal.openstreetmap;
+      primaryColor = themeManager.primaryColor;
+      lightColor = themeManager.primaryLight;
+      darkColor = themeManager.primaryDark;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(32.w),
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundSecondary,
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundTertiary,
+            ],
+          ),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Enhanced icon container with comprehensive theming
+          Container(
+            width: 120.w,
+            height: 120.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    primaryColor,
+                    lightColor,
+                    primaryColor.withValues(alpha: 179),
+                  ],
+                ),
+                darkGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    darkColor,
+                    primaryColor,
+                    lightColor.withValues(alpha: 179),
+                  ],
+                ),
+              ),
+              boxShadow: [
+                ...themeManager.elevatedShadow,
+                BoxShadow(
+                  color: primaryColor.withValues(alpha: 77),
+                  blurRadius: 25,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              size: 56.sp,
+              color: themeManager.getContrastingColor(primaryColor),
+            ),
+          ),
+          SizedBox(height: 40.h),
+
+          // Enhanced title with proper theme colors
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.bold,
+              color: themeManager.textPrimary,
+              letterSpacing: -0.5,
+            ),
+          ),
+          SizedBox(height: 16.h),
+
+          // Enhanced subtitle with theme-aware styling
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              color: themeManager.conditionalColor(
+                lightColor: primaryColor.withValues(alpha: 26),
+                darkColor: darkColor.withValues(alpha: 51),
+              ),
+              border: Border.all(
+                color: themeManager.conditionalColor(
+                  lightColor: primaryColor.withValues(alpha: 77),
+                  darkColor: primaryColor.withValues(alpha: 102),
+                ),
+              ),
+            ),
+            child: Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: themeManager.textSecondary,
+                height: 1.4,
+              ),
+            ),
+          ),
+
+          if (!isSearchResult && !isFiltered) ...[
+            SizedBox(height: 40.h),
+
+            // Enhanced create button with comprehensive theming
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.r),
+                gradient: themeManager.primaryGradient,
+                boxShadow: [
+                  ...themeManager.primaryShadow,
+                  BoxShadow(
+                    color: themeManager.shadowMedium,
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  debugPrint('➕ ServiceSubcategoryCrud: Create subcategory button pressed');
+                  _showCreateSubcategoryDialog();
+                },
+                icon: Icon(Prbal.plus, size: 20.sp),
+                label: Text(
+                  'Create Subcategory',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: themeManager.getContrastingColor(themeManager.primaryColor),
+                  shadowColor: Colors.transparent,
+                  padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                ),
               ),
             ),
           ],
@@ -679,73 +944,145 @@ class _ServiceSubcategoryCrudWidgetState
     );
   }
 
-  /// Build main subcategory list UI
-  Widget _buildSubcategoryList(bool isDark) {
-    debugPrint('📋 ServiceSubcategoryCrud: Building subcategory list UI');
-    debugPrint(
-        '📋 ServiceSubcategoryCrud: Displaying ${_filteredSubcategories.length} subcategories');
+  /// Build main subcategory list UI with comprehensive ThemeManager integration
+  Widget _buildSubcategoryList(ThemeManager themeManager) {
+    debugPrint('📋 ServiceSubcategoryCrud: Building enhanced subcategory list UI with comprehensive theming');
+    debugPrint('📋 ServiceSubcategoryCrud: Displaying ${_filteredSubcategories.length} subcategories');
 
-    return Column(
-      children: [
-        // Statistics header
-        _buildStatisticsHeader(isDark),
-
-        // Subcategory list
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: refreshData,
-            color: const Color(0xFF8B5CF6),
-            child: ListView.separated(
-              padding: EdgeInsets.all(16.w),
-              itemCount: _filteredSubcategories.length,
-              separatorBuilder: (context, index) => SizedBox(height: 12.h),
-              itemBuilder: (context, index) {
-                final subcategory = _filteredSubcategories[index];
-                return _buildSubcategoryCard(subcategory, isDark, index);
-              },
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundSecondary,
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              themeManager.backgroundColor,
+              themeManager.backgroundTertiary,
+            ],
           ),
         ),
-      ],
+      ),
+      child: Column(
+        children: [
+          // Enhanced statistics header
+          _buildStatisticsHeader(themeManager),
+
+          // Enhanced subcategory list with theme-aware styling
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refreshData,
+              color: themeManager.primaryColor,
+              backgroundColor: themeManager.surfaceColor,
+              child: ListView.separated(
+                padding: EdgeInsets.all(16.w),
+                itemCount: _filteredSubcategories.length,
+                separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                itemBuilder: (context, index) {
+                  final subcategory = _filteredSubcategories[index];
+                  return _buildSubcategoryCard(subcategory, themeManager, index);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  /// Build statistics header
-  Widget _buildStatisticsHeader(bool isDark) {
-    debugPrint('📊 ServiceSubcategoryCrud: Building statistics header');
+  /// Build statistics header with comprehensive ThemeManager integration
+  Widget _buildStatisticsHeader(ThemeManager themeManager) {
+    debugPrint('📊 ServiceSubcategoryCrud: Building enhanced statistics header with comprehensive theming');
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  const Color(0xFF1E293B).withValues(alpha: 204),
-                  const Color(0xFF334155).withValues(alpha: 153),
-                ]
-              : [
-                  const Color(0xFFF8FAFC).withValues(alpha: 204),
-                  const Color(0xFFE2E8F0).withValues(alpha: 153),
-                ],
+        borderRadius: BorderRadius.circular(16.r),
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.surfaceElevated,
+              themeManager.backgroundSecondary,
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              themeManager.cardBackground,
+              themeManager.backgroundTertiary,
+              themeManager.surfaceElevated,
+            ],
+            stops: const [0.0, 0.6, 1.0],
+          ),
         ),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 26)
-              : Colors.grey.withValues(alpha: 51),
+          color: themeManager.conditionalColor(
+            lightColor: themeManager.borderColor.withValues(alpha: 51),
+            darkColor: themeManager.borderFocus.withValues(alpha: 77),
+          ),
+          width: 1.5,
         ),
+        boxShadow: [
+          ...themeManager.elevatedShadow,
+          BoxShadow(
+            color: themeManager.shadowMedium,
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(
-            Prbal.openstreetmap,
-            color: const Color(0xFF8B5CF6),
-            size: 24.sp,
+          // Enhanced icon with gradient container
+          Container(
+            width: 48.w,
+            height: 48.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              gradient: themeManager.conditionalGradient(
+                lightGradient: LinearGradient(
+                  colors: [
+                    themeManager.primaryColor,
+                    themeManager.primaryLight,
+                  ],
+                ),
+                darkGradient: LinearGradient(
+                  colors: [
+                    themeManager.primaryDark,
+                    themeManager.primaryColor,
+                  ],
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.primaryColor.withValues(alpha: 77),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(
+              Prbal.openstreetmap,
+              color: themeManager.getContrastingColor(themeManager.primaryColor),
+              size: 24.sp,
+            ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 16.w),
+
+          // Enhanced text content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -753,54 +1090,79 @@ class _ServiceSubcategoryCrudWidgetState
                 Text(
                   'Subcategories Overview',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: themeManager.textPrimary,
+                    letterSpacing: -0.3,
                   ),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 6.h),
                 Text(
                   'Showing ${_filteredSubcategories.length} of $_totalCount subcategories',
                   style: TextStyle(
-                    fontSize: 12.sp,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                    fontSize: 13.sp,
+                    color: themeManager.textSecondary,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-          _buildStatCard('Active', _activeCount, Colors.green, isDark),
-          SizedBox(width: 8.w),
-          _buildStatCard('Inactive', _inactiveCount, Colors.orange, isDark),
+
+          // Enhanced stat cards
+          _buildStatCard('Active', _activeCount, themeManager.successColor, themeManager),
+          SizedBox(width: 12.w),
+          _buildStatCard('Inactive', _inactiveCount, themeManager.warningColor, themeManager),
         ],
       ),
     );
   }
 
-  /// Build individual stat card
-  Widget _buildStatCard(String label, int count, Color color, bool isDark) {
+  /// Build individual stat card with comprehensive ThemeManager integration
+  Widget _buildStatCard(String label, int count, Color color, ThemeManager themeManager) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-        color: color.withValues(alpha: 26),
-        border: Border.all(color: color.withValues(alpha: 77)),
+        borderRadius: BorderRadius.circular(12.r),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 26),
+            color.withValues(alpha: 13),
+          ],
+        ),
+        border: Border.all(
+          color: color.withValues(alpha: 102),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 26),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             count.toString(),
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
               color: color,
+              letterSpacing: -0.5,
             ),
           ),
+          SizedBox(height: 2.h),
           Text(
             label,
             style: TextStyle(
               fontSize: 10.sp,
-              color: isDark ? Colors.grey[300] : Colors.grey[600],
+              color: themeManager.textTertiary,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -808,11 +1170,9 @@ class _ServiceSubcategoryCrudWidgetState
     );
   }
 
-  /// Build modern subcategory card with glassmorphism design
-  Widget _buildSubcategoryCard(
-      ServiceSubcategory subcategory, bool isDark, int index) {
-    debugPrint(
-        '📋 ServiceSubcategoryCrud: Building subcategory card for: ${subcategory.name}');
+  /// Build modern subcategory card with comprehensive ThemeManager integration
+  Widget _buildSubcategoryCard(ServiceSubcategory subcategory, ThemeManager themeManager, int index) {
+    debugPrint('📋 ServiceSubcategoryCrud: Building subcategory card for: ${subcategory.name}');
 
     final isSelected = widget.selectedIds.contains(subcategory.id);
     final categoryInfo = _allCategories.firstWhere(
@@ -832,32 +1192,39 @@ class _ServiceSubcategoryCrudWidgetState
       margin: EdgeInsets.only(bottom: 4.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  const Color(0xFF1E293B).withValues(alpha: 204),
-                  const Color(0xFF334155).withValues(alpha: 153),
-                ]
-              : [
-                  Colors.white.withValues(alpha: 230),
-                  const Color(0xFFF8FAFC).withValues(alpha: 179),
-                ],
+        gradient: themeManager.conditionalGradient(
+          lightGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withValues(alpha: 230),
+              const Color(0xFFF8FAFC).withValues(alpha: 179),
+            ],
+          ),
+          darkGradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF1E293B).withValues(alpha: 204),
+              const Color(0xFF334155).withValues(alpha: 153),
+            ],
+          ),
         ),
         border: Border.all(
           color: isSelected
-              ? const Color(0xFF8B5CF6)
-              : isDark
-                  ? Colors.white.withValues(alpha: 26)
-                  : Colors.grey.withValues(alpha: 51),
+              ? themeManager.primaryColor
+              : themeManager.conditionalColor(
+                  lightColor: Colors.grey.withValues(alpha: 51),
+                  darkColor: Colors.white.withValues(alpha: 26),
+                ),
           width: isSelected ? 2 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 77)
-                : Colors.grey.withValues(alpha: 26),
+            color: themeManager.conditionalColor(
+              lightColor: Colors.grey.withValues(alpha: 26),
+              darkColor: Colors.black.withValues(alpha: 77),
+            ),
             blurRadius: isSelected ? 12 : 8,
             offset: Offset(0, isSelected ? 6 : 4),
           ),
@@ -874,8 +1241,7 @@ class _ServiceSubcategoryCrudWidgetState
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
           onTap: () {
-            debugPrint(
-                '📋 ServiceSubcategoryCrud: Subcategory card tapped: ${subcategory.name}');
+            debugPrint('📋 ServiceSubcategoryCrud: Subcategory card tapped: ${subcategory.name}');
             widget.onSelectionChanged(subcategory.id);
           },
           child: Padding(
@@ -894,15 +1260,14 @@ class _ServiceSubcategoryCrudWidgetState
                         borderRadius: BorderRadius.circular(6.r),
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF8B5CF6)
-                              : isDark
-                                  ? Colors.grey[600]!
-                                  : Colors.grey[400]!,
+                              ? themeManager.primaryColor
+                              : themeManager.conditionalColor(
+                                  lightColor: Colors.grey[400]!,
+                                  darkColor: Colors.grey[600]!,
+                                ),
                           width: 2,
                         ),
-                        color: isSelected
-                            ? const Color(0xFF8B5CF6)
-                            : Colors.transparent,
+                        color: isSelected ? themeManager.primaryColor : Colors.transparent,
                       ),
                       child: isSelected
                           ? Icon(
@@ -932,9 +1297,7 @@ class _ServiceSubcategoryCrudWidgetState
                       ),
                       child: Icon(
                         subcategory.icon != null
-                            ? IconData(
-                                int.tryParse(subcategory.icon!) ??
-                                    Prbal.openstreetmap.codePoint,
+                            ? IconData(int.tryParse(subcategory.icon!) ?? Prbal.openstreetmap.codePoint,
                                 fontFamily: 'LineIcons')
                             : Prbal.openstreetmap,
                         color: Colors.white,
@@ -954,7 +1317,7 @@ class _ServiceSubcategoryCrudWidgetState
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : Colors.black87,
+                              color: themeManager.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -988,8 +1351,7 @@ class _ServiceSubcategoryCrudWidgetState
 
                     // Status badge
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.r),
                         color: subcategory.isActive
@@ -1006,9 +1368,7 @@ class _ServiceSubcategoryCrudWidgetState
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
-                          color: subcategory.isActive
-                              ? Colors.green
-                              : Colors.orange,
+                          color: subcategory.isActive ? Colors.green : Colors.orange,
                         ),
                       ),
                     ),
@@ -1023,7 +1383,7 @@ class _ServiceSubcategoryCrudWidgetState
                     subcategory.description,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: isDark ? Colors.grey[300] : Colors.grey[700],
+                      color: themeManager.textSecondary,
                       height: 1.4,
                     ),
                     maxLines: 2,
@@ -1037,13 +1397,13 @@ class _ServiceSubcategoryCrudWidgetState
                   children: [
                     // Sort order
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6.r),
-                        color: isDark
-                            ? Colors.grey[800]!.withValues(alpha: 128)
-                            : Colors.grey[200]!.withValues(alpha: 128),
+                        color: themeManager.conditionalColor(
+                          lightColor: Colors.grey[200]!.withValues(alpha: 128),
+                          darkColor: Colors.grey[800]!.withValues(alpha: 128),
+                        ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -1051,15 +1411,20 @@ class _ServiceSubcategoryCrudWidgetState
                           Icon(
                             Prbal.sortNumerically,
                             size: 10.sp,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: themeManager.conditionalColor(
+                              lightColor: Colors.grey[600]!,
+                              darkColor: Colors.grey[400]!,
+                            ),
                           ),
                           SizedBox(width: 2.w),
                           Text(
                             '#${subcategory.sortOrder}',
                             style: TextStyle(
                               fontSize: 10.sp,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                              color: themeManager.conditionalColor(
+                                lightColor: Colors.grey[600]!,
+                                darkColor: Colors.grey[400]!,
+                              ),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -1074,7 +1439,7 @@ class _ServiceSubcategoryCrudWidgetState
                       'Created ${_formatDate(subcategory.createdAt)}',
                       style: TextStyle(
                         fontSize: 10.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: themeManager.textTertiary,
                       ),
                     ),
 
@@ -1090,11 +1455,9 @@ class _ServiceSubcategoryCrudWidgetState
                           height: 32.w,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8.r),
-                            color:
-                                const Color(0xFF8B5CF6).withValues(alpha: 26),
+                            color: const Color(0xFF8B5CF6).withValues(alpha: 26),
                             border: Border.all(
-                              color:
-                                  const Color(0xFF8B5CF6).withValues(alpha: 77),
+                              color: const Color(0xFF8B5CF6).withValues(alpha: 77),
                             ),
                           ),
                           child: Material(
@@ -1102,8 +1465,7 @@ class _ServiceSubcategoryCrudWidgetState
                             child: InkWell(
                               borderRadius: BorderRadius.circular(8.r),
                               onTap: () {
-                                debugPrint(
-                                    '✏️ ServiceSubcategoryCrud: Edit subcategory: ${subcategory.name}');
+                                debugPrint('✏️ ServiceSubcategoryCrud: Edit subcategory: ${subcategory.name}');
                                 _showEditSubcategoryDialog(subcategory);
                               },
                               child: Icon(
@@ -1137,16 +1499,13 @@ class _ServiceSubcategoryCrudWidgetState
                             child: InkWell(
                               borderRadius: BorderRadius.circular(8.r),
                               onTap: () {
-                                debugPrint(
-                                    '🔄 ServiceSubcategoryCrud: Toggle status for: ${subcategory.name}');
+                                debugPrint('🔄 ServiceSubcategoryCrud: Toggle status for: ${subcategory.name}');
                                 _toggleSubcategoryStatus(subcategory);
                               },
                               child: Icon(
                                 subcategory.isActive ? Prbal.pause : Prbal.play,
                                 size: 16.sp,
-                                color: subcategory.isActive
-                                    ? Colors.orange
-                                    : Colors.green,
+                                color: subcategory.isActive ? Colors.orange : Colors.green,
                               ),
                             ),
                           ),
@@ -1170,8 +1529,7 @@ class _ServiceSubcategoryCrudWidgetState
                             child: InkWell(
                               borderRadius: BorderRadius.circular(8.r),
                               onTap: () {
-                                debugPrint(
-                                    '🗑️ ServiceSubcategoryCrud: Delete subcategory: ${subcategory.name}');
+                                debugPrint('🗑️ ServiceSubcategoryCrud: Delete subcategory: ${subcategory.name}');
                                 _showDeleteConfirmationDialog(subcategory);
                               },
                               child: Icon(
@@ -1227,10 +1585,13 @@ class _ServiceSubcategoryCrudWidgetState
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final themeManager = ThemeManager.of(context);
 
           return AlertDialog(
-            backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+            backgroundColor: themeManager.conditionalColor(
+              lightColor: Colors.white,
+              darkColor: const Color(0xFF1E293B),
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.r),
             ),
@@ -1253,7 +1614,7 @@ class _ServiceSubcategoryCrudWidgetState
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: themeManager.textPrimary,
                   ),
                 ),
               ],
@@ -1270,8 +1631,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon:
-                          Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
                     ),
                     value: selectedCategoryId,
                     items: _allCategories.map((category) {
@@ -1285,8 +1645,7 @@ class _ServiceSubcategoryCrudWidgetState
                         selectedCategoryId = value;
                       });
                     },
-                    validator: (value) =>
-                        value == null ? 'Please select a category' : null,
+                    validator: (value) => value == null ? 'Please select a category' : null,
                   ),
 
                   SizedBox(height: 16.h),
@@ -1299,11 +1658,9 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon: Icon(Prbal.openstreetmap,
-                          color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.openstreetmap, color: const Color(0xFF8B5CF6)),
                     ),
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Please enter a name' : null,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please enter a name' : null,
                   ),
 
                   SizedBox(height: 16.h),
@@ -1317,12 +1674,9 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon:
-                          Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
                     ),
-                    validator: (value) => value?.isEmpty ?? true
-                        ? 'Please enter a description'
-                        : null,
+                    validator: (value) => value?.isEmpty ?? true ? 'Please enter a description' : null,
                   ),
 
                   SizedBox(height: 16.h),
@@ -1356,19 +1710,30 @@ class _ServiceSubcategoryCrudWidgetState
                   style: TextStyle(color: Colors.grey[600]),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () => _createSubcategory(
-                  context,
-                  selectedCategoryId,
-                  nameController.text,
-                  descriptionController.text,
-                  isActive,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  gradient: themeManager.primaryGradient,
+                  boxShadow: themeManager.primaryShadow,
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B5CF6),
-                  foregroundColor: Colors.white,
+                child: ElevatedButton(
+                  onPressed: () => _createSubcategory(
+                    context,
+                    selectedCategoryId,
+                    nameController.text,
+                    descriptionController.text,
+                    isActive,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: themeManager.textInverted,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                  ),
+                  child: const Text('Create'),
                 ),
-                child: const Text('Create'),
               ),
             ],
           );
@@ -1379,12 +1744,10 @@ class _ServiceSubcategoryCrudWidgetState
 
   /// Show edit subcategory dialog
   void _showEditSubcategoryDialog(ServiceSubcategory subcategory) {
-    debugPrint(
-        '✏️ ServiceSubcategoryCrud: Showing edit dialog for: ${subcategory.name}');
+    debugPrint('✏️ ServiceSubcategoryCrud: Showing edit dialog for: ${subcategory.name}');
 
     final nameController = TextEditingController(text: subcategory.name);
-    final descriptionController =
-        TextEditingController(text: subcategory.description);
+    final descriptionController = TextEditingController(text: subcategory.description);
     String selectedCategoryId = subcategory.category;
     bool isActive = subcategory.isActive;
 
@@ -1392,10 +1755,13 @@ class _ServiceSubcategoryCrudWidgetState
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final themeManager = ThemeManager.of(context);
 
           return AlertDialog(
-            backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+            backgroundColor: themeManager.conditionalColor(
+              lightColor: Colors.white,
+              darkColor: const Color(0xFF1E293B),
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.r),
             ),
@@ -1419,7 +1785,7 @@ class _ServiceSubcategoryCrudWidgetState
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : Colors.black87,
+                      color: themeManager.textPrimary,
                     ),
                   ),
                 ),
@@ -1437,8 +1803,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon:
-                          Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.tag, color: const Color(0xFF8B5CF6)),
                     ),
                     value: selectedCategoryId,
                     items: _allCategories.map((category) {
@@ -1464,8 +1829,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon: Icon(Prbal.openstreetmap,
-                          color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.openstreetmap, color: const Color(0xFF8B5CF6)),
                     ),
                   ),
 
@@ -1480,8 +1844,7 @@ class _ServiceSubcategoryCrudWidgetState
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      prefixIcon:
-                          Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
+                      prefixIcon: Icon(Prbal.file, color: const Color(0xFF8B5CF6)),
                     ),
                   ),
 
@@ -1540,15 +1903,17 @@ class _ServiceSubcategoryCrudWidgetState
 
   /// Show delete confirmation dialog
   void _showDeleteConfirmationDialog(ServiceSubcategory subcategory) {
-    debugPrint(
-        '🗑️ ServiceSubcategoryCrud: Showing delete confirmation for: ${subcategory.name}');
+    debugPrint('🗑️ ServiceSubcategoryCrud: Showing delete confirmation for: ${subcategory.name}');
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeManager = ThemeManager.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: themeManager.conditionalColor(
+          lightColor: Colors.white,
+          darkColor: const Color(0xFF1E293B),
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -1559,10 +1924,25 @@ class _ServiceSubcategoryCrudWidgetState
               height: 40.w,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12.r),
-                color: Colors.red.withValues(alpha: 26),
-                border: Border.all(color: Colors.red.withValues(alpha: 77)),
+                gradient: LinearGradient(
+                  colors: [
+                    themeManager.errorColor.withValues(alpha: 26),
+                    themeManager.errorLight.withValues(alpha: 13),
+                  ],
+                ),
+                border: Border.all(
+                  color: themeManager.errorColor.withValues(alpha: 102),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: themeManager.errorColor.withValues(alpha: 26),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Icon(Prbal.trash, color: Colors.red, size: 20.sp),
+              child: Icon(Prbal.trash, color: themeManager.errorColor, size: 20.sp),
             ),
             SizedBox(width: 12.w),
             Expanded(
@@ -1571,7 +1951,7 @@ class _ServiceSubcategoryCrudWidgetState
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
+                  color: themeManager.textPrimary,
                 ),
               ),
             ),
@@ -1585,16 +1965,31 @@ class _ServiceSubcategoryCrudWidgetState
               'Are you sure you want to delete this subcategory?',
               style: TextStyle(
                 fontSize: 16.sp,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
+                color: themeManager.textSecondary,
               ),
             ),
             SizedBox(height: 12.h),
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Colors.red.withValues(alpha: 26),
-                border: Border.all(color: Colors.red.withValues(alpha: 77)),
+                borderRadius: BorderRadius.circular(12.r),
+                gradient: LinearGradient(
+                  colors: [
+                    themeManager.errorColor.withValues(alpha: 26),
+                    themeManager.errorLight.withValues(alpha: 13),
+                  ],
+                ),
+                border: Border.all(
+                  color: themeManager.errorColor.withValues(alpha: 102),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: themeManager.errorColor.withValues(alpha: 26),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1604,14 +1999,14 @@ class _ServiceSubcategoryCrudWidgetState
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: themeManager.errorColor,
                     ),
                   ),
                   Text(
                     'Category: ${subcategory.categoryName}',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: themeManager.textTertiary,
                     ),
                   ),
                 ],
@@ -1622,7 +2017,7 @@ class _ServiceSubcategoryCrudWidgetState
               'This action cannot be undone.',
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.red,
+                color: themeManager.errorColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1636,13 +2031,30 @@ class _ServiceSubcategoryCrudWidgetState
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          ElevatedButton(
-            onPressed: () => _deleteSubcategory(context, subcategory),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              gradient: themeManager.errorGradient,
+              boxShadow: [
+                BoxShadow(
+                  color: themeManager.errorColor.withValues(alpha: 77),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Text('Delete'),
+            child: ElevatedButton(
+              onPressed: () => _deleteSubcategory(context, subcategory),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: themeManager.textInverted,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+              child: const Text('Delete'),
+            ),
           ),
         ],
       ),
@@ -1672,16 +2084,14 @@ class _ServiceSubcategoryCrudWidgetState
         isActive: isActive,
       );
 
-      final response =
-          await _serviceManagementService.createSubcategory(request);
+      final response = await _serviceManagementService.createSubcategory(request);
 
       if (response.isSuccess) {
         Navigator.of(context).pop();
         _showSnackBar('Subcategory created successfully');
         await _loadSubcategories();
       } else {
-        _showSnackBar('Failed to create subcategory: ${response.message}',
-            isError: true);
+        _showSnackBar('Failed to create subcategory: ${response.message}', isError: true);
       }
     } catch (e) {
       debugPrint('❌ ServiceSubcategoryCrud: Error creating subcategory - $e');
@@ -1723,8 +2133,7 @@ class _ServiceSubcategoryCrudWidgetState
         _showSnackBar('Subcategory updated successfully');
         await _loadSubcategories();
       } else {
-        _showSnackBar('Failed to update subcategory: ${response.message}',
-            isError: true);
+        _showSnackBar('Failed to update subcategory: ${response.message}', isError: true);
       }
     } catch (e) {
       debugPrint('❌ ServiceSubcategoryCrud: Error updating subcategory - $e');
@@ -1733,22 +2142,18 @@ class _ServiceSubcategoryCrudWidgetState
   }
 
   /// Delete subcategory
-  Future<void> _deleteSubcategory(
-      BuildContext context, ServiceSubcategory subcategory) async {
-    debugPrint(
-        '🗑️ ServiceSubcategoryCrud: Deleting subcategory: ${subcategory.name}');
+  Future<void> _deleteSubcategory(BuildContext context, ServiceSubcategory subcategory) async {
+    debugPrint('🗑️ ServiceSubcategoryCrud: Deleting subcategory: ${subcategory.name}');
 
     try {
-      final response =
-          await _serviceManagementService.deleteSubcategory(subcategory.id);
+      final response = await _serviceManagementService.deleteSubcategory(subcategory.id);
 
       if (response.isSuccess) {
         Navigator.of(context).pop();
         _showSnackBar('Subcategory deleted successfully');
         await _loadSubcategories();
       } else {
-        _showSnackBar('Failed to delete subcategory: ${response.message}',
-            isError: true);
+        _showSnackBar('Failed to delete subcategory: ${response.message}', isError: true);
       }
     } catch (e) {
       debugPrint('❌ ServiceSubcategoryCrud: Error deleting subcategory - $e');
@@ -1758,8 +2163,7 @@ class _ServiceSubcategoryCrudWidgetState
 
   /// Toggle subcategory status
   Future<void> _toggleSubcategoryStatus(ServiceSubcategory subcategory) async {
-    debugPrint(
-        '🔄 ServiceSubcategoryCrud: Toggling status for: ${subcategory.name}');
+    debugPrint('🔄 ServiceSubcategoryCrud: Toggling status for: ${subcategory.name}');
 
     try {
       final response = await _serviceManagementService.patchSubcategory(
@@ -1768,12 +2172,10 @@ class _ServiceSubcategoryCrudWidgetState
       );
 
       if (response.isSuccess) {
-        _showSnackBar(
-            'Subcategory ${!subcategory.isActive ? 'activated' : 'deactivated'} successfully');
+        _showSnackBar('Subcategory ${!subcategory.isActive ? 'activated' : 'deactivated'} successfully');
         await _loadSubcategories();
       } else {
-        _showSnackBar('Failed to update status: ${response.message}',
-            isError: true);
+        _showSnackBar('Failed to update status: ${response.message}', isError: true);
       }
     } catch (e) {
       debugPrint('❌ ServiceSubcategoryCrud: Error toggling status - $e');
@@ -1781,16 +2183,26 @@ class _ServiceSubcategoryCrudWidgetState
     }
   }
 
-  /// Show snackbar message
+  /// Show snackbar message with comprehensive ThemeManager integration
   void _showSnackBar(String message, {bool isError = false}) {
+    final themeManager = ThemeManager.of(context);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : const Color(0xFF8B5CF6),
+        content: Text(
+          message,
+          style: TextStyle(
+            color: themeManager.textInverted,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: isError ? themeManager.errorColor : themeManager.primaryColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(12.r),
         ),
+        elevation: 8,
+        margin: EdgeInsets.all(16.w),
       ),
     );
   }

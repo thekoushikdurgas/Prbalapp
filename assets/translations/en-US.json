@@ -1,6 +1,8 @@
 {
   "app": {
-    "name": "Prbal"
+    "name": "Prbal",
+    "version": "1.0.0",
+    "description": "Connect with service providers in your area"
   },
   "intro": {
     "introTitleFirst": "Welcome to Prbal",
@@ -14,18 +16,148 @@
     "skip": "Skip",
     "done": "Done",
     "cancel": "Cancel",
-    "ok": "OK"
+    "ok": "OK",
+    "save": "Save",
+    "apply": "Apply",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "close": "Close",
+    "continue": "Continue"
   },
   "theme": {
     "theme": "Theme",
     "default": "System Default",
     "light": "Light",
     "dark": "Dark",
-    "themeChoose": "Choose Theme"
+    "themeChoose": "Choose Theme",
+    "themeDescription": "Select your preferred app appearance",
+    "systemTheme": "Follow system settings",
+    "lightTheme": "Light mode always",
+    "darkTheme": "Dark mode always"
   },
   "localization": {
     "appLang": "App Language",
-    "langChoose": "Choose Language"
+    "langChoose": "Choose Language",
+    "languageSettings": "Language Settings",
+    "currentLanguage": "Current Language",
+    "availableLanguages": "Available Languages",
+    "languageChanged": "Language changed successfully",
+    "languageError": "Failed to change language",
+    "selectLanguage": "Select your preferred language"
+  },
+  "loading": {
+    "loading": "Loading...",
+    "pleaseWait": "Please wait",
+    "processing": "Processing",
+    "savingData": "Saving data",
+    "loadingProfile": "Loading profile",
+    "updatingSettings": "Updating settings",
+    "preparingApp": "Preparing app",
+    "processingImage": "Processing image",
+    "uploadingImage": "Uploading image",
+    "refreshingData": "Refreshing data"
+  },
+  "navigation": {
+    "home": "Home",
+    "explore": "Explore",
+    "bookings": "Bookings",
+    "messages": "Messages",
+    "profile": "Profile",
+    "settings": "Settings",
+    "dashboard": "Dashboard",
+    "search": "Search",
+    "notifications": "Notifications",
+    "help": "Help",
+    "about": "About"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account Settings",
+    "profile": "Profile Information",
+    "security": "Security",
+    "privacy": "Privacy",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "language": "Language",
+    "support": "Support",
+    "legal": "Legal",
+    "logout": "Logout",
+    "version": "App Version",
+    "cache": "Cache",
+    "storage": "Storage",
+    "data": "Data Management"
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "bio": "Bio",
+    "location": "Location",
+    "profilePicture": "Profile Picture",
+    "editProfile": "Edit Profile",
+    "viewProfile": "View Profile",
+    "updateProfile": "Update Profile",
+    "profileUpdated": "Profile updated successfully",
+    "profileError": "Failed to update profile",
+    "loginToUpdatePicture": "Please login to update profile picture",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "username": "Username"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "confirmPassword": "Confirm Password",
+    "enterPhone": "Enter phone number",
+    "enterPin": "Enter PIN",
+    "verifyPin": "Verify PIN",
+    "createPin": "Create PIN",
+    "authRequired": "Authentication required",
+    "loginRequired": "Please login to continue",
+    "logoutConfirm": "Are you sure you want to logout?",
+    "sessionExpired": "Your session has expired"
+  },
+  "error": {
+    "general": "Something went wrong",
+    "network": "Network error",
+    "timeout": "Request timeout",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "notFound": "Not found",
+    "serverError": "Server error",
+    "validationError": "Validation error",
+    "connectionError": "Connection failed",
+    "tryAgain": "Please try again",
+    "contactSupport": "Contact support if the problem persists"
+  },
+  "success": {
+    "saved": "Saved successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "sent": "Sent successfully",
+    "uploaded": "Uploaded successfully",
+    "completed": "Completed successfully",
+    "applied": "Applied successfully",
+    "confirmed": "Confirmed successfully"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email",
+    "phone": "Please enter a valid phone number",
+    "minLength": "Minimum {count} characters required",
+    "maxLength": "Maximum {count} characters allowed",
+    "invalidFormat": "Invalid format",
+    "passwordMismatch": "Passwords do not match",
+    "weakPassword": "Password is too weak"
   },
   "settingTitle": "Settings"
 }
