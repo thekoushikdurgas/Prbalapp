@@ -96,8 +96,6 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 ScheduleScreen: Building with theme - ${Theme.of(context).brightness}');
-    themeManager.logThemeInfo();
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,

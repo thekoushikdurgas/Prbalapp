@@ -45,7 +45,6 @@ class ModernAppBarWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('🏗️ [ModernAppBar] Building modern app bar for title: $title');
-    debugPrint('🎯 [ModernAppBar] Theme: ${Theme.of(context).brightness}');
     debugPrint('📊 [ModernAppBar] Expanded height: ${expandedHeight}h, Pinned: $pinned');
 
     return SliverAppBar(

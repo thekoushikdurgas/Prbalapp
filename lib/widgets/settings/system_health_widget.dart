@@ -99,7 +99,6 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
     final themeManager = ThemeManager.of(context);
     final isHealthy = widget.healthData.overallStatus == HealthStatus.healthy;
 
-    debugPrint('🎨 [SystemHealth] Theme mode: ${Theme.of(context).brightness}');
     debugPrint('💚 [SystemHealth] System is healthy: $isHealthy');
 
     return Container(

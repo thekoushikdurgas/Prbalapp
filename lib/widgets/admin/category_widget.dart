@@ -368,7 +368,6 @@ class _ServiceCategoryCrudWidgetState extends ConsumerState<ServiceCategoryCrudW
     debugPrint('🎨 ServiceCategoryCrud: Building modern widget with EXTRACTED COMPONENTS');
     debugPrint(
         '🎨 ServiceCategoryCrud: Using CategorySearchHeader, CategoryMainContent, and CategoriesListView components');
-    debugPrint('🎨 ServiceCategoryCrud: Theme brightness: ${Theme.of(context).brightness.name}');
     debugPrint('🎨 ServiceCategoryCrud: Primary color: ${themeManager.colorScheme.primary}');
 
     return Scaffold(

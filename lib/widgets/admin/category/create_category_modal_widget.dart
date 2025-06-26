@@ -107,13 +107,11 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   Widget build(BuildContext context) {
     // ========== ENHANCED THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
-    final theme = Theme.of(context);
     themeManager.logThemeInfo();
 
     debugPrint('🎨 CreateCategoryModal: =============================');
     debugPrint('🎨 CreateCategoryModal: BUILDING WITH THEME MANAGER');
     debugPrint('🎨 CreateCategoryModal: =============================');
-    debugPrint('🎨 CreateCategoryModal: Theme brightness: ${theme.brightness.name}');
     debugPrint('🎨 CreateCategoryModal: Primary color: ${themeManager.primaryColor}');
     debugPrint('🎨 CreateCategoryModal: Background: ${themeManager.backgroundColor}');
     debugPrint('🎨 CreateCategoryModal: Surface: ${themeManager.surfaceColor}');
@@ -147,9 +145,9 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               ),
               child: Column(
                 children: [
-                  _buildModalHeader(themeManager, theme),
+                  _buildModalHeader(themeManager),
                   Expanded(
-                    child: _buildModalBody(themeManager, theme, scrollController),
+                    child: _buildModalBody(themeManager, scrollController),
                   ),
                 ],
               ),
@@ -161,7 +159,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build modal header with enhanced theme integration
-  Widget _buildModalHeader(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildModalHeader(ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.fromLTRB(24.w, 16.h, 16.w, 16.h),
       decoration: BoxDecoration(
@@ -210,7 +208,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               children: [
                 Text(
                   'Create Category',
-                  style: theme.textTheme.headlineSmall?.copyWith(
+                  style: themeManager.textTheme.headlineSmall?.copyWith(
                     color: themeManager.textPrimary,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.5,
@@ -219,7 +217,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 SizedBox(height: 2.h),
                 Text(
                   'Add new service category',
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: themeManager.textTheme.bodyMedium?.copyWith(
                     color: themeManager.textSecondary,
                     letterSpacing: 0.3,
                   ),
@@ -275,7 +273,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build modal body with enhanced theme integration
-  Widget _buildModalBody(ThemeManager themeManager, ThemeData theme, ScrollController scrollController) {
+  Widget _buildModalBody(ThemeManager themeManager, ScrollController scrollController) {
     return SingleChildScrollView(
       controller: scrollController,
       padding: EdgeInsets.all(24.w),
@@ -284,17 +282,17 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildNameField(themeManager, theme),
+            _buildNameField(themeManager),
             SizedBox(height: 20.h),
-            _buildDescriptionField(themeManager, theme),
+            _buildDescriptionField(themeManager),
             SizedBox(height: 20.h),
-            _buildIconSelectionSection(themeManager, theme),
+            _buildIconSelectionSection(themeManager),
             SizedBox(height: 20.h),
-            _buildStatusToggle(themeManager, theme),
+            _buildStatusToggle(themeManager),
             SizedBox(height: 20.h),
-            _buildSortOrderField(themeManager, theme),
+            _buildSortOrderField(themeManager),
             SizedBox(height: 32.h),
-            _buildActionButtons(themeManager, theme),
+            _buildActionButtons(themeManager),
             SizedBox(height: 16.h),
           ],
         ),
@@ -303,13 +301,13 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build name input field with theme-aware styling
-  Widget _buildNameField(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildNameField(ThemeManager themeManager) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Category Name',
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: themeManager.textTheme.titleMedium?.copyWith(
             color: themeManager.textPrimary,
             fontWeight: FontWeight.w600,
           ),
@@ -383,13 +381,13 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build description input field with theme-aware styling
-  Widget _buildDescriptionField(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildDescriptionField(ThemeManager themeManager) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Description',
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: themeManager.textTheme.titleMedium?.copyWith(
             color: themeManager.textPrimary,
             fontWeight: FontWeight.w600,
           ),
@@ -451,7 +449,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build icon selection section with theme-aware styling
-  Widget _buildIconSelectionSection(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildIconSelectionSection(ThemeManager themeManager) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -472,7 +470,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             SizedBox(width: 8.w),
             Text(
               'Icon Selection',
-              style: theme.textTheme.titleMedium?.copyWith(
+              style: themeManager.textTheme.titleMedium?.copyWith(
                 color: themeManager.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
@@ -498,13 +496,13 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
         SizedBox(height: 8.h),
 
         // Enhanced icon selection button with theme integration
-        _buildSelectedIconDisplay(themeManager, theme),
+        _buildSelectedIconDisplay(themeManager),
       ],
     );
   }
 
   /// Build selected icon display with enhanced theme integration
-  Widget _buildSelectedIconDisplay(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildSelectedIconDisplay(ThemeManager themeManager) {
     return InkWell(
       onTap: () => _showIconPicker(themeManager),
       borderRadius: BorderRadius.circular(16.r),
@@ -561,7 +559,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 children: [
                   Text(
                     _selectedIcon != null ? 'Selected Icon' : 'No Icon Selected',
-                    style: theme.textTheme.titleSmall?.copyWith(
+                    style: themeManager.textTheme.titleSmall?.copyWith(
                       color: themeManager.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
@@ -572,7 +570,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                     SizedBox(height: 4.h),
                     Text(
                       _selectedIcon!,
-                      style: theme.textTheme.bodySmall?.copyWith(
+                      style: themeManager.textTheme.bodySmall?.copyWith(
                         color: themeManager.textSecondary,
                       ),
                       maxLines: 1,
@@ -582,7 +580,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                   SizedBox(height: 6.h),
                   Text(
                     'Tap to ${_selectedIcon != null ? 'change' : 'select'} icon',
-                    style: theme.textTheme.bodySmall?.copyWith(
+                    style: themeManager.textTheme.bodySmall?.copyWith(
                       color: themeManager.primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -632,7 +630,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build status toggle with theme-aware styling
-  Widget _buildStatusToggle(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildStatusToggle(ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -685,14 +683,14 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               children: [
                 Text(
                   'Category Status',
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  style: themeManager.textTheme.titleSmall?.copyWith(
                     color: themeManager.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   _isActive ? 'Active - Visible to users' : 'Inactive - Hidden from users',
-                  style: theme.textTheme.bodySmall?.copyWith(
+                  style: themeManager.textTheme.bodySmall?.copyWith(
                     color: themeManager.textSecondary,
                   ),
                 ),
@@ -721,13 +719,13 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build sort order field with theme-aware styling
-  Widget _buildSortOrderField(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildSortOrderField(ThemeManager themeManager) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Sort Order',
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: themeManager.textTheme.titleMedium?.copyWith(
             color: themeManager.textPrimary,
             fontWeight: FontWeight.w600,
           ),
@@ -800,7 +798,7 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   }
 
   /// Build action buttons with enhanced theme integration
-  Widget _buildActionButtons(ThemeManager themeManager, ThemeData theme) {
+  Widget _buildActionButtons(ThemeManager themeManager) {
     return Row(
       children: [
         // Cancel button

@@ -232,7 +232,6 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
     Size size = MediaQuery.of(context).size;
     final userTypeColor = Color(HiveService.getUserTypeColor());
     debugPrint('🧭 BottomNavigation: Screen size: ${size.width}x${size.height}');
-    debugPrint('🧭 BottomNavigation: Theme brightness: ${Theme.of(context).brightness}');
     debugPrint('🧭 BottomNavigation: User type color: $userTypeColor');
     debugPrint('🧭 BottomNavigation: Active user type: $_userType');
 

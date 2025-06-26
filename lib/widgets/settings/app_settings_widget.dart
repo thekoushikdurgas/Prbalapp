@@ -258,13 +258,10 @@ class AppSettingsWidget extends StatelessWidget with ThemeAwareMixin {
   /// - System theme detection
   /// - Accessibility-friendly text
   String _getEnhancedThemeSubtitle(BuildContext context, ThemeMode themeMode, ThemeManager themeManager) {
-    final currentBrightness = Theme.of(context).brightness;
-    debugPrint('🎨 AppSettingsWidget: Generating theme subtitle for mode: $themeMode, brightness: $currentBrightness');
-
     String subtitle;
     switch (themeMode) {
       case ThemeMode.system:
-        subtitle = 'System Default (Currently ${currentBrightness == Brightness.dark ? 'Dark' : 'Light'})';
+        subtitle = 'System Default (Currently ${themeManager.themeManager == true ? 'Dark' : 'Light'})';
         break;
       case ThemeMode.light:
         subtitle = 'Light Theme Selected';
@@ -292,10 +289,8 @@ class AppSettingsWidget extends StatelessWidget with ThemeAwareMixin {
   /// - Success confirmation and user feedback
   /// - Integration with enhanced theme debugging
   Future<void> _handleThemeSelection(BuildContext context, ThemeMode currentMode, ThemeManager themeManager) async {
-    final currentBrightness = Theme.of(context).brightness;
     debugPrint('🎨 AppSettingsWidget: Theme selection initiated');
     debugPrint('🎨 AppSettingsWidget: Current theme mode: $currentMode');
-    debugPrint('🎨 AppSettingsWidget: Current brightness: $currentBrightness');
 
     final stopwatch = Stopwatch()..start();
 

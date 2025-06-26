@@ -47,7 +47,6 @@ class SettingsSectionWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
     
     debugPrint('🎨 [SettingsSection] Building section "$title"');
-    debugPrint('🎯 [SettingsSection] Theme: ${Theme.of(context).brightness}');
     debugPrint('📊 [SettingsSection] ${children.length} items, Show title: $showTitle');
 
     return Container(

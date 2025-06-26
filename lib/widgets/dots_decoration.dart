@@ -423,7 +423,6 @@ class DotsDecoration {
 
     debugPrint('🔵 DotsDecoration: COMPREHENSIVE Configuration details:');
     debugPrint('🔵 DotsDecoration: → Variant: $variant');
-    debugPrint('🔵 DotsDecoration: → Theme brightness: ${Theme.of(context).brightness}');
     debugPrint('🔵 DotsDecoration: → Primary color: ${themeManager.primaryColor}');
     debugPrint('🔵 DotsDecoration: → Secondary color: ${themeManager.secondaryColor}');
     debugPrint('🔵 DotsDecoration: → Accent1: ${themeManager.accent1}');

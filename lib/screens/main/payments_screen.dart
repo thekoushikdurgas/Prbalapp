@@ -134,8 +134,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PaymentsScreen: Building with theme - ${Theme.of(context).brightness}');
-    themeManager.logThemeInfo();
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,

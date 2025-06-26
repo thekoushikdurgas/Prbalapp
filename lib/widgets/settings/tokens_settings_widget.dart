@@ -77,7 +77,6 @@ class TokensSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
-    debugPrint('🎨 [TokensSettings] Theme mode: ${Theme.of(context).brightness}');
     debugPrint('🔐 [TokensSettings] Primary: ${themeManager.primaryColor}');
     debugPrint('🔐 [TokensSettings] Secondary: ${themeManager.secondaryColor}');
     debugPrint('🔐 [TokensSettings] Background: ${themeManager.backgroundColor}');

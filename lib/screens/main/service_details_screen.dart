@@ -163,8 +163,6 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 ServiceDetailsScreen: Building with theme - ${Theme.of(context).brightness}');
-    themeManager.logThemeInfo();
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,

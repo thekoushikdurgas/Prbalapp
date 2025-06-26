@@ -88,7 +88,6 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     final authState = ref.watch(authenticationStateProvider);
 
     // Enhanced debug logging with theme state
-    debugPrint('🎨 [ProfileSection] Theme mode: ${Theme.of(context).brightness}');
     debugPrint('🔒 [ProfileSection] Authentication state: ${authState.isAuthenticated}');
 
     if (!authState.isAuthenticated) {

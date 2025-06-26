@@ -117,7 +117,6 @@ class SettingsBottomSheets {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('🎨 [BottomSheets] === ENHANCED THEME SELECTION INITIATED ===');
-    debugPrint('🎯 [BottomSheets] Initial theme: ${Theme.of(context).brightness}');
 
     final stopwatch = Stopwatch()..start();
 

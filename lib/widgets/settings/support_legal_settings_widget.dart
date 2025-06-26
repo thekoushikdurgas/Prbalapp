@@ -70,8 +70,6 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
 
-    // Comprehensive theme logging for debugging
-    debugPrint('🎨 [SupportLegal] Theme mode: ${Theme.of(context).brightness}');
     debugPrint('📞 [SupportLegal] Primary: ${themeManager.primaryColor}');
     debugPrint('📞 [SupportLegal] Secondary: ${themeManager.secondaryColor}');
     debugPrint('📞 [SupportLegal] Background: ${themeManager.backgroundColor}');

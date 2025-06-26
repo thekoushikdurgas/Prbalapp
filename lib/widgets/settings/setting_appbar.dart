@@ -56,8 +56,6 @@ class SettingAppbar extends StatelessWidget with ThemeAwareMixin implements Pref
 
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎨 [SettingAppBar] Current theme brightness: ${Theme.of(context).brightness}');
-
     // Get localized title text
     final localizedTitle = LocaleKeys.settingTitle.tr();
     debugPrint('🌍 [SettingAppBar] Localized title: "$localizedTitle"');

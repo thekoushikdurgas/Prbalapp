@@ -178,6 +178,11 @@ class ThemeManager {
         stops: const [0.0, 0.5, 1.0],
       );
 
+  // =================== TEXT THEME ===================
+
+  /// Access to theme text styles
+  TextTheme get textTheme => theme.textTheme;
+
   // =================== COLORS ===================
 
   /// Primary brand color

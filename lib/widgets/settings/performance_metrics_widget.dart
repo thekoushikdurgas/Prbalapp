@@ -82,7 +82,6 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
     final performanceScore = _getPerformanceScore();
 
     debugPrint('📊 [PerformanceMetrics] Building performance metrics card');
-    debugPrint('🎯 [PerformanceMetrics] Theme: ${Theme.of(context).brightness}');
     debugPrint('📊 [PerformanceMetrics] Performance score: $performanceScore');
 
     return Container(

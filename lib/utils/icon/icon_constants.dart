@@ -74,11 +74,9 @@ class PrbalIconManager {
   /// Enhanced debug function with ThemeManager context
   void debugLogIconUsageWithTheme(BuildContext context, String usageContext, IconData iconData) {
     final themeManager = ThemeManager.of(context);
-    final brightness = Theme.of(context).brightness;
     debugPrint('🎨 Enhanced Icon Usage Log:');
     debugPrint('   Context: $usageContext');
     debugPrint('   Icon: ${iconData.toString()}');
-    debugPrint('   Theme: ${brightness.name}');
     debugPrint('   Primary Color: ${themeManager.primaryColor}');
     debugPrint('   Background: ${themeManager.backgroundColor}');
   }
@@ -86,13 +84,11 @@ class PrbalIconManager {
   /// Comprehensive theme validation for icon system
   Map<String, dynamic> validateThemeIntegration(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    final brightness = Theme.of(context).brightness;
 
     debugPrint('🔍 PrbalIconManager: Validating theme integration...');
 
     final validation = <String, dynamic>{
       'themeManagerAvailable': true,
-      'brightness': brightness.name,
       'primaryColor': themeManager.primaryColor.toString(),
       'backgroundColors': {
         'backgroundColor': themeManager.backgroundColor.toString(),
@@ -124,7 +120,6 @@ class PrbalIconManager {
     };
 
     debugPrint('✅ Theme Integration Validation Complete:');
-    debugPrint('   Theme: ${brightness.name}');
     debugPrint('   Colors Available: ${validation['semanticColors'].length}');
     debugPrint('   Gradients Available: ${validation['gradients'].length}');
     debugPrint('   Shadows Available: ${validation['shadows'].length}');
