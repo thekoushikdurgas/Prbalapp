@@ -135,7 +135,6 @@ flutter:
   assets:
     - assets/logo/
     - assets/icon/
-    - assets/images/
     - assets/translations/
     - assets/animations/
     - assets/intro/

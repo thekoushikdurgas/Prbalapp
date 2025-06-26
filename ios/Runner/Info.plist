@@ -167,12 +167,16 @@
 		<!-- Localization -->
 		<key>CFBundleLocalizations</key>
 		<array>
-			<string>en</string>
-			<string>es</string>
-			<string>fr</string>
-			<string>de</string>
-			<string>hi</string>
-			<string>ar</string>
+			<string>en</string>			<!-- English (Primary) -->
+			<string>hi</string>			<!-- Hindi (National) -->
+			<string>bn</string>			<!-- Bengali -->
+			<string>ta</string>			<!-- Tamil -->
+			<string>te</string>			<!-- Telugu -->
+			<string>pa</string>			<!-- Punjabi -->
+			<string>mr</string>			<!-- Marathi -->
+			<string>ml</string>			<!-- Malayalam -->
+			<string>kn</string>			<!-- Kannada -->
+			<string>gu</string>			<!-- Gujarati -->
 		</array>
 
 		<!-- App Icons and Launch Images -->

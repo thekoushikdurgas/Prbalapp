@@ -672,7 +672,7 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
       ),
       child: ClipOval(
         child: Image.asset(
-          'assets/images/user.png',
+          'assets/logo/user.png',
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             debugPrint(

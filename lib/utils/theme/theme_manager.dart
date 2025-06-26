@@ -26,6 +26,118 @@ class ThemeManager {
     return ThemeManager._(context);
   }
 
+  // =================== THEME DATA CREATION ===================
+
+  /// Create light theme data compatible with ThemeManager system
+  static ThemeData get lightTheme => ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF6366F1),
+          secondary: Color(0xFF10B981),
+          surface: Color(0xFFFFFFFF),
+          error: Color(0xFFDC2626),
+          onPrimary: Color(0xFFFFFFFF),
+          onSecondary: Color(0xFFFFFFFF),
+          onSurface: Color(0xFF111827),
+          onError: Color(0xFFFFFFFF),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFFFFFFF),
+          foregroundColor: Color(0xFF111827),
+          elevation: 0,
+          centerTitle: true,
+        ),
+        cardTheme: CardThemeData(
+          color: const Color(0xFFFFFFFF),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF6366F1),
+            foregroundColor: const Color(0xFFFFFFFF),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFFFFFFF),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+          ),
+        ),
+      );
+
+  /// Create dark theme data compatible with ThemeManager system
+  static ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF8B5CF6),
+          secondary: Color(0xFF10B981),
+          surface: Color(0xFF1E293B),
+          error: Color(0xFFEF4444),
+          onPrimary: Color(0xFFFFFFFF),
+          onSecondary: Color(0xFFFFFFFF),
+          onSurface: Color(0xFFF1F5F9),
+          onError: Color(0xFFFFFFFF),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1E293B),
+          foregroundColor: Color(0xFFF1F5F9),
+          elevation: 0,
+          centerTitle: true,
+        ),
+        cardTheme: CardThemeData(
+          color: const Color(0xFF1E293B),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF8B5CF6),
+            foregroundColor: const Color(0xFFFFFFFF),
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF1E293B),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF334155)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF334155)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF8B5CF6), width: 2),
+          ),
+        ),
+      );
+
   // =================== BACKGROUND GRADIENTS ===================
 
   /// Primary background gradient for screens

@@ -139,9 +139,11 @@ class ApplicationHealth {
     // If offline, status is unknown
     if (connectivityStatus == ConnectivityStatus.offline) {
       overallStatus = HealthStatus.unknown;
-    } else if (system.healthStatus == HealthStatus.unhealthy || database.healthStatus == HealthStatus.unhealthy) {
+    } else if (system.healthStatus == HealthStatus.unhealthy ||
+        database.healthStatus == HealthStatus.unhealthy) {
       overallStatus = HealthStatus.unhealthy;
-    } else if (system.healthStatus == HealthStatus.unknown || database.healthStatus == HealthStatus.unknown) {
+    } else if (system.healthStatus == HealthStatus.unknown ||
+        database.healthStatus == HealthStatus.unknown) {
       overallStatus = HealthStatus.unknown;
     }
 
@@ -185,19 +187,22 @@ class HealthService {
   Duration healthCheckInterval = const Duration(minutes: 5);
 
   // Stream controller for real-time updates
-  final StreamController<ApplicationHealth> _healthStream = StreamController<ApplicationHealth>.broadcast();
+  final StreamController<ApplicationHealth> _healthStream =
+      StreamController<ApplicationHealth>.broadcast();
 
   /// Initialize health monitoring with connectivity tracking
   Future<void> initialize() async {
     try {
-      debugPrint('🏥 Health Service: Initializing health monitoring with connectivity tracking');
+      debugPrint(
+          '🏥 Health Service: Initializing health monitoring with connectivity tracking');
 
       // Initialize connectivity monitoring
       await _initializeConnectivityMonitoring();
 
       // Check if we have recent cached health data
       if (_shouldUseCachedHealthData()) {
-        debugPrint('🏥 Health Service: Using cached health data (recent check found)');
+        debugPrint(
+            '🏥 Health Service: Using cached health data (recent check found)');
         _loadCachedHealthData();
       } else {
         // Perform initial health check (with connectivity check)
@@ -221,7 +226,8 @@ class HealthService {
       final connectivityResults = await _connectivity.checkConnectivity();
       _currentConnectivityStatus = _mapConnectivityResults(connectivityResults);
 
-      debugPrint('🌐 Health Service: Initial connectivity status: ${_currentConnectivityStatus.name}');
+      debugPrint(
+          '🌐 Health Service: Initial connectivity status: ${_currentConnectivityStatus.name}');
 
       // Listen to connectivity changes
       _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
@@ -234,18 +240,21 @@ class HealthService {
 
             // Trigger health check on connectivity change (if online)
             if (_currentConnectivityStatus == ConnectivityStatus.online) {
-              debugPrint('🌐 Health Service: Network restored - triggering health check');
+              debugPrint(
+                  '🌐 Health Service: Network restored - triggering health check');
               performHealthCheck();
             }
           }
         },
         onError: (error) {
-          debugPrint('🌐 Health Service: Connectivity monitoring error - $error');
+          debugPrint(
+              '🌐 Health Service: Connectivity monitoring error - $error');
           _currentConnectivityStatus = ConnectivityStatus.unknown;
         },
       );
     } catch (e) {
-      debugPrint('🌐 Health Service: Failed to initialize connectivity monitoring - $e');
+      debugPrint(
+          '🌐 Health Service: Failed to initialize connectivity monitoring - $e');
       _currentConnectivityStatus = ConnectivityStatus.unknown;
     }
   }
@@ -255,7 +264,8 @@ class HealthService {
     if (results.isEmpty) return ConnectivityStatus.offline;
 
     // Check if any connection type is available (excluding none)
-    final hasConnection = results.any((result) => result != ConnectivityResult.none);
+    final hasConnection =
+        results.any((result) => result != ConnectivityResult.none);
 
     if (hasConnection) {
       return ConnectivityStatus.online;
@@ -270,7 +280,8 @@ class HealthService {
       final connectivityResults = await _connectivity.checkConnectivity();
       _currentConnectivityStatus = _mapConnectivityResults(connectivityResults);
 
-      debugPrint('🌐 Health Service: Connectivity check result: ${_currentConnectivityStatus.name}');
+      debugPrint(
+          '🌐 Health Service: Connectivity check result: ${_currentConnectivityStatus.name}');
       return _currentConnectivityStatus;
     } catch (e) {
       debugPrint('🌐 Health Service: Connectivity check failed - $e');
@@ -289,7 +300,8 @@ class HealthService {
 
   /// Check if we should use cached health data instead of making new API calls
   bool _shouldUseCachedHealthData() {
-    return !HiveService.isHealthCheckNeeded(interval: const Duration(minutes: 30));
+    return !HiveService.isHealthCheckNeeded(
+        interval: const Duration(minutes: 30));
   }
 
   /// Load cached health data from local storage
@@ -302,8 +314,10 @@ class HealthService {
       if (cachedResult != null && cachedStatus != null && lastCheck != null) {
         // Reconstruct ApplicationHealth from cached data
         // Cast the dynamic maps to Map<String, dynamic> for proper type safety
-        final systemHealth = SystemHealth.fromJson(Map<String, dynamic>.from(cachedResult['system'] as Map));
-        final databaseHealth = DatabaseHealth.fromJson(Map<String, dynamic>.from(cachedResult['database'] as Map));
+        final systemHealth = SystemHealth.fromJson(
+            Map<String, dynamic>.from(cachedResult['system'] as Map));
+        final databaseHealth = DatabaseHealth.fromJson(
+            Map<String, dynamic>.from(cachedResult['database'] as Map));
 
         _lastHealthCheck = ApplicationHealth.fromComponents(
           system: systemHealth,
@@ -314,8 +328,10 @@ class HealthService {
         // Emit cached data to stream
         _healthStream.add(_lastHealthCheck!);
 
-        debugPrint('🏥 Health Service: Loaded cached health data - Status: $cachedStatus');
-        debugPrint('🏥 Health Service: Last check: ${lastCheck.toString().substring(0, 19)}');
+        debugPrint(
+            '🏥 Health Service: Loaded cached health data - Status: $cachedStatus');
+        debugPrint(
+            '🏥 Health Service: Last check: ${lastCheck.toString().substring(0, 19)}');
       }
     } catch (e) {
       debugPrint('🏥 Health Service: Failed to load cached health data - $e');
@@ -344,21 +360,25 @@ class HealthService {
     try {
       // Check if we should skip this check due to recent cached data
       if (_shouldUseCachedHealthData()) {
-        debugPrint('🏥 Health Service: Skipping health check - recent data available');
+        debugPrint(
+            '🏥 Health Service: Skipping health check - recent data available');
         return _lastHealthCheck;
       }
 
-      debugPrint('🏥 Health Service: Starting health check with connectivity verification');
+      debugPrint(
+          '🏥 Health Service: Starting health check with connectivity verification');
 
       // First, check network connectivity
       final networkAvailable = await isNetworkAvailable();
 
       if (!networkAvailable) {
-        debugPrint('🏥 Health Service: Network unavailable - using offline fallback');
+        debugPrint(
+            '🏥 Health Service: Network unavailable - using offline fallback');
         return _createOfflineHealthStatus();
       }
 
-      debugPrint('🏥 Health Service: Network available - performing API health checks');
+      debugPrint(
+          '🏥 Health Service: Network available - performing API health checks');
 
       // Execute both health checks in parallel
       final results = await Future.wait([
@@ -382,10 +402,12 @@ class HealthService {
         // Cache the health check results
         await _cacheHealthCheckResults(appHealth);
 
-        debugPrint('🏥 Health Service: Health check completed - Status: ${appHealth.overallStatus.name}');
+        debugPrint(
+            '🏥 Health Service: Health check completed - Status: ${appHealth.overallStatus.name}');
         return appHealth;
       } else {
-        debugPrint('🏥 Health Service: API health checks failed - falling back to offline status');
+        debugPrint(
+            '🏥 Health Service: API health checks failed - falling back to offline status');
         return _createOfflineHealthStatus();
       }
     } catch (e) {
@@ -427,7 +449,8 @@ class HealthService {
     try {
       // Verify network availability before API call
       if (!await isNetworkAvailable()) {
-        debugPrint('🏥 Health Service: Skipping system health check - no network');
+        debugPrint(
+            '🏥 Health Service: Skipping system health check - no network');
         return SystemHealth.offline();
       }
 
@@ -438,10 +461,12 @@ class HealthService {
       );
 
       if (response.success && response.data != null) {
-        debugPrint('🏥 Health Service: System health - ${response.data!.status}');
+        debugPrint(
+            '🏥 Health Service: System health - ${response.data!.status}');
         return response.data;
       } else {
-        debugPrint('🏥 Health Service: System health check failed - ${response.message}');
+        debugPrint(
+            '🏥 Health Service: System health check failed - ${response.message}');
       }
     } catch (e) {
       debugPrint('🏥 Health Service: System health check error - $e');
@@ -455,7 +480,8 @@ class HealthService {
     try {
       // Verify network availability before API call
       if (!await isNetworkAvailable()) {
-        debugPrint('🏥 Health Service: Skipping database health check - no network');
+        debugPrint(
+            '🏥 Health Service: Skipping database health check - no network');
         return DatabaseHealth.offline();
       }
 
@@ -466,10 +492,12 @@ class HealthService {
       );
 
       if (response.success && response.data != null) {
-        debugPrint('🏥 Health Service: Database health - ${response.data!.status}');
+        debugPrint(
+            '🏥 Health Service: Database health - ${response.data!.status}');
         return response.data;
       } else {
-        debugPrint('🏥 Health Service: Database health check failed - ${response.message}');
+        debugPrint(
+            '🏥 Health Service: Database health check failed - ${response.message}');
       }
     } catch (e) {
       debugPrint('🏥 Health Service: Database health check error - $e');
@@ -491,10 +519,12 @@ class HealthService {
   bool get isHealthy => _lastHealthCheck?.overallStatus == HealthStatus.healthy;
 
   /// Check if the application is experiencing issues
-  bool get hasIssues => _lastHealthCheck?.overallStatus == HealthStatus.unhealthy;
+  bool get hasIssues =>
+      _lastHealthCheck?.overallStatus == HealthStatus.unhealthy;
 
   /// Check if the application is offline
-  bool get isOffline => _currentConnectivityStatus == ConnectivityStatus.offline;
+  bool get isOffline =>
+      _currentConnectivityStatus == ConnectivityStatus.offline;
 
   /// Get health status color for UI
   Color getHealthStatusColor() {
@@ -584,13 +614,15 @@ class HealthService {
   /// Force a fresh health check (ignores cache) with connectivity verification
   Future<ApplicationHealth?> forceHealthCheck() async {
     try {
-      debugPrint('🏥 Health Service: Forcing fresh health check with connectivity verification');
+      debugPrint(
+          '🏥 Health Service: Forcing fresh health check with connectivity verification');
 
       // First, check network connectivity
       final networkAvailable = await isNetworkAvailable();
 
       if (!networkAvailable) {
-        debugPrint('🏥 Health Service: Network unavailable for forced check - using offline status');
+        debugPrint(
+            '🏥 Health Service: Network unavailable for forced check - using offline status');
         return _createOfflineHealthStatus();
       }
 
@@ -616,10 +648,12 @@ class HealthService {
         // Cache the health check results
         await _cacheHealthCheckResults(appHealth);
 
-        debugPrint('🏥 Health Service: Forced health check completed - Status: ${appHealth.overallStatus.name}');
+        debugPrint(
+            '🏥 Health Service: Forced health check completed - Status: ${appHealth.overallStatus.name}');
         return appHealth;
       } else {
-        debugPrint('🏥 Health Service: Forced health check failed - falling back to offline status');
+        debugPrint(
+            '🏥 Health Service: Forced health check failed - falling back to offline status');
         return _createOfflineHealthStatus();
       }
     } catch (e) {
@@ -652,11 +686,14 @@ class HealthService {
   }
 
   /// Check if cached health data is available
-  bool get hasCachedHealthData => _lastHealthCheck != null || HiveService.getHealthCheckStatus() != null;
+  bool get hasCachedHealthData =>
+      _lastHealthCheck != null || HiveService.getHealthCheckStatus() != null;
 
   /// Wait for network connectivity before proceeding with operations
-  Future<bool> waitForConnectivity({Duration timeout = const Duration(seconds: 10)}) async {
-    debugPrint('🌐 Health Service: Waiting for network connectivity (timeout: ${timeout.inSeconds}s)');
+  Future<bool> waitForConnectivity(
+      {Duration timeout = const Duration(seconds: 10)}) async {
+    debugPrint(
+        '🌐 Health Service: Waiting for network connectivity (timeout: ${timeout.inSeconds}s)');
 
     final completer = Completer<bool>();
     Timer? timeoutTimer;
@@ -692,22 +729,26 @@ class HealthService {
   }
 
   /// Perform health check with network wait fallback
-  Future<ApplicationHealth?> performHealthCheckWithWait({Duration networkTimeout = const Duration(seconds: 5)}) async {
+  Future<ApplicationHealth?> performHealthCheckWithWait(
+      {Duration networkTimeout = const Duration(seconds: 5)}) async {
     // Check if we already have network
     if (await isNetworkAvailable()) {
       return performHealthCheck();
     }
 
-    debugPrint('🏥 Health Service: No network - waiting for connectivity before health check');
+    debugPrint(
+        '🏥 Health Service: No network - waiting for connectivity before health check');
 
     // Wait for network with timeout
     final networkRestored = await waitForConnectivity(timeout: networkTimeout);
 
     if (networkRestored) {
-      debugPrint('🏥 Health Service: Network restored - performing health check');
+      debugPrint(
+          '🏥 Health Service: Network restored - performing health check');
       return performHealthCheck();
     } else {
-      debugPrint('🏥 Health Service: Network wait timed out - using offline status');
+      debugPrint(
+          '🏥 Health Service: Network wait timed out - using offline status');
       return _createOfflineHealthStatus();
     }
   }
