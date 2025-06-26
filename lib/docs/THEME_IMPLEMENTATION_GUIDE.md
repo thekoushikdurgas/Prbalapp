@@ -42,7 +42,7 @@ class NewWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
     
     // Enhanced debug logging
-    themeManager.logThemeInfo();
+    
     
     return Container(
       decoration: BoxDecoration(
@@ -298,7 +298,7 @@ Widget build(BuildContext context) {
   final themeManager = ThemeManager.of(context);
   
   // Add comprehensive logging
-  themeManager.logThemeInfo();
+  
   
   return YourWidget();
 }
@@ -312,7 +312,7 @@ Widget build(BuildContext context) {
 
 ```dart
 // Basic theme info
-themeManager.logThemeInfo();
+
 
 // Gradient information
 themeManager.logGradientInfo();
@@ -367,7 +367,7 @@ FloatingActionButton(
 
 ### **5. Include Debug Logging**
 
-✅ **DO**: `themeManager.logThemeInfo();` in build methods  
+✅ **DO**: `` in build methods  
 ❌ **DON'T**: Silent theme operations
 
 ---
@@ -390,7 +390,7 @@ class _ModernScreenState extends State<ModernScreen>
 final themeManager = ThemeManager.of(context);
     
     // Comprehensive debug logging
-    themeManager.logThemeInfo();
+    
     themeManager.logGradientInfo();
     
     return Scaffold(

@@ -127,21 +127,14 @@ class CategoryMainContent extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
-    themeManager.logThemeInfo();
-    debugPrint(
-        '📱 CategoryMainContent: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint(
-        '📱 CategoryMainContent: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '📱 CategoryMainContent: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint(
-        '📱 CategoryMainContent: → Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '📱 CategoryMainContent: → Surface: ${themeManager.surfaceColor}');
-    debugPrint(
-        '📱 CategoryMainContent: → Card Background: ${themeManager.cardBackground}');
-    debugPrint(
-        '📱 CategoryMainContent: → Surface Elevated: ${themeManager.surfaceElevated}');
+
+    debugPrint('📱 CategoryMainContent: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint('📱 CategoryMainContent: → Primary: ${themeManager.primaryColor}');
+    debugPrint('📱 CategoryMainContent: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint('📱 CategoryMainContent: → Background: ${themeManager.backgroundColor}');
+    debugPrint('📱 CategoryMainContent: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('📱 CategoryMainContent: → Card Background: ${themeManager.cardBackground}');
+    debugPrint('📱 CategoryMainContent: → Surface Elevated: ${themeManager.surfaceElevated}');
     debugPrint(
         '📱 CategoryMainContent: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
     debugPrint(
@@ -199,28 +192,24 @@ class CategoryMainContent extends StatelessWidget with ThemeAwareMixin {
   Widget _buildStateContent(BuildContext context, ThemeManager themeManager) {
     // ========== LOADING STATE WITH ENHANCED THEMING ==========
     if (isLoading && isInitialLoad) {
-      debugPrint(
-          '⏳ CategoryMainContent: Showing ENHANCED CategoryLoadingState component');
+      debugPrint('⏳ CategoryMainContent: Showing ENHANCED CategoryLoadingState component');
       return _buildEnhancedLoadingState(themeManager);
     }
 
     // ========== ERROR STATE WITH COMPREHENSIVE THEMING ==========
     if (errorMessage != null) {
-      debugPrint(
-          '❌ CategoryMainContent: Showing ENHANCED CategoryErrorState component with message: $errorMessage');
+      debugPrint('❌ CategoryMainContent: Showing ENHANCED CategoryErrorState component with message: $errorMessage');
       return _buildEnhancedErrorState(themeManager);
     }
 
     // ========== EMPTY STATE WITH SOPHISTICATED THEMING ==========
     if (!hasCategories) {
-      debugPrint(
-          '📭 CategoryMainContent: Showing ENHANCED CategoryEmptyState component');
+      debugPrint('📭 CategoryMainContent: Showing ENHANCED CategoryEmptyState component');
       return _buildEnhancedEmptyState(themeManager);
     }
 
     // ========== CONTENT STATE WITH ADVANCED THEMING ==========
-    debugPrint(
-        '📋 CategoryMainContent: Showing ENHANCED categories list with comprehensive theming');
+    debugPrint('📋 CategoryMainContent: Showing ENHANCED categories list with comprehensive theming');
     return _buildEnhancedContentState(themeManager);
   }
 

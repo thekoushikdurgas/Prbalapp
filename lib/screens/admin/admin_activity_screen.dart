@@ -12,8 +12,7 @@ class AdminActivityScreen extends StatefulWidget {
   State<AdminActivityScreen> createState() => _AdminActivityScreenState();
 }
 
-class _AdminActivityScreenState extends State<AdminActivityScreen>
-    with TickerProviderStateMixin {
+class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -63,8 +62,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
-    debugPrint(
-        '🚀 AdminActivityScreen: Initializing with ${_activities.length} activities');
+    debugPrint('🚀 AdminActivityScreen: Initializing with ${_activities.length} activities');
   }
 
   void _initializeAnimations() {
@@ -84,8 +82,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic));
 
     _fadeController.forward();
     _slideController.forward();
@@ -103,14 +100,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme debugging
-    themeManager.logThemeInfo();
+
     themeManager.logGradientInfo();
-    debugPrint(
-        '🎯 AdminActivityScreen: Building with theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
-    debugPrint(
-        '🎨 AdminActivityScreen: Primary color: ${themeManager.primaryColor}');
-    debugPrint(
-        '🎨 AdminActivityScreen: Background color: ${themeManager.backgroundColor}');
+    debugPrint('🎯 AdminActivityScreen: Building with theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint('🎨 AdminActivityScreen: Primary color: ${themeManager.primaryColor}');
+    debugPrint('🎨 AdminActivityScreen: Background color: ${themeManager.backgroundColor}');
 
     return Scaffold(
       // Use ThemeManager background with gradient
@@ -224,8 +218,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color:
-                              themeManager.statusOnline.withValues(alpha: 0.5),
+                          color: themeManager.statusOnline.withValues(alpha: 0.5),
                           blurRadius: 4,
                           spreadRadius: 1,
                         ),
@@ -436,8 +429,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   }
 
   /// Theme-aware filter chip
-  Widget _buildFilterChip(
-      ThemeManager themeManager, String label, bool isSelected) {
+  Widget _buildFilterChip(ThemeManager themeManager, String label, bool isSelected) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
@@ -445,9 +437,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
         color: isSelected ? null : themeManager.cardBackground,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: isSelected
-              ? themeManager.secondaryColor
-              : themeManager.borderColor,
+          color: isSelected ? themeManager.secondaryColor : themeManager.borderColor,
           width: 1,
         ),
         boxShadow: isSelected ? themeManager.primaryShadow : null,
@@ -455,9 +445,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
       child: Text(
         label,
         style: themeManager.theme.textTheme.labelMedium?.copyWith(
-          color: isSelected
-              ? themeManager.textInverted
-              : themeManager.textSecondary,
+          color: isSelected ? themeManager.textInverted : themeManager.textSecondary,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
         ),
       ),
@@ -631,7 +619,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
                   '#${activity.id}',
                   style: themeManager.theme.textTheme.labelSmall?.copyWith(
                     color: themeManager.textQuaternary,
-                    fontFamily: 'monospace',
+                    fontFamily: ThemeManager.fontFamilySemiExpanded,
                   ),
                 ),
               ],
@@ -674,8 +662,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   }
 
   /// Get activity type colors and gradients
-  Map<String, dynamic> _getActivityTypeColors(
-      ThemeManager themeManager, ActivityType type) {
+  Map<String, dynamic> _getActivityTypeColors(ThemeManager themeManager, ActivityType type) {
     switch (type) {
       case ActivityType.success:
         return {
@@ -701,8 +688,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   }
 
   /// Get priority colors and gradients
-  Map<String, dynamic> _getPriorityColors(
-      ThemeManager themeManager, Priority priority) {
+  Map<String, dynamic> _getPriorityColors(ThemeManager themeManager, Priority priority) {
     switch (priority) {
       case Priority.critical:
         return {'gradient': themeManager.errorGradient};
@@ -909,10 +895,9 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
                       SizedBox(width: 8.w),
                       Text(
                         'Favorites: ${themeManager.favoriteColor.toARGB32().toRadixString(16).toUpperCase()}',
-                        style:
-                            themeManager.theme.textTheme.labelMedium?.copyWith(
+                        style: themeManager.theme.textTheme.labelMedium?.copyWith(
                           color: themeManager.textTertiary,
-                          fontFamily: 'monospace',
+                          fontFamily: ThemeManager.fontFamilySemiExpanded,
                         ),
                       ),
                     ],
@@ -938,8 +923,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
                       SizedBox(width: 8.w),
                       Text(
                         'Rating: 4.8/5',
-                        style:
-                            themeManager.theme.textTheme.labelMedium?.copyWith(
+                        style: themeManager.theme.textTheme.labelMedium?.copyWith(
                           color: themeManager.textTertiary,
                           fontWeight: FontWeight.w600,
                         ),
@@ -1143,22 +1127,14 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
             ),
             child: Row(
               children: [
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral100, '100'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral200, '200'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral300, '300'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral400, '400'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral500, '500'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral600, '600'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral700, '700'),
-                _buildNeutralSegment(
-                    themeManager, themeManager.neutral800, '800'),
+                _buildNeutralSegment(themeManager, themeManager.neutral100, '100'),
+                _buildNeutralSegment(themeManager, themeManager.neutral200, '200'),
+                _buildNeutralSegment(themeManager, themeManager.neutral300, '300'),
+                _buildNeutralSegment(themeManager, themeManager.neutral400, '400'),
+                _buildNeutralSegment(themeManager, themeManager.neutral500, '500'),
+                _buildNeutralSegment(themeManager, themeManager.neutral600, '600'),
+                _buildNeutralSegment(themeManager, themeManager.neutral700, '700'),
+                _buildNeutralSegment(themeManager, themeManager.neutral800, '800'),
               ],
             ),
           ),
@@ -1243,7 +1219,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
             '#${accentColor.toARGB32().toRadixString(16).toUpperCase().padLeft(8, '0')}',
             style: themeManager.theme.textTheme.labelSmall?.copyWith(
               color: themeManager.textInverted.withValues(alpha: 0.8),
-              fontFamily: 'monospace',
+              fontFamily: ThemeManager.fontFamilySemiExpanded,
             ),
           ),
         ],
@@ -1252,20 +1228,15 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   }
 
   /// Neutral segment helper
-  Widget _buildNeutralSegment(
-      ThemeManager themeManager, Color color, String label) {
+  Widget _buildNeutralSegment(ThemeManager themeManager, Color color, String label) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
           color: color,
           borderRadius: label == '100'
-              ? BorderRadius.only(
-                  topLeft: Radius.circular(12.r),
-                  bottomLeft: Radius.circular(12.r))
+              ? BorderRadius.only(topLeft: Radius.circular(12.r), bottomLeft: Radius.circular(12.r))
               : label == '800'
-                  ? BorderRadius.only(
-                      topRight: Radius.circular(12.r),
-                      bottomRight: Radius.circular(12.r))
+                  ? BorderRadius.only(topRight: Radius.circular(12.r), bottomRight: Radius.circular(12.r))
                   : null,
         ),
         child: Column(
@@ -1286,8 +1257,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen>
   }
 
   /// Button state card helper
-  Widget _buildButtonStateCard(
-      ThemeManager themeManager, String state, Color backgroundColor) {
+  Widget _buildButtonStateCard(ThemeManager themeManager, String state, Color backgroundColor) {
     return Container(
       height: 40.h,
       decoration: BoxDecoration(

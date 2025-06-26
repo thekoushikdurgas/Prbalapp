@@ -40,8 +40,7 @@ class PhoneLoginBottomSheet extends ConsumerStatefulWidget {
   const PhoneLoginBottomSheet({super.key});
 
   @override
-  ConsumerState<PhoneLoginBottomSheet> createState() =>
-      _PhoneLoginBottomSheetState();
+  ConsumerState<PhoneLoginBottomSheet> createState() => _PhoneLoginBottomSheetState();
 }
 
 class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
@@ -195,13 +194,11 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   Future<void> _verifyPhoneNumber() async {
     debugPrint('📱 PhoneLoginBottomSheet: Starting phone number verification');
     debugPrint('📱 PhoneLoginBottomSheet: Phone number entered: $_phoneNumber');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Selected country code: $_selectedCountryCode');
+    debugPrint('📱 PhoneLoginBottomSheet: Selected country code: $_selectedCountryCode');
 
     // Validate phone number format
     if (!_isValidPhoneNumber(_phoneNumber)) {
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Phone validation failed - invalid format');
+      debugPrint('📱 PhoneLoginBottomSheet: Phone validation failed - invalid format');
       setState(() {
         _errorMessage = 'Please enter a valid phone number (10-15 digits)';
       });
@@ -210,8 +207,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
     // Provide haptic feedback for better UX
     HapticFeedback.lightImpact();
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Phone validation passed, starting API call');
+    debugPrint('📱 PhoneLoginBottomSheet: Phone validation passed, starting API call');
 
     // Update UI to show loading state
     setState(() {
@@ -223,26 +219,21 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       // Get UserService instance from provider
       final userService = ref.read(userServiceProvider);
       final fullPhoneNumber = _selectedCountryCode + _phoneNumber;
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Full phone number: $fullPhoneNumber');
+      debugPrint('📱 PhoneLoginBottomSheet: Full phone number: $fullPhoneNumber');
 
       // Check if user exists by phone number via API
-      final userSearchResponse =
-          await userService.searchUserByPhone(fullPhoneNumber);
+      final userSearchResponse = await userService.searchUserByPhone(fullPhoneNumber);
 
       debugPrint('📱 PhoneLoginBottomSheet: API response received');
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: API response success: ${userSearchResponse.success}');
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: API response message: ${userSearchResponse.message}');
+      debugPrint('📱 PhoneLoginBottomSheet: API response success: ${userSearchResponse.success}');
+      debugPrint('📱 PhoneLoginBottomSheet: API response message: ${userSearchResponse.message}');
 
       // Process API response
       AppUser? existingUser;
       Map<String, dynamic> userData;
 
       if (userSearchResponse.data == null) {
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: New user detected - preparing default data');
+        debugPrint('📱 PhoneLoginBottomSheet: New user detected - preparing default data');
         // User doesn't exist, prepare new user data with default provider type
         userData = {
           'phoneNumber': fullPhoneNumber,
@@ -252,11 +243,9 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           'isNewUser': true,
           'is_new_user': true,
         };
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: New user data prepared: $userData');
+        debugPrint('📱 PhoneLoginBottomSheet: New user data prepared: $userData');
       } else {
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: Existing user found - processing user data');
+        debugPrint('📱 PhoneLoginBottomSheet: Existing user found - processing user data');
         // User exists, use their complete data from AppUser model
         existingUser = userSearchResponse.data as AppUser;
         userData = existingUser.toJson();
@@ -291,22 +280,18 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
             'is_new_user': (userSearchResponse.data == null),
             'userData': userData,
             'user_data': userData,
-            if (existingUser != null)
-              'userModel': existingUser, // Pass the AppUser model directly
+            if (existingUser != null) 'userModel': existingUser, // Pass the AppUser model directly
             if (existingUser != null) 'user_model': existingUser,
           },
         );
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: Navigation to PIN entry completed');
+        debugPrint('📱 PhoneLoginBottomSheet: Navigation to PIN entry completed');
       }
     } catch (e) {
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Error during phone verification: $e');
+      debugPrint('📱 PhoneLoginBottomSheet: Error during phone verification: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              'Unable to verify phone number. Please check your connection and try again.';
+          _errorMessage = 'Unable to verify phone number. Please check your connection and try again.';
         });
       }
     }
@@ -349,34 +334,24 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Building UI components with comprehensive ThemeManager integration');
+    debugPrint('📱 PhoneLoginBottomSheet: Building UI components with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
     final screenSize = MediaQuery.of(context).size;
 
     // Comprehensive theme logging for debugging
-    themeManager.logThemeInfo();
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Surface: ${themeManager.surfaceColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Card Background: ${themeManager.cardBackground}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Text Primary: ${themeManager.textPrimary}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Text Secondary: ${themeManager.textSecondary}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Success: ${themeManager.successColor}');
+
+    debugPrint('📱 PhoneLoginBottomSheet: → Primary: ${themeManager.primaryColor}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Background: ${themeManager.backgroundColor}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Card Background: ${themeManager.cardBackground}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Text Primary: ${themeManager.textPrimary}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Text Secondary: ${themeManager.textSecondary}');
+    debugPrint('📱 PhoneLoginBottomSheet: → Success: ${themeManager.successColor}');
     debugPrint('📱 PhoneLoginBottomSheet: → Error: ${themeManager.errorColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Screen size: ${screenSize.width}x${screenSize.height}');
+    debugPrint('📱 PhoneLoginBottomSheet: Screen size: ${screenSize.width}x${screenSize.height}');
 
     return SlideTransition(
       position: _slideAnimation,
@@ -486,8 +461,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const SizedBox(
-                                width: 40), // Spacer for center alignment
+                            const SizedBox(width: 40), // Spacer for center alignment
                             Text(
                               'Welcome Back',
                               style: TextStyle(
@@ -500,8 +474,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             // Close button with comprehensive ThemeManager styling
                             GestureDetector(
                               onTap: () {
-                                debugPrint(
-                                    '📱 PhoneLoginBottomSheet: Close button tapped');
+                                debugPrint('📱 PhoneLoginBottomSheet: Close button tapped');
                                 HapticFeedback.lightImpact();
                                 Navigator.pop(context);
                               },
@@ -526,10 +499,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                   borderRadius: BorderRadius.circular(20.r),
                                   border: Border.all(
                                     color: themeManager.conditionalColor(
-                                      lightColor: themeManager.borderColor
-                                          .withValues(alpha: 0.3),
-                                      darkColor: themeManager.borderSecondary
-                                          .withValues(alpha: 0.4),
+                                      lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                                      darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                                     ),
                                     width: 1,
                                   ),
@@ -615,8 +586,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             boxShadow: _errorMessage != null
                                 ? [
                                     BoxShadow(
-                                      color: themeManager.errorColor
-                                          .withValues(alpha: 0.2),
+                                      color: themeManager.errorColor.withValues(alpha: 0.2),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -640,8 +610,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       right: BorderSide(
                                         color: themeManager.conditionalColor(
                                           lightColor: themeManager.borderColor,
-                                          darkColor:
-                                              themeManager.borderSecondary,
+                                          darkColor: themeManager.borderSecondary,
                                         ),
                                         width: 1,
                                       ),
@@ -753,8 +722,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
-                              disabledBackgroundColor:
-                                  themeManager.conditionalColor(
+                              disabledBackgroundColor: themeManager.conditionalColor(
                                 lightColor: themeManager.neutral300,
                                 darkColor: themeManager.neutral700,
                               ),
@@ -765,8 +733,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                     height: 20.h,
                                     child: const CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                     ),
                                   )
                                 : Text(
@@ -1082,10 +1049,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: themeManager.conditionalColor(
-                              lightColor: themeManager.borderColor
-                                  .withValues(alpha: 0.3),
-                              darkColor: themeManager.borderSecondary
-                                  .withValues(alpha: 0.4),
+                              lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                              darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                             ),
                             width: 1,
                           ),
@@ -1117,8 +1082,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     ),
                     // Show selected country info with ThemeManager styling
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -1128,8 +1092,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                         ),
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                          color:
-                              themeManager.primaryColor.withValues(alpha: 0.3),
+                          color: themeManager.primaryColor.withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -1214,28 +1177,22 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 gradient: themeManager.conditionalGradient(
                                   lightGradient: LinearGradient(
                                     colors: [
-                                      themeManager.errorColor
-                                          .withValues(alpha: 0.15),
-                                      themeManager.errorLight
-                                          .withValues(alpha: 0.1),
+                                      themeManager.errorColor.withValues(alpha: 0.15),
+                                      themeManager.errorLight.withValues(alpha: 0.1),
                                     ],
                                   ),
                                   darkGradient: LinearGradient(
                                     colors: [
-                                      themeManager.errorDark
-                                          .withValues(alpha: 0.2),
-                                      themeManager.errorColor
-                                          .withValues(alpha: 0.15),
+                                      themeManager.errorDark.withValues(alpha: 0.2),
+                                      themeManager.errorColor.withValues(alpha: 0.15),
                                     ],
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(6.r),
                                 border: Border.all(
                                   color: themeManager.conditionalColor(
-                                    lightColor: themeManager.errorColor
-                                        .withValues(alpha: 0.3),
-                                    darkColor: themeManager.errorDark
-                                        .withValues(alpha: 0.4),
+                                    lightColor: themeManager.errorColor.withValues(alpha: 0.3),
+                                    darkColor: themeManager.errorDark.withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
@@ -1275,12 +1232,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                   builder: (context) {
                     final filteredCountries = _countries.where((country) {
                       if (_searchQuery.isEmpty) return true;
-                      return country['name']!
-                              .toLowerCase()
-                              .contains(_searchQuery) ||
-                          country['code']!
-                              .toLowerCase()
-                              .contains(_searchQuery.replaceAll('+', ''));
+                      return country['name']!.toLowerCase().contains(_searchQuery) ||
+                          country['code']!.toLowerCase().contains(_searchQuery.replaceAll('+', ''));
                     }).toList();
 
                     if (filteredCountries.isEmpty) {
@@ -1326,8 +1279,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       itemBuilder: (context, index) {
                         final country = filteredCountries[index];
-                        final isSelected =
-                            country['code'] == _selectedCountryCode;
+                        final isSelected = country['code'] == _selectedCountryCode;
 
                         return Container(
                           margin: EdgeInsets.symmetric(vertical: 2.h),
@@ -1335,25 +1287,21 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             gradient: isSelected
                                 ? LinearGradient(
                                     colors: [
-                                      themeManager.primaryColor
-                                          .withValues(alpha: 0.15),
-                                      themeManager.primaryLight
-                                          .withValues(alpha: 0.1),
+                                      themeManager.primaryColor.withValues(alpha: 0.15),
+                                      themeManager.primaryLight.withValues(alpha: 0.1),
                                     ],
                                   )
                                 : null,
                             borderRadius: BorderRadius.circular(8.r),
                             border: isSelected
                                 ? Border.all(
-                                    color: themeManager.primaryColor
-                                        .withValues(alpha: 0.3),
+                                    color: themeManager.primaryColor.withValues(alpha: 0.3),
                                     width: 1,
                                   )
                                 : null,
                           ),
                           child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 4.h),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
                             leading: Container(
                               width: 40.w,
                               height: 40.h,
@@ -1375,10 +1323,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 borderRadius: BorderRadius.circular(20.r),
                                 border: Border.all(
                                   color: themeManager.conditionalColor(
-                                    lightColor: themeManager.borderColor
-                                        .withValues(alpha: 0.3),
-                                    darkColor: themeManager.borderSecondary
-                                        .withValues(alpha: 0.4),
+                                    lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                                    darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
@@ -1405,8 +1351,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 4.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                                   decoration: BoxDecoration(
                                     gradient: themeManager.conditionalGradient(
                                       lightGradient: LinearGradient(
@@ -1425,10 +1370,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                     borderRadius: BorderRadius.circular(6.r),
                                     border: Border.all(
                                       color: themeManager.conditionalColor(
-                                        lightColor: themeManager.borderColor
-                                            .withValues(alpha: 0.3),
-                                        darkColor: themeManager.borderSecondary
-                                            .withValues(alpha: 0.4),
+                                        lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                                        darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                                       ),
                                       width: 1,
                                     ),
@@ -1460,8 +1403,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: themeManager.primaryColor
-                                              .withValues(alpha: 0.3),
+                                          color: themeManager.primaryColor.withValues(alpha: 0.3),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -1532,11 +1474,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Bermuda', 'code': '+1', 'flag': '🇧🇲'},
     {'name': 'Bhutan', 'code': '+975', 'flag': '🇧🇹'},
     {'name': 'Bolivia', 'code': '+591', 'flag': '🇧🇴'},
-    {
-      'name': 'Bonaire, Sint Eustatius and Saba',
-      'code': '+599',
-      'flag': '🇧🇶'
-    },
+    {'name': 'Bonaire, Sint Eustatius and Saba', 'code': '+599', 'flag': '🇧🇶'},
     {'name': 'Bosnia and Herzegovina', 'code': '+387', 'flag': '🇧🇦'},
     {'name': 'Botswana', 'code': '+267', 'flag': '🇧🇼'},
     {'name': 'Bouvet Island', 'code': '+47', 'flag': '🇧🇻'},
@@ -1606,11 +1544,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Guinea-Bissau', 'code': '+245', 'flag': '🇬🇼'},
     {'name': 'Guyana', 'code': '+592', 'flag': '🇬🇾'},
     {'name': 'Haiti', 'code': '+509', 'flag': '🇭🇹'},
-    {
-      'name': 'Heard Island and McDonald Islands',
-      'code': '+672',
-      'flag': '🇭🇲'
-    },
+    {'name': 'Heard Island and McDonald Islands', 'code': '+672', 'flag': '🇭🇲'},
     {'name': 'Holy See', 'code': '+379', 'flag': '🇻🇦'},
     {'name': 'Honduras', 'code': '+504', 'flag': '🇭🇳'},
     {'name': 'Hong Kong', 'code': '+852', 'flag': '🇭🇰'},
@@ -1719,11 +1653,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Solomon Islands', 'code': '+677', 'flag': '🇸🇧'},
     {'name': 'Somalia', 'code': '+252', 'flag': '🇸🇴'},
     {'name': 'South Africa', 'code': '+27', 'flag': '🇿🇦'},
-    {
-      'name': 'South Georgia and the South Sandwich Islands',
-      'code': '+500',
-      'flag': '🇬🇸'
-    },
+    {'name': 'South Georgia and the South Sandwich Islands', 'code': '+500', 'flag': '🇬🇸'},
     {'name': 'South Korea', 'code': '+82', 'flag': '🇰🇷'},
     {'name': 'South Sudan', 'code': '+211', 'flag': '🇸🇸'},
     {'name': 'Spain', 'code': '+34', 'flag': '🇪🇸'},
@@ -1753,11 +1683,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'United Arab Emirates', 'code': '+971', 'flag': '🇦🇪'},
     {'name': 'United Kingdom', 'code': '+44', 'flag': '🇬🇧'},
     {'name': 'United States', 'code': '+1', 'flag': '🇺🇸'},
-    {
-      'name': 'United States Minor Outlying Islands',
-      'code': '+1',
-      'flag': '🇺🇲'
-    },
+    {'name': 'United States Minor Outlying Islands', 'code': '+1', 'flag': '🇺🇲'},
     {'name': 'Uruguay', 'code': '+598', 'flag': '🇺🇾'},
     {'name': 'US Virgin Islands', 'code': '+1', 'flag': '🇻🇮'},
     {'name': 'Uzbekistan', 'code': '+998', 'flag': '🇺🇿'},

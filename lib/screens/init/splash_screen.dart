@@ -445,7 +445,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     final themeManager = ThemeManager.of(context);
 
     // Enhanced debug logging with all ThemeManager features
-    themeManager.logThemeInfo();
+
     debugPrint('🚀 SplashScreen: Building with enhanced ThemeManager features');
     debugPrint('🚀 SplashScreen: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
 
@@ -759,7 +759,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     child: Text(
                       'Prbal',
                       style: TextStyle(
-                        fontFamily: 'SourGummy',
+                        fontFamily: ThemeManager.fontFamilyPrimary,
                         fontSize: 64.sp,
                         fontWeight: FontWeight.w800, // ExtraBold
                         color: Colors.white,
@@ -804,7 +804,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     child: Text(
                       'Your Service Marketplace',
                       style: TextStyle(
-                        fontFamily: 'SourGummy',
+                        fontFamily: ThemeManager.fontFamilySemiExpanded,
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w600, // SemiBold
                         color: themeManager.textPrimary,
@@ -842,7 +842,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     child: Text(
                       'Connect • Serve • Thrive',
                       style: TextStyle(
-                        fontFamily: 'SourGummy',
+                        fontFamily: ThemeManager.fontFamilySemiExpanded,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500, // Medium
                         color: themeManager.textSecondary,
@@ -865,7 +865,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                   Text(
                     'Powered by Innovation',
                     style: TextStyle(
-                      fontFamily: 'SourGummy',
+                      fontFamily: ThemeManager.fontFamilyPrimary,
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w400, // Regular
                       fontStyle: FontStyle.italic,
@@ -894,7 +894,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     child: Text(
                       'Excellence in Every Service',
                       style: TextStyle(
-                        fontFamily: 'SourGummy',
+                        fontFamily: ThemeManager.fontFamilyPrimary,
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w300, // Light
                         color: themeManager.textQuaternary,
@@ -979,7 +979,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         Text(
           label,
           style: TextStyle(
-            fontFamily: 'SourGummy',
+            fontFamily: ThemeManager.fontFamilyPrimary,
             fontSize: 11.sp,
             fontWeight: FontWeight.w500, // Medium
             color: themeManager.textQuaternary,
@@ -1040,7 +1040,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         Text(
                           _isInitializationComplete ? 'loading.ready'.tr() : 'loading.loading'.tr(),
                           style: TextStyle(
-                            fontFamily: 'SourGummy',
+                            fontFamily: ThemeManager.fontFamilySemiExpanded,
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600, // SemiBold
                             color: _isInitializationComplete ? themeManager.successColor : themeManager.warningColor,
@@ -1086,7 +1086,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         _loadingText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontFamily: 'SourGummy',
+                          fontFamily: ThemeManager.fontFamilyPrimary,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500, // Medium
                           color: themeManager.textSecondary,
@@ -1123,7 +1123,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                       Text(
                         'loading.processing'.tr(),
                         style: TextStyle(
-                          fontFamily: 'SourGummy',
+                          fontFamily: ThemeManager.fontFamilyPrimary,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w500, // Medium
                           color: themeManager.textTertiary,
@@ -1139,7 +1139,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         child: Text(
                           '${(_progressValue.value * 100).toInt()}%',
                           style: TextStyle(
-                            fontFamily: 'SourGummy',
+                            fontFamily: ThemeManager.fontFamilySemiExpanded,
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w700, // Bold
                             color: themeManager.textInverted,
@@ -1213,7 +1213,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
               Text(
                 'footer.copyright'.tr(),
                 style: TextStyle(
-                  fontFamily: 'SourGummy',
+                  fontFamily: ThemeManager.fontFamilyPrimary,
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w300, // Light
                   color: themeManager.textDisabled,
@@ -1231,7 +1231,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                   Text(
                     'footer.secure'.tr(),
                     style: TextStyle(
-                      fontFamily: 'SourGummy',
+                      fontFamily: ThemeManager.fontFamilySemiExpanded,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w600, // SemiBold
                       color: themeManager.verifiedColor,

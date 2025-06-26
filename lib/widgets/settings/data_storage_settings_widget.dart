@@ -76,19 +76,15 @@ class DataStorageSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
-    themeManager.logThemeInfo();
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
+
+    debugPrint('⚙️ DataStorageSettingsWidget: → Primary: ${themeManager.primaryColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Accent Colors: ${themeManager.accent1}, ${themeManager.accent2}, ${themeManager.accent3}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Text Colors - Primary: ${themeManager.textPrimary}, Secondary: ${themeManager.textSecondary}');
 

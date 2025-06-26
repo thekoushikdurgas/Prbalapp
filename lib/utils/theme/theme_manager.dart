@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// **ThemeManager** - Centralized theme management utility
 ///
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 /// - Pre-built gradient combinations
 /// - Material Design 3.0 compliance
 /// - Debug logging for theme operations
+/// - Comprehensive SourGummy typography system
 class ThemeManager {
   final BuildContext context;
   final ThemeData theme;
@@ -26,12 +28,221 @@ class ThemeManager {
     return ThemeManager._(context);
   }
 
+  // =================== SOUR GUMMY FONT FAMILY CONSTANTS ===================
+
+  /// Primary SourGummy font family for standard text
+  static const String fontFamilyPrimary = 'SourGummy';
+
+  /// SourGummy Expanded for headings and emphasis
+  static const String fontFamilyExpanded = 'SourGummy_Expanded';
+
+  /// SourGummy SemiExpanded for subheadings and titles
+  static const String fontFamilySemiExpanded = 'SourGummy_SemiExpanded';
+
+  // =================== TYPOGRAPHY SYSTEM ===================
+
+  /// Get comprehensive typography theme using SourGummy fonts
+  static TextTheme _getSourGummyTextTheme(bool isDark) {
+    final Color primaryTextColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
+    final Color secondaryTextColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF4B5563);
+    final Color tertiaryTextColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280);
+
+    return TextTheme(
+      // Display styles - SourGummy Expanded for maximum impact
+      displayLarge: TextStyle(
+        fontFamily: fontFamilyExpanded,
+        fontSize: 57.sp,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.25,
+        height: 1.12,
+        color: primaryTextColor,
+      ),
+      displayMedium: TextStyle(
+        fontFamily: fontFamilyExpanded,
+        fontSize: 45.sp,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0,
+        height: 1.16,
+        color: primaryTextColor,
+      ),
+      displaySmall: TextStyle(
+        fontFamily: fontFamilySemiExpanded,
+        fontSize: 36.sp,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0,
+        height: 1.22,
+        color: primaryTextColor,
+      ),
+
+      // Headline styles - SourGummy SemiExpanded for structure
+      headlineLarge: TextStyle(
+        fontFamily: fontFamilySemiExpanded,
+        fontSize: 32.sp,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0,
+        height: 1.25,
+        color: primaryTextColor,
+      ),
+      headlineMedium: TextStyle(
+        fontFamily: fontFamilySemiExpanded,
+        fontSize: 28.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+        height: 1.29,
+        color: primaryTextColor,
+      ),
+      headlineSmall: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 24.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+        height: 1.33,
+        color: primaryTextColor,
+      ),
+
+      // Title styles - SourGummy Primary for balance
+      titleLarge: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 22.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+        height: 1.27,
+        color: primaryTextColor,
+      ),
+      titleMedium: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.15,
+        height: 1.5,
+        color: primaryTextColor,
+      ),
+      titleSmall: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.1,
+        height: 1.43,
+        color: primaryTextColor,
+      ),
+
+      // Label styles - SourGummy Primary for UI elements
+      labelLarge: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.1,
+        height: 1.43,
+        color: secondaryTextColor,
+      ),
+      labelMedium: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
+        height: 1.33,
+        color: secondaryTextColor,
+      ),
+      labelSmall: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 11.sp,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
+        height: 1.45,
+        color: tertiaryTextColor,
+      ),
+
+      // Body styles - SourGummy Primary for readability
+      bodyLarge: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.5,
+        height: 1.5,
+        color: primaryTextColor,
+      ),
+      bodyMedium: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.25,
+        height: 1.43,
+        color: primaryTextColor,
+      ),
+      bodySmall: TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.4,
+        height: 1.33,
+        color: secondaryTextColor,
+      ),
+    );
+  }
+
+  /// Get custom typography styles for specific use cases
+  TextStyle get customHeadingXL => TextStyle(
+        fontFamily: fontFamilyExpanded,
+        fontSize: 64.sp,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -1,
+        height: 1.1,
+        color: textPrimary,
+      );
+
+  TextStyle get customHeadingLogo => TextStyle(
+        fontFamily: fontFamilyExpanded,
+        fontSize: 32.sp,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 2,
+        height: 1.2,
+        color: primaryColor,
+      );
+
+  TextStyle get customButtonText => TextStyle(
+        fontFamily: fontFamilySemiExpanded,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1,
+        height: 1.2,
+        color: textInverted,
+      );
+
+  TextStyle get customCaption => TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 10.sp,
+        fontWeight: FontWeight.w300,
+        letterSpacing: 0.5,
+        height: 1.4,
+        color: textTertiary,
+      );
+
+  TextStyle get customCardTitle => TextStyle(
+        fontFamily: fontFamilySemiExpanded,
+        fontSize: 18.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.15,
+        height: 1.4,
+        color: textPrimary,
+      );
+
+  TextStyle get customCardSubtitle => TextStyle(
+        fontFamily: fontFamilyPrimary,
+        fontSize: 13.sp,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.25,
+        height: 1.3,
+        color: textSecondary,
+      );
+
   // =================== THEME DATA CREATION ===================
 
   /// Create light theme data compatible with ThemeManager system
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
+        fontFamily: fontFamilyPrimary, // Set default font family
+        textTheme: _getSourGummyTextTheme(false),
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF6366F1),
           secondary: Color(0xFF10B981),
@@ -42,11 +253,17 @@ class ThemeManager {
           onSurface: Color(0xFF111827),
           onError: Color(0xFFFFFFFF),
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFFFFFF),
-          foregroundColor: Color(0xFF111827),
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color(0xFFFFFFFF),
+          foregroundColor: const Color(0xFF111827),
           elevation: 0,
           centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontFamily: fontFamilySemiExpanded,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF111827),
+          ),
         ),
         cardTheme: CardThemeData(
           color: const Color(0xFFFFFFFF),
@@ -60,6 +277,12 @@ class ThemeManager {
             backgroundColor: const Color(0xFF6366F1),
             foregroundColor: const Color(0xFFFFFFFF),
             elevation: 2,
+            textStyle: TextStyle(
+              fontFamily: fontFamilySemiExpanded,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -68,6 +291,17 @@ class ThemeManager {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: const Color(0xFFFFFFFF),
+          labelStyle: TextStyle(
+            fontFamily: fontFamilyPrimary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          hintStyle: TextStyle(
+            fontFamily: fontFamilyPrimary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF9CA3AF),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
@@ -87,6 +321,8 @@ class ThemeManager {
   static ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
+        fontFamily: fontFamilyPrimary, // Set default font family
+        textTheme: _getSourGummyTextTheme(true),
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFF8B5CF6),
           secondary: Color(0xFF10B981),
@@ -97,11 +333,17 @@ class ThemeManager {
           onSurface: Color(0xFFF1F5F9),
           onError: Color(0xFFFFFFFF),
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E293B),
-          foregroundColor: Color(0xFFF1F5F9),
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color(0xFF1E293B),
+          foregroundColor: const Color(0xFFF1F5F9),
           elevation: 0,
           centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontFamily: fontFamilySemiExpanded,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFFF1F5F9),
+          ),
         ),
         cardTheme: CardThemeData(
           color: const Color(0xFF1E293B),
@@ -115,6 +357,12 @@ class ThemeManager {
             backgroundColor: const Color(0xFF8B5CF6),
             foregroundColor: const Color(0xFFFFFFFF),
             elevation: 4,
+            textStyle: TextStyle(
+              fontFamily: fontFamilySemiExpanded,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -123,6 +371,17 @@ class ThemeManager {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: const Color(0xFF1E293B),
+          labelStyle: TextStyle(
+            fontFamily: fontFamilyPrimary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          hintStyle: TextStyle(
+            fontFamily: fontFamilyPrimary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF64748B),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Color(0xFF334155)),
@@ -304,8 +563,7 @@ class ThemeManager {
   Color get secondaryColor => colorScheme.secondary;
 
   /// Background color
-  Color get backgroundColor =>
-      themeManager ? const Color(0xFF0F0F23) : const Color(0xFFFAFAFA);
+  Color get backgroundColor => themeManager ? const Color(0xFF0F0F23) : const Color(0xFFFAFAFA);
 
   /// Surface color
   Color get surfaceColor => colorScheme.surface;
@@ -313,290 +571,224 @@ class ThemeManager {
   // =================== TEXT COLORS ===================
 
   /// Primary text color - highest contrast
-  Color get textPrimary =>
-      themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
+  Color get textPrimary => themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
 
   /// Secondary text color - medium contrast
-  Color get textSecondary =>
-      themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+  Color get textSecondary => themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
 
   /// Tertiary text color - low contrast
-  Color get textTertiary =>
-      themeManager ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF);
+  Color get textTertiary => themeManager ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF);
 
   /// Quaternary text color - subtle hints
-  Color get textQuaternary =>
-      themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB);
+  Color get textQuaternary => themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB);
 
   /// Disabled text color
-  Color get textDisabled =>
-      themeManager ? const Color(0xFF475569) : const Color(0xFFE5E7EB);
+  Color get textDisabled => themeManager ? const Color(0xFF475569) : const Color(0xFFE5E7EB);
 
   /// Inverted text color - for use on primary/dark backgrounds
-  Color get textInverted =>
-      themeManager ? const Color(0xFF111827) : const Color(0xFFF1F5F9);
+  Color get textInverted => themeManager ? const Color(0xFF111827) : const Color(0xFFF1F5F9);
 
   // =================== BACKGROUND COLORS ===================
 
   /// Secondary background color
-  Color get backgroundSecondary =>
-      themeManager ? const Color(0xFF1A1A2E) : const Color(0xFFF8FAFC);
+  Color get backgroundSecondary => themeManager ? const Color(0xFF1A1A2E) : const Color(0xFFF8FAFC);
 
   /// Tertiary background color
-  Color get backgroundTertiary =>
-      themeManager ? const Color(0xFF16213E) : const Color(0xFFE2E8F0);
+  Color get backgroundTertiary => themeManager ? const Color(0xFF16213E) : const Color(0xFFE2E8F0);
 
   /// Card background color
-  Color get cardBackground =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
+  Color get cardBackground => themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
 
   /// Elevated surface color
-  Color get surfaceElevated =>
-      themeManager ? const Color(0xFF334155) : const Color(0xFFF9FAFB);
+  Color get surfaceElevated => themeManager ? const Color(0xFF334155) : const Color(0xFFF9FAFB);
 
   /// Modal background color
-  Color get modalBackground =>
-      themeManager ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF);
+  Color get modalBackground => themeManager ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF);
 
   /// Overlay background color
-  Color get overlayBackground => themeManager
-      ? Colors.black.withValues(alpha: 0.7)
-      : Colors.black.withValues(alpha: 0.5);
+  Color get overlayBackground =>
+      themeManager ? Colors.black.withValues(alpha: 0.7) : Colors.black.withValues(alpha: 0.5);
 
   // =================== BORDER COLORS ===================
 
   /// Primary border color
-  Color get borderColor =>
-      themeManager ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
+  Color get borderColor => themeManager ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
 
   /// Secondary border color - lighter
-  Color get borderSecondary =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
+  Color get borderSecondary => themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
 
   /// Focus border color
-  Color get borderFocus =>
-      themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF6366F1);
+  Color get borderFocus => themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF6366F1);
 
   /// Divider color
-  Color get dividerColor =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
+  Color get dividerColor => themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
 
   // =================== STATUS COLORS ===================
 
   /// Success color - green
-  Color get successColor =>
-      themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
+  Color get successColor => themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
 
   /// Success light variant
-  Color get successLight =>
-      themeManager ? const Color(0xFF34D399) : const Color(0xFF10B981);
+  Color get successLight => themeManager ? const Color(0xFF34D399) : const Color(0xFF10B981);
 
   /// Success dark variant
-  Color get successDark =>
-      themeManager ? const Color(0xFF047857) : const Color(0xFF065F46);
+  Color get successDark => themeManager ? const Color(0xFF047857) : const Color(0xFF065F46);
 
   /// Warning color - yellow/orange
-  Color get warningColor =>
-      themeManager ? const Color(0xFFEAB308) : const Color(0xFFD97706);
+  Color get warningColor => themeManager ? const Color(0xFFEAB308) : const Color(0xFFD97706);
 
   /// Warning light variant
-  Color get warningLight =>
-      themeManager ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B);
+  Color get warningLight => themeManager ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B);
 
   /// Warning dark variant
-  Color get warningDark =>
-      themeManager ? const Color(0xFFA16207) : const Color(0xFF92400E);
+  Color get warningDark => themeManager ? const Color(0xFFA16207) : const Color(0xFF92400E);
 
   /// Error color - red
-  Color get errorColor =>
-      themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
+  Color get errorColor => themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
 
   /// Error light variant
-  Color get errorLight =>
-      themeManager ? const Color(0xFFF87171) : const Color(0xFFEF4444);
+  Color get errorLight => themeManager ? const Color(0xFFF87171) : const Color(0xFFEF4444);
 
   /// Error dark variant
-  Color get errorDark =>
-      themeManager ? const Color(0xFFB91C1C) : const Color(0xFF991B1B);
+  Color get errorDark => themeManager ? const Color(0xFFB91C1C) : const Color(0xFF991B1B);
 
   /// Info color - blue
-  Color get infoColor =>
-      themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+  Color get infoColor => themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
 
   /// Info light variant
-  Color get infoLight =>
-      themeManager ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
+  Color get infoLight => themeManager ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
 
   /// Info dark variant
-  Color get infoDark =>
-      themeManager ? const Color(0xFF1D4ED8) : const Color(0xFF1E40AF);
+  Color get infoDark => themeManager ? const Color(0xFF1D4ED8) : const Color(0xFF1E40AF);
 
   // =================== ACCENT COLORS ===================
 
   /// Accent color 1 - Purple
-  Color get accent1 =>
-      themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED);
+  Color get accent1 => themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED);
 
   /// Accent color 2 - Pink
-  Color get accent2 =>
-      themeManager ? const Color(0xFFEC4899) : const Color(0xFFDB2777);
+  Color get accent2 => themeManager ? const Color(0xFFEC4899) : const Color(0xFFDB2777);
 
   /// Accent color 3 - Teal
-  Color get accent3 =>
-      themeManager ? const Color(0xFF06D6A0) : const Color(0xFF0D9488);
+  Color get accent3 => themeManager ? const Color(0xFF06D6A0) : const Color(0xFF0D9488);
 
   /// Accent color 4 - Orange
-  Color get accent4 =>
-      themeManager ? const Color(0xFFFF6B35) : const Color(0xFFEA580C);
+  Color get accent4 => themeManager ? const Color(0xFFFF6B35) : const Color(0xFFEA580C);
 
   /// Accent color 5 - Indigo
-  Color get accent5 =>
-      themeManager ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
+  Color get accent5 => themeManager ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
 
   // =================== NEUTRAL COLORS ===================
 
   /// Neutral 50
-  Color get neutral50 =>
-      themeManager ? const Color(0xFF64748B) : const Color(0xFFFAFAFA);
+  Color get neutral50 => themeManager ? const Color(0xFF64748B) : const Color(0xFFFAFAFA);
 
   /// Neutral 100
-  Color get neutral100 =>
-      themeManager ? const Color(0xFF475569) : const Color(0xFFF5F5F5);
+  Color get neutral100 => themeManager ? const Color(0xFF475569) : const Color(0xFFF5F5F5);
 
   /// Neutral 200
-  Color get neutral200 =>
-      themeManager ? const Color(0xFF334155) : const Color(0xFFEEEEEE);
+  Color get neutral200 => themeManager ? const Color(0xFF334155) : const Color(0xFFEEEEEE);
 
   /// Neutral 300
-  Color get neutral300 =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFFE0E0E0);
+  Color get neutral300 => themeManager ? const Color(0xFF1E293B) : const Color(0xFFE0E0E0);
 
   /// Neutral 400
-  Color get neutral400 =>
-      themeManager ? const Color(0xFF0F172A) : const Color(0xFFBDBDBD);
+  Color get neutral400 => themeManager ? const Color(0xFF0F172A) : const Color(0xFFBDBDBD);
 
   /// Neutral 500
-  Color get neutral500 =>
-      themeManager ? const Color(0xFF0F172A) : const Color(0xFF9E9E9E);
+  Color get neutral500 => themeManager ? const Color(0xFF0F172A) : const Color(0xFF9E9E9E);
 
   /// Neutral 600
-  Color get neutral600 =>
-      themeManager ? const Color(0xFF475569) : const Color(0xFF757575);
+  Color get neutral600 => themeManager ? const Color(0xFF475569) : const Color(0xFF757575);
 
   /// Neutral 700
-  Color get neutral700 =>
-      themeManager ? const Color(0xFF64748B) : const Color(0xFF616161);
+  Color get neutral700 => themeManager ? const Color(0xFF64748B) : const Color(0xFF616161);
 
   /// Neutral 800
-  Color get neutral800 =>
-      themeManager ? const Color(0xFF94A3B8) : const Color(0xFF424242);
+  Color get neutral800 => themeManager ? const Color(0xFF94A3B8) : const Color(0xFF424242);
 
   /// Neutral 900
-  Color get neutral900 =>
-      themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF212121);
+  Color get neutral900 => themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF212121);
 
   // =================== INTERACTIVE COLORS ===================
 
   /// Button background - default state
-  Color get buttonBackground =>
-      themeManager ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+  Color get buttonBackground => themeManager ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
 
   /// Button background - hover state
-  Color get buttonBackgroundHover =>
-      themeManager ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+  Color get buttonBackgroundHover => themeManager ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
 
   /// Button background - pressed state
-  Color get buttonBackgroundPressed =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFF94A3B8);
+  Color get buttonBackgroundPressed => themeManager ? const Color(0xFF1E293B) : const Color(0xFF94A3B8);
 
   /// Button background - disabled state
-  Color get buttonBackgroundDisabled =>
-      themeManager ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+  Color get buttonBackgroundDisabled => themeManager ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
 
   /// Input field background
-  Color get inputBackground =>
-      themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
+  Color get inputBackground => themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
 
   /// Input field background - focused
-  Color get inputBackgroundFocused =>
-      themeManager ? const Color(0xFF334155) : const Color(0xFFFAFAFA);
+  Color get inputBackgroundFocused => themeManager ? const Color(0xFF334155) : const Color(0xFFFAFAFA);
 
   /// Input field background - disabled
-  Color get inputBackgroundDisabled =>
-      themeManager ? const Color(0xFF0F172A) : const Color(0xFFF5F5F5);
+  Color get inputBackgroundDisabled => themeManager ? const Color(0xFF0F172A) : const Color(0xFFF5F5F5);
 
   // =================== BRAND COLORS ===================
 
   /// Primary brand color variants
-  Color get primaryLight =>
-      themeManager ? const Color(0xFFA78BFA) : const Color(0xFF8B5DFF);
-  Color get primaryDark =>
-      themeManager ? const Color(0xFF6D28D9) : const Color(0xFF5B21B6);
+  Color get primaryLight => themeManager ? const Color(0xFFA78BFA) : const Color(0xFF8B5DFF);
+  Color get primaryDark => themeManager ? const Color(0xFF6D28D9) : const Color(0xFF5B21B6);
 
   /// Secondary brand color variants
-  Color get secondaryLight =>
-      themeManager ? const Color(0xFF34D399) : const Color(0xFF34D399);
-  Color get secondaryDark =>
-      themeManager ? const Color(0xFF047857) : const Color(0xFF047857);
+  Color get secondaryLight => themeManager ? const Color(0xFF34D399) : const Color(0xFF34D399);
+  Color get secondaryDark => themeManager ? const Color(0xFF047857) : const Color(0xFF047857);
 
   // =================== SEMANTIC COLORS ===================
 
   /// Online/Active status
-  Color get statusOnline =>
-      themeManager ? const Color(0xFF10B981) : const Color(0xFF22C55E);
+  Color get statusOnline => themeManager ? const Color(0xFF10B981) : const Color(0xFF22C55E);
 
   /// Offline/Inactive status
-  Color get statusOffline =>
-      themeManager ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
+  Color get statusOffline => themeManager ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
 
   /// Away status
-  Color get statusAway =>
-      themeManager ? const Color(0xFFF59E0B) : const Color(0xFFEAB308);
+  Color get statusAway => themeManager ? const Color(0xFFF59E0B) : const Color(0xFFEAB308);
 
   /// Busy/Do not disturb status
-  Color get statusBusy =>
-      themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
+  Color get statusBusy => themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
 
   /// Favorite/Like color
-  Color get favoriteColor =>
-      themeManager ? const Color(0xFFFF6B9D) : const Color(0xFFE91E63);
+  Color get favoriteColor => themeManager ? const Color(0xFFFF6B9D) : const Color(0xFFE91E63);
 
   /// Rating/Star color
-  Color get ratingColor =>
-      themeManager ? const Color(0xFFFBBF24) : const Color(0xFFEAB308);
+  Color get ratingColor => themeManager ? const Color(0xFFFBBF24) : const Color(0xFFEAB308);
 
   /// New/Unread indicator
-  Color get newIndicator =>
-      themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+  Color get newIndicator => themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
 
   /// Verified badge color
-  Color get verifiedColor =>
-      themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
+  Color get verifiedColor => themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
 
   // =================== SHADOW COLORS ===================
 
   /// Light shadow color
-  Color get shadowLight => themeManager
-      ? Colors.black.withValues(alpha: 0.1)
-      : Colors.grey.shade200.withValues(alpha: 0.5);
+  Color get shadowLight =>
+      themeManager ? Colors.black.withValues(alpha: 0.1) : Colors.grey.shade200.withValues(alpha: 0.5);
 
   /// Medium shadow color
-  Color get shadowMedium => themeManager
-      ? Colors.black.withValues(alpha: 0.2)
-      : Colors.grey.shade300.withValues(alpha: 0.7);
+  Color get shadowMedium =>
+      themeManager ? Colors.black.withValues(alpha: 0.2) : Colors.grey.shade300.withValues(alpha: 0.7);
 
   /// Dark shadow color
-  Color get shadowDark => themeManager
-      ? Colors.black.withValues(alpha: 0.3)
-      : Colors.grey.shade400.withValues(alpha: 0.9);
+  Color get shadowDark =>
+      themeManager ? Colors.black.withValues(alpha: 0.3) : Colors.grey.shade400.withValues(alpha: 0.9);
 
   // =================== SHADOWS AND EFFECTS ===================
 
   /// Primary shadow
   List<BoxShadow> get primaryShadow => [
         BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade300)
-              .withValues(alpha: 0.1),
+          color: (themeManager ? Colors.black : Colors.grey.shade300).withValues(alpha: 0.1),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),
@@ -605,8 +797,7 @@ class ThemeManager {
   /// Elevated shadow
   List<BoxShadow> get elevatedShadow => [
         BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade400)
-              .withValues(alpha: 0.15),
+          color: (themeManager ? Colors.black : Colors.grey.shade400).withValues(alpha: 0.15),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -615,8 +806,7 @@ class ThemeManager {
   /// Subtle shadow for minimal elevation
   List<BoxShadow> get subtleShadow => [
         BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade200)
-              .withValues(alpha: 0.08),
+          color: (themeManager ? Colors.black : Colors.grey.shade200).withValues(alpha: 0.08),
           blurRadius: 6,
           offset: const Offset(0, 2),
         ),
@@ -624,18 +814,15 @@ class ThemeManager {
 
   /// Glass morphism effect
   BoxDecoration get glassMorphism => BoxDecoration(
-        color: (themeManager ? Colors.white : Colors.black)
-            .withValues(alpha: 0.05),
+        color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: (themeManager ? Colors.white : Colors.black)
-              .withValues(alpha: 0.1),
+          color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.1),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: (themeManager ? Colors.black : Colors.grey.shade300)
-                .withValues(alpha: 0.1),
+            color: (themeManager ? Colors.black : Colors.grey.shade300).withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -644,12 +831,10 @@ class ThemeManager {
 
   /// Enhanced glass morphism with stronger effects
   BoxDecoration get enhancedGlassMorphism => BoxDecoration(
-        color: (themeManager ? Colors.white : Colors.black)
-            .withValues(alpha: 0.08),
+        color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: (themeManager ? Colors.white : Colors.black)
-              .withValues(alpha: 0.15),
+          color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.15),
           width: 1.5,
         ),
         boxShadow: elevatedShadow,
@@ -709,13 +894,10 @@ class ThemeManager {
 
   /// Log current theme information
   void logThemeInfo() {
-    debugPrint(
-        '🎨 ThemeManager: Current theme mode: ${themeManager ? 'dark' : 'light'}');
+    debugPrint('🎨 ThemeManager: Current theme mode: ${themeManager ? 'dark' : 'light'}');
     debugPrint('🎨 ThemeManager: Primary color: ${primaryColor.toString()}');
-    debugPrint(
-        '🎨 ThemeManager: Secondary color: ${secondaryColor.toString()}');
-    debugPrint(
-        '🎨 ThemeManager: Background color: ${backgroundColor.toString()}');
+    debugPrint('🎨 ThemeManager: Secondary color: ${secondaryColor.toString()}');
+    debugPrint('🎨 ThemeManager: Background color: ${backgroundColor.toString()}');
   }
 
   /// Log gradient information for debugging
@@ -780,10 +962,8 @@ class ThemeManager {
     debugPrint('  - Divider: $dividerColor');
 
     debugPrint('  === STATUS COLORS ===');
-    debugPrint(
-        '  - Success: $successColor (Light: $successLight, Dark: $successDark)');
-    debugPrint(
-        '  - Warning: $warningColor (Light: $warningLight, Dark: $warningDark)');
+    debugPrint('  - Success: $successColor (Light: $successLight, Dark: $successDark)');
+    debugPrint('  - Warning: $warningColor (Light: $warningLight, Dark: $warningDark)');
     debugPrint('  - Error: $errorColor (Light: $errorLight, Dark: $errorDark)');
     debugPrint('  - Info: $infoColor (Light: $infoLight, Dark: $infoDark)');
 
@@ -813,6 +993,93 @@ class ThemeManager {
     debugPrint('  - Input Focused: $inputBackgroundFocused');
     debugPrint('  - Input Disabled: $inputBackgroundDisabled');
   }
+
+  /// Log comprehensive typography information for debugging
+  void logTypographyInfo() {
+    debugPrint('🔤 ======== SOUR GUMMY TYPOGRAPHY DEBUG ========');
+    debugPrint('🔤 Primary Font Family: $fontFamilyPrimary');
+    debugPrint('🔤 Expanded Font Family: $fontFamilyExpanded');
+    debugPrint('🔤 SemiExpanded Font Family: $fontFamilySemiExpanded');
+    debugPrint('🔤 Theme Default Font: ${theme.textTheme.bodyMedium?.fontFamily ?? 'System Default'}');
+    debugPrint(
+        '🔤 Display Large: ${theme.textTheme.displayLarge?.fontFamily} - ${theme.textTheme.displayLarge?.fontSize}sp');
+    debugPrint(
+        '🔤 Headline Large: ${theme.textTheme.headlineLarge?.fontFamily} - ${theme.textTheme.headlineLarge?.fontSize}sp');
+    debugPrint('🔤 Title Large: ${theme.textTheme.titleLarge?.fontFamily} - ${theme.textTheme.titleLarge?.fontSize}sp');
+    debugPrint('🔤 Body Large: ${theme.textTheme.bodyLarge?.fontFamily} - ${theme.textTheme.bodyLarge?.fontSize}sp');
+    debugPrint('🔤 Label Large: ${theme.textTheme.labelLarge?.fontFamily} - ${theme.textTheme.labelLarge?.fontSize}sp');
+    debugPrint('🔤 Custom Heading XL: ${customHeadingXL.fontFamily} - ${customHeadingXL.fontSize}sp');
+    debugPrint('🔤 Custom Logo: ${customHeadingLogo.fontFamily} - ${customHeadingLogo.fontSize}sp');
+    debugPrint('🔤 Custom Button: ${customButtonText.fontFamily} - ${customButtonText.fontSize}sp');
+    debugPrint('🔤 =============================================');
+  }
+
+  /// Log all typography styles with their properties
+  void logAllTypographyStyles() {
+    debugPrint('🔤 ========= ALL SOUR GUMMY TYPOGRAPHY STYLES =========');
+
+    // Display styles
+    debugPrint('📱 DISPLAY STYLES (SourGummy Expanded):');
+    debugPrint(
+        '  - Display Large: ${theme.textTheme.displayLarge?.fontFamily} | ${theme.textTheme.displayLarge?.fontSize}sp | ${theme.textTheme.displayLarge?.fontWeight}');
+    debugPrint(
+        '  - Display Medium: ${theme.textTheme.displayMedium?.fontFamily} | ${theme.textTheme.displayMedium?.fontSize}sp | ${theme.textTheme.displayMedium?.fontWeight}');
+    debugPrint(
+        '  - Display Small: ${theme.textTheme.displaySmall?.fontFamily} | ${theme.textTheme.displaySmall?.fontSize}sp | ${theme.textTheme.displaySmall?.fontWeight}');
+
+    // Headline styles
+    debugPrint('📰 HEADLINE STYLES (SourGummy SemiExpanded):');
+    debugPrint(
+        '  - Headline Large: ${theme.textTheme.headlineLarge?.fontFamily} | ${theme.textTheme.headlineLarge?.fontSize}sp | ${theme.textTheme.headlineLarge?.fontWeight}');
+    debugPrint(
+        '  - Headline Medium: ${theme.textTheme.headlineMedium?.fontFamily} | ${theme.textTheme.headlineMedium?.fontSize}sp | ${theme.textTheme.headlineMedium?.fontWeight}');
+    debugPrint(
+        '  - Headline Small: ${theme.textTheme.headlineSmall?.fontFamily} | ${theme.textTheme.headlineSmall?.fontSize}sp | ${theme.textTheme.headlineSmall?.fontWeight}');
+
+    // Title styles
+    debugPrint('🏷️ TITLE STYLES (SourGummy Primary):');
+    debugPrint(
+        '  - Title Large: ${theme.textTheme.titleLarge?.fontFamily} | ${theme.textTheme.titleLarge?.fontSize}sp | ${theme.textTheme.titleLarge?.fontWeight}');
+    debugPrint(
+        '  - Title Medium: ${theme.textTheme.titleMedium?.fontFamily} | ${theme.textTheme.titleMedium?.fontSize}sp | ${theme.textTheme.titleMedium?.fontWeight}');
+    debugPrint(
+        '  - Title Small: ${theme.textTheme.titleSmall?.fontFamily} | ${theme.textTheme.titleSmall?.fontSize}sp | ${theme.textTheme.titleSmall?.fontWeight}');
+
+    // Body styles
+    debugPrint('📝 BODY STYLES (SourGummy Primary):');
+    debugPrint(
+        '  - Body Large: ${theme.textTheme.bodyLarge?.fontFamily} | ${theme.textTheme.bodyLarge?.fontSize}sp | ${theme.textTheme.bodyLarge?.fontWeight}');
+    debugPrint(
+        '  - Body Medium: ${theme.textTheme.bodyMedium?.fontFamily} | ${theme.textTheme.bodyMedium?.fontSize}sp | ${theme.textTheme.bodyMedium?.fontWeight}');
+    debugPrint(
+        '  - Body Small: ${theme.textTheme.bodySmall?.fontFamily} | ${theme.textTheme.bodySmall?.fontSize}sp | ${theme.textTheme.bodySmall?.fontWeight}');
+
+    // Label styles
+    debugPrint('🏷️ LABEL STYLES (SourGummy Primary):');
+    debugPrint(
+        '  - Label Large: ${theme.textTheme.labelLarge?.fontFamily} | ${theme.textTheme.labelLarge?.fontSize}sp | ${theme.textTheme.labelLarge?.fontWeight}');
+    debugPrint(
+        '  - Label Medium: ${theme.textTheme.labelMedium?.fontFamily} | ${theme.textTheme.labelMedium?.fontSize}sp | ${theme.textTheme.labelMedium?.fontWeight}');
+    debugPrint(
+        '  - Label Small: ${theme.textTheme.labelSmall?.fontFamily} | ${theme.textTheme.labelSmall?.fontSize}sp | ${theme.textTheme.labelSmall?.fontWeight}');
+
+    // Custom styles
+    debugPrint('🎨 CUSTOM SOUR GUMMY STYLES:');
+    debugPrint(
+        '  - Custom Heading XL: ${customHeadingXL.fontFamily} | ${customHeadingXL.fontSize}sp | ${customHeadingXL.fontWeight}');
+    debugPrint(
+        '  - Custom Logo: ${customHeadingLogo.fontFamily} | ${customHeadingLogo.fontSize}sp | ${customHeadingLogo.fontWeight}');
+    debugPrint(
+        '  - Custom Button: ${customButtonText.fontFamily} | ${customButtonText.fontSize}sp | ${customButtonText.fontWeight}');
+    debugPrint(
+        '  - Custom Caption: ${customCaption.fontFamily} | ${customCaption.fontSize}sp | ${customCaption.fontWeight}');
+    debugPrint(
+        '  - Custom Card Title: ${customCardTitle.fontFamily} | ${customCardTitle.fontSize}sp | ${customCardTitle.fontWeight}');
+    debugPrint(
+        '  - Custom Card Subtitle: ${customCardSubtitle.fontFamily} | ${customCardSubtitle.fontSize}sp | ${customCardSubtitle.fontWeight}');
+
+    debugPrint('🔤 ====================================================');
+  }
 }
 
 /// **ThemeAwareMixin** - Mixin for easy theme access in StatefulWidgets
@@ -829,12 +1096,10 @@ class ThemeManager {
 /// ```
 mixin ThemeAwareMixin {
   /// Get ThemeManager instance
-  ThemeManager getThemeManager(BuildContext context) =>
-      ThemeManager.of(context);
+  ThemeManager getThemeManager(BuildContext context) => ThemeManager.of(context);
 
   /// Quick access to theme-aware colors
-  Color themeColor(BuildContext context,
-      {required Color light, required Color dark}) {
+  Color themeColor(BuildContext context, {required Color light, required Color dark}) {
     return ThemeManager.of(context).conditionalColor(
       lightColor: light,
       darkColor: dark,
@@ -842,8 +1107,7 @@ mixin ThemeAwareMixin {
   }
 
   /// Quick access to theme-aware gradients
-  LinearGradient themeGradient(BuildContext context,
-      {required LinearGradient light, required LinearGradient dark}) {
+  LinearGradient themeGradient(BuildContext context, {required LinearGradient light, required LinearGradient dark}) {
     return ThemeManager.of(context).conditionalGradient(
       lightGradient: light,
       darkGradient: dark,
@@ -869,7 +1133,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive debug logging
-    themeManager.logThemeInfo();
+
     themeManager.logGradientInfo();
     themeManager.logAllColors();
 
@@ -893,22 +1157,14 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
           children: [
             // Gradient Showcase
             _buildSection(themeManager, 'Gradients', [
-              _buildGradientCard(
-                  themeManager, 'Primary', themeManager.primaryGradient),
-              _buildGradientCard(
-                  themeManager, 'Secondary', themeManager.secondaryGradient),
-              _buildGradientCard(
-                  themeManager, 'Background', themeManager.backgroundGradient),
-              _buildGradientCard(
-                  themeManager, 'Surface', themeManager.surfaceGradient),
-              _buildGradientCard(
-                  themeManager, 'Success', themeManager.successGradient),
-              _buildGradientCard(
-                  themeManager, 'Warning', themeManager.warningGradient),
-              _buildGradientCard(
-                  themeManager, 'Error', themeManager.errorGradient),
-              _buildGradientCard(
-                  themeManager, 'Info', themeManager.infoGradient),
+              _buildGradientCard(themeManager, 'Primary', themeManager.primaryGradient),
+              _buildGradientCard(themeManager, 'Secondary', themeManager.secondaryGradient),
+              _buildGradientCard(themeManager, 'Background', themeManager.backgroundGradient),
+              _buildGradientCard(themeManager, 'Surface', themeManager.surfaceGradient),
+              _buildGradientCard(themeManager, 'Success', themeManager.successGradient),
+              _buildGradientCard(themeManager, 'Warning', themeManager.warningGradient),
+              _buildGradientCard(themeManager, 'Error', themeManager.errorGradient),
+              _buildGradientCard(themeManager, 'Info', themeManager.infoGradient),
             ]),
 
             const SizedBox(height: 24),
@@ -921,9 +1177,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
                 child: Center(
                   child: Text(
                     'Regular Glass Morphism',
-                    style: TextStyle(
-                        color: themeManager.textPrimary,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: themeManager.textPrimary, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -934,9 +1188,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
                 child: Center(
                   child: Text(
                     'Enhanced Glass Morphism',
-                    style: TextStyle(
-                        color: themeManager.textPrimary,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: themeManager.textPrimary, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -946,12 +1198,9 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
 
             // Shadow Effects Showcase
             _buildSection(themeManager, 'Shadow Effects', [
-              _buildShadowCard(
-                  themeManager, 'Primary Shadow', themeManager.primaryShadow),
-              _buildShadowCard(
-                  themeManager, 'Elevated Shadow', themeManager.elevatedShadow),
-              _buildShadowCard(
-                  themeManager, 'Subtle Shadow', themeManager.subtleShadow),
+              _buildShadowCard(themeManager, 'Primary Shadow', themeManager.primaryShadow),
+              _buildShadowCard(themeManager, 'Elevated Shadow', themeManager.elevatedShadow),
+              _buildShadowCard(themeManager, 'Subtle Shadow', themeManager.subtleShadow),
             ]),
 
             const SizedBox(height: 24),
@@ -987,16 +1236,9 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Primary Text',
-                        style: TextStyle(
-                            color: themeManager.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
-                    Text('Secondary Text',
-                        style: TextStyle(
-                            color: themeManager.textSecondary, fontSize: 14)),
-                    Text('Tertiary Text',
-                        style: TextStyle(
-                            color: themeManager.textTertiary, fontSize: 12)),
+                        style: TextStyle(color: themeManager.textPrimary, fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Secondary Text', style: TextStyle(color: themeManager.textSecondary, fontSize: 14)),
+                    Text('Tertiary Text', style: TextStyle(color: themeManager.textTertiary, fontSize: 12)),
                   ],
                 ),
               ),
@@ -1007,8 +1249,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
     );
   }
 
-  Widget _buildSection(
-      ThemeManager themeManager, String title, List<Widget> children) {
+  Widget _buildSection(ThemeManager themeManager, String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1026,8 +1267,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
     );
   }
 
-  Widget _buildGradientCard(
-      ThemeManager themeManager, String name, LinearGradient gradient) {
+  Widget _buildGradientCard(ThemeManager themeManager, String name, LinearGradient gradient) {
     return Container(
       height: 80,
       margin: const EdgeInsets.only(bottom: 12),
@@ -1049,8 +1289,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
     );
   }
 
-  Widget _buildShadowCard(
-      ThemeManager themeManager, String name, List<BoxShadow> shadows) {
+  Widget _buildShadowCard(ThemeManager themeManager, String name, List<BoxShadow> shadows) {
     return Container(
       height: 80,
       margin: const EdgeInsets.only(bottom: 12),
@@ -1072,8 +1311,7 @@ class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
     );
   }
 
-  Widget _buildColorRow(
-      ThemeManager themeManager, List<(String, Color)> colors) {
+  Widget _buildColorRow(ThemeManager themeManager, List<(String, Color)> colors) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(

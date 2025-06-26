@@ -33,12 +33,10 @@ class CreateCategoryModalWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CreateCategoryModalWidget> createState() =>
-      _CreateCategoryModalWidgetState();
+  ConsumerState<CreateCategoryModalWidget> createState() => _CreateCategoryModalWidgetState();
 }
 
-class _CreateCategoryModalWidgetState
-    extends ConsumerState<CreateCategoryModalWidget>
+class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalWidget>
     with TickerProviderStateMixin, ThemeAwareMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -109,15 +107,12 @@ class _CreateCategoryModalWidgetState
   Widget build(BuildContext context) {
     // ========== ENHANCED THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
-    themeManager.logThemeInfo();
 
     debugPrint('🎨 CreateCategoryModal: =============================');
     debugPrint('🎨 CreateCategoryModal: BUILDING WITH THEME MANAGER');
     debugPrint('🎨 CreateCategoryModal: =============================');
-    debugPrint(
-        '🎨 CreateCategoryModal: Primary color: ${themeManager.primaryColor}');
-    debugPrint(
-        '🎨 CreateCategoryModal: Background: ${themeManager.backgroundColor}');
+    debugPrint('🎨 CreateCategoryModal: Primary color: ${themeManager.primaryColor}');
+    debugPrint('🎨 CreateCategoryModal: Background: ${themeManager.backgroundColor}');
     debugPrint('🎨 CreateCategoryModal: Surface: ${themeManager.surfaceColor}');
 
     return FadeTransition(
@@ -199,8 +194,7 @@ class _CreateCategoryModalWidgetState
             child: Icon(
               Icons.add_rounded,
               size: 24.w,
-              color:
-                  themeManager.getContrastingColor(themeManager.primaryColor),
+              color: themeManager.getContrastingColor(themeManager.primaryColor),
             ),
           ),
 
@@ -278,8 +272,7 @@ class _CreateCategoryModalWidgetState
   }
 
   /// Build modal body with enhanced theme integration
-  Widget _buildModalBody(
-      ThemeManager themeManager, ScrollController scrollController) {
+  Widget _buildModalBody(ThemeManager themeManager, ScrollController scrollController) {
     return SingleChildScrollView(
       controller: scrollController,
       padding: EdgeInsets.all(24.w),
@@ -355,13 +348,11 @@ class _CreateCategoryModalWidgetState
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide:
-                    BorderSide(color: themeManager.primaryColor, width: 2),
+                borderSide: BorderSide(color: themeManager.primaryColor, width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide:
-                    BorderSide(color: themeManager.errorColor, width: 2),
+                borderSide: BorderSide(color: themeManager.errorColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -438,8 +429,7 @@ class _CreateCategoryModalWidgetState
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide:
-                    BorderSide(color: themeManager.primaryColor, width: 2),
+                borderSide: BorderSide(color: themeManager.primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -473,8 +463,7 @@ class _CreateCategoryModalWidgetState
               child: Icon(
                 Icons.palette_rounded,
                 size: 16.sp,
-                color:
-                    themeManager.getContrastingColor(themeManager.primaryColor),
+                color: themeManager.getContrastingColor(themeManager.primaryColor),
               ),
             ),
             SizedBox(width: 8.w),
@@ -553,12 +542,9 @@ class _CreateCategoryModalWidgetState
                 ],
               ),
               child: Icon(
-                _selectedIcon != null
-                    ? CategoryUtils.getIconFromString(_selectedIcon!)
-                    : Icons.category_rounded,
+                _selectedIcon != null ? CategoryUtils.getIconFromString(_selectedIcon!) : Icons.category_rounded,
                 size: 32.w,
-                color:
-                    themeManager.getContrastingColor(themeManager.primaryColor),
+                color: themeManager.getContrastingColor(themeManager.primaryColor),
               ),
             ),
 
@@ -571,9 +557,7 @@ class _CreateCategoryModalWidgetState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _selectedIcon != null
-                        ? 'Selected Icon'
-                        : 'No Icon Selected',
+                    _selectedIcon != null ? 'Selected Icon' : 'No Icon Selected',
                     style: themeManager.textTheme.titleSmall?.copyWith(
                       color: themeManager.textPrimary,
                       fontWeight: FontWeight.w600,
@@ -666,16 +650,10 @@ class _CreateCategoryModalWidgetState
                   ? themeManager.successGradient
                   : themeManager.conditionalGradient(
                       lightGradient: LinearGradient(
-                        colors: [
-                          themeManager.neutral300,
-                          themeManager.neutral400
-                        ],
+                        colors: [themeManager.neutral300, themeManager.neutral400],
                       ),
                       darkGradient: LinearGradient(
-                        colors: [
-                          themeManager.neutral600,
-                          themeManager.neutral700
-                        ],
+                        colors: [themeManager.neutral600, themeManager.neutral700],
                       ),
                     ),
               borderRadius: BorderRadius.circular(8.r),
@@ -690,9 +668,7 @@ class _CreateCategoryModalWidgetState
               ],
             ),
             child: Icon(
-              _isActive
-                  ? Icons.check_circle_rounded
-                  : Icons.pause_circle_rounded,
+              _isActive ? Icons.check_circle_rounded : Icons.pause_circle_rounded,
               size: 20.w,
               color: themeManager.getContrastingColor(
                 _isActive ? themeManager.successColor : themeManager.neutral500,
@@ -712,9 +688,7 @@ class _CreateCategoryModalWidgetState
                   ),
                 ),
                 Text(
-                  _isActive
-                      ? 'Active - Visible to users'
-                      : 'Inactive - Hidden from users',
+                  _isActive ? 'Active - Visible to users' : 'Inactive - Hidden from users',
                   style: themeManager.textTheme.bodySmall?.copyWith(
                     color: themeManager.textSecondary,
                   ),
@@ -794,8 +768,7 @@ class _CreateCategoryModalWidgetState
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide:
-                    BorderSide(color: themeManager.primaryColor, width: 2),
+                borderSide: BorderSide(color: themeManager.primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -909,22 +882,19 @@ class _CreateCategoryModalWidgetState
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            themeManager
-                                .getContrastingColor(themeManager.primaryColor),
+                            themeManager.getContrastingColor(themeManager.primaryColor),
                           ),
                         ),
                       )
                     : Icon(
                         Icons.add_rounded,
                         size: 20.w,
-                        color: themeManager
-                            .getContrastingColor(themeManager.primaryColor),
+                        color: themeManager.getContrastingColor(themeManager.primaryColor),
                       ),
                 label: Text(
                   _isLoading ? 'Creating...' : 'Create Category',
                   style: TextStyle(
-                    color: themeManager
-                        .getContrastingColor(themeManager.primaryColor),
+                    color: themeManager.getContrastingColor(themeManager.primaryColor),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -949,8 +919,7 @@ class _CreateCategoryModalWidgetState
   Future<void> _showIconPicker(ThemeManager themeManager) async {
     HapticFeedback.lightImpact();
 
-    debugPrint(
-        '🎨 CreateCategoryModal: Showing CategoryIconPicker with theme integration');
+    debugPrint('🎨 CreateCategoryModal: Showing CategoryIconPicker with theme integration');
 
     final selectedIcon = await CategoryIconPicker.showIconPickerBottomSheet(
       context: context,
@@ -986,8 +955,7 @@ class _CreateCategoryModalWidgetState
     try {
       debugPrint('🎨 CreateCategoryModal: Starting category creation process');
 
-      final serviceManagementService =
-          ref.read(serviceManagementServiceProvider);
+      final serviceManagementService = ref.read(serviceManagementServiceProvider);
 
       debugPrint(
           '🎨 CreateCategoryModal: Creating category with data - name: ${_nameController.text.trim()}, description: ${_descriptionController.text.trim()}, icon: $_selectedIcon, active: $_isActive, sortOrder: $_sortOrder');

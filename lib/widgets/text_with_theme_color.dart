@@ -130,8 +130,7 @@ class TextWithThemeColor extends StatefulWidget {
   State<TextWithThemeColor> createState() => _TextWithThemeColorState();
 }
 
-class _TextWithThemeColorState extends State<TextWithThemeColor>
-    with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTickerProviderStateMixin, ThemeAwareMixin {
   // ========== ANIMATION CONTROLLER ==========
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -144,10 +143,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '📝 TextWithThemeColor: Initializing comprehensive theme-aware text component');
-    debugPrint(
-        '📝 TextWithThemeColor: Text key: "${widget.text}", Variant: ${widget.variant}');
+    debugPrint('📝 TextWithThemeColor: Initializing comprehensive theme-aware text component');
+    debugPrint('📝 TextWithThemeColor: Text key: "${widget.text}", Variant: ${widget.variant}');
 
     // Initialize animations for interactive text
     _animationController = AnimationController(
@@ -177,21 +174,16 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
-    themeManager.logThemeInfo();
-    debugPrint(
-        '📝 TextWithThemeColor: Building with COMPREHENSIVE ThemeManager integration');
+
+    debugPrint('📝 TextWithThemeColor: Building with COMPREHENSIVE ThemeManager integration');
     debugPrint('📝 TextWithThemeColor: → Variant: ${widget.variant}');
-    debugPrint(
-        '📝 TextWithThemeColor: → Show Container: ${widget.showContainer}');
-    debugPrint(
-        '📝 TextWithThemeColor: → Use Gradient: ${widget.useGradientText}');
+    debugPrint('📝 TextWithThemeColor: → Show Container: ${widget.showContainer}');
+    debugPrint('📝 TextWithThemeColor: → Use Gradient: ${widget.useGradientText}');
     debugPrint('📝 TextWithThemeColor: → Interactive: ${widget.isInteractive}');
-    debugPrint(
-        '📝 TextWithThemeColor: → Primary Color: ${themeManager.primaryColor}');
+    debugPrint('📝 TextWithThemeColor: → Primary Color: ${themeManager.primaryColor}');
     debugPrint(
         '📝 TextWithThemeColor: → Text Colors: Primary=${themeManager.textPrimary}, Secondary=${themeManager.textSecondary}');
-    debugPrint(
-        '📝 TextWithThemeColor: → Background: ${themeManager.backgroundColor}');
+    debugPrint('📝 TextWithThemeColor: → Background: ${themeManager.backgroundColor}');
     debugPrint(
         '📝 TextWithThemeColor: → Status Colors: Success=${themeManager.successColor}, Warning=${themeManager.warningColor}, Error=${themeManager.errorColor}, Info=${themeManager.infoColor}');
 
@@ -217,8 +209,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
   /// Build the main text widget with comprehensive ThemeManager styling
   Widget _buildTextWidget(ThemeManager themeManager, String translatedText) {
-    debugPrint(
-        '📝 TextWithThemeColor: Building text widget with variant: ${widget.variant}');
+    debugPrint('📝 TextWithThemeColor: Building text widget with variant: ${widget.variant}');
 
     // Get variant-specific styling
     final variantStyle = _getVariantStyle(themeManager);
@@ -248,12 +239,12 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
   /// Get text style based on variant using comprehensive ThemeManager properties
   TextStyle _getVariantStyle(ThemeManager themeManager) {
-    debugPrint(
-        '📝 TextWithThemeColor: Getting variant style for: ${widget.variant}');
+    debugPrint('📝 TextWithThemeColor: Getting variant style for: ${widget.variant}');
 
     switch (widget.variant) {
       case TextVariant.primary:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textPrimary,
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
@@ -263,6 +254,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.secondary:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textSecondary,
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,
@@ -272,6 +264,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.tertiary:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textTertiary,
           fontSize: 12.sp,
           fontWeight: FontWeight.w400,
@@ -281,6 +274,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.accent:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.primaryColor,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -290,6 +284,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.success:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.successColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -299,6 +294,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.warning:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.warningColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -308,6 +304,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.error:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.errorColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -317,6 +314,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.info:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.infoColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
@@ -326,6 +324,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.subtitle:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.textSecondary,
           fontSize: 18.sp,
           fontWeight: FontWeight.w500,
@@ -335,6 +334,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.caption:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textTertiary,
           fontSize: 10.sp,
           fontWeight: FontWeight.w400,
@@ -344,6 +344,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.heading:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyExpanded,
           color: themeManager.textPrimary,
           fontSize: 24.sp,
           fontWeight: FontWeight.w700,
@@ -353,6 +354,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.inverted:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textInverted,
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
@@ -362,6 +364,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.disabled:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textDisabled,
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
@@ -371,6 +374,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.quaternary:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilyPrimary,
           color: themeManager.textQuaternary,
           fontSize: 11.sp,
           fontWeight: FontWeight.w300,
@@ -380,6 +384,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.accent2:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.accent2,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -389,6 +394,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.accent3:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.accent3,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -398,6 +404,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.accent4:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.accent4,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -407,6 +414,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
       case TextVariant.accent5:
         return TextStyle(
+          fontFamily: ThemeManager.fontFamilySemiExpanded,
           color: themeManager.accent5,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -418,8 +426,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
   /// Build gradient text effect using comprehensive ThemeManager gradients
   Widget _buildGradientText(ThemeManager themeManager, Widget textWidget) {
-    debugPrint(
-        '📝 TextWithThemeColor: Building gradient text effect for variant: ${widget.variant}');
+    debugPrint('📝 TextWithThemeColor: Building gradient text effect for variant: ${widget.variant}');
 
     // Select gradient based on variant
     LinearGradient gradient;
@@ -441,8 +448,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
         gradient = themeManager.accent4Gradient;
         break;
       case TextVariant.accent5:
-        gradient = themeManager
-            .secondaryGradient; // Using secondary as closest for accent5
+        gradient = themeManager.secondaryGradient; // Using secondary as closest for accent5
         break;
       case TextVariant.success:
         gradient = themeManager.successGradient;
@@ -484,8 +490,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
 
   /// Build container wrapper with comprehensive ThemeManager styling
   Widget _buildContainerWrapper(ThemeManager themeManager, Widget textWidget) {
-    debugPrint(
-        '📝 TextWithThemeColor: Building container wrapper with comprehensive theming');
+    debugPrint('📝 TextWithThemeColor: Building container wrapper with comprehensive theming');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -539,8 +544,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
   }
 
   /// Build interactive wrapper with animations and state management
-  Widget _buildInteractiveWrapper(
-      ThemeManager themeManager, Widget textWidget) {
+  Widget _buildInteractiveWrapper(ThemeManager themeManager, Widget textWidget) {
     debugPrint('📝 TextWithThemeColor: Building interactive wrapper');
 
     return AnimatedBuilder(
@@ -566,8 +570,7 @@ class _TextWithThemeColorState extends State<TextWithThemeColor>
                     borderRadius: BorderRadius.circular(8.r),
                     border: _isHovered || _isPressed
                         ? Border.all(
-                            color: themeManager.primaryColor
-                                .withValues(alpha: 0.5),
+                            color: themeManager.primaryColor.withValues(alpha: 0.5),
                             width: 1,
                           )
                         : null,

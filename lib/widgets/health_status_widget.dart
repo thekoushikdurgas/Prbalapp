@@ -111,8 +111,7 @@ class HealthStatusWidget extends StatefulWidget {
   State<HealthStatusWidget> createState() => _HealthStatusWidgetState();
 }
 
-class _HealthStatusWidgetState extends State<HealthStatusWidget>
-    with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTickerProviderStateMixin, ThemeAwareMixin {
   // ========== SERVICES AND DATA ==========
   final HealthService _healthService = HealthService();
   ApplicationHealth? _healthData;
@@ -130,8 +129,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🏥 HealthStatusWidget: Initializing ENHANCED health status widget with comprehensive ThemeManager');
+    debugPrint('🏥 HealthStatusWidget: Initializing ENHANCED health status widget with comprehensive ThemeManager');
 
     // Initialize animations for enhanced UX
     _animationController = AnimationController(
@@ -161,8 +159,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
 
   @override
   void dispose() {
-    debugPrint(
-        '🏥 HealthStatusWidget: Disposing enhanced health status widget');
+    debugPrint('🏥 HealthStatusWidget: Disposing enhanced health status widget');
     _animationController.dispose();
     _healthService.dispose();
     super.dispose();
@@ -170,8 +167,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
 
   Future<void> _loadHealthData() async {
     try {
-      debugPrint(
-          '🏥 HealthStatusWidget: Loading health data with comprehensive monitoring');
+      debugPrint('🏥 HealthStatusWidget: Loading health data with comprehensive monitoring');
       await _healthService.initialize();
 
       // Get application health check
@@ -184,8 +180,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
           _isLoading = false;
         });
 
-        debugPrint(
-            '🏥 HealthStatusWidget: Health data loaded - Status: $_healthStatus');
+        debugPrint('🏥 HealthStatusWidget: Health data loaded - Status: $_healthStatus');
       }
     } catch (e) {
       debugPrint('🏥 HealthStatusWidget: Error loading health data: $e');
@@ -251,24 +246,21 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🏥 HealthStatusWidget: Building ENHANCED health status widget with comprehensive ThemeManager');
+    debugPrint('🏥 HealthStatusWidget: Building ENHANCED health status widget with comprehensive ThemeManager');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
-    themeManager.logThemeInfo();
-    debugPrint(
-        '🏥 HealthStatusWidget: Building with COMPREHENSIVE ThemeManager integration');
+
+    debugPrint('🏥 HealthStatusWidget: Building with COMPREHENSIVE ThemeManager integration');
     debugPrint('🏥 HealthStatusWidget: → Health Status: $_healthStatus');
     debugPrint('🏥 HealthStatusWidget: → Is Loading: $_isLoading');
     debugPrint('🏥 HealthStatusWidget: → Show Details: ${widget.showDetails}');
     debugPrint('🏥 HealthStatusWidget: → Is Compact: ${widget.isCompact}');
     debugPrint('🏥 HealthStatusWidget: → Is Hovered: $_isHovered');
 
-    final statusColor =
-        _getStatusColor(themeManager, _isLoading ? 'loading' : _healthStatus);
+    final statusColor = _getStatusColor(themeManager, _isLoading ? 'loading' : _healthStatus);
 
     if (widget.isCompact) {
       return _buildEnhancedCompactWidget(themeManager, statusColor);
@@ -284,8 +276,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
   }
 
   /// Build enhanced compact widget with comprehensive ThemeManager integration
-  Widget _buildEnhancedCompactWidget(
-      ThemeManager themeManager, Color statusColor) {
+  Widget _buildEnhancedCompactWidget(ThemeManager themeManager, Color statusColor) {
     debugPrint('🏥 HealthStatusWidget: Building enhanced compact widget');
 
     return Container(
@@ -365,8 +356,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
   }
 
   /// Build enhanced full widget with comprehensive ThemeManager integration
-  Widget _buildEnhancedFullWidget(
-      ThemeManager themeManager, Color statusColor) {
+  Widget _buildEnhancedFullWidget(ThemeManager themeManager, Color statusColor) {
     debugPrint('🏥 HealthStatusWidget: Building enhanced full widget');
 
     return Container(
@@ -420,8 +410,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            debugPrint(
-                '🏥 HealthStatusWidget: Health widget tapped - navigating to health dashboard');
+            debugPrint('🏥 HealthStatusWidget: Health widget tapped - navigating to health dashboard');
             HapticFeedback.lightImpact();
             NavigationRoute.goRouteNormal(RouteEnum.health.rawValue);
           },
@@ -583,12 +572,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
             child: Icon(
               Prbal.arrowSync,
               color: themeManager.conditionalColor(
-                lightColor: _isHovered
-                    ? themeManager.primaryColor
-                    : themeManager.textSecondary,
-                darkColor: _isHovered
-                    ? themeManager.primaryLight
-                    : themeManager.textTertiary,
+                lightColor: _isHovered ? themeManager.primaryColor : themeManager.textSecondary,
+                darkColor: _isHovered ? themeManager.primaryLight : themeManager.textTertiary,
               ),
               size: 18.sp,
             ),
@@ -749,8 +734,7 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget>
   }
 
   /// Build enhanced loading state with comprehensive theming
-  Widget _buildEnhancedLoadingState(
-      ThemeManager themeManager, Color statusColor) {
+  Widget _buildEnhancedLoadingState(ThemeManager themeManager, Color statusColor) {
     debugPrint('🏥 HealthStatusWidget: Building enhanced loading state');
 
     return Center(

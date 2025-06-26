@@ -54,9 +54,8 @@ class CategoriesListView extends StatelessWidget {
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive debug logging for theme operations
-    debugPrint(
-        '📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
-    themeManager.logThemeInfo();
+    debugPrint('📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
+
     debugPrint(
         '🎨 CategoriesListView: Using theme colors - Primary: ${themeManager.primaryColor}, Surface: ${themeManager.surfaceColor}');
     debugPrint(
@@ -131,11 +130,9 @@ class CategoriesListView extends StatelessWidget {
                           return Container(
                             margin: EdgeInsets.only(bottom: 12.h),
                             child: AnimatedContainer(
-                              duration:
-                                  Duration(milliseconds: 300 + (index * 50)),
+                              duration: Duration(milliseconds: 300 + (index * 50)),
                               curve: Curves.easeOutCubic,
-                              decoration: _buildItemDecoration(
-                                  themeManager, isSelected, index),
+                              decoration: _buildItemDecoration(themeManager, isSelected, index),
                               child: CategoryCard(
                                 category: category,
                                 isSelected: isSelected,
@@ -177,8 +174,7 @@ class CategoriesListView extends StatelessWidget {
 
   /// Builds comprehensive statistics section with all ThemeManager features
   Widget _buildStatisticsSection(ThemeManager themeManager) {
-    debugPrint(
-        '📊 CategoriesListView: Building statistics section with ThemeManager integration');
+    debugPrint('📊 CategoriesListView: Building statistics section with ThemeManager integration');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,8 +356,7 @@ class CategoriesListView extends StatelessWidget {
   }
 
   /// Builds enhanced item decoration with comprehensive theming
-  BoxDecoration _buildItemDecoration(
-      ThemeManager themeManager, bool isSelected, int index) {
+  BoxDecoration _buildItemDecoration(ThemeManager themeManager, bool isSelected, int index) {
     if (isSelected) {
       // Selected state with primary gradient and enhanced effects
       return BoxDecoration(

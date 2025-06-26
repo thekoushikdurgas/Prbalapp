@@ -122,7 +122,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     debugPrint('🎯 IntroductionScreen: ===== COMPREHENSIVE THEMEMANAGER INTEGRATION =====');
 
     // Comprehensive theme logging
-    themeManager.logThemeInfo();
+
     themeManager.logGradientInfo();
     themeManager.logAllColors();
 
