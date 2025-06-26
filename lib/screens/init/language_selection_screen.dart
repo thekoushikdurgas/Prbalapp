@@ -46,13 +46,10 @@ class LanguageSelectionScreen extends ConsumerStatefulWidget {
   const LanguageSelectionScreen({super.key});
 
   @override
-  ConsumerState<LanguageSelectionScreen> createState() =>
-      _LanguageSelectionScreenState();
+  ConsumerState<LanguageSelectionScreen> createState() => _LanguageSelectionScreenState();
 }
 
-class _LanguageSelectionScreenState
-    extends ConsumerState<LanguageSelectionScreen>
-    with TickerProviderStateMixin {
+class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScreen> with TickerProviderStateMixin {
   // Animation controllers for smooth UI transitions
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -65,8 +62,7 @@ class _LanguageSelectionScreenState
   void initState() {
     super.initState();
     debugPrint('🌐 LanguageSelectionScreen: ========= INITIALIZING =========');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Supported languages: ${ProjectLocales.localesMap.length}');
+    debugPrint('🌐 LanguageSelectionScreen: Supported languages: ${ProjectLocales.localesMap.length}');
 
     // Log all supported locales for debugging
     ProjectLocales.logSupportedLocales();
@@ -78,8 +74,7 @@ class _LanguageSelectionScreenState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Dependencies changed → Setting current locale...');
+    debugPrint('🌐 LanguageSelectionScreen: Dependencies changed → Setting current locale...');
     _setCurrentLocale();
   }
 
@@ -135,12 +130,10 @@ class _LanguageSelectionScreenState
     try {
       // Step 1: Get current locale from Flutter context (safely)
       final currentLocale = Localizations.maybeLocaleOf(context);
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Device locale detected: $currentLocale');
+      debugPrint('🌐 LanguageSelectionScreen: Device locale detected: $currentLocale');
 
       if (currentLocale != null) {
-        debugPrint(
-            '🌐 LanguageSelectionScreen: Checking if device locale is supported...');
+        debugPrint('🌐 LanguageSelectionScreen: Checking if device locale is supported...');
 
         // Step 2: Check if current locale is in our supported languages
         if (ProjectLocales.isSupported(currentLocale)) {
@@ -148,8 +141,7 @@ class _LanguageSelectionScreenState
               '🌐 LanguageSelectionScreen: ✅ Device locale IS supported → Using: ${currentLocale.languageCode}-${currentLocale.countryCode}');
           _selectedLocale = currentLocale;
         } else {
-          debugPrint(
-              '🌐 LanguageSelectionScreen: ⚠️ Device locale NOT supported → Checking language-only match...');
+          debugPrint('🌐 LanguageSelectionScreen: ⚠️ Device locale NOT supported → Checking language-only match...');
 
           // Step 3: Try to find a language-only match (e.g., 'hi' matches 'hi-IN')
           final languageOnlyMatch = ProjectLocales.supportedLocales.firstWhere(
@@ -175,19 +167,16 @@ class _LanguageSelectionScreenState
 
       debugPrint(
           '🌐 LanguageSelectionScreen: 🎯 Final selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 📱 Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
+      debugPrint('🌐 LanguageSelectionScreen: 📱 Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
 
       // Step 4: Update UI to reflect selected locale
       if (mounted) {
         setState(() {});
-        debugPrint(
-            '🌐 LanguageSelectionScreen: ✅ UI updated with selected locale');
+        debugPrint('🌐 LanguageSelectionScreen: ✅ UI updated with selected locale');
       }
     } catch (e) {
       debugPrint('🌐 LanguageSelectionScreen: ❌ Error in locale detection: $e');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🔄 Using fallback default locale');
+      debugPrint('🌐 LanguageSelectionScreen: 🔄 Using fallback default locale');
 
       // Fallback to default locale on any error
       _selectedLocale = ProjectLocales.defaultLocale;
@@ -196,8 +185,7 @@ class _LanguageSelectionScreenState
       }
     }
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ============================================');
+    debugPrint('🌐 LanguageSelectionScreen: ============================================');
   }
 
   @override
@@ -211,18 +199,14 @@ class _LanguageSelectionScreenState
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building UI with ThemeManager colors');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Surface: ${themeManager.surfaceColor}');
+    debugPrint('🌐 LanguageSelectionScreen: Building UI with ThemeManager colors');
+    debugPrint('🌐 LanguageSelectionScreen: Background: ${themeManager.backgroundColor}');
+    debugPrint('🌐 LanguageSelectionScreen: Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '🌐 LanguageSelectionScreen: Current selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,
-      appBar: _buildAppBar(context, themeManager),
       body: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -235,80 +219,6 @@ class _LanguageSelectionScreenState
           );
         },
       ),
-    );
-  }
-
-  /// Builds the app bar with back navigation and skip option
-  ///
-  /// **FEATURES:**
-  /// - Transparent background with themed styling
-  /// - Modern glassmorphism back button
-  /// - Skip button for quick default language setup
-  /// - Proper spacing and typography
-  PreferredSizeWidget _buildAppBar(
-      BuildContext context, ThemeManager themeManager) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building app bar with ThemeManager colors');
-
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      surfaceTintColor: Colors.transparent,
-      leading: IconButton(
-        onPressed: () {
-          debugPrint(
-              '🌐 LanguageSelectionScreen: Back button pressed → Setting default and continuing');
-          // For now, set a default language and continue to next screen
-          // This provides a fallback if users try to go back
-          _setDefaultLanguageAndContinue(context);
-        },
-        icon: Container(
-          width: 40.w,
-          height: 40.h,
-          decoration: BoxDecoration(
-            color: themeManager.surfaceColor.withValues(alpha: 204),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: themeManager.borderColor,
-              width: 1,
-            ),
-            boxShadow: themeManager.subtleShadow,
-          ),
-          child: Icon(
-            Prbal.arrowLeft,
-            color: themeManager.textPrimary,
-            size: 20.sp,
-          ),
-        ),
-      ),
-      title: Text(
-        'Language Settings',
-        style: TextStyle(
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w700,
-          color: themeManager.textPrimary,
-        ),
-      ),
-      centerTitle: true,
-      actions: [
-        // Add skip button for better UX - allows users to quickly use default language
-        TextButton(
-          onPressed: () {
-            debugPrint(
-                '🌐 LanguageSelectionScreen: Skip button pressed → Setting default and continuing');
-            _setDefaultLanguageAndContinue(context);
-          },
-          child: Text(
-            'Skip',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: themeManager.primaryColor,
-            ),
-          ),
-        ),
-        SizedBox(width: 8.w),
-      ],
     );
   }
 
@@ -330,16 +240,13 @@ class _LanguageSelectionScreenState
     try {
       // Set English as default if no language is selected
       await HiveService.setSelectedLanguage('en-US');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ✅ Default language (en-US) saved successfully');
+      debugPrint('🌐 LanguageSelectionScreen: ✅ Default language (en-US) saved successfully');
       debugPrint('🌐 LanguageSelectionScreen: → Continuing to next screen...');
 
       _navigateToNextScreen(context);
     } catch (e) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ❌ Error setting default language: $e');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: → Continuing anyway (language can be set later)');
+      debugPrint('🌐 LanguageSelectionScreen: ❌ Error setting default language: $e');
+      debugPrint('🌐 LanguageSelectionScreen: → Continuing anyway (language can be set later)');
 
       // Even if there's an error saving language, continue to next screen
       // Language selection can be done later in settings
@@ -358,35 +265,29 @@ class _LanguageSelectionScreenState
   /// - Logs each navigation decision for troubleshooting
   /// - Shows current user state for context
   void _navigateToNextScreen(BuildContext context) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: === NAVIGATION DECISION PROCESS ===');
+    debugPrint('🌐 LanguageSelectionScreen: === NAVIGATION DECISION PROCESS ===');
 
     // Get current user state from Hive storage
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
     final isLoggedIn = HiveService.isLoggedIn();
 
     debugPrint('🌐 LanguageSelectionScreen: User state analysis:');
-    debugPrint(
-        '🌐 LanguageSelectionScreen:   📚 Intro watched: $hasIntroBeenWatched');
+    debugPrint('🌐 LanguageSelectionScreen:   📚 Intro watched: $hasIntroBeenWatched');
     debugPrint('🌐 LanguageSelectionScreen:   🔐 Logged in: $isLoggedIn');
 
     // Decision tree for navigation
     if (!hasIntroBeenWatched) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to onboarding (intro not watched)');
+      debugPrint('🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to onboarding (intro not watched)');
       context.go(RouteEnum.onboarding.rawValue);
     } else if (!isLoggedIn) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to welcome (not logged in)');
+      debugPrint('🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to welcome (not logged in)');
       context.go(RouteEnum.welcome.rawValue);
     } else {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to home (user ready)');
+      debugPrint('🌐 LanguageSelectionScreen: 🎯 Decision: Navigate to home (user ready)');
       context.go(RouteEnum.home.rawValue);
     }
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ================================================');
+    debugPrint('🌐 LanguageSelectionScreen: ================================================');
   }
 
   /// Builds the main body content with header and language list
@@ -398,8 +299,7 @@ class _LanguageSelectionScreenState
   /// - Apply button strictly positioned at bottom
   /// - Proper spacing and padding throughout
   Widget _buildBody(BuildContext context, ThemeManager themeManager) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building main body content with bottom-fixed apply button');
+    debugPrint('🌐 LanguageSelectionScreen: Building main body content with bottom-fixed apply button');
 
     return Column(
       children: [
@@ -411,20 +311,18 @@ class _LanguageSelectionScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(themeManager),
-                SizedBox(height: 32.h),
+                // _buildHeader(themeManager),
+                // SizedBox(height: 32.h),
                 _buildLanguageList(themeManager),
-                SizedBox(
-                    height:
-                        20.h), // Reduced spacing since button is now separate
+                SizedBox(height: 20.h), // Reduced spacing since button is now separate
               ],
             ),
           ),
         ),
 
-        // Fixed apply button at bottom
+        // Fixed buttons at bottom
         Container(
-          padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 24.h),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           decoration: BoxDecoration(
             color: themeManager.backgroundColor,
             border: Border(
@@ -434,75 +332,16 @@ class _LanguageSelectionScreenState
               ),
             ),
           ),
-          child: _buildApplyButton(context, themeManager),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildApplyButton(context, themeManager),
+              SizedBox(width: 5.w),
+              _buildSkipButton(context, themeManager),
+            ],
+          ),
         ),
       ],
-    );
-  }
-
-  /// Builds the header section with app icon and description
-  ///
-  /// **DESIGN:**
-  /// - Modern card design with shadows
-  /// - Gradient app icon with brand colors
-  /// - Clear typography hierarchy
-  /// - Theme-aware styling
-  Widget _buildHeader(ThemeManager themeManager) {
-    debugPrint('🌐 LanguageSelectionScreen: Building header section');
-
-    return Container(
-      padding: EdgeInsets.all(24.w),
-      decoration: BoxDecoration(
-        color: themeManager.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: themeManager.borderColor,
-          width: 1,
-        ),
-        boxShadow: themeManager.elevatedShadow,
-      ),
-      child: Column(
-        children: [
-          // App icon with gradient background
-          Container(
-            width: 60.w,
-            height: 60.h,
-            decoration: BoxDecoration(
-              gradient: themeManager.primaryGradient,
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: themeManager.primaryShadow,
-            ),
-            child: Icon(
-              Prbal.language,
-              color: Colors.white,
-              size: 32.sp,
-            ),
-          ),
-          SizedBox(height: 16.h),
-
-          // Title
-          Text(
-            'Choose Your Language',
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.w800,
-              color: themeManager.textPrimary,
-            ),
-          ),
-          SizedBox(height: 8.h),
-
-          // Description
-          Text(
-            'Select your preferred language for the app interface',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: themeManager.textSecondary,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -515,8 +354,7 @@ class _LanguageSelectionScreenState
   /// - Proper dividers between items
   /// - Theme-aware styling throughout
   Widget _buildLanguageList(ThemeManager themeManager) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building language list with ${ProjectLocales.localesMap.length} languages');
+    debugPrint('🌐 LanguageSelectionScreen: Building language list with ${ProjectLocales.localesMap.length} languages');
 
     return Container(
       decoration: BoxDecoration(
@@ -584,8 +422,7 @@ class _LanguageSelectionScreenState
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            debugPrint(
-                '🌐 LanguageSelectionScreen: Language tapped: ${locale.languageCode}-${locale.countryCode}');
+            debugPrint('🌐 LanguageSelectionScreen: Language tapped: ${locale.languageCode}-${locale.countryCode}');
             debugPrint('🌐 LanguageSelectionScreen: Display name: $name');
 
             setState(() {
@@ -594,13 +431,10 @@ class _LanguageSelectionScreenState
 
             // Provide haptic feedback for better UX
             HapticFeedback.lightImpact();
-            debugPrint(
-                '🌐 LanguageSelectionScreen: ✅ Language selection updated with haptic feedback');
+            debugPrint('🌐 LanguageSelectionScreen: ✅ Language selection updated with haptic feedback');
           },
           borderRadius: BorderRadius.vertical(
-            top: locale == ProjectLocales.localesMap.keys.first
-                ? Radius.circular(20.r)
-                : Radius.zero,
+            top: locale == ProjectLocales.localesMap.keys.first ? Radius.circular(20.r) : Radius.zero,
             bottom: isLast ? Radius.circular(20.r) : Radius.zero,
           ),
           child: Container(
@@ -663,13 +497,9 @@ class _LanguageSelectionScreenState
                   height: 24.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected
-                        ? themeManager.primaryColor
-                        : Colors.transparent,
+                    color: isSelected ? themeManager.primaryColor : Colors.transparent,
                     border: Border.all(
-                      color: isSelected
-                          ? themeManager.primaryColor
-                          : themeManager.textTertiary,
+                      color: isSelected ? themeManager.primaryColor : themeManager.textTertiary,
                       width: 2,
                     ),
                   ),
@@ -701,45 +531,99 @@ class _LanguageSelectionScreenState
     debugPrint('🌐 LanguageSelectionScreen: Building apply button');
 
     return Container(
-      width: double.infinity,
-      height: 56.h,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         gradient: themeManager.primaryGradient,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: themeManager.primaryShadow,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            debugPrint('🌐 LanguageSelectionScreen: Apply button tapped');
-            _applyLanguageSelection(context);
-          },
-          borderRadius: BorderRadius.circular(16.r),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Prbal.check,
-                  color: Colors.white,
-                  size: 20.sp,
-                ),
-                SizedBox(width: 12.w),
-                Text(
-                  'Apply Language',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+      child:
+          // Material(
+          InkWell(
+        onTap: () {
+          debugPrint('🌐 LanguageSelectionScreen: Apply button tapped');
+          _applyLanguageSelection(context);
+        },
+        borderRadius: BorderRadius.circular(10.r),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Prbal.check,
+              color: Colors.white,
+              size: 20.sp,
             ),
+            SizedBox(width: 12.w),
+            Text(
+              'Apply Language',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+      // ),
+    );
+  }
+
+  /// Builds the skip button with outline styling
+  ///
+  /// **FEATURES:**
+  /// - Full-width outline button with theme colors
+  /// - Subtle styling to complement the apply button
+  /// - Proper icon and text spacing
+  /// - Theme-aware colors and borders
+  /// - Sets default language and continues navigation
+  Widget _buildSkipButton(BuildContext context, ThemeManager themeManager) {
+    debugPrint('🌐 LanguageSelectionScreen: Building skip button');
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        // gradient: themeManager.primaryGradient,
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: themeManager.borderColor,
+          width: 1.5,
+        ),
+      ),
+      child:
+          // Material(
+          //   color: Colors.transparent,
+          //   child:
+          InkWell(
+        onTap: () {
+          debugPrint('🌐 LanguageSelectionScreen: Skip button tapped (bottom)');
+          _setDefaultLanguageAndContinue(context);
+        },
+        borderRadius: BorderRadius.circular(16.r),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Prbal.arrowRight,
+                color: themeManager.textSecondary,
+                size: 20.sp,
+              ),
+              SizedBox(width: 12.w),
+              Text(
+                'Skip for Now',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: themeManager.textSecondary,
+                ),
+              ),
+            ],
           ),
         ),
       ),
+      // ),
     );
   }
 
@@ -763,8 +647,7 @@ class _LanguageSelectionScreenState
   /// 🇮🇳 pa (Punjabi) - Punjab
   String _getFlagForLocale(Locale locale) {
     final languageCode = locale.languageCode;
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Getting flag for language: $languageCode');
+    debugPrint('🌐 LanguageSelectionScreen: Getting flag for language: $languageCode');
 
     String flag;
 
@@ -790,8 +673,7 @@ class _LanguageSelectionScreenState
       // Fallback for any unknown languages
       default:
         flag = '🌐';
-        debugPrint(
-            '🌐 LanguageSelectionScreen: ⚠️ Unknown language code: $languageCode, using globe icon');
+        debugPrint('🌐 LanguageSelectionScreen: ⚠️ Unknown language code: $languageCode, using globe icon');
         break;
     }
 
@@ -813,30 +695,25 @@ class _LanguageSelectionScreenState
   /// - User receives appropriate error messages
   /// - App continues to function even if language saving fails
   void _applyLanguageSelection(BuildContext context) async {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: === APPLYING LANGUAGE SELECTION ===');
+    debugPrint('🌐 LanguageSelectionScreen: === APPLYING LANGUAGE SELECTION ===');
     debugPrint(
         '🌐 LanguageSelectionScreen: Selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
+    debugPrint('🌐 LanguageSelectionScreen: Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
 
     try {
       // Step 1: Convert locale to storage format
-      final languageCode =
-          '${_selectedLocale.languageCode}-${_selectedLocale.countryCode}';
+      final languageCode = '${_selectedLocale.languageCode}-${_selectedLocale.countryCode}';
       debugPrint('🌐 LanguageSelectionScreen: Storage format: $languageCode');
 
       // Step 2: Save the selected language to local storage
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Saving language to local storage...');
+      debugPrint('🌐 LanguageSelectionScreen: Saving language to local storage...');
       await HiveService.setSelectedLanguage(languageCode);
       debugPrint('🌐 LanguageSelectionScreen: ✅ Language saved successfully');
 
       // TODO: Implement locale change logic here
       // This would typically involve updating a provider/state management
       // and restarting the app with the new locale
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 📝 TODO: Implement actual locale change');
+      debugPrint('🌐 LanguageSelectionScreen: 📝 TODO: Implement actual locale change');
 
       // Step 3: Provide haptic feedback for successful action
       HapticFeedback.mediumImpact();
@@ -876,21 +753,17 @@ class _LanguageSelectionScreenState
       }
 
       // Step 5: Navigate to next screen after short delay for UX
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Waiting 1 second before navigation...');
+      debugPrint('🌐 LanguageSelectionScreen: Waiting 1 second before navigation...');
       await Future.delayed(const Duration(milliseconds: 1000));
 
       if (context.mounted) {
-        debugPrint(
-            '🌐 LanguageSelectionScreen: 🎯 Language applied: $languageCode');
+        debugPrint('🌐 LanguageSelectionScreen: 🎯 Language applied: $languageCode');
         _navigateToNextScreen(context);
       }
 
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ✅ Language application completed successfully');
+      debugPrint('🌐 LanguageSelectionScreen: ✅ Language application completed successfully');
     } catch (e) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ❌ Error saving language selection: $e');
+      debugPrint('🌐 LanguageSelectionScreen: ❌ Error saving language selection: $e');
 
       // Show error notification to user
       if (context.mounted) {
@@ -926,12 +799,10 @@ class _LanguageSelectionScreenState
       }
 
       // Continue to next screen anyway - language can be set later in settings
-      debugPrint(
-          '🌐 LanguageSelectionScreen: → Continuing to next screen despite error');
+      debugPrint('🌐 LanguageSelectionScreen: → Continuing to next screen despite error');
       _navigateToNextScreen(context);
     }
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ===============================================');
+    debugPrint('🌐 LanguageSelectionScreen: ===============================================');
   }
 }

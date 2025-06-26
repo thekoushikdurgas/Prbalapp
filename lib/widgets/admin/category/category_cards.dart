@@ -677,8 +677,9 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon>
 
   /// Build enhanced smart suggestions indicator with ThemeManager styling
   Widget _buildEnhancedSmartSuggestionsIndicator() {
-    if (_smartSuggestions == null || _smartSuggestions!.isEmpty)
+    if (_smartSuggestions == null || _smartSuggestions!.isEmpty) {
       return const SizedBox.shrink();
+    }
 
     return Positioned(
       bottom: 4,

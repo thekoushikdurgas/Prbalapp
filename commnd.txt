@@ -115,6 +115,7 @@ flutter clean
 cd android && gradlew clean && cd ..
 flutter pub get
 flutter run --android-skip-build-dependency-validation --verbose
+flutter run --verbose
 
 dart pub global activate flutterfire_cli
 
