@@ -33,17 +33,20 @@ class PerformanceMetricsWidget extends StatefulWidget {
   final Map<String, dynamic> performanceMetrics;
 
   @override
-  State<PerformanceMetricsWidget> createState() => _PerformanceMetricsWidgetState();
+  State<PerformanceMetricsWidget> createState() =>
+      _PerformanceMetricsWidgetState();
 }
 
-class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
   late Animation<double> _progressAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('📊 [PerformanceMetrics] Initializing performance metrics display');
+    debugPrint(
+        '📊 [PerformanceMetrics] Initializing performance metrics display');
 
     // Initialize progress animation for performance score
     _animationController = AnimationController(
@@ -140,10 +143,12 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
   }
 
   /// Builds the enhanced performance header with comprehensive theme integration
-  Widget _buildPerformanceHeader(ThemeManager themeManager, double performanceScore) {
+  Widget _buildPerformanceHeader(
+      ThemeManager themeManager, double performanceScore) {
     debugPrint('📊 [PerformanceMetrics] Building enhanced performance header');
 
-    final performanceColor = _getPerformanceColor(themeManager, performanceScore);
+    final performanceColor =
+        _getPerformanceColor(themeManager, performanceScore);
 
     return Row(
       children: [
@@ -254,10 +259,13 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
   }
 
   /// Builds the enhanced animated performance score progress bar
-  Widget _buildPerformanceScoreBar(ThemeManager themeManager, double performanceScore) {
-    debugPrint('📊 [PerformanceMetrics] Building enhanced performance score bar');
+  Widget _buildPerformanceScoreBar(
+      ThemeManager themeManager, double performanceScore) {
+    debugPrint(
+        '📊 [PerformanceMetrics] Building enhanced performance score bar');
 
-    final performanceColor = _getPerformanceColor(themeManager, performanceScore);
+    final performanceColor =
+        _getPerformanceColor(themeManager, performanceScore);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +295,7 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
           ],
         ),
         SizedBox(height: 12.h),
-        
+
         // Enhanced progress bar container
         Container(
           height: 8.h,
@@ -332,11 +340,14 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
 
   /// Builds the enhanced performance metrics grid with comprehensive theming
   Widget _buildPerformanceMetrics(ThemeManager themeManager) {
-    debugPrint('📊 [PerformanceMetrics] Building enhanced performance metrics grid');
+    debugPrint(
+        '📊 [PerformanceMetrics] Building enhanced performance metrics grid');
 
     final frameDrops = widget.performanceMetrics['frame_drops'] as int? ?? 0;
-    final avgFrameTime = widget.performanceMetrics['average_frame_time'] as double? ?? 0.0;
-    final memoryUsage = widget.performanceMetrics['memory_usage'] as double? ?? 0.0;
+    final avgFrameTime =
+        widget.performanceMetrics['average_frame_time'] as double? ?? 0.0;
+    final memoryUsage =
+        widget.performanceMetrics['memory_usage'] as double? ?? 0.0;
 
     return Row(
       children: [
@@ -346,7 +357,9 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
             'Frame Drops',
             frameDrops.toString(),
             Prbal.exclamationTriangle,
-            frameDrops > 0 ? themeManager.errorColor : themeManager.successColor,
+            frameDrops > 0
+                ? themeManager.errorColor
+                : themeManager.successColor,
           ),
         ),
         SizedBox(width: 16.w),
@@ -356,7 +369,9 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
             'Avg Frame Time',
             '${avgFrameTime.toStringAsFixed(1)}ms',
             Prbal.clock,
-            avgFrameTime > 16.7 ? themeManager.warningColor : themeManager.successColor,
+            avgFrameTime > 16.7
+                ? themeManager.warningColor
+                : themeManager.successColor,
           ),
         ),
         SizedBox(width: 16.w),

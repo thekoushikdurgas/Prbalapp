@@ -10,7 +10,8 @@ class ProviderProfileScreen extends ConsumerStatefulWidget {
   const ProviderProfileScreen({super.key});
 
   @override
-  ConsumerState<ProviderProfileScreen> createState() => _ProviderProfileScreenState();
+  ConsumerState<ProviderProfileScreen> createState() =>
+      _ProviderProfileScreenState();
 }
 
 class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
@@ -144,7 +145,8 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {
     );
   }
 
-  Widget _buildProfileOption(String title, IconData icon, VoidCallback onTap, ThemeManager themeManager) {
+  Widget _buildProfileOption(String title, IconData icon, VoidCallback onTap,
+      ThemeManager themeManager) {
     return ListTile(
       leading: Icon(
         icon,

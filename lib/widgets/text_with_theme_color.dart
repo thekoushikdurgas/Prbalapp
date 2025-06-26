@@ -130,7 +130,8 @@ class TextWithThemeColor extends StatefulWidget {
   State<TextWithThemeColor> createState() => _TextWithThemeColorState();
 }
 
-class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _TextWithThemeColorState extends State<TextWithThemeColor>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   // ========== ANIMATION CONTROLLER ==========
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -143,8 +144,10 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
   @override
   void initState() {
     super.initState();
-    debugPrint('📝 TextWithThemeColor: Initializing comprehensive theme-aware text component');
-    debugPrint('📝 TextWithThemeColor: Text key: "${widget.text}", Variant: ${widget.variant}');
+    debugPrint(
+        '📝 TextWithThemeColor: Initializing comprehensive theme-aware text component');
+    debugPrint(
+        '📝 TextWithThemeColor: Text key: "${widget.text}", Variant: ${widget.variant}');
 
     // Initialize animations for interactive text
     _animationController = AnimationController(
@@ -175,15 +178,20 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
 
     // Comprehensive theme logging for debugging
     themeManager.logThemeInfo();
-    debugPrint('📝 TextWithThemeColor: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '📝 TextWithThemeColor: Building with COMPREHENSIVE ThemeManager integration');
     debugPrint('📝 TextWithThemeColor: → Variant: ${widget.variant}');
-    debugPrint('📝 TextWithThemeColor: → Show Container: ${widget.showContainer}');
-    debugPrint('📝 TextWithThemeColor: → Use Gradient: ${widget.useGradientText}');
+    debugPrint(
+        '📝 TextWithThemeColor: → Show Container: ${widget.showContainer}');
+    debugPrint(
+        '📝 TextWithThemeColor: → Use Gradient: ${widget.useGradientText}');
     debugPrint('📝 TextWithThemeColor: → Interactive: ${widget.isInteractive}');
-    debugPrint('📝 TextWithThemeColor: → Primary Color: ${themeManager.primaryColor}');
+    debugPrint(
+        '📝 TextWithThemeColor: → Primary Color: ${themeManager.primaryColor}');
     debugPrint(
         '📝 TextWithThemeColor: → Text Colors: Primary=${themeManager.textPrimary}, Secondary=${themeManager.textSecondary}');
-    debugPrint('📝 TextWithThemeColor: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '📝 TextWithThemeColor: → Background: ${themeManager.backgroundColor}');
     debugPrint(
         '📝 TextWithThemeColor: → Status Colors: Success=${themeManager.successColor}, Warning=${themeManager.warningColor}, Error=${themeManager.errorColor}, Info=${themeManager.infoColor}');
 
@@ -209,7 +217,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
 
   /// Build the main text widget with comprehensive ThemeManager styling
   Widget _buildTextWidget(ThemeManager themeManager, String translatedText) {
-    debugPrint('📝 TextWithThemeColor: Building text widget with variant: ${widget.variant}');
+    debugPrint(
+        '📝 TextWithThemeColor: Building text widget with variant: ${widget.variant}');
 
     // Get variant-specific styling
     final variantStyle = _getVariantStyle(themeManager);
@@ -239,7 +248,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
 
   /// Get text style based on variant using comprehensive ThemeManager properties
   TextStyle _getVariantStyle(ThemeManager themeManager) {
-    debugPrint('📝 TextWithThemeColor: Getting variant style for: ${widget.variant}');
+    debugPrint(
+        '📝 TextWithThemeColor: Getting variant style for: ${widget.variant}');
 
     switch (widget.variant) {
       case TextVariant.primary:
@@ -408,7 +418,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
 
   /// Build gradient text effect using comprehensive ThemeManager gradients
   Widget _buildGradientText(ThemeManager themeManager, Widget textWidget) {
-    debugPrint('📝 TextWithThemeColor: Building gradient text effect for variant: ${widget.variant}');
+    debugPrint(
+        '📝 TextWithThemeColor: Building gradient text effect for variant: ${widget.variant}');
 
     // Select gradient based on variant
     LinearGradient gradient;
@@ -430,7 +441,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
         gradient = themeManager.accent4Gradient;
         break;
       case TextVariant.accent5:
-        gradient = themeManager.secondaryGradient; // Using secondary as closest for accent5
+        gradient = themeManager
+            .secondaryGradient; // Using secondary as closest for accent5
         break;
       case TextVariant.success:
         gradient = themeManager.successGradient;
@@ -472,7 +484,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
 
   /// Build container wrapper with comprehensive ThemeManager styling
   Widget _buildContainerWrapper(ThemeManager themeManager, Widget textWidget) {
-    debugPrint('📝 TextWithThemeColor: Building container wrapper with comprehensive theming');
+    debugPrint(
+        '📝 TextWithThemeColor: Building container wrapper with comprehensive theming');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -526,7 +539,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
   }
 
   /// Build interactive wrapper with animations and state management
-  Widget _buildInteractiveWrapper(ThemeManager themeManager, Widget textWidget) {
+  Widget _buildInteractiveWrapper(
+      ThemeManager themeManager, Widget textWidget) {
     debugPrint('📝 TextWithThemeColor: Building interactive wrapper');
 
     return AnimatedBuilder(
@@ -552,7 +566,8 @@ class _TextWithThemeColorState extends State<TextWithThemeColor> with SingleTick
                     borderRadius: BorderRadius.circular(8.r),
                     border: _isHovered || _isPressed
                         ? Border.all(
-                            color: themeManager.primaryColor.withValues(alpha: 0.5),
+                            color: themeManager.primaryColor
+                                .withValues(alpha: 0.5),
                             width: 1,
                           )
                         : null,

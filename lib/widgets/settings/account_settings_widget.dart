@@ -70,7 +70,8 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ AccountSettingsWidget: Building account settings with comprehensive ThemeManager integration');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: Building account settings with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
@@ -78,12 +79,18 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     // Comprehensive theme logging for debugging
     themeManager.logThemeInfo();
     debugPrint('⚙️ AccountSettingsWidget: → User Type: $userType');
-    debugPrint('⚙️ AccountSettingsWidget: → Authentication State: ${authState.isAuthenticated}');
-    debugPrint('⚙️ AccountSettingsWidget: → Primary: ${themeManager.primaryColor}');
-    debugPrint('⚙️ AccountSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint('⚙️ AccountSettingsWidget: → Background: ${themeManager.backgroundColor}');
-    debugPrint('⚙️ AccountSettingsWidget: → Surface: ${themeManager.surfaceColor}');
-    debugPrint('⚙️ AccountSettingsWidget: → Card Background: ${themeManager.cardBackground}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Authentication State: ${authState.isAuthenticated}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Primary: ${themeManager.primaryColor}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint(
+        '⚙️ AccountSettingsWidget: → Card Background: ${themeManager.cardBackground}');
     debugPrint(
         '⚙️ AccountSettingsWidget: → Text Colors - Primary: ${themeManager.textPrimary}, Secondary: ${themeManager.textSecondary}');
 
@@ -124,7 +131,9 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
         // Verification with status-aware styling
         SettingsItemWidget(
           title: 'Verification',
-          subtitle: _isVerified(authState.userData) ? 'Account verified' : 'Complete verification',
+          subtitle: _isVerified(authState.userData)
+              ? 'Account verified'
+              : 'Complete verification',
           icon: Prbal.security,
           iconColor: _isVerified(authState.userData)
               ? themeManager.conditionalColor(
@@ -144,7 +153,8 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
         // User Type Change with enhanced styling
         SettingsItemWidget(
           title: 'Account Type',
-          subtitle: 'Currently: ${_getUserTypeDisplayName(userType)} - Tap to change',
+          subtitle:
+              'Currently: ${_getUserTypeDisplayName(userType)} - Tap to change',
           icon: Prbal.swapHoriz,
           iconColor: themeManager.conditionalColor(
             lightColor: themeManager.primaryColor,
@@ -157,25 +167,37 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
               gradient: themeManager.conditionalGradient(
                 lightGradient: LinearGradient(
                   colors: [
-                    themeManager.getUserTypeColor(userType).withValues(alpha: 0.15),
-                    themeManager.getUserTypeColor(userType).withValues(alpha: 0.05),
+                    themeManager
+                        .getUserTypeColor(userType)
+                        .withValues(alpha: 0.15),
+                    themeManager
+                        .getUserTypeColor(userType)
+                        .withValues(alpha: 0.05),
                   ],
                 ),
                 darkGradient: LinearGradient(
                   colors: [
-                    themeManager.getUserTypeColor(userType).withValues(alpha: 0.2),
-                    themeManager.getUserTypeColor(userType).withValues(alpha: 0.1),
+                    themeManager
+                        .getUserTypeColor(userType)
+                        .withValues(alpha: 0.2),
+                    themeManager
+                        .getUserTypeColor(userType)
+                        .withValues(alpha: 0.1),
                   ],
                 ),
               ),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
-                color: themeManager.getUserTypeColor(userType).withValues(alpha: 0.3),
+                color: themeManager
+                    .getUserTypeColor(userType)
+                    .withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: themeManager.getUserTypeColor(userType).withValues(alpha: 0.1),
+                  color: themeManager
+                      .getUserTypeColor(userType)
+                      .withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -186,7 +208,8 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
               style: TextStyle(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
-                color: themeManager.getContrastingColor(themeManager.getUserTypeColor(userType)),
+                color: themeManager.getContrastingColor(
+                    themeManager.getUserTypeColor(userType)),
               ),
             ),
           ),

@@ -49,7 +49,8 @@ class ProfileSectionWidget extends ConsumerStatefulWidget {
   final Function(ImageSource)? onProfilePictureEdit;
 
   @override
-  ConsumerState<ProfileSectionWidget> createState() => _ProfileSectionWidgetState();
+  ConsumerState<ProfileSectionWidget> createState() =>
+      _ProfileSectionWidgetState();
 }
 
 class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
@@ -69,7 +70,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
 
     // Start entrance animation
     _animationController.forward();
-    debugPrint('🎬 [ProfileSection] Animation controller started with 800ms duration');
+    debugPrint(
+        '🎬 [ProfileSection] Animation controller started with 800ms duration');
   }
 
   @override
@@ -81,14 +83,16 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🧑‍💼 [ProfileSection] Building enhanced profile section with ThemeManager');
+    debugPrint(
+        '🧑‍💼 [ProfileSection] Building enhanced profile section with ThemeManager');
 
     // Use centralized ThemeManager instead of manual theme detection
     final themeManager = ThemeManager.of(context);
     final authState = ref.watch(authenticationStateProvider);
 
     // Enhanced debug logging with theme state
-    debugPrint('🔒 [ProfileSection] Authentication state: ${authState.isAuthenticated}');
+    debugPrint(
+        '🔒 [ProfileSection] Authentication state: ${authState.isAuthenticated}');
 
     if (!authState.isAuthenticated) {
       return _buildSignInPrompt(themeManager);
@@ -121,7 +125,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
   }
 
   /// Builds enhanced profile header with ThemeManager styling
-  Widget _buildEnhancedProfileHeader(ThemeManager themeManager, dynamic authState) {
+  Widget _buildEnhancedProfileHeader(
+      ThemeManager themeManager, dynamic authState) {
     debugPrint('🧑‍💼 ProfileSectionWidget: Building enhanced profile header');
 
     return Row(
@@ -210,7 +215,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
               SizedBox(height: 8.h),
 
               // Enhanced rating display
-              if (_hasValidRating(authState)) _buildEnhancedRatingDisplay(themeManager, authState),
+              if (_hasValidRating(authState))
+                _buildEnhancedRatingDisplay(themeManager, authState),
             ],
           ),
         ),
@@ -219,7 +225,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
   }
 
   /// Builds enhanced profile stats with theme-aware cards
-  Widget _buildEnhancedProfileStats(ThemeManager themeManager, dynamic authState) {
+  Widget _buildEnhancedProfileStats(
+      ThemeManager themeManager, dynamic authState) {
     debugPrint('🧑‍💼 ProfileSectionWidget: Building enhanced profile stats');
 
     return Container(
@@ -267,10 +274,13 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
               themeManager,
               icon: Prbal.wallet,
               label: 'profile.balance'.tr(),
-              value: '₹${(authState.userData?['balance'] ?? 0).toStringAsFixed(0)}',
+              value:
+                  '₹${(authState.userData?['balance'] ?? 0).toStringAsFixed(0)}',
               gradient: themeManager.conditionalGradient(
-                lightGradient: LinearGradient(colors: [Color(0xFFFF6B6B), Color(0xFFEE5A52)]),
-                darkGradient: LinearGradient(colors: [Color(0xFFFF8A80), Color(0xFFFF5722)]),
+                lightGradient: LinearGradient(
+                    colors: [Color(0xFFFF6B6B), Color(0xFFEE5A52)]),
+                darkGradient: LinearGradient(
+                    colors: [Color(0xFFFF8A80), Color(0xFFFF5722)]),
               ),
             ),
           ),
@@ -637,12 +647,14 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
           color: themeManager.surfaceColor,
           child: Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(themeManager.primaryColor),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(themeManager.primaryColor),
               strokeWidth: 2,
             ),
           ),
         ),
-        errorWidget: (context, url, error) => _buildFallbackAvatar(themeManager, userType),
+        errorWidget: (context, url, error) =>
+            _buildFallbackAvatar(themeManager, userType),
       );
     } else {
       return _buildFallbackAvatar(themeManager, userType);
@@ -651,7 +663,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
 
   /// Builds fallback avatar with user.png image
   Widget _buildFallbackAvatar(ThemeManager themeManager, String? userType) {
-    debugPrint('🧑‍💼 ProfileSectionWidget: Building fallback avatar with user.png');
+    debugPrint(
+        '🧑‍💼 ProfileSectionWidget: Building fallback avatar with user.png');
 
     return Container(
       decoration: BoxDecoration(
@@ -662,7 +675,8 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
           'assets/images/user.png',
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🧑‍💼 ProfileSectionWidget: Error loading user.png: $error');
+            debugPrint(
+                '🧑‍💼 ProfileSectionWidget: Error loading user.png: $error');
             return Container(
               decoration: BoxDecoration(
                 gradient: themeManager.primaryGradient,
@@ -684,8 +698,10 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     final userData = authState.userData;
     if (userData == null) return 'Guest User';
 
-    final firstName = userData['first_name'] as String? ?? userData['firstName'] as String?;
-    final lastName = userData['last_name'] as String? ?? userData['lastName'] as String?;
+    final firstName =
+        userData['first_name'] as String? ?? userData['firstName'] as String?;
+    final lastName =
+        userData['last_name'] as String? ?? userData['lastName'] as String?;
     final username = userData['username'] as String?;
 
     if (firstName != null && lastName != null) {
@@ -709,15 +725,18 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
   }
 
   /// Builds enhanced rating display
-  Widget _buildEnhancedRatingDisplay(ThemeManager themeManager, dynamic authState) {
+  Widget _buildEnhancedRatingDisplay(
+      ThemeManager themeManager, dynamic authState) {
     final rating = _getRealRating(authState);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         gradient: themeManager.conditionalGradient(
-          lightGradient: LinearGradient(colors: [Color(0xFFED8936), Color(0xFFDD6B20)]),
-          darkGradient: LinearGradient(colors: [Color(0xFFFBD38D), Color(0xFFED8936)]),
+          lightGradient:
+              LinearGradient(colors: [Color(0xFFED8936), Color(0xFFDD6B20)]),
+          darkGradient:
+              LinearGradient(colors: [Color(0xFFFBD38D), Color(0xFFED8936)]),
         ),
         borderRadius: BorderRadius.circular(12.r),
       ),
@@ -761,7 +780,9 @@ class _ProfileSectionWidgetState extends ConsumerState<ProfileSectionWidget>
     final userData = authState.userData;
     if (userData == null) return 0;
 
-    final bookingData = userData['total_bookings'] ?? userData['totalBookings'] ?? userData['booking_count'];
+    final bookingData = userData['total_bookings'] ??
+        userData['totalBookings'] ??
+        userData['booking_count'];
     if (bookingData is int) {
       return bookingData;
     } else if (bookingData is String) {

@@ -14,10 +14,12 @@ class BookingDetailsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+  ConsumerState<BookingDetailsScreen> createState() =>
+      _BookingDetailsScreenState();
 }
 
-class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> with TickerProviderStateMixin {
+class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late AnimationController _progressController;
@@ -29,14 +31,16 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
     'serviceName': 'House Deep Cleaning',
     'provider': {
       'name': 'Sarah Johnson',
-      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'rating': 4.8,
       'phone': '+1 (555) 123-4567',
       'email': 'sarah.johnson@email.com',
     },
     'customer': {
       'name': 'John Smith',
-      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'phone': '+1 (555) 987-6543',
       'email': 'john.smith@email.com',
     },
@@ -48,7 +52,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
     'address': '123 Main Street, Apt 4B\nNew York, NY 10001',
     'description':
         'Deep cleaning for 3-bedroom apartment including kitchen, bathrooms, living areas, and bedrooms. Special attention to baseboards and windows.',
-    'notes': 'Please use eco-friendly products only. Front door key is under the flower pot.',
+    'notes':
+        'Please use eco-friendly products only. Front door key is under the flower pot.',
     'images': [
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300',
       'https://images.unsplash.com/photo-1556912167-f556f1b39b6b?w=300',
@@ -89,7 +94,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
   @override
   void initState() {
     super.initState();
-    debugPrint('📋 BookingDetailsScreen: Initializing booking details for ID: ${widget.bookingId}');
+    debugPrint(
+        '📋 BookingDetailsScreen: Initializing booking details for ID: ${widget.bookingId}');
     _initializeAnimations();
     _startAnimations();
   }
@@ -145,8 +151,10 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
     final themeManager = ThemeManager.of(context);
 
     debugPrint('📋 BookingDetailsScreen: Building booking details interface');
-    debugPrint('🎨 BookingDetailsScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
-    debugPrint('📋 BookingDetailsScreen: Booking status: ${bookingData['status']}');
+    debugPrint(
+        '🎨 BookingDetailsScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint(
+        '📋 BookingDetailsScreen: Booking status: ${bookingData['status']}');
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,
@@ -248,7 +256,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
   }
 
   Widget _buildStatusCard(ThemeManager themeManager) {
-    debugPrint('📋 BookingDetailsScreen: Building status card for status: ${bookingData['status']}');
+    debugPrint(
+        '📋 BookingDetailsScreen: Building status card for status: ${bookingData['status']}');
 
     return Container(
       width: double.infinity,
@@ -258,7 +267,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: _getStatusColor(bookingData['status'], themeManager).withValues(alpha: 0.3),
+            color: _getStatusColor(bookingData['status'], themeManager)
+                .withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -357,7 +367,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
                     child: LinearProgressIndicator(
                       value: _progressAnimation.value,
                       backgroundColor: Colors.white.withValues(alpha: 0.3),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
                       minHeight: 6.h,
                     ),
                   ),
@@ -436,7 +447,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
 
   Widget _buildProviderInfo(ThemeManager themeManager) {
     final provider = bookingData['provider'];
-    debugPrint('📋 BookingDetailsScreen: Building provider info for: ${provider['name']}');
+    debugPrint(
+        '📋 BookingDetailsScreen: Building provider info for: ${provider['name']}');
 
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -475,7 +487,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
                   child: Image.network(
                     provider['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 30.sp),
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -530,7 +543,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    debugPrint('📋 BookingDetailsScreen: Call provider button pressed');
+                    debugPrint(
+                        '📋 BookingDetailsScreen: Call provider button pressed');
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -567,7 +581,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    debugPrint('📋 BookingDetailsScreen: Message provider button pressed');
+                    debugPrint(
+                        '📋 BookingDetailsScreen: Message provider button pressed');
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -717,7 +732,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
     );
   }
 
-  Widget _buildTimelineItem(Map<String, dynamic> item, bool isLast, ThemeManager themeManager) {
+  Widget _buildTimelineItem(
+      Map<String, dynamic> item, bool isLast, ThemeManager themeManager) {
     final isCompleted = item['completed'] as bool;
 
     return Row(
@@ -729,10 +745,14 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
               width: 24.w,
               height: 24.h,
               decoration: BoxDecoration(
-                color: isCompleted ? themeManager.successColor : themeManager.surfaceColor,
+                color: isCompleted
+                    ? themeManager.successColor
+                    : themeManager.surfaceColor,
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: isCompleted ? themeManager.successColor : themeManager.borderColor,
+                  color: isCompleted
+                      ? themeManager.successColor
+                      : themeManager.borderColor,
                   width: 2,
                 ),
               ),
@@ -792,7 +812,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
   }
 
   Widget _buildImagesCard(ThemeManager themeManager) {
-    debugPrint('📋 BookingDetailsScreen: Building images card with ${bookingData['images'].length} images');
+    debugPrint(
+        '📋 BookingDetailsScreen: Building images card with ${bookingData['images'].length} images');
 
     return Container(
       padding: EdgeInsets.all(20.w),
@@ -851,7 +872,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
 
   Widget _buildNotesCard(ThemeManager themeManager) {
     if (bookingData['notes'] == null) {
-      debugPrint('📋 BookingDetailsScreen: No notes to display, returning empty widget');
+      debugPrint(
+          '📋 BookingDetailsScreen: No notes to display, returning empty widget');
       return const SizedBox.shrink();
     }
 
@@ -917,11 +939,13 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
   }
 
   Widget _buildActionButtons(ThemeManager themeManager) {
-    debugPrint('📋 BookingDetailsScreen: Building action buttons for status: ${bookingData['status']}');
+    debugPrint(
+        '📋 BookingDetailsScreen: Building action buttons for status: ${bookingData['status']}');
 
     return Column(
       children: [
-        if (bookingData['status'] == 'booked' || bookingData['status'] == 'assigned') ...[
+        if (bookingData['status'] == 'booked' ||
+            bookingData['status'] == 'assigned') ...[
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -1051,7 +1075,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
   }
 
   LinearGradient _getStatusGradient(String status, ThemeManager themeManager) {
-    debugPrint('📋 BookingDetailsScreen: Creating status gradient for: $status');
+    debugPrint(
+        '📋 BookingDetailsScreen: Creating status gradient for: $status');
 
     final color = _getStatusColor(status, themeManager);
     return LinearGradient(
@@ -1130,7 +1155,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
           children: [
             ListTile(
               leading: Icon(Prbal.edit, color: themeManager.primaryColor),
-              title: Text('Modify Booking', style: TextStyle(color: themeManager.textPrimary)),
+              title: Text('Modify Booking',
+                  style: TextStyle(color: themeManager.textPrimary)),
               onTap: () {
                 debugPrint('📋 BookingDetailsScreen: Modify booking selected');
                 Navigator.pop(context);
@@ -1138,7 +1164,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
             ),
             ListTile(
               leading: Icon(Prbal.calendar, color: themeManager.warningColor),
-              title: Text('Reschedule', style: TextStyle(color: themeManager.textPrimary)),
+              title: Text('Reschedule',
+                  style: TextStyle(color: themeManager.textPrimary)),
               onTap: () {
                 debugPrint('📋 BookingDetailsScreen: Reschedule selected');
                 Navigator.pop(context);
@@ -1146,7 +1173,8 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
             ),
             ListTile(
               leading: Icon(Prbal.flag, color: themeManager.errorColor),
-              title: Text('Report Issue', style: TextStyle(color: themeManager.textPrimary)),
+              title: Text('Report Issue',
+                  style: TextStyle(color: themeManager.textPrimary)),
               onTap: () {
                 debugPrint('📋 BookingDetailsScreen: Report issue selected');
                 Navigator.pop(context);
@@ -1187,8 +1215,10 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> wit
               Navigator.pop(context);
               // Handle cancellation
             },
-            style: ElevatedButton.styleFrom(backgroundColor: themeManager.errorColor),
-            child: const Text('Cancel Booking', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: themeManager.errorColor),
+            child: const Text('Cancel Booking',
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

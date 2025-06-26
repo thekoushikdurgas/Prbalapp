@@ -129,10 +129,13 @@ class DotsDecoration {
 
     // Comprehensive theme logging for debugging
     themeManager.logThemeInfo();
-    debugPrint('🔵 DotsDecoration: Building COMPREHENSIVE theme-aware decoration');
+    debugPrint(
+        '🔵 DotsDecoration: Building COMPREHENSIVE theme-aware decoration');
     debugPrint('🔵 DotsDecoration: → Primary: ${themeManager.primaryColor}');
-    debugPrint('🔵 DotsDecoration: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint('🔵 DotsDecoration: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '🔵 DotsDecoration: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint(
+        '🔵 DotsDecoration: → Background: ${themeManager.backgroundColor}');
     debugPrint('🔵 DotsDecoration: → Surface: ${themeManager.surfaceColor}');
     debugPrint('🔵 DotsDecoration: → Accent1: ${themeManager.accent1}');
     debugPrint('🔵 DotsDecoration: → Accent2: ${themeManager.accent2}');
@@ -140,11 +143,14 @@ class DotsDecoration {
 
     // Enhanced responsive sizing with theme-aware scaling
     final Size responsiveSize = _getResponsiveSize(themeManager, variant);
-    final Size responsiveActiveSize = _getResponsiveActiveSize(themeManager, variant);
-    final EdgeInsets responsiveSpacing = _getResponsiveSpacing(themeManager, variant);
+    final Size responsiveActiveSize =
+        _getResponsiveActiveSize(themeManager, variant);
+    final EdgeInsets responsiveSpacing =
+        _getResponsiveSpacing(themeManager, variant);
 
     debugPrint('🔵 DotsDecoration: → Responsive Size: $responsiveSize');
-    debugPrint('🔵 DotsDecoration: → Responsive Active Size: $responsiveActiveSize');
+    debugPrint(
+        '🔵 DotsDecoration: → Responsive Active Size: $responsiveActiveSize');
     debugPrint('🔵 DotsDecoration: → Responsive Spacing: $responsiveSpacing');
 
     return DotsDecorator(
@@ -228,7 +234,8 @@ class DotsDecoration {
   }
 
   /// Get responsive size for active dot with comprehensive theming
-  static Size _getResponsiveActiveSize(ThemeManager themeManager, String variant) {
+  static Size _getResponsiveActiveSize(
+      ThemeManager themeManager, String variant) {
     switch (variant) {
       case 'minimal':
         return Size(20.w, 6.h);
@@ -242,7 +249,8 @@ class DotsDecoration {
   }
 
   /// Get responsive spacing with comprehensive theming
-  static EdgeInsets _getResponsiveSpacing(ThemeManager themeManager, String variant) {
+  static EdgeInsets _getResponsiveSpacing(
+      ThemeManager themeManager, String variant) {
     switch (variant) {
       case 'minimal':
         return EdgeInsets.symmetric(horizontal: 4.w);
@@ -305,7 +313,8 @@ class DotsDecoration {
   }
 
   /// Get theme-aware inactive dot shape with comprehensive theming
-  static ShapeBorder _getInactiveDotShape(ThemeManager themeManager, String variant) {
+  static ShapeBorder _getInactiveDotShape(
+      ThemeManager themeManager, String variant) {
     switch (variant) {
       case 'minimal':
         return RoundedRectangleBorder(
@@ -341,7 +350,8 @@ class DotsDecoration {
   }
 
   /// Get theme-aware active dot shape with comprehensive theming
-  static ShapeBorder _getActiveDotShape(ThemeManager themeManager, String variant) {
+  static ShapeBorder _getActiveDotShape(
+      ThemeManager themeManager, String variant) {
     switch (variant) {
       case 'minimal':
         return RoundedRectangleBorder(
@@ -418,32 +428,42 @@ class DotsDecoration {
   /// **Parameters:**
   /// - [context]: BuildContext for accessing ThemeManager
   /// - [variant]: Decoration variant being logged
-  static void debugLogConfiguration(BuildContext context, {String variant = 'default'}) {
+  static void debugLogConfiguration(BuildContext context,
+      {String variant = 'default'}) {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('🔵 DotsDecoration: COMPREHENSIVE Configuration details:');
     debugPrint('🔵 DotsDecoration: → Variant: $variant');
-    debugPrint('🔵 DotsDecoration: → Primary color: ${themeManager.primaryColor}');
-    debugPrint('🔵 DotsDecoration: → Secondary color: ${themeManager.secondaryColor}');
+    debugPrint(
+        '🔵 DotsDecoration: → Primary color: ${themeManager.primaryColor}');
+    debugPrint(
+        '🔵 DotsDecoration: → Secondary color: ${themeManager.secondaryColor}');
     debugPrint('🔵 DotsDecoration: → Accent1: ${themeManager.accent1}');
     debugPrint('🔵 DotsDecoration: → Accent2: ${themeManager.accent2}');
 
     final responsiveSize = _getResponsiveSize(themeManager, variant);
-    final responsiveActiveSize = _getResponsiveActiveSize(themeManager, variant);
+    final responsiveActiveSize =
+        _getResponsiveActiveSize(themeManager, variant);
     final responsiveSpacing = _getResponsiveSpacing(themeManager, variant);
 
     debugPrint('🔵 DotsDecoration: → Inactive dot size: $responsiveSize');
     debugPrint('🔵 DotsDecoration: → Active dot size: $responsiveActiveSize');
     debugPrint('🔵 DotsDecoration: → Dot spacing: $responsiveSpacing');
-    debugPrint('🔵 DotsDecoration: → Inactive color: ${_getInactiveDotColor(themeManager, variant)}');
-    debugPrint('🔵 DotsDecoration: → Active color: ${_getActiveDotColor(themeManager, variant)}');
+    debugPrint(
+        '🔵 DotsDecoration: → Inactive color: ${_getInactiveDotColor(themeManager, variant)}');
+    debugPrint(
+        '🔵 DotsDecoration: → Active color: ${_getActiveDotColor(themeManager, variant)}');
 
     // Log legacy constants for comparison
     debugPrint('🔵 DotsDecoration: LEGACY Constants for comparison:');
-    debugPrint('🔵 DotsDecoration: → Legacy inactive size: ${IntroConstants.dotSquare}');
-    debugPrint('🔵 DotsDecoration: → Legacy active size: ${IntroConstants.dotSize}');
-    debugPrint('🔵 DotsDecoration: → Legacy spacing: ${IntroConstants.dotSpacing}');
-    debugPrint('🔵 DotsDecoration: → Legacy border radius: ${IntroConstants.dotsBorderCircular}');
+    debugPrint(
+        '🔵 DotsDecoration: → Legacy inactive size: ${IntroConstants.dotSquare}');
+    debugPrint(
+        '🔵 DotsDecoration: → Legacy active size: ${IntroConstants.dotSize}');
+    debugPrint(
+        '🔵 DotsDecoration: → Legacy spacing: ${IntroConstants.dotSpacing}');
+    debugPrint(
+        '🔵 DotsDecoration: → Legacy border radius: ${IntroConstants.dotsBorderCircular}');
   }
 
   /// Get decoration variant information for debugging
@@ -454,10 +474,14 @@ class DotsDecoration {
     return {
       'available_variants': ['default', 'minimal', 'enhanced', 'glassmorphism'],
       'features': {
-        'default': 'Standard theme-aware decoration with balanced visual impact',
-        'minimal': 'Subtle decoration for compact layouts with minimal visual impact',
-        'enhanced': 'Bold decoration with enhanced visual effects and larger sizing',
-        'glassmorphism': 'Modern decoration with glass morphism effects and borders',
+        'default':
+            'Standard theme-aware decoration with balanced visual impact',
+        'minimal':
+            'Subtle decoration for compact layouts with minimal visual impact',
+        'enhanced':
+            'Bold decoration with enhanced visual effects and larger sizing',
+        'glassmorphism':
+            'Modern decoration with glass morphism effects and borders',
       },
       'theming': {
         'colors': 'All variants use comprehensive ThemeManager color system',

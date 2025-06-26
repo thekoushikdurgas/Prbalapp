@@ -22,10 +22,12 @@ class AdminCategoryManagerScreen extends ConsumerStatefulWidget {
   const AdminCategoryManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminCategoryManagerScreen> createState() => _AdminCategoryManagerScreenState();
+  ConsumerState<AdminCategoryManagerScreen> createState() =>
+      _AdminCategoryManagerScreenState();
 }
 
-class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManagerScreen>
+class _AdminCategoryManagerScreenState
+    extends ConsumerState<AdminCategoryManagerScreen>
     with TickerProviderStateMixin, ThemeAwareMixin {
   // ========== STATE VARIABLES ==========
   final Set<String> _selectedIds = <String>{};
@@ -35,7 +37,8 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
   @override
   void initState() {
     super.initState();
-    debugPrint('🏷️ AdminCategoryManager: Initializing modern category management screen');
+    debugPrint(
+        '🏷️ AdminCategoryManager: Initializing modern category management screen');
 
     // Initialize animations
     _fadeController = AnimationController(
@@ -58,7 +61,8 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 AdminCategoryManager: Building modern category management screen');
+    debugPrint(
+        '🎨 AdminCategoryManager: Building modern category management screen');
 
     final themeManager = ThemeManager.of(context);
     themeManager.logThemeInfo();
@@ -92,23 +96,28 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
                         title: 'Category Manager',
                         subtitle: 'Manage your service categories',
                         onSelectionChanged: (categoryId) {
-                          debugPrint('📋 AdminCategoryManager: Category selection changed: $categoryId');
+                          debugPrint(
+                              '📋 AdminCategoryManager: Category selection changed: $categoryId');
                           setState(() {
                             if (_selectedIds.contains(categoryId)) {
                               _selectedIds.remove(categoryId);
-                              debugPrint('📋 AdminCategoryManager: Category deselected: $categoryId');
+                              debugPrint(
+                                  '📋 AdminCategoryManager: Category deselected: $categoryId');
                             } else {
                               _selectedIds.add(categoryId);
-                              debugPrint('📋 AdminCategoryManager: Category selected: $categoryId');
+                              debugPrint(
+                                  '📋 AdminCategoryManager: Category selected: $categoryId');
                             }
                           });
-                          debugPrint('📋 AdminCategoryManager: Total selected categories: ${_selectedIds.length}');
+                          debugPrint(
+                              '📋 AdminCategoryManager: Total selected categories: ${_selectedIds.length}');
 
                           // Haptic feedback
                           HapticFeedback.selectionClick();
                         },
                         onDataChanged: () {
-                          debugPrint('📋 AdminCategoryManager: Categories data changed - triggering UI update');
+                          debugPrint(
+                              '📋 AdminCategoryManager: Categories data changed - triggering UI update');
                           setState(() {
                             // Force UI update when data changes
                           });
@@ -145,7 +154,8 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      debugPrint('⬅️ AdminCategoryManager: Back button pressed');
+                      debugPrint(
+                          '⬅️ AdminCategoryManager: Back button pressed');
                       HapticFeedback.lightImpact();
                       Navigator.of(context).pop();
                     },
@@ -202,7 +212,8 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      debugPrint('➕ AdminCategoryManager: Add category pressed');
+                      debugPrint(
+                          '➕ AdminCategoryManager: Add category pressed');
                       HapticFeedback.mediumImpact();
                       // Handle add category action
                     },
@@ -274,8 +285,10 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
                   darkColor: const Color(0xFFEF4444), // Red for dark mode
                 ),
                 themeManager.conditionalColor(
-                  lightColor: const Color(0xFFEA580C), // Darker orange for light mode
-                  darkColor: const Color(0xFFDC2626), // Darker red for dark mode
+                  lightColor:
+                      const Color(0xFFEA580C), // Darker orange for light mode
+                  darkColor:
+                      const Color(0xFFDC2626), // Darker red for dark mode
                 ),
               ],
             ),
@@ -348,7 +361,8 @@ class _AdminCategoryManagerScreenState extends ConsumerState<AdminCategoryManage
 
   @override
   void dispose() {
-    debugPrint('🏷️ AdminCategoryManager: Disposing modern category management screen');
+    debugPrint(
+        '🏷️ AdminCategoryManager: Disposing modern category management screen');
     _fadeController.dispose();
     debugPrint('🏷️ AdminCategoryManager: Screen disposed successfully');
     super.dispose();

@@ -54,7 +54,8 @@ class SettingsFormFieldWidget extends ConsumerWidget with ThemeAwareMixin {
     );
 
     // 📊 Debug logging
-    debugPrint('🎯 [SettingsFormField] Field: $label, Required: $required, Enabled: $isEnabled');
+    debugPrint(
+        '🎯 [SettingsFormField] Field: $label, Required: $required, Enabled: $isEnabled');
     debugPrint('🎨 [SettingsFormField] User Type Color: $userTypeColor');
 
     return Column(

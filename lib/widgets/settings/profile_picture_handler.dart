@@ -34,7 +34,8 @@ class ProfilePictureHandler {
       final errorMessage = 'Please log in to update your profile picture';
       debugPrint('❌ [ProfilePicture] Authentication check failed');
       onError?.call(errorMessage);
-      _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
+      _showSnackBar(context, errorMessage,
+          isError: true, themeManager: themeManager);
       return;
     }
 
@@ -49,7 +50,8 @@ class ProfilePictureHandler {
         imageQuality: 85, // Compress image for faster upload
         maxWidth: 1024, // Limit image size
         maxHeight: 1024,
-        preferredCameraDevice: CameraDevice.front, // Use front camera for profile pics
+        preferredCameraDevice:
+            CameraDevice.front, // Use front camera for profile pics
       );
 
       if (pickedFile == null) {
@@ -57,8 +59,10 @@ class ProfilePictureHandler {
         return; // User cancelled image selection
       }
 
-      debugPrint('📷 ProfilePictureHandler: Image selected: ${pickedFile.path}');
-      debugPrint('📦 ProfilePictureHandler: File size: ${await File(pickedFile.path).length()} bytes');
+      debugPrint(
+          '📷 ProfilePictureHandler: Image selected: ${pickedFile.path}');
+      debugPrint(
+          '📦 ProfilePictureHandler: File size: ${await File(pickedFile.path).length()} bytes');
 
       // Convert to File
       final File imageFile = File(pickedFile.path);
@@ -67,9 +71,11 @@ class ProfilePictureHandler {
       final fileSize = await imageFile.length();
       if (fileSize > 5 * 1024 * 1024) {
         _closeLoadingDialog(context);
-        const errorMessage = 'Image is too large. Please select an image smaller than 5MB.';
+        const errorMessage =
+            'Image is too large. Please select an image smaller than 5MB.';
         onError?.call(errorMessage);
-        _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
+        _showSnackBar(context, errorMessage,
+            isError: true, themeManager: themeManager);
         return;
       }
 
@@ -85,9 +91,11 @@ class ProfilePictureHandler {
 
       if (uploadResponse.isSuccess && uploadResponse.data != null) {
         // Extract new profile picture URL from different possible response structures
-        final newProfilePictureUrl = _extractProfilePictureUrl(uploadResponse.data!);
+        final newProfilePictureUrl =
+            _extractProfilePictureUrl(uploadResponse.data!);
 
-        debugPrint('🎯 ProfilePictureHandler: New profile URL: $newProfilePictureUrl');
+        debugPrint(
+            '🎯 ProfilePictureHandler: New profile URL: $newProfilePictureUrl');
 
         if (newProfilePictureUrl != null && newProfilePictureUrl.isNotEmpty) {
           // Update authentication state with new profile picture
@@ -101,18 +109,22 @@ class ProfilePictureHandler {
           try {
             if (await imageFile.exists()) {
               await imageFile.delete();
-              debugPrint('🗑️ ProfilePictureHandler: Temporary file cleaned up');
+              debugPrint(
+                  '🗑️ ProfilePictureHandler: Temporary file cleaned up');
             }
           } catch (e) {
-            debugPrint('⚠️ ProfilePictureHandler: Failed to clean up temp file: $e');
+            debugPrint(
+                '⚠️ ProfilePictureHandler: Failed to clean up temp file: $e');
           }
 
           // Show success message
           const successMessage = 'Profile picture updated successfully!';
           onSuccess?.call();
-          _showSnackBar(context, successMessage, isError: false, themeManager: themeManager);
+          _showSnackBar(context, successMessage,
+              isError: false, themeManager: themeManager);
 
-          debugPrint('✅ ProfilePictureHandler: Profile picture updated successfully');
+          debugPrint(
+              '✅ ProfilePictureHandler: Profile picture updated successfully');
         } else {
           throw Exception('No profile picture URL received from server');
         }
@@ -126,7 +138,8 @@ class ProfilePictureHandler {
       // Show error message
       final errorMessage = 'Failed to update profile picture: $e';
       onError?.call(errorMessage);
-      _showSnackBar(context, errorMessage, isError: true, themeManager: themeManager);
+      _showSnackBar(context, errorMessage,
+          isError: true, themeManager: themeManager);
 
       debugPrint('❌ ProfilePictureHandler: Profile picture update failed: $e');
     }
@@ -135,10 +148,11 @@ class ProfilePictureHandler {
   /// Extract profile picture URL from API response
   static String? _extractProfilePictureUrl(Map<String, dynamic> responseData) {
     // Try different possible response structures
-    final rawUrl = responseData['data']?['user']?['profile_picture'] as String? ??
-        responseData['user']?['profile_picture'] as String? ??
-        responseData['profile_picture'] as String? ??
-        responseData['data']?['profile_picture'] as String?;
+    final rawUrl =
+        responseData['data']?['user']?['profile_picture'] as String? ??
+            responseData['user']?['profile_picture'] as String? ??
+            responseData['profile_picture'] as String? ??
+            responseData['data']?['profile_picture'] as String?;
 
     // Convert relative URL to absolute URL if needed
     if (rawUrl != null && rawUrl.isNotEmpty) {
@@ -262,7 +276,8 @@ class ProfilePictureHandler {
                     ],
                   ),
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(themeManager.infoColor),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(themeManager.infoColor),
                     strokeWidth: 3,
                   ),
                 ),
@@ -281,7 +296,8 @@ class ProfilePictureHandler {
                 SizedBox(height: 8.h),
                 // Enhanced subtitle container
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     gradient: themeManager.conditionalGradient(
                       lightGradient: LinearGradient(
@@ -345,7 +361,8 @@ class ProfilePictureHandler {
             ),
           ],
         ),
-        backgroundColor: isError ? const Color(0xFFE53E3E) : const Color(0xFF48BB78),
+        backgroundColor:
+            isError ? const Color(0xFFE53E3E) : const Color(0xFF48BB78),
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: isError ? 4 : 3),
         shape: RoundedRectangleBorder(

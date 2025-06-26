@@ -10,10 +10,8 @@ import 'package:prbal/services/health_service.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-// TODO: Add proper theme service integration
-// TODO: Add localization support
-// TODO: Add connectivity check before navigation
 // TODO: Add custom fonts and advanced styling
 // TODO: Add sound effects for splash animations
 // TODO: Add biometric authentication check
@@ -47,7 +45,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
 
   // Lottie animation state management
 
-  String _loadingText = 'Initializing app...';
+  String _loadingText = 'loading.initializingApp'.tr();
   bool _isInitializationComplete = false;
 
   @override
@@ -145,38 +143,38 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   Future<void> _initializeServices() async {
     try {
       // Verify Hive service initialization
-      _updateLoadingText('Checking local storage...');
+      _updateLoadingText('loading.checkingStorage'.tr());
       if (!HiveService.isStorageHealthy()) {
         debugPrint('⚠️ Storage health check failed - attempting recovery');
-        _updateLoadingText('Recovering local storage...');
+        _updateLoadingText('loading.recoveringStorage'.tr());
         // HiveService.init() should already be called in main.dart
         await Future.delayed(const Duration(milliseconds: 300));
       }
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Initialize performance service
-      _updateLoadingText('Setting up performance monitoring...');
+      _updateLoadingText('loading.settingUpPerformance'.tr());
       await PerformanceService.instance.initializePerformanceMonitoring();
       await Future.delayed(const Duration(milliseconds: 500));
 
       // Optimize startup
-      _updateLoadingText('Optimizing app startup...');
+      _updateLoadingText('loading.optimizingStartup'.tr());
       await PerformanceService.instance.optimizeStartup();
       await Future.delayed(const Duration(milliseconds: 500));
 
       // Initialize image loading optimization
-      _updateLoadingText('Optimizing image loading...');
+      _updateLoadingText('loading.optimizingImageLoading'.tr());
       PerformanceService.optimizeImageLoading();
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Initialize health monitoring
-      _updateLoadingText('Initializing health monitoring...');
+      _updateLoadingText('loading.initializingHealth'.tr());
       final healthService = HealthService();
       await healthService.initialize();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // Check system health only if needed (uses cache when available)
-      _updateLoadingText('Checking system health...');
+      // Check system health with connectivity awareness
+      _updateLoadingText('loading.checkingSystemHealth'.tr());
       ApplicationHealth healthStatusResult = ApplicationHealth.fromComponents(
         system: SystemHealth(
           status: 'unknown',
@@ -189,10 +187,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         ),
       );
 
+      // Check connectivity first
+      _updateLoadingText('loading.checkingConnectivity'.tr());
+      final connectivityStatus = await healthService.checkConnectivity();
+      debugPrint('🌐 Splash Screen: Connectivity status: ${connectivityStatus.name}');
+
       // First try to get quick status from cache
       final quickStatus = healthService.getQuickHealthStatus();
       if (quickStatus != null && healthService.hasCachedHealthData) {
-        _updateLoadingText('Using cached health status...');
+        _updateLoadingText('loading.usingCachedHealth'.tr());
         final currentHealth = healthService.currentHealth;
         if (currentHealth != null) {
           healthStatusResult = currentHealth;
@@ -201,21 +204,36 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         debugPrint('🏥 Skipping network health check - recent data available');
         await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
-        // Only perform network check if no recent cached data
-        _updateLoadingText('Performing health check...');
-        debugPrint('🏥 No recent cached health data - performing fresh check');
-        final healthCheckResult = await healthService.performHealthCheck();
-        if (healthCheckResult != null) {
-          healthStatusResult = healthCheckResult;
+        // Perform health check with connectivity awareness
+        if (healthService.isOffline) {
+          _updateLoadingText('loading.offlineMode'.tr());
+          debugPrint('🏥 Device offline - using offline health status');
+          final offlineHealth = await healthService.performHealthCheck();
+          if (offlineHealth != null) {
+            healthStatusResult = offlineHealth;
+          }
+          await Future.delayed(const Duration(milliseconds: 200));
+        } else {
+          // Network available - perform full health check
+          _updateLoadingText('loading.performingHealthCheck'.tr());
+          debugPrint('🏥 Network available - performing comprehensive health check');
+          final healthCheckResult = await healthService.performHealthCheckWithWait(
+            networkTimeout: const Duration(seconds: 3),
+          );
+          if (healthCheckResult != null) {
+            healthStatusResult = healthCheckResult;
+          }
+          await Future.delayed(const Duration(milliseconds: 300));
         }
-        await Future.delayed(const Duration(milliseconds: 300));
       }
 
-      // Update UI based on health status
-      if (healthStatusResult.overallStatus == HealthStatus.healthy) {
-        _updateLoadingText('System healthy - Ready to launch!');
+      // Update UI based on health status and connectivity
+      if (healthService.isOffline) {
+        _updateLoadingText('loading.offlineReady'.tr());
+      } else if (healthStatusResult.overallStatus == HealthStatus.healthy) {
+        _updateLoadingText('loading.systemHealthy'.tr());
       } else {
-        _updateLoadingText('System status: ${healthStatusResult.overallStatus.name}');
+        _updateLoadingText('${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
       }
 
       if (kDebugMode) {
@@ -228,19 +246,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Load user preferences and cached data
-      _updateLoadingText('Loading user preferences...');
+      _updateLoadingText('loading.loadingPreferences'.tr());
       await _loadUserPreferences();
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Final setup
-      _updateLoadingText('Finalizing setup...');
+      _updateLoadingText('loading.finalizingSetup'.tr());
       await Future.delayed(const Duration(milliseconds: 500));
 
-      _updateLoadingText('Ready!');
+      _updateLoadingText('loading.ready'.tr());
       _isInitializationComplete = true;
     } catch (e) {
       debugPrint('Splash screen initialization error: $e');
-      _updateLoadingText('Initialization completed with warnings');
+      _updateLoadingText('loading.initializationWarnings'.tr());
       _isInitializationComplete = true;
     }
   }
@@ -306,6 +324,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
 
+    // Check connectivity before navigation
+    final healthService = HealthService();
+    final connectivityStatus = await healthService.checkConnectivity();
+    final isNetworkAvailable = await healthService.isNetworkAvailable();
+
+    debugPrint('🌐 Pre-navigation connectivity check:');
+    debugPrint('  - Connectivity status: ${connectivityStatus.name}');
+    debugPrint('  - Network available: $isNetworkAvailable');
+
     final isLoggedIn = HiveService.isLoggedIn();
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
     final isLanguageSelected = HiveService.isLanguageSelected();
@@ -328,24 +355,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       context.go(RouteEnum.welcome.rawValue);
     } else {
       // User is logged in - check user type and navigate to appropriate dashboard
+      // Also consider connectivity status for dashboard features
       final userData = HiveService.getUserData();
       final userType = userData != null ? userData['userType'] as String : 'customer';
 
       debugPrint('👤 User type detected: $userType');
 
+      if (!isNetworkAvailable) {
+        debugPrint('🌐 Limited connectivity - dashboard may have reduced functionality');
+        // Still navigate but user will see offline indicators in the dashboard
+      }
+
       switch (userType.toLowerCase()) {
         case 'admin':
-          debugPrint('👑 Navigating to admin dashboard');
+          debugPrint('👑 Navigating to admin dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
           break;
         case 'provider':
-          debugPrint('🔧 Navigating to provider dashboard');
+          debugPrint('🔧 Navigating to provider dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
           break;
         case 'customer':
         case 'taker':
         default:
-          debugPrint('🏠 Navigating to taker dashboard');
+          debugPrint('🏠 Navigating to taker dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
           break;
       }
@@ -493,7 +526,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
               boxShadow: themeManager.subtleShadow,
             ),
             child: Text(
-              'v1.0.0',
+              'footer.version'.tr(),
               style: TextStyle(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
@@ -843,7 +876,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          _isInitializationComplete ? 'Ready' : 'Loading',
+                          _isInitializationComplete ? 'loading.ready'.tr() : 'loading.loading'.tr(),
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
@@ -890,7 +923,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Progress',
+                        'loading.processing'.tr(),
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
@@ -962,7 +995,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '© 2024 Prbal',
+                'footer.copyright'.tr(),
                 style: TextStyle(
                   fontSize: 10.sp,
                   color: themeManager.textDisabled,
@@ -977,7 +1010,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'Secure',
+                    'footer.secure'.tr(),
                     style: TextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,

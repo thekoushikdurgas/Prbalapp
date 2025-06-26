@@ -17,11 +17,15 @@ class AdminUsersScreen extends ConsumerStatefulWidget {
   ConsumerState<AdminUsersScreen> createState() => _AdminUsersScreenState();
 }
 
-class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with TickerProviderStateMixin {
+class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen>
+    with TickerProviderStateMixin {
   // ========== STATE VARIABLES ==========
-  late TabController _tabController; // Controls the user type tabs (All/Providers/Customers)
-  final TextEditingController _searchController = TextEditingController(); // Search input controller
-  String _selectedFilter = 'All'; // Currently selected filter (All/Verified/Pending/Suspended/New)
+  late TabController
+      _tabController; // Controls the user type tabs (All/Providers/Customers)
+  final TextEditingController _searchController =
+      TextEditingController(); // Search input controller
+  String _selectedFilter =
+      'All'; // Currently selected filter (All/Verified/Pending/Suspended/New)
 
   @override
   void initState() {
@@ -35,15 +39,18 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
     // Add listener to track tab changes for debugging
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        debugPrint('👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
+        debugPrint(
+            '👥 AdminUsersScreen: Tab changed to index ${_tabController.index}');
         final tabNames = ['All Users', 'Providers', 'Customers'];
-        debugPrint('👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
+        debugPrint(
+            '👥 AdminUsersScreen: Now viewing ${tabNames[_tabController.index]} tab');
       }
     });
 
     // Add listener to search controller for real-time search tracking
     _searchController.addListener(() {
-      debugPrint('🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
+      debugPrint(
+          '🔍 AdminUsersScreen: Search query changed: "${_searchController.text}"');
     });
   }
 
@@ -116,7 +123,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
               IconButton(
                 onPressed: () {
                   debugPrint('📤 AdminUsersScreen: Export button pressed');
-                  debugPrint('📤 AdminUsersScreen: Preparing user data export...');
+                  debugPrint(
+                      '📤 AdminUsersScreen: Preparing user data export...');
                   // TODO: Implement user data export functionality
                   // This could export to CSV, Excel, or PDF format
                 },
@@ -228,7 +236,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   /// Builds the horizontal scrollable filter chips for user status filtering
   Widget _buildFilterSection(ThemeManager themeManager) {
     debugPrint('👥 AdminUsersScreen: Building filter section');
-    debugPrint('👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
+    debugPrint(
+        '👥 AdminUsersScreen: Current selected filter: $_selectedFilter');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
@@ -240,11 +249,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
             // Filter options for different user states
             _buildFilterChip('All', _selectedFilter == 'All', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('Verified', _selectedFilter == 'Verified', themeManager),
+            _buildFilterChip(
+                'Verified', _selectedFilter == 'Verified', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('Pending', _selectedFilter == 'Pending', themeManager),
+            _buildFilterChip(
+                'Pending', _selectedFilter == 'Pending', themeManager),
             SizedBox(width: 8.w),
-            _buildFilterChip('Suspended', _selectedFilter == 'Suspended', themeManager),
+            _buildFilterChip(
+                'Suspended', _selectedFilter == 'Suspended', themeManager),
             SizedBox(width: 8.w),
             _buildFilterChip('New', _selectedFilter == 'New', themeManager),
           ],
@@ -272,7 +284,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
 
   // ========== FILTER CHIP BUILDER ==========
   /// Builds individual filter chips for status filtering
-  Widget _buildFilterChip(String label, bool isSelected, ThemeManager themeManager) {
+  Widget _buildFilterChip(
+      String label, bool isSelected, ThemeManager themeManager) {
     return GestureDetector(
       onTap: () {
         debugPrint('🏷️ AdminUsersScreen: Filter chip tapped: $label');
@@ -287,10 +300,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
           // Visual feedback for selected/unselected state
-          color: isSelected ? themeManager.primaryColor : themeManager.surfaceColor,
+          color: isSelected
+              ? themeManager.primaryColor
+              : themeManager.surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
+            color: isSelected
+                ? themeManager.primaryColor
+                : themeManager.borderColor,
           ),
         ),
         child: Text(
@@ -319,7 +336,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
       padding: EdgeInsets.all(20.w),
       itemCount: mockUserCount,
       itemBuilder: (context, index) {
-        debugPrint('👥 AdminUsersScreen: Building user card $index for $userType users');
+        debugPrint(
+            '👥 AdminUsersScreen: Building user card $index for $userType users');
 
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
@@ -347,12 +365,19 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
       {'name': 'David Lee', 'type': 'customer', 'service': null},
     ];
 
-    final statuses = ['verified', 'pending', 'suspended', 'verified', 'verified'];
+    final statuses = [
+      'verified',
+      'pending',
+      'suspended',
+      'verified',
+      'verified'
+    ];
     final user = users[index % users.length];
     final status = statuses[index % statuses.length];
     final isProvider = user['type'] == 'provider';
 
-    debugPrint('👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
+    debugPrint(
+        '👥 AdminUsersScreen: Building card for ${user['name']} (${user['type']}, $status)');
 
     // ========== STATUS COLOR MAPPING ==========
     Color statusColor;
@@ -379,11 +404,15 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
           CircleAvatar(
             radius: 24.r,
             backgroundColor: isProvider
-                ? themeManager.successColor.withValues(alpha: 0.1) // Green for providers
-                : themeManager.infoColor.withValues(alpha: 0.1), // Blue for customers
+                ? themeManager.successColor
+                    .withValues(alpha: 0.1) // Green for providers
+                : themeManager.infoColor
+                    .withValues(alpha: 0.1), // Blue for customers
             child: Icon(
               isProvider ? Prbal.tools : Prbal.user,
-              color: isProvider ? themeManager.successColor : themeManager.infoColor,
+              color: isProvider
+                  ? themeManager.successColor
+                  : themeManager.infoColor,
               size: 20.sp,
             ),
           ),
@@ -409,7 +438,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
                     SizedBox(width: 8.w),
                     // Status badge with appropriate color
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
@@ -475,7 +505,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
           // Context menu for user management actions
           PopupMenuButton<String>(
             onSelected: (value) {
-              debugPrint('👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
+              debugPrint(
+                  '👥 AdminUsersScreen: Action selected for ${user['name']}: $value');
               _handleUserAction(value, user, status);
             },
             itemBuilder: (context) => [
@@ -538,8 +569,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
 
   // ========== USER ACTION HANDLER ==========
   /// Handles all user management actions from the context menu
-  void _handleUserAction(String action, Map<String, String?> user, String status) {
-    debugPrint('👥 AdminUsersScreen: Handling $action for user ${user['name']}');
+  void _handleUserAction(
+      String action, Map<String, String?> user, String status) {
+    debugPrint(
+        '👥 AdminUsersScreen: Handling $action for user ${user['name']}');
 
     switch (action) {
       case 'view':
@@ -567,7 +600,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
   /// Shows detailed user information in a bottom sheet modal
   void _showUserDetails(Map<String, String?> user) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
+    debugPrint(
+        '👁️ AdminUsersScreen: Displaying user details modal for ${user['name']}');
 
     showModalBottomSheet(
       context: context,
@@ -609,7 +643,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      debugPrint('👁️ AdminUsersScreen: Closing user details modal');
+                      debugPrint(
+                          '👁️ AdminUsersScreen: Closing user details modal');
                       Navigator.pop(context);
                     },
                     icon: Icon(
@@ -634,7 +669,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
 
                     _buildDetailRow('Name', user['name']!, themeManager),
                     _buildDetailRow('Type', user['type']!, themeManager),
-                    if (user['service'] != null) _buildDetailRow('Service', user['service']!, themeManager),
+                    if (user['service'] != null)
+                      _buildDetailRow(
+                          'Service', user['service']!, themeManager),
 
                     // TODO: Add more comprehensive user details:
                     // - Email address
@@ -657,7 +694,8 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
 
   // ========== DETAIL ROW BUILDER ==========
   /// Builds a single row in the user details modal
-  Widget _buildDetailRow(String label, String value, ThemeManager themeManager) {
+  Widget _buildDetailRow(
+      String label, String value, ThemeManager themeManager) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(

@@ -22,12 +22,14 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
     super.initState();
     // Debug: Track when full admin dashboard is initialized
     debugPrint('🏠 AdminDashboard: Full dashboard widget initialized');
-    debugPrint('🏠 AdminDashboard: This version includes bottom navigation bar');
+    debugPrint(
+        '🏠 AdminDashboard: This version includes bottom navigation bar');
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🏠 AdminDashboard: Building full dashboard with bottom navigation');
+    debugPrint(
+        '🏠 AdminDashboard: Building full dashboard with bottom navigation');
 
     return Scaffold(
       // Main dashboard content without navigation (prevents circular dependency)
@@ -49,7 +51,8 @@ class AdminDashboardContent extends ConsumerStatefulWidget {
   const AdminDashboardContent({super.key});
 
   @override
-  ConsumerState<AdminDashboardContent> createState() => _AdminDashboardContentState();
+  ConsumerState<AdminDashboardContent> createState() =>
+      _AdminDashboardContentState();
 }
 
 class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
@@ -58,7 +61,8 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     super.initState();
     // Debug: Track when content-only dashboard is initialized
     debugPrint('📊 AdminDashboardContent: Content-only dashboard initialized');
-    debugPrint('📊 AdminDashboardContent: This version prevents circular dependency');
+    debugPrint(
+        '📊 AdminDashboardContent: This version prevents circular dependency');
   }
 
   @override
@@ -103,14 +107,18 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 // Notifications button
                 IconButton(
                   onPressed: () {
-                    debugPrint('🔔 AdminDashboard: Notifications button pressed');
-                    debugPrint('🔔 AdminDashboard: Navigating to ${RouteEnum.notifications.rawValue}');
+                    debugPrint(
+                        '🔔 AdminDashboard: Notifications button pressed');
+                    debugPrint(
+                        '🔔 AdminDashboard: Navigating to ${RouteEnum.notifications.rawValue}');
                     try {
                       // Navigate to notifications - using predefined route enum for consistency
                       context.push(RouteEnum.notifications.rawValue);
-                      debugPrint('🔔 AdminDashboard: Navigation to notifications successful');
+                      debugPrint(
+                          '🔔 AdminDashboard: Navigation to notifications successful');
                     } catch (e) {
-                      debugPrint('❌ AdminDashboard: Navigation to notifications failed: $e');
+                      debugPrint(
+                          '❌ AdminDashboard: Navigation to notifications failed: $e');
                     }
                   },
                   icon: Icon(
@@ -346,11 +354,13 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         // 4-column grid of action buttons
         GridView.count(
           shrinkWrap: true, // Don't take more space than needed
-          physics: const NeverScrollableScrollPhysics(), // Disable grid scrolling
+          physics:
+              const NeverScrollableScrollPhysics(), // Disable grid scrolling
           crossAxisCount: 4, // 4 items per row
           crossAxisSpacing: 12.w,
           mainAxisSpacing: 12.h,
-          childAspectRatio: 0.85, // Slightly taller aspect ratio to accommodate text
+          childAspectRatio:
+              0.85, // Slightly taller aspect ratio to accommodate text
           children: [
             _buildQuickActionCard(
               'Manage Users', // User management functionality
@@ -359,13 +369,16 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
               themeManager,
               onTap: () {
                 debugPrint('👥 AdminDashboard: Manage Users button pressed');
-                debugPrint('👥 AdminDashboard: Navigating to ${RouteEnum.adminUsers.rawValue}');
+                debugPrint(
+                    '👥 AdminDashboard: Navigating to ${RouteEnum.adminUsers.rawValue}');
                 try {
                   // Navigate to user management screen
                   context.push(RouteEnum.adminUsers.rawValue);
-                  debugPrint('👥 AdminDashboard: Navigation to user management successful');
+                  debugPrint(
+                      '👥 AdminDashboard: Navigation to user management successful');
                 } catch (e) {
-                  debugPrint('❌ AdminDashboard: Navigation to user management failed: $e');
+                  debugPrint(
+                      '❌ AdminDashboard: Navigation to user management failed: $e');
                 }
               },
             ),
@@ -380,9 +393,11 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 try {
                   // Navigate to reports section
                   context.push('/admin/reports');
-                  debugPrint('📈 AdminDashboard: Navigation to reports successful');
+                  debugPrint(
+                      '📈 AdminDashboard: Navigation to reports successful');
                 } catch (e) {
-                  debugPrint('❌ AdminDashboard: Navigation to reports failed: $e');
+                  debugPrint(
+                      '❌ AdminDashboard: Navigation to reports failed: $e');
                 }
               },
             ),
@@ -397,9 +412,11 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 try {
                   // Navigate to system settings
                   context.push('/admin/settings');
-                  debugPrint('⚙️ AdminDashboard: Navigation to settings successful');
+                  debugPrint(
+                      '⚙️ AdminDashboard: Navigation to settings successful');
                 } catch (e) {
-                  debugPrint('❌ AdminDashboard: Navigation to settings failed: $e');
+                  debugPrint(
+                      '❌ AdminDashboard: Navigation to settings failed: $e');
                 }
               },
             ),
@@ -414,9 +431,11 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
                 try {
                   // Navigate to alert management
                   context.push('/admin/alerts');
-                  debugPrint('🚨 AdminDashboard: Navigation to alerts successful');
+                  debugPrint(
+                      '🚨 AdminDashboard: Navigation to alerts successful');
                 } catch (e) {
-                  debugPrint('❌ AdminDashboard: Navigation to alerts failed: $e');
+                  debugPrint(
+                      '❌ AdminDashboard: Navigation to alerts failed: $e');
                 }
               },
             ),
@@ -506,7 +525,8 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
 
   /// Builds individual system metric display (API, Database, Payment status)
   /// Shows health percentage with icon and label
-  Widget _buildSystemMetric(String label, String value, IconData icon, Color color, ThemeManager themeManager) {
+  Widget _buildSystemMetric(String label, String value, IconData icon,
+      Color color, ThemeManager themeManager) {
     debugPrint('📊 AdminDashboard: Building system metric for $label: $value');
 
     return Expanded(
@@ -553,7 +573,8 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
     Color color,
     ThemeManager themeManager,
   ) {
-    debugPrint('📊 AdminDashboard: Building metric card for $title: $value ($trend)');
+    debugPrint(
+        '📊 AdminDashboard: Building metric card for $title: $value ($trend)');
 
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -609,7 +630,9 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
             style: TextStyle(
               fontSize: 11.sp,
               // Green for positive trends (+), red for negative trends (-)
-              color: trend.contains('+') ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+              color: trend.contains('+')
+                  ? const Color(0xFF48BB78)
+                  : const Color(0xFFE53E3E),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -636,7 +659,8 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
         onTap: onTap ??
             () {
               // Default action if no specific onTap provided
-              debugPrint('🔄 AdminDashboard: Default action triggered for $title');
+              debugPrint(
+                  '🔄 AdminDashboard: Default action triggered for $title');
             },
         child: Container(
           padding: EdgeInsets.all(12.w),
@@ -646,7 +670,8 @@ class _AdminDashboardContentState extends ConsumerState<AdminDashboardContent> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Prevent column from taking more space than needed
+            mainAxisSize: MainAxisSize
+                .min, // Prevent column from taking more space than needed
             children: [
               // Action icon
               Icon(

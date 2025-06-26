@@ -9,10 +9,12 @@ class ProviderScheduleScreen extends ConsumerStatefulWidget {
   const ProviderScheduleScreen({super.key});
 
   @override
-  ConsumerState<ProviderScheduleScreen> createState() => _ProviderScheduleScreenState();
+  ConsumerState<ProviderScheduleScreen> createState() =>
+      _ProviderScheduleScreenState();
 }
 
-class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen> {
+class _ProviderScheduleScreenState
+    extends ConsumerState<ProviderScheduleScreen> {
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -185,7 +187,8 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
         return GestureDetector(
           onTap: () {
             setState(() {
-              selectedDate = DateTime(selectedDate.year, selectedDate.month, day);
+              selectedDate =
+                  DateTime(selectedDate.year, selectedDate.month, day);
             });
           },
           child: Container(
@@ -193,7 +196,9 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
             decoration: BoxDecoration(
               color: isToday
                   ? themeManager.primaryColor
-                  : (selectedDate.day == day ? themeManager.surfaceColor : Colors.transparent),
+                  : (selectedDate.day == day
+                      ? themeManager.surfaceColor
+                      : Colors.transparent),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Center(
@@ -212,7 +217,8 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
     );
   }
 
-  Widget _buildScheduleItem(String time, String service, String client, Color color, ThemeManager themeManager) {
+  Widget _buildScheduleItem(String time, String service, String client,
+      Color color, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(

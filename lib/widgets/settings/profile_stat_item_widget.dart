@@ -42,7 +42,8 @@ class ProfileStatItemWidget extends StatelessWidget with ThemeAwareMixin {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('📈 [ProfileStatItem] Building stat item: $label = $value');
-    debugPrint('🎨 [ProfileStatItem] Color: $color, Interactive: ${onTap != null}');
+    debugPrint(
+        '🎨 [ProfileStatItem] Color: $color, Interactive: ${onTap != null}');
 
     return Container(
       decoration: BoxDecoration(
@@ -117,9 +118,9 @@ class ProfileStatItemWidget extends StatelessWidget with ThemeAwareMixin {
                     size: 24.sp,
                   ),
                 ),
-                
+
                 SizedBox(height: 12.h),
-                
+
                 // Enhanced value display
                 Text(
                   value,
@@ -134,8 +135,10 @@ class ProfileStatItemWidget extends StatelessWidget with ThemeAwareMixin {
                     shadows: [
                       Shadow(
                         color: themeManager.conditionalColor(
-                          lightColor: themeManager.neutral400.withValues(alpha: 77),
-                          darkColor: themeManager.neutral800.withValues(alpha: 128),
+                          lightColor:
+                              themeManager.neutral400.withValues(alpha: 77),
+                          darkColor:
+                              themeManager.neutral800.withValues(alpha: 128),
                         ),
                         blurRadius: 2,
                         offset: const Offset(0, 1),
@@ -146,9 +149,9 @@ class ProfileStatItemWidget extends StatelessWidget with ThemeAwareMixin {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                
+
                 SizedBox(height: 4.h),
-                
+
                 // Enhanced label display
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),

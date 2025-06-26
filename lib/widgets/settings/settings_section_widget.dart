@@ -45,9 +45,10 @@ class SettingsSectionWidget extends StatelessWidget with ThemeAwareMixin {
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    
+
     debugPrint('🎨 [SettingsSection] Building section "$title"');
-    debugPrint('📊 [SettingsSection] ${children.length} items, Show title: $showTitle');
+    debugPrint(
+        '📊 [SettingsSection] ${children.length} items, Show title: $showTitle');
 
     return Container(
       margin: margin ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
@@ -124,7 +125,8 @@ class SettingsSectionWidget extends StatelessWidget with ThemeAwareMixin {
 
   /// Builds the modern settings container with enhanced glass-morphism effect
   Widget _buildSettingsContainer(ThemeManager themeManager) {
-    debugPrint('🎨 [SettingsSection] Building enhanced container with glass morphism');
+    debugPrint(
+        '🎨 [SettingsSection] Building enhanced container with glass morphism');
 
     return Container(
       decoration: BoxDecoration(
@@ -168,7 +170,8 @@ class SettingsSectionWidget extends StatelessWidget with ThemeAwareMixin {
 
   /// Builds the settings items with automatic dividers
   List<Widget> _buildSettingsItems(ThemeManager themeManager) {
-    debugPrint('🎨 [SettingsSection] Building ${children.length} enhanced settings items');
+    debugPrint(
+        '🎨 [SettingsSection] Building ${children.length} enhanced settings items');
 
     final List<Widget> items = [];
 
@@ -262,10 +265,12 @@ class SettingsItemWidget extends StatelessWidget with ThemeAwareMixin {
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    
+
     debugPrint('🎨 [SettingsItem] Building item "$title"');
-    debugPrint('🎯 [SettingsItem] Enabled: $enabled, Has subtitle: ${subtitle != null}');
-    debugPrint('📊 [SettingsItem] Has trailing: ${trailing != null}, Has onTap: ${onTap != null}');
+    debugPrint(
+        '🎯 [SettingsItem] Enabled: $enabled, Has subtitle: ${subtitle != null}');
+    debugPrint(
+        '📊 [SettingsItem] Has trailing: ${trailing != null}, Has onTap: ${onTap != null}');
 
     return Material(
       color: Colors.transparent,
@@ -317,30 +322,34 @@ class SettingsItemWidget extends StatelessWidget with ThemeAwareMixin {
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: enabled ? [
-            iconColor.withValues(alpha: 26),
-            iconColor.withValues(alpha: 13),
-          ] : [
-            themeManager.neutral300.withValues(alpha: 26),
-            themeManager.neutral300.withValues(alpha: 13),
-          ],
+          colors: enabled
+              ? [
+                  iconColor.withValues(alpha: 26),
+                  iconColor.withValues(alpha: 13),
+                ]
+              : [
+                  themeManager.neutral300.withValues(alpha: 26),
+                  themeManager.neutral300.withValues(alpha: 13),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: enabled 
-            ? iconColor.withValues(alpha: 77)
-            : themeManager.neutral300.withValues(alpha: 77),
+          color: enabled
+              ? iconColor.withValues(alpha: 77)
+              : themeManager.neutral300.withValues(alpha: 77),
           width: 1,
         ),
-        boxShadow: enabled ? [
-          BoxShadow(
-            color: iconColor.withValues(alpha: 26),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ] : [],
+        boxShadow: enabled
+            ? [
+                BoxShadow(
+                  color: iconColor.withValues(alpha: 26),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [],
       ),
       child: Icon(
         icon,

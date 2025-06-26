@@ -24,7 +24,8 @@ class ThemeSelectorWidget extends StatefulWidget {
   State<ThemeSelectorWidget> createState() => _ThemeSelectorWidgetState();
 }
 
-class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerProviderStateMixin, ThemeAwareMixin {
+class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
@@ -32,7 +33,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
   @override
   void initState() {
     super.initState();
-    debugPrint('🎨 ThemeSelectorWidget: Initializing enhanced theme selector with ThemeManager');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Initializing enhanced theme selector with ThemeManager');
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -67,15 +69,18 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 ThemeSelectorWidget: Building enhanced theme selector with ThemeManager');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Building enhanced theme selector with ThemeManager');
 
     // Use centralized ThemeManager instead of manual theme detection
     final themeManager = ThemeManager.of(context);
 
     // Enhanced debug logging with theme state
     themeManager.logThemeInfo();
-    debugPrint('🎨 ThemeSelectorWidget: Primary color: ${themeManager.primaryColor}');
-    debugPrint('🎨 ThemeSelectorWidget: Background gradient: ${themeManager.backgroundGradient}');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Primary color: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Background gradient: ${themeManager.backgroundGradient}');
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -93,7 +98,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
   /// Builds enhanced theme selector with advanced ThemeManager features
   Widget _buildEnhancedThemeSelector(ThemeManager themeManager) {
-    debugPrint('🎨 ThemeSelectorWidget: Building enhanced theme selector container');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Building enhanced theme selector container');
 
     return Container(
       margin: EdgeInsets.all(20.w),
@@ -184,7 +190,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
-        debugPrint('🎨 ThemeSelectorWidget: Current theme mode: ${themeMode.name}');
+        debugPrint(
+            '🎨 ThemeSelectorWidget: Current theme mode: ${themeMode.name}');
 
         return Column(
           children: [
@@ -263,7 +270,9 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
             color: isSelected ? Colors.transparent : themeManager.borderColor,
             width: 2,
           ),
-          boxShadow: isSelected ? themeManager.elevatedShadow : themeManager.primaryShadow,
+          boxShadow: isSelected
+              ? themeManager.elevatedShadow
+              : themeManager.primaryShadow,
         ),
         child: Row(
           children: [
@@ -299,7 +308,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : themeManager.textPrimary,
+                      color:
+                          isSelected ? Colors.white : themeManager.textPrimary,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -307,7 +317,9 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
                     description,
                     style: TextStyle(
                       fontSize: 13.sp,
-                      color: isSelected ? Colors.white.withValues(alpha: 0.9) : themeManager.textSecondary,
+                      color: isSelected
+                          ? Colors.white.withValues(alpha: 0.9)
+                          : themeManager.textSecondary,
                     ),
                   ),
                 ],

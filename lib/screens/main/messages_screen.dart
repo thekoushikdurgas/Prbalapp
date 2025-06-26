@@ -25,7 +25,8 @@ class MessagesScreen extends ConsumerStatefulWidget {
   ConsumerState<MessagesScreen> createState() => _MessagesScreenState();
 }
 
-class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProviderStateMixin {
+class _MessagesScreenState extends ConsumerState<MessagesScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -42,7 +43,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
       'lastMessage': 'Thanks for the great service!',
       'time': '2 min ago',
       'unread': 2,
-      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'isOnline': true,
     },
     {
@@ -51,7 +53,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
       'lastMessage': 'When can you start the project?',
       'time': '15 min ago',
       'unread': 0,
-      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'isOnline': true,
     },
     {
@@ -60,7 +63,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
       'lastMessage': 'Your device is ready for pickup',
       'time': '1 hour ago',
       'unread': 1,
-      'avatar': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150',
       'isOnline': false,
     },
     {
@@ -69,7 +73,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
       'lastMessage': 'Perfect timing, see you tomorrow',
       'time': '3 hours ago',
       'unread': 0,
-      'avatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
       'isOnline': false,
     },
   ];
@@ -85,31 +90,38 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
     },
     {
       'id': '2',
-      'text': 'Hello! I\'d be happy to help. What type of cleaning do you need?',
+      'text':
+          'Hello! I\'d be happy to help. What type of cleaning do you need?',
       'isMe': true,
       'time': '10:32 AM',
-      'timestamp': DateTime.now().subtract(const Duration(hours: 2, minutes: -2)),
+      'timestamp':
+          DateTime.now().subtract(const Duration(hours: 2, minutes: -2)),
     },
     {
       'id': '3',
-      'text': 'I need a deep clean for my 3-bedroom apartment. When are you available?',
+      'text':
+          'I need a deep clean for my 3-bedroom apartment. When are you available?',
       'isMe': false,
       'time': '10:35 AM',
-      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
+      'timestamp':
+          DateTime.now().subtract(const Duration(hours: 1, minutes: 55)),
     },
     {
       'id': '4',
-      'text': 'I can do it this weekend. The rate would be \$150 for deep cleaning',
+      'text':
+          'I can do it this weekend. The rate would be \$150 for deep cleaning',
       'isMe': true,
       'time': '10:37 AM',
-      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 53)),
+      'timestamp':
+          DateTime.now().subtract(const Duration(hours: 1, minutes: 53)),
     },
     {
       'id': '5',
       'text': 'That sounds perfect! Can we schedule for Saturday morning?',
       'isMe': false,
       'time': '10:40 AM',
-      'timestamp': DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
+      'timestamp':
+          DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
     },
   ];
 
@@ -176,7 +188,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
               Expanded(
                 child: FadeTransition(
                   opacity: _fadeAnimation,
-                  child: _isInChat ? _buildChatView(themeManager) : _buildConversationsView(themeManager),
+                  child: _isInChat
+                      ? _buildChatView(themeManager)
+                      : _buildConversationsView(themeManager),
                 ),
               ),
             ],
@@ -220,12 +234,14 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                 onTap: () {
                   debugPrint('💬 MessagesScreen: Back button pressed');
                   if (_isInChat) {
-                    debugPrint('💬 MessagesScreen: Returning to conversations list');
+                    debugPrint(
+                        '💬 MessagesScreen: Returning to conversations list');
                     setState(() {
                       _isInChat = false;
                     });
                   } else {
-                    debugPrint('💬 MessagesScreen: Navigating back to previous screen');
+                    debugPrint(
+                        '💬 MessagesScreen: Navigating back to previous screen');
                     context.pop();
                   }
                 },
@@ -245,7 +261,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
 
           // ========== TITLE SECTION ==========
           Expanded(
-            child: _isInChat ? _buildChatHeader(themeManager) : _buildMessagesHeader(themeManager),
+            child: _isInChat
+                ? _buildChatHeader(themeManager)
+                : _buildMessagesHeader(themeManager),
           ),
 
           // ========== ACTION BUTTONS ==========
@@ -254,7 +272,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
             SizedBox(width: 8.w),
             _buildActionButton(Prbal.video, themeManager.accent2, themeManager),
           ] else ...[
-            _buildActionButton(Prbal.plus, themeManager.primaryColor, themeManager),
+            _buildActionButton(
+                Prbal.plus, themeManager.primaryColor, themeManager),
           ],
         ],
       ),
@@ -318,7 +337,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                       borderRadius: BorderRadius.circular(4.r),
                       boxShadow: [
                         BoxShadow(
-                          color: themeManager.successColor.withValues(alpha: 0.4),
+                          color:
+                              themeManager.successColor.withValues(alpha: 0.4),
                           blurRadius: 4,
                           spreadRadius: 1,
                         ),
@@ -371,7 +391,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
 
   // ========== ACTION BUTTON BUILDER ==========
   /// Builds action buttons with enhanced styling
-  Widget _buildActionButton(IconData icon, Color accentColor, ThemeManager themeManager) {
+  Widget _buildActionButton(
+      IconData icon, Color accentColor, ThemeManager themeManager) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -518,7 +539,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
             itemCount: _conversations.length,
             itemBuilder: (context, index) {
               final conversation = _conversations[index];
-              debugPrint('💬 MessagesScreen: Building conversation item ${index + 1}/${_conversations.length}');
+              debugPrint(
+                  '💬 MessagesScreen: Building conversation item ${index + 1}/${_conversations.length}');
               return _buildConversationItem(conversation, themeManager);
             },
           ),
@@ -529,21 +551,29 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
 
   // ========== CONVERSATION ITEM BUILDER ==========
   /// Builds individual conversation items with enhanced ThemeManager styling
-  Widget _buildConversationItem(Map<String, dynamic> conversation, ThemeManager themeManager) {
+  Widget _buildConversationItem(
+      Map<String, dynamic> conversation, ThemeManager themeManager) {
     final hasUnread = conversation['unread'] > 0;
     final isOnline = conversation['isOnline'] as bool;
 
-    debugPrint('💬 MessagesScreen: Building conversation item: ${conversation['name']}');
-    debugPrint('💬 MessagesScreen: Unread messages: ${conversation['unread']}, Online: $isOnline');
+    debugPrint(
+        '💬 MessagesScreen: Building conversation item: ${conversation['name']}');
+    debugPrint(
+        '💬 MessagesScreen: Unread messages: ${conversation['unread']}, Online: $isOnline');
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        gradient: hasUnread ? themeManager.accent1Gradient : themeManager.surfaceGradient,
+        gradient: hasUnread
+            ? themeManager.accent1Gradient
+            : themeManager.surfaceGradient,
         borderRadius: BorderRadius.circular(20.r),
-        boxShadow: hasUnread ? themeManager.primaryShadow : themeManager.subtleShadow,
+        boxShadow:
+            hasUnread ? themeManager.primaryShadow : themeManager.subtleShadow,
         border: Border.all(
-          color: hasUnread ? themeManager.accent1.withValues(alpha: 0.3) : themeManager.borderColor,
+          color: hasUnread
+              ? themeManager.accent1.withValues(alpha: 0.3)
+              : themeManager.borderColor,
           width: hasUnread ? 2 : 1,
         ),
       ),
@@ -552,7 +582,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
         child: InkWell(
           borderRadius: BorderRadius.circular(20.r),
           onTap: () {
-            debugPrint('💬 MessagesScreen: Opening conversation with ${conversation['name']}');
+            debugPrint(
+                '💬 MessagesScreen: Opening conversation with ${conversation['name']}');
             setState(() {
               _isInChat = true;
             });
@@ -568,9 +599,13 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                       width: 56.w,
                       height: 56.h,
                       decoration: BoxDecoration(
-                        gradient: isOnline ? themeManager.successGradient : themeManager.neutralGradient,
+                        gradient: isOnline
+                            ? themeManager.successGradient
+                            : themeManager.neutralGradient,
                         borderRadius: BorderRadius.circular(28.r),
-                        boxShadow: isOnline ? themeManager.primaryShadow : themeManager.subtleShadow,
+                        boxShadow: isOnline
+                            ? themeManager.primaryShadow
+                            : themeManager.subtleShadow,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(28.r),
@@ -602,7 +637,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: themeManager.successColor.withValues(alpha: 0.5),
+                                color: themeManager.successColor
+                                    .withValues(alpha: 0.5),
                                 blurRadius: 4,
                                 spreadRadius: 1,
                               ),
@@ -657,14 +693,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
-                                color: hasUnread ? Colors.white : themeManager.textPrimary,
+                                color: hasUnread
+                                    ? Colors.white
+                                    : themeManager.textPrimary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 4.h),
                             decoration: BoxDecoration(
                               gradient: themeManager.accent4Gradient,
                               borderRadius: BorderRadius.circular(8.r),
@@ -683,12 +722,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                       SizedBox(height: 6.h),
                       // Last message with enhanced styling
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
-                          color: hasUnread ? Colors.white.withValues(alpha: 0.1) : themeManager.backgroundSecondary,
+                          color: hasUnread
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : themeManager.backgroundSecondary,
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
-                            color: hasUnread ? Colors.white.withValues(alpha: 0.2) : themeManager.borderColor,
+                            color: hasUnread
+                                ? Colors.white.withValues(alpha: 0.2)
+                                : themeManager.borderColor,
                             width: 1,
                           ),
                         ),
@@ -697,7 +741,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                             Icon(
                               Prbal.messageCircle,
                               size: 12.sp,
-                              color: hasUnread ? Colors.white70 : themeManager.textTertiary,
+                              color: hasUnread
+                                  ? Colors.white70
+                                  : themeManager.textTertiary,
                             ),
                             SizedBox(width: 6.w),
                             Expanded(
@@ -705,7 +751,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                                 conversation['lastMessage'],
                                 style: TextStyle(
                                   fontSize: 13.sp,
-                                  color: hasUnread ? Colors.white70 : themeManager.textSecondary,
+                                  color: hasUnread
+                                      ? Colors.white70
+                                      : themeManager.textSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 1,
@@ -791,7 +839,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                debugPrint('💬 MessagesScreen: Building message ${index + 1}/${_messages.length}');
+                debugPrint(
+                    '💬 MessagesScreen: Building message ${index + 1}/${_messages.length}');
                 return _buildMessageBubble(message, themeManager);
               },
             ),
@@ -806,17 +855,20 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
 
   // ========== MESSAGE BUBBLE BUILDER ==========
   /// Builds individual message bubbles with enhanced ThemeManager styling
-  Widget _buildMessageBubble(Map<String, dynamic> message, ThemeManager themeManager) {
+  Widget _buildMessageBubble(
+      Map<String, dynamic> message, ThemeManager themeManager) {
     final isMe = message['isMe'] as bool;
     final messageText = message['text'] as String;
     final messageTime = message['time'] as String;
 
-    debugPrint('💬 MessagesScreen: Building message bubble - isMe: $isMe, text length: ${messageText.length}');
+    debugPrint(
+        '💬 MessagesScreen: Building message bubble - isMe: $isMe, text length: ${messageText.length}');
 
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
@@ -845,22 +897,30 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                 maxWidth: MediaQuery.of(context).size.width * 0.75,
               ),
               child: Column(
-                crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   // Message bubble
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
-                      gradient: isMe ? themeManager.primaryGradient : themeManager.surfaceGradient,
+                      gradient: isMe
+                          ? themeManager.primaryGradient
+                          : themeManager.surfaceGradient,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
                         topRight: Radius.circular(20.r),
                         bottomLeft: Radius.circular(isMe ? 20.r : 6.r),
                         bottomRight: Radius.circular(isMe ? 6.r : 20.r),
                       ),
-                      boxShadow: isMe ? themeManager.primaryShadow : themeManager.subtleShadow,
+                      boxShadow: isMe
+                          ? themeManager.primaryShadow
+                          : themeManager.subtleShadow,
                       border: Border.all(
-                        color: isMe ? themeManager.primaryColor.withValues(alpha: 0.3) : themeManager.borderColor,
+                        color: isMe
+                            ? themeManager.primaryColor.withValues(alpha: 0.3)
+                            : themeManager.borderColor,
                         width: 1,
                       ),
                     ),
@@ -872,7 +932,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                           messageText,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: isMe ? Colors.white : themeManager.textPrimary,
+                            color:
+                                isMe ? Colors.white : themeManager.textPrimary,
                             height: 1.4,
                             fontWeight: FontWeight.w500,
                           ),
@@ -885,14 +946,18 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                             Icon(
                               Prbal.clock,
                               size: 10.sp,
-                              color: isMe ? Colors.white.withValues(alpha: 0.7) : themeManager.textTertiary,
+                              color: isMe
+                                  ? Colors.white.withValues(alpha: 0.7)
+                                  : themeManager.textTertiary,
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               messageTime,
                               style: TextStyle(
                                 fontSize: 11.sp,
-                                color: isMe ? Colors.white.withValues(alpha: 0.7) : themeManager.textTertiary,
+                                color: isMe
+                                    ? Colors.white.withValues(alpha: 0.7)
+                                    : themeManager.textTertiary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -999,7 +1064,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
               child: TextField(
                 controller: _messageController,
                 onChanged: (value) {
-                  debugPrint('💬 MessagesScreen: Message input changed: "${value.length} characters"');
+                  debugPrint(
+                      '💬 MessagesScreen: Message input changed: "${value.length} characters"');
                 },
                 decoration: InputDecoration(
                   hintText: 'Type your message...',
@@ -1043,7 +1109,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> with TickerProv
                 onTap: () {
                   final messageText = _messageController.text.trim();
                   if (messageText.isNotEmpty) {
-                    debugPrint('💬 MessagesScreen: Sending message: "$messageText"');
+                    debugPrint(
+                        '💬 MessagesScreen: Sending message: "$messageText"');
                     // TODO: Implement actual message sending logic
                     _messageController.clear();
                   } else {

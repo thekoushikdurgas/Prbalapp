@@ -11,7 +11,8 @@ class ScheduleScreen extends ConsumerStatefulWidget {
   ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProviderStateMixin {
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
+    with TickerProviderStateMixin {
   DateTime selectedDate = DateTime.now();
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -59,7 +60,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
   @override
   void initState() {
     super.initState();
-    debugPrint('🎯 ScheduleScreen: Initializing animations and loading schedule data');
+    debugPrint(
+        '🎯 ScheduleScreen: Initializing animations and loading schedule data');
     _initializeAnimations();
     _startAnimations();
   }
@@ -148,7 +150,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
           icon: Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+              color: themeManager.primaryColor
+                  .withValues(alpha: 26), // 0.1 opacity
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -239,7 +242,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
-              color: themeManager.successColor.withValues(alpha: 26), // 0.1 opacity
+              color: themeManager.successColor
+                  .withValues(alpha: 26), // 0.1 opacity
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
@@ -258,9 +262,12 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
 
   Widget _buildScheduleStats(ThemeManager themeManager) {
     debugPrint('🎨 ScheduleScreen: Building schedule statistics');
-    final confirmedCount = _todaySchedule.where((item) => item['status'] == 'confirmed').length;
-    final pendingCount = _todaySchedule.where((item) => item['status'] == 'pending').length;
-    final rescheduledCount = _todaySchedule.where((item) => item['status'] == 'rescheduled').length;
+    final confirmedCount =
+        _todaySchedule.where((item) => item['status'] == 'confirmed').length;
+    final pendingCount =
+        _todaySchedule.where((item) => item['status'] == 'pending').length;
+    final rescheduledCount =
+        _todaySchedule.where((item) => item['status'] == 'rescheduled').length;
 
     return Row(
       children: [
@@ -297,7 +304,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
     );
   }
 
-  Widget _buildStatCard(String title, String count, Color color, IconData icon, ThemeManager themeManager) {
+  Widget _buildStatCard(String title, String count, Color color, IconData icon,
+      ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -349,7 +357,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
   }
 
   Widget _buildTodaySchedule(ThemeManager themeManager) {
-    debugPrint('🎯 ScheduleScreen: Building today\'s schedule with ${_todaySchedule.length} appointments');
+    debugPrint(
+        '🎯 ScheduleScreen: Building today\'s schedule with ${_todaySchedule.length} appointments');
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -378,7 +387,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  color: themeManager.primaryColor
+                      .withValues(alpha: 26), // 0.1 opacity
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
@@ -398,7 +408,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
                 ? _buildEmptySchedule(themeManager)
                 : ListView.separated(
                     itemCount: _todaySchedule.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       final appointment = _todaySchedule[index];
                       return _buildScheduleItem(
@@ -428,7 +439,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
             width: 64.w,
             height: 64.h,
             decoration: BoxDecoration(
-              color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+              color: themeManager.primaryColor
+                  .withValues(alpha: 26), // 0.1 opacity
               borderRadius: BorderRadius.circular(32.r),
             ),
             child: Icon(
@@ -519,9 +531,11 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(status).withValues(alpha: 26), // 0.1 opacity
+                        color: _getStatusColor(status)
+                            .withValues(alpha: 26), // 0.1 opacity
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
@@ -659,7 +673,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> with TickerProv
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final targetDate = DateTime(date.year, date.month, date.day);
-    
+
     if (targetDate == today) {
       return 'Today';
     } else if (targetDate == today.add(const Duration(days: 1))) {

@@ -19,7 +19,8 @@ class LocaleVariables {
   const LocaleVariables._();
 
   // Core configuration from ProjectLocales
-  static final List<Locale> _localesList = ProjectLocales.localesMap.keys.toList();
+  static final List<Locale> _localesList =
+      ProjectLocales.localesMap.keys.toList();
   static const String _localesPath = 'assets/translations';
   static const Locale _fallBackLocale = Locale('en', 'US');
 
@@ -28,7 +29,8 @@ class LocaleVariables {
   /// **USAGE:**
   /// Used by EasyLocalization for configuration
   static List<Locale> get supportedLocales {
-    debugPrint('🌐 LocaleVariables: Providing ${_localesList.length} supported locales to EasyLocalization');
+    debugPrint(
+        '🌐 LocaleVariables: Providing ${_localesList.length} supported locales to EasyLocalization');
     return _localesList;
   }
 
@@ -46,7 +48,8 @@ class LocaleVariables {
   /// **USAGE:**
   /// Used when requested locale is not available
   static Locale get fallbackLocale {
-    debugPrint('🌐 LocaleVariables: Fallback locale: ${_fallBackLocale.languageCode}-${_fallBackLocale.countryCode}');
+    debugPrint(
+        '🌐 LocaleVariables: Fallback locale: ${_fallBackLocale.languageCode}-${_fallBackLocale.countryCode}');
     return _fallBackLocale;
   }
 
@@ -60,12 +63,14 @@ class LocaleVariables {
   /// - Proper display name extraction from ProjectLocales
   /// - Error handling for missing display names
   static List<DropdownMenuItem> localItems() {
-    debugPrint('🌐 LocaleVariables: Creating dropdown menu items for language selection');
+    debugPrint(
+        '🌐 LocaleVariables: Creating dropdown menu items for language selection');
 
     List<DropdownMenuItem> menuItems = [];
 
     for (var element in _localesList) {
-      final displayName = ProjectLocales.localesMap[element] ?? 'Unknown Language';
+      final displayName =
+          ProjectLocales.localesMap[element] ?? 'Unknown Language';
       debugPrint(
           '🌐 LocaleVariables: Adding menu item: ${element.languageCode}-${element.countryCode} → "$displayName"');
 
@@ -75,7 +80,8 @@ class LocaleVariables {
       ));
     }
 
-    debugPrint('🌐 LocaleVariables: ✅ Created ${menuItems.length} dropdown menu items');
+    debugPrint(
+        '🌐 LocaleVariables: ✅ Created ${menuItems.length} dropdown menu items');
     return menuItems;
   }
 
@@ -87,16 +93,20 @@ class LocaleVariables {
   /// 3. Log initialization status and timing
   /// 4. Handle any initialization errors
   static Future<void> _init() async {
-    debugPrint('🌐 LocaleVariables: ========= EASY LOCALIZATION INITIALIZATION =========');
+    debugPrint(
+        '🌐 LocaleVariables: ========= EASY LOCALIZATION INITIALIZATION =========');
     final stopwatch = Stopwatch()..start();
 
     try {
-      debugPrint('🌐 LocaleVariables: Step 1: Ensuring Flutter widgets binding...');
+      debugPrint(
+          '🌐 LocaleVariables: Step 1: Ensuring Flutter widgets binding...');
       WidgetsFlutterBinding.ensureInitialized();
       debugPrint('🌐 LocaleVariables: ✅ Flutter widgets binding ready');
 
-      debugPrint('🌐 LocaleVariables: Step 2: Initializing Easy Localization...');
-      debugPrint('🌐 LocaleVariables: - Supported locales: ${_localesList.length}');
+      debugPrint(
+          '🌐 LocaleVariables: Step 2: Initializing Easy Localization...');
+      debugPrint(
+          '🌐 LocaleVariables: - Supported locales: ${_localesList.length}');
       debugPrint('🌐 LocaleVariables: - Translations path: $_localesPath');
       debugPrint(
           '🌐 LocaleVariables: - Fallback locale: ${_fallBackLocale.languageCode}-${_fallBackLocale.countryCode}');
@@ -104,15 +114,22 @@ class LocaleVariables {
       await EasyLocalization.ensureInitialized();
 
       stopwatch.stop();
-      debugPrint('🌐 LocaleVariables: ✅ Easy Localization initialized successfully');
-      debugPrint('🌐 LocaleVariables: ⏱️ Initialization time: ${stopwatch.elapsedMilliseconds}ms');
-      debugPrint('🌐 LocaleVariables: ===============================================');
+      debugPrint(
+          '🌐 LocaleVariables: ✅ Easy Localization initialized successfully');
+      debugPrint(
+          '🌐 LocaleVariables: ⏱️ Initialization time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🌐 LocaleVariables: ===============================================');
     } catch (e) {
       stopwatch.stop();
-      debugPrint('🌐 LocaleVariables: ❌ Easy Localization initialization failed: $e');
-      debugPrint('🌐 LocaleVariables: ⏱️ Failed after: ${stopwatch.elapsedMilliseconds}ms');
-      debugPrint('🌐 LocaleVariables: 🔄 App will continue with limited localization support');
-      debugPrint('🌐 LocaleVariables: ===============================================');
+      debugPrint(
+          '🌐 LocaleVariables: ❌ Easy Localization initialization failed: $e');
+      debugPrint(
+          '🌐 LocaleVariables: ⏱️ Failed after: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🌐 LocaleVariables: 🔄 App will continue with limited localization support');
+      debugPrint(
+          '🌐 LocaleVariables: ===============================================');
       rethrow; // Re-throw to handle in main.dart
     }
   }
@@ -132,10 +149,12 @@ class LocaleVariables {
   /// }
   /// ```
   static bool validateLocale(Locale locale) {
-    debugPrint('🌐 LocaleVariables: Validating locale: ${locale.languageCode}-${locale.countryCode}');
+    debugPrint(
+        '🌐 LocaleVariables: Validating locale: ${locale.languageCode}-${locale.countryCode}');
 
     final isSupported = ProjectLocales.isSupported(locale);
-    debugPrint('🌐 LocaleVariables: Locale supported in ProjectLocales: $isSupported');
+    debugPrint(
+        '🌐 LocaleVariables: Locale supported in ProjectLocales: $isSupported');
 
     if (isSupported) {
       debugPrint('🌐 LocaleVariables: ✅ Locale validation passed');
@@ -152,9 +171,11 @@ class LocaleVariables {
   /// Call this method to get comprehensive status of the localization system
   static void logLocalizationStatus() {
     debugPrint('🌐 LocaleVariables: ========= LOCALIZATION STATUS =========');
-    debugPrint('🌐 LocaleVariables: Supported locales count: ${_localesList.length}');
+    debugPrint(
+        '🌐 LocaleVariables: Supported locales count: ${_localesList.length}');
     debugPrint('🌐 LocaleVariables: Translations path: $_localesPath');
-    debugPrint('🌐 LocaleVariables: Fallback locale: ${_fallBackLocale.languageCode}-${_fallBackLocale.countryCode}');
+    debugPrint(
+        '🌐 LocaleVariables: Fallback locale: ${_fallBackLocale.languageCode}-${_fallBackLocale.countryCode}');
 
     debugPrint('🌐 LocaleVariables: Supported locales list:');
     for (int i = 0; i < _localesList.length; i++) {
@@ -165,6 +186,7 @@ class LocaleVariables {
           '🌐 LocaleVariables:   ${i + 1}. ${locale.languageCode}-${locale.countryCode} → "$displayName"${isDefault ? ' (DEFAULT)' : ''}');
     }
 
-    debugPrint('🌐 LocaleVariables: =============================================');
+    debugPrint(
+        '🌐 LocaleVariables: =============================================');
   }
 }

@@ -144,7 +144,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileOption(String title, IconData icon, VoidCallback onTap, ThemeManager themeManager) {
+  Widget _buildProfileOption(String title, IconData icon, VoidCallback onTap,
+      ThemeManager themeManager) {
     return ListTile(
       leading: Icon(
         icon,

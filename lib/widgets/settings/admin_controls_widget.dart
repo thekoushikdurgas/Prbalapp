@@ -63,21 +63,26 @@ class AdminControlsWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ AdminControlsWidget: Building admin controls with comprehensive ThemeManager integration');
+    debugPrint(
+        '⚙️ AdminControlsWidget: Building admin controls with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
 
     // Comprehensive theme logging for debugging
     themeManager.logThemeInfo();
-    debugPrint('⚙️ AdminControlsWidget: → Primary: ${themeManager.primaryColor}');
-    debugPrint('⚙️ AdminControlsWidget: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint(
+        '⚙️ AdminControlsWidget: → Primary: ${themeManager.primaryColor}');
+    debugPrint(
+        '⚙️ AdminControlsWidget: → Secondary: ${themeManager.secondaryColor}');
     debugPrint(
         '⚙️ AdminControlsWidget: → Accent Colors: ${themeManager.accent1}, ${themeManager.accent2}, ${themeManager.accent3}');
     debugPrint(
         '⚙️ AdminControlsWidget: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
-    debugPrint('⚙️ AdminControlsWidget: → Background: ${themeManager.backgroundColor}');
-    debugPrint('⚙️ AdminControlsWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint(
+        '⚙️ AdminControlsWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '⚙️ AdminControlsWidget: → Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '⚙️ AdminControlsWidget: → Text Colors - Primary: ${themeManager.textPrimary}, Secondary: ${themeManager.textSecondary}');
 

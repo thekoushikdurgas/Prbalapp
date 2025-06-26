@@ -31,10 +31,12 @@ class ProviderDashboardContent extends ConsumerStatefulWidget {
   const ProviderDashboardContent({super.key});
 
   @override
-  ConsumerState<ProviderDashboardContent> createState() => _ProviderDashboardContentState();
+  ConsumerState<ProviderDashboardContent> createState() =>
+      _ProviderDashboardContentState();
 }
 
-class _ProviderDashboardContentState extends ConsumerState<ProviderDashboardContent> {
+class _ProviderDashboardContentState
+    extends ConsumerState<ProviderDashboardContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override

@@ -110,6 +110,7 @@ Future<void> _initializeAppServices() async {
   await healthService.initialize();
 
   debugPrint('🏥 Performance and health monitoring ready');
-  debugPrint('🏥 Note: Health checks will be performed on splash screen with caching');
+  debugPrint(
+      '🏥 Note: Health checks will be performed on splash screen with caching');
   debugPrint('📦 App services initialized');
 }

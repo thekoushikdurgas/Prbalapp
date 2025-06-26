@@ -123,15 +123,20 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        _buildFilterChip('All', _selectedCategory == 'All', themeManager),
+                        _buildFilterChip(
+                            'All', _selectedCategory == 'All', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Home Services', _selectedCategory == 'Home Services', themeManager),
+                        _buildFilterChip('Home Services',
+                            _selectedCategory == 'Home Services', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Technical', _selectedCategory == 'Technical', themeManager),
+                        _buildFilterChip('Technical',
+                            _selectedCategory == 'Technical', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Beauty & Care', _selectedCategory == 'Beauty & Care', themeManager),
+                        _buildFilterChip('Beauty & Care',
+                            _selectedCategory == 'Beauty & Care', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Available Now', _selectedCategory == 'Available Now', themeManager),
+                        _buildFilterChip('Available Now',
+                            _selectedCategory == 'Available Now', themeManager),
                       ],
                     ),
                   ),
@@ -141,7 +146,9 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
 
             // Content Area
             Expanded(
-              child: _isMapView ? _buildMapView(themeManager) : _buildListView(themeManager),
+              child: _isMapView
+                  ? _buildMapView(themeManager)
+                  : _buildListView(themeManager),
             ),
           ],
         ),
@@ -172,7 +179,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, ThemeManager themeManager) {
+  Widget _buildFilterChip(
+      String label, bool isSelected, ThemeManager themeManager) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -182,10 +190,14 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? themeManager.primaryColor : themeManager.surfaceColor,
+          color: isSelected
+              ? themeManager.primaryColor
+              : themeManager.surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
+            color: isSelected
+                ? themeManager.primaryColor
+                : themeManager.borderColor,
           ),
         ),
         child: Text(
@@ -290,9 +302,27 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
 
   Widget _buildNearbyServiceCard(int index, ThemeManager themeManager) {
     final services = [
-      {'name': 'Quick Home Cleaning', 'provider': 'Sarah J.', 'distance': '0.5 km', 'price': '\$45', 'rating': '4.8'},
-      {'name': 'Plumbing Emergency', 'provider': 'Mike W.', 'distance': '1.2 km', 'price': '\$80', 'rating': '4.9'},
-      {'name': 'AC Repair Service', 'provider': 'Lisa B.', 'distance': '2.1 km', 'price': '\$120', 'rating': '4.7'},
+      {
+        'name': 'Quick Home Cleaning',
+        'provider': 'Sarah J.',
+        'distance': '0.5 km',
+        'price': '\$45',
+        'rating': '4.8'
+      },
+      {
+        'name': 'Plumbing Emergency',
+        'provider': 'Mike W.',
+        'distance': '1.2 km',
+        'price': '\$80',
+        'rating': '4.9'
+      },
+      {
+        'name': 'AC Repair Service',
+        'provider': 'Lisa B.',
+        'distance': '2.1 km',
+        'price': '\$120',
+        'rating': '4.7'
+      },
     ];
 
     final service = services[index];
@@ -494,7 +524,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: themeManager.successColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
@@ -596,7 +627,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: themeManager.primaryColor,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 8.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.r),
                         ),
@@ -736,7 +768,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
             SizedBox(height: 12.h),
             Wrap(
               spacing: 8.w,
-              children: ['Distance', 'Price', 'Rating', 'Availability'].map((sort) {
+              children:
+                  ['Distance', 'Price', 'Rating', 'Availability'].map((sort) {
                 return ChoiceChip(
                   label: Text(sort),
                   selected: _sortBy == sort,
@@ -745,14 +778,20 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       _sortBy = sort;
                     });
                   },
-                  selectedColor: themeManager.primaryColor.withValues(alpha: 0.2),
+                  selectedColor:
+                      themeManager.primaryColor.withValues(alpha: 0.2),
                   backgroundColor: themeManager.inputBackground,
                   labelStyle: TextStyle(
-                    color: _sortBy == sort ? themeManager.primaryColor : themeManager.textSecondary,
-                    fontWeight: _sortBy == sort ? FontWeight.w600 : FontWeight.normal,
+                    color: _sortBy == sort
+                        ? themeManager.primaryColor
+                        : themeManager.textSecondary,
+                    fontWeight:
+                        _sortBy == sort ? FontWeight.w600 : FontWeight.normal,
                   ),
                   side: BorderSide(
-                    color: _sortBy == sort ? themeManager.primaryColor : themeManager.borderColor,
+                    color: _sortBy == sort
+                        ? themeManager.primaryColor
+                        : themeManager.borderColor,
                   ),
                 );
               }).toList(),

@@ -8,7 +8,8 @@ class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
@@ -17,18 +18,24 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('📢 NotificationsScreen: Building notifications interface');
-    debugPrint('📢 NotificationsScreen: Dark mode: ${themeManager.themeManager}');
+    debugPrint(
+        '📢 NotificationsScreen: Dark mode: ${themeManager.themeManager}');
 
     return Scaffold(
-      backgroundColor: themeManager.themeManager ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: themeManager.themeManager
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: themeManager.themeManager ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor:
+            themeManager.themeManager ? const Color(0xFF1E293B) : Colors.white,
         title: Text(
           'Notifications',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: themeManager.themeManager ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.themeManager
+                ? Colors.white
+                : const Color(0xFF1F2937),
           ),
         ),
         actions: [
@@ -39,7 +46,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             },
             icon: Icon(
               Prbal.check,
-              color: themeManager.themeManager ? Colors.white : const Color(0xFF1F2937),
+              color: themeManager.themeManager
+                  ? Colors.white
+                  : const Color(0xFF1F2937),
             ),
           ),
         ],
@@ -48,7 +57,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         padding: EdgeInsets.all(16.w),
         itemCount: 10,
         itemBuilder: (context, index) {
-          debugPrint('📢 NotificationsScreen: Building notification item $index');
+          debugPrint(
+              '📢 NotificationsScreen: Building notification item $index');
           return _buildNotificationItem(
             'Service Request Update',
             'Your house cleaning service has been confirmed for tomorrow at 10 AM.',
@@ -68,7 +78,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     bool isRead,
     ThemeManager themeManager,
   ) {
-    debugPrint('📢 NotificationsScreen: Building notification card for "$title"');
+    debugPrint(
+        '📢 NotificationsScreen: Building notification card for "$title"');
 
     return Card(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -87,7 +98,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            color: themeManager.themeManager ? Colors.white : const Color(0xFF1F2937),
+            color: themeManager.themeManager
+                ? Colors.white
+                : const Color(0xFF1F2937),
           ),
         ),
         subtitle: Column(
@@ -98,7 +111,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               subtitle,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: themeManager.themeManager ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: themeManager.themeManager
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF6B7280),
               ),
             ),
             SizedBox(height: 8.h),
@@ -106,7 +121,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               time,
               style: TextStyle(
                 fontSize: 12.sp,
-                color: themeManager.themeManager ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+                color: themeManager.themeManager
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFF9CA3AF),
               ),
             ),
           ],

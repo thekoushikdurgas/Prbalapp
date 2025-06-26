@@ -8,7 +8,8 @@ class ProviderExploreScreen extends ConsumerStatefulWidget {
   const ProviderExploreScreen({super.key});
 
   @override
-  ConsumerState<ProviderExploreScreen> createState() => _ProviderExploreScreenState();
+  ConsumerState<ProviderExploreScreen> createState() =>
+      _ProviderExploreScreenState();
 }
 
 class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
@@ -129,15 +130,20 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        _buildFilterChip('All', _selectedCategory == 'All', themeManager),
+                        _buildFilterChip(
+                            'All', _selectedCategory == 'All', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Home Services', _selectedCategory == 'Home Services', themeManager),
+                        _buildFilterChip('Home Services',
+                            _selectedCategory == 'Home Services', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Technical', _selectedCategory == 'Technical', themeManager),
+                        _buildFilterChip('Technical',
+                            _selectedCategory == 'Technical', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Beauty & Care', _selectedCategory == 'Beauty & Care', themeManager),
+                        _buildFilterChip('Beauty & Care',
+                            _selectedCategory == 'Beauty & Care', themeManager),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Urgent', _selectedCategory == 'Urgent', themeManager),
+                        _buildFilterChip('Urgent',
+                            _selectedCategory == 'Urgent', themeManager),
                       ],
                     ),
                   ),
@@ -147,7 +153,9 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
 
             // Content Area
             Expanded(
-              child: _isMapView ? _buildMapView(themeManager) : _buildListView(themeManager),
+              child: _isMapView
+                  ? _buildMapView(themeManager)
+                  : _buildListView(themeManager),
             ),
           ],
         ),
@@ -178,7 +186,8 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, ThemeManager themeManager) {
+  Widget _buildFilterChip(
+      String label, bool isSelected, ThemeManager themeManager) {
     return GestureDetector(
       onTap: () {
         debugPrint(
@@ -186,15 +195,20 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
         setState(() {
           _selectedCategory = label;
         });
-        debugPrint('🎯 ProviderExploreScreen: Filter category updated to: $_selectedCategory');
+        debugPrint(
+            '🎯 ProviderExploreScreen: Filter category updated to: $_selectedCategory');
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? themeManager.primaryColor : themeManager.surfaceColor,
+          color: isSelected
+              ? themeManager.primaryColor
+              : themeManager.surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
+            color: isSelected
+                ? themeManager.primaryColor
+                : themeManager.borderColor,
           ),
         ),
         child: Text(
@@ -387,14 +401,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: accentColor,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -500,14 +516,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: colors[index % colors.length],
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

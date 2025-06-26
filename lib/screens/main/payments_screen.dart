@@ -12,7 +12,8 @@ class PaymentsScreen extends ConsumerStatefulWidget {
   ConsumerState<PaymentsScreen> createState() => _PaymentsScreenState();
 }
 
-class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProviderStateMixin {
+class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late TabController _tabController;
@@ -200,7 +201,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildBalanceCard(ThemeManager themeManager) {
-    debugPrint('🎨 PaymentsScreen: Building balance card with primary gradient');
+    debugPrint(
+        '🎨 PaymentsScreen: Building balance card with primary gradient');
     return Container(
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(24.w),
@@ -320,7 +322,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildTransactionsTab(ThemeManager themeManager) {
-    debugPrint('🎯 PaymentsScreen: Building transactions tab with ${_transactions.length} items');
+    debugPrint(
+        '🎯 PaymentsScreen: Building transactions tab with ${_transactions.length} items');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _transactions.length,
@@ -331,7 +334,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
     );
   }
 
-  Widget _buildTransactionItem(Map<String, dynamic> transaction, ThemeManager themeManager) {
+  Widget _buildTransactionItem(
+      Map<String, dynamic> transaction, ThemeManager themeManager) {
     final isIncome = transaction['amount'] > 0;
     final status = transaction['status'] as String;
 
@@ -400,9 +404,11 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                     ),
                     SizedBox(width: 8.w),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(status).withValues(alpha: 26), // 0.1 opacity
+                        color: _getStatusColor(status)
+                            .withValues(alpha: 26), // 0.1 opacity
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
@@ -427,7 +433,9 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: isIncome ? themeManager.successColor : themeManager.textPrimary,
+                  color: isIncome
+                      ? themeManager.successColor
+                      : themeManager.textPrimary,
                 ),
               ),
               SizedBox(height: 4.h),
@@ -446,7 +454,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildPaymentMethodsTab(ThemeManager themeManager) {
-    debugPrint('🎯 PaymentsScreen: Building payment methods tab with ${_paymentMethods.length} methods');
+    debugPrint(
+        '🎯 PaymentsScreen: Building payment methods tab with ${_paymentMethods.length} methods');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _paymentMethods.length,
@@ -457,7 +466,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
     );
   }
 
-  Widget _buildPaymentMethodItem(Map<String, dynamic> method, ThemeManager themeManager) {
+  Widget _buildPaymentMethodItem(
+      Map<String, dynamic> method, ThemeManager themeManager) {
     final isCard = method['type'] == 'card';
 
     return Container(
@@ -475,7 +485,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: (method['color'] as Color).withValues(alpha: 77), // 0.3 opacity
+            color:
+                (method['color'] as Color).withValues(alpha: 77), // 0.3 opacity
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -561,7 +572,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildSettingsTab(ThemeManager themeManager) {
-    debugPrint('🎯 PaymentsScreen: Building settings tab with theme-aware styling');
+    debugPrint(
+        '🎯 PaymentsScreen: Building settings tab with theme-aware styling');
     return ListView(
       padding: EdgeInsets.all(16.w),
       children: [
@@ -636,7 +648,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                   width: 48.w,
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                    color: themeManager.primaryColor
+                        .withValues(alpha: 26), // 0.1 opacity
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Icon(
@@ -834,7 +847,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                 width: 40.w,
                 height: 40.h,
                 decoration: BoxDecoration(
-                  color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  color: themeManager.primaryColor
+                      .withValues(alpha: 26), // 0.1 opacity
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Icon(

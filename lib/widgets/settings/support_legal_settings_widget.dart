@@ -65,7 +65,8 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📞 [SupportLegal] Building support & legal settings with comprehensive ThemeManager integration');
+    debugPrint(
+        '📞 [SupportLegal] Building support & legal settings with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);

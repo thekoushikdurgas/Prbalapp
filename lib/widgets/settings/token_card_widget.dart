@@ -39,9 +39,11 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
     final deviceInfo = token['device_info'] as Map<String, dynamic>?;
 
     // 📊 Debug logging
-    debugPrint('🔐 [TokenCard] Building token card for JTI: ${jti.substring(0, 8)}...');
+    debugPrint(
+        '🔐 [TokenCard] Building token card for JTI: ${jti.substring(0, 8)}...');
     debugPrint('🎯 [TokenCard] Status: ${isActive ? "Active" : "Inactive"}');
-    debugPrint('📊 [TokenCard] Show revoke: $showRevokeOption, Has device info: ${deviceInfo != null}');
+    debugPrint(
+        '📊 [TokenCard] Show revoke: $showRevokeOption, Has device info: ${deviceInfo != null}');
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6.h),
@@ -82,7 +84,7 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
           children: [
             // Enhanced token status header
             _buildStatusHeader(themeManager, isActive, jti),
-            
+
             SizedBox(height: 12.h),
 
             // Enhanced token information
@@ -100,7 +102,8 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
   }
 
   /// Builds the enhanced status header with theme integration
-  Widget _buildStatusHeader(ThemeManager themeManager, bool isActive, String jti) {
+  Widget _buildStatusHeader(
+      ThemeManager themeManager, bool isActive, String jti) {
     debugPrint('🔐 [TokenCard] Building enhanced status header');
 
     return Row(
@@ -110,21 +113,23 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: isActive ? [
-                themeManager.successColor.withValues(alpha: 26),
-                themeManager.successColor.withValues(alpha: 13),
-              ] : [
-                themeManager.errorColor.withValues(alpha: 26),
-                themeManager.errorColor.withValues(alpha: 13),
-              ],
+              colors: isActive
+                  ? [
+                      themeManager.successColor.withValues(alpha: 26),
+                      themeManager.successColor.withValues(alpha: 13),
+                    ]
+                  : [
+                      themeManager.errorColor.withValues(alpha: 26),
+                      themeManager.errorColor.withValues(alpha: 13),
+                    ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isActive 
-                ? themeManager.successColor.withValues(alpha: 77)
-                : themeManager.errorColor.withValues(alpha: 77),
+              color: isActive
+                  ? themeManager.successColor.withValues(alpha: 77)
+                  : themeManager.errorColor.withValues(alpha: 77),
               width: 1,
             ),
           ),
@@ -135,11 +140,15 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
                 width: 8.w,
                 height: 8.h,
                 decoration: BoxDecoration(
-                  color: isActive ? themeManager.successColor : themeManager.errorColor,
+                  color: isActive
+                      ? themeManager.successColor
+                      : themeManager.errorColor,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: (isActive ? themeManager.successColor : themeManager.errorColor)
+                      color: (isActive
+                              ? themeManager.successColor
+                              : themeManager.errorColor)
                           .withValues(alpha: 77),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
@@ -153,15 +162,17 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: isActive ? themeManager.successColor : themeManager.errorColor,
+                  color: isActive
+                      ? themeManager.successColor
+                      : themeManager.errorColor,
                 ),
               ),
             ],
           ),
         ),
-        
+
         const Spacer(),
-        
+
         // Enhanced revoke button
         if (showRevokeOption && isActive && onRevoke != null)
           Container(
@@ -182,7 +193,8 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
                 onTap: onRevoke,
                 borderRadius: BorderRadius.circular(8.r),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   child: Text(
                     'Revoke',
                     style: TextStyle(
@@ -200,7 +212,8 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
   }
 
   /// Builds the enhanced token information section
-  Widget _buildTokenInfo(ThemeManager themeManager, String jti, String? createdAt, String? lastUsed) {
+  Widget _buildTokenInfo(ThemeManager themeManager, String jti,
+      String? createdAt, String? lastUsed) {
     debugPrint('🔐 [TokenCard] Building enhanced token info');
 
     return Column(
@@ -263,7 +276,7 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
             ],
           ),
         ),
-        
+
         SizedBox(height: 8.h),
 
         // Enhanced timestamps with better layout
@@ -346,7 +359,8 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
   }
 
   /// Builds the enhanced device information section
-  Widget _buildDeviceInfo(ThemeManager themeManager, Map<String, dynamic> deviceInfo) {
+  Widget _buildDeviceInfo(
+      ThemeManager themeManager, Map<String, dynamic> deviceInfo) {
     debugPrint('🔐 [TokenCard] Building enhanced device info');
 
     return Container(
@@ -398,9 +412,9 @@ class TokenCardWidget extends StatelessWidget with ThemeAwareMixin {
               ),
             ],
           ),
-          
+
           SizedBox(height: 8.h),
-          
+
           // Device details
           if (deviceInfo['ip_address'] != null)
             Row(

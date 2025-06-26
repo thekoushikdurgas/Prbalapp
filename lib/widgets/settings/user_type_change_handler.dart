@@ -49,7 +49,8 @@ class UserTypeChangeHandler {
       // First, get user type change info from API
       final authToken = HiveService.getAuthToken();
       if (authToken == null) {
-        _showErrorSnackBar(context, 'Please log in to change account type', themeManager);
+        _showErrorSnackBar(
+            context, 'Please log in to change account type', themeManager);
         return;
       }
 
@@ -126,7 +127,8 @@ class UserTypeChangeHandler {
                     ),
                   ),
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(themeManager.infoColor),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(themeManager.infoColor),
                     strokeWidth: 3,
                   ),
                 ),
@@ -142,7 +144,8 @@ class UserTypeChangeHandler {
                 ),
                 SizedBox(height: 8.h),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     gradient: themeManager.conditionalGradient(
                       lightGradient: LinearGradient(
@@ -178,7 +181,8 @@ class UserTypeChangeHandler {
 
       // Get user service and fetch change info
       final userService = ref.read(userServiceProvider);
-      final changeInfoResponse = await userService.getUserTypeChangeInfo(authToken);
+      final changeInfoResponse =
+          await userService.getUserTypeChangeInfo(authToken);
 
       // Close loading dialog
       if (context.mounted && Navigator.of(context).canPop()) {
@@ -194,16 +198,19 @@ class UserTypeChangeHandler {
 
         // Try multiple paths to find available changes
         if (changeInfo['data']?['change_info']?['available_changes'] != null) {
-          availableChanges = changeInfo['data']['change_info']['available_changes'] as List<dynamic>;
+          availableChanges = changeInfo['data']['change_info']
+              ['available_changes'] as List<dynamic>;
         } else if (changeInfo['data']?['available_changes'] != null) {
-          availableChanges = changeInfo['data']['available_changes'] as List<dynamic>;
+          availableChanges =
+              changeInfo['data']['available_changes'] as List<dynamic>;
         } else if (changeInfo['available_changes'] != null) {
           availableChanges = changeInfo['available_changes'] as List<dynamic>;
         } else {
           availableChanges = _generateFallbackUserTypeChanges(currentUserType);
         }
 
-        debugPrint('📋 [UserTypeChange] Available changes: ${availableChanges.length}');
+        debugPrint(
+            '📋 [UserTypeChange] Available changes: ${availableChanges.length}');
 
         if (availableChanges.isEmpty) {
           _showInfoDialog(
@@ -224,8 +231,12 @@ class UserTypeChangeHandler {
           themeManager: themeManager,
         );
       } else {
-        debugPrint('❌ [UserTypeChange] Failed to get user type change info: ${changeInfoResponse.message}');
-        _showErrorSnackBar(context, 'Failed to load account type options: ${changeInfoResponse.message}', themeManager);
+        debugPrint(
+            '❌ [UserTypeChange] Failed to get user type change info: ${changeInfoResponse.message}');
+        _showErrorSnackBar(
+            context,
+            'Failed to load account type options: ${changeInfoResponse.message}',
+            themeManager);
       }
     } catch (e) {
       debugPrint('❌ [UserTypeChange] Error in user type change dialog: $e');
@@ -235,7 +246,8 @@ class UserTypeChangeHandler {
         Navigator.of(context).pop();
       }
 
-      _showErrorSnackBar(context, 'Error loading account type options: $e', themeManager);
+      _showErrorSnackBar(
+          context, 'Error loading account type options: $e', themeManager);
     }
   }
 
@@ -246,7 +258,8 @@ class UserTypeChangeHandler {
     required String currentUserType,
     required ThemeManager themeManager,
   }) async {
-    debugPrint('🎯 [UserTypeChange] Showing enhanced user type selection dialog');
+    debugPrint(
+        '🎯 [UserTypeChange] Showing enhanced user type selection dialog');
 
     await showModalBottomSheet(
       context: context,
@@ -389,19 +402,24 @@ class UserTypeChangeHandler {
                         ),
                         SizedBox(height: 4.h),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 2.h),
                           decoration: BoxDecoration(
                             gradient: themeManager.conditionalGradient(
                               lightGradient: LinearGradient(
                                 colors: [
-                                  themeManager.primaryColor.withValues(alpha: 13),
-                                  themeManager.primaryColor.withValues(alpha: 8),
+                                  themeManager.primaryColor
+                                      .withValues(alpha: 13),
+                                  themeManager.primaryColor
+                                      .withValues(alpha: 8),
                                 ],
                               ),
                               darkGradient: LinearGradient(
                                 colors: [
-                                  themeManager.primaryColor.withValues(alpha: 26),
-                                  themeManager.primaryColor.withValues(alpha: 13),
+                                  themeManager.primaryColor
+                                      .withValues(alpha: 26),
+                                  themeManager.primaryColor
+                                      .withValues(alpha: 13),
                                 ],
                               ),
                             ),
@@ -434,9 +452,15 @@ class UserTypeChangeHandler {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 26),
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 13),
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 8),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 26),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 13),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 8),
                     ],
                     stops: const [0.0, 0.7, 1.0],
                   ),
@@ -444,16 +468,24 @@ class UserTypeChangeHandler {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 51),
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 26),
-                      themeManager.getUserTypeColor(currentUserType).withValues(alpha: 13),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 51),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 26),
+                      themeManager
+                          .getUserTypeColor(currentUserType)
+                          .withValues(alpha: 13),
                     ],
                     stops: const [0.0, 0.7, 1.0],
                   ),
                 ),
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: themeManager.getUserTypeColor(currentUserType).withValues(alpha: 102),
+                  color: themeManager
+                      .getUserTypeColor(currentUserType)
+                      .withValues(alpha: 102),
                   width: 1.5,
                 ),
                 boxShadow: themeManager.subtleShadow,
@@ -466,20 +498,30 @@ class UserTypeChangeHandler {
                       gradient: themeManager.conditionalGradient(
                         lightGradient: LinearGradient(
                           colors: [
-                            themeManager.getUserTypeColor(currentUserType).withValues(alpha: 51),
-                            themeManager.getUserTypeColor(currentUserType).withValues(alpha: 26),
+                            themeManager
+                                .getUserTypeColor(currentUserType)
+                                .withValues(alpha: 51),
+                            themeManager
+                                .getUserTypeColor(currentUserType)
+                                .withValues(alpha: 26),
                           ],
                         ),
                         darkGradient: LinearGradient(
                           colors: [
-                            themeManager.getUserTypeColor(currentUserType).withValues(alpha: 77),
-                            themeManager.getUserTypeColor(currentUserType).withValues(alpha: 51),
+                            themeManager
+                                .getUserTypeColor(currentUserType)
+                                .withValues(alpha: 77),
+                            themeManager
+                                .getUserTypeColor(currentUserType)
+                                .withValues(alpha: 51),
                           ],
                         ),
                       ),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: themeManager.getUserTypeColor(currentUserType).withValues(alpha: 128),
+                        color: themeManager
+                            .getUserTypeColor(currentUserType)
+                            .withValues(alpha: 128),
                         width: 1,
                       ),
                     ),
@@ -540,8 +582,12 @@ class UserTypeChangeHandler {
                       themeManager: themeManager,
                     ),
                     borderRadius: BorderRadius.circular(16.r),
-                    splashColor: themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
-                    highlightColor: themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
+                    splashColor: themeManager
+                        .getUserTypeColor(targetType)
+                        .withValues(alpha: 26),
+                    highlightColor: themeManager
+                        .getUserTypeColor(targetType)
+                        .withValues(alpha: 13),
                     child: Container(
                       padding: EdgeInsets.all(20.w),
                       decoration: BoxDecoration(
@@ -551,8 +597,11 @@ class UserTypeChangeHandler {
                             end: Alignment.bottomRight,
                             colors: [
                               themeManager.surfaceColor.withValues(alpha: 242),
-                              themeManager.backgroundColor.withValues(alpha: 235),
-                              themeManager.getUserTypeColor(targetType).withValues(alpha: 8),
+                              themeManager.backgroundColor
+                                  .withValues(alpha: 235),
+                              themeManager
+                                  .getUserTypeColor(targetType)
+                                  .withValues(alpha: 8),
                             ],
                             stops: const [0.0, 0.7, 1.0],
                           ),
@@ -561,8 +610,11 @@ class UserTypeChangeHandler {
                             end: Alignment.bottomRight,
                             colors: [
                               themeManager.surfaceColor.withValues(alpha: 230),
-                              themeManager.backgroundColor.withValues(alpha: 242),
-                              themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
+                              themeManager.backgroundColor
+                                  .withValues(alpha: 242),
+                              themeManager
+                                  .getUserTypeColor(targetType)
+                                  .withValues(alpha: 13),
                             ],
                             stops: const [0.0, 0.7, 1.0],
                           ),
@@ -570,8 +622,10 @@ class UserTypeChangeHandler {
                         borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
                           color: themeManager.conditionalColor(
-                            lightColor: themeManager.borderColor.withValues(alpha: 102),
-                            darkColor: themeManager.borderColor.withValues(alpha: 77),
+                            lightColor:
+                                themeManager.borderColor.withValues(alpha: 102),
+                            darkColor:
+                                themeManager.borderColor.withValues(alpha: 77),
                           ),
                           width: 1,
                         ),
@@ -585,16 +639,24 @@ class UserTypeChangeHandler {
                               gradient: themeManager.conditionalGradient(
                                 lightGradient: LinearGradient(
                                   colors: [
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 26),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 13),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 darkGradient: LinearGradient(
                                   colors: [
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 51),
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 51),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 26),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -602,7 +664,9 @@ class UserTypeChangeHandler {
                               ),
                               borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: themeManager.getUserTypeColor(targetType).withValues(alpha: 77),
+                                color: themeManager
+                                    .getUserTypeColor(targetType)
+                                    .withValues(alpha: 77),
                                 width: 1,
                               ),
                             ),
@@ -628,19 +692,28 @@ class UserTypeChangeHandler {
                                 ),
                                 SizedBox(height: 4.h),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 2.h),
                                   decoration: BoxDecoration(
                                     gradient: themeManager.conditionalGradient(
                                       lightGradient: LinearGradient(
                                         colors: [
-                                          themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
-                                          themeManager.getUserTypeColor(targetType).withValues(alpha: 8),
+                                          themeManager
+                                              .getUserTypeColor(targetType)
+                                              .withValues(alpha: 13),
+                                          themeManager
+                                              .getUserTypeColor(targetType)
+                                              .withValues(alpha: 8),
                                         ],
                                       ),
                                       darkGradient: LinearGradient(
                                         colors: [
-                                          themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
-                                          themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
+                                          themeManager
+                                              .getUserTypeColor(targetType)
+                                              .withValues(alpha: 26),
+                                          themeManager
+                                              .getUserTypeColor(targetType)
+                                              .withValues(alpha: 13),
                                         ],
                                       ),
                                     ),
@@ -665,14 +738,22 @@ class UserTypeChangeHandler {
                               gradient: themeManager.conditionalGradient(
                                 lightGradient: LinearGradient(
                                   colors: [
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 13),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 26),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 13),
                                   ],
                                 ),
                                 darkGradient: LinearGradient(
                                   colors: [
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 51),
-                                    themeManager.getUserTypeColor(targetType).withValues(alpha: 26),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 51),
+                                    themeManager
+                                        .getUserTypeColor(targetType)
+                                        .withValues(alpha: 26),
                                   ],
                                 ),
                               ),
@@ -706,7 +787,8 @@ class UserTypeChangeHandler {
     required String displayName,
     required ThemeManager themeManager,
   }) async {
-    debugPrint('🔄 UserTypeChangeHandler: Showing confirmation dialog for $targetType');
+    debugPrint(
+        '🔄 UserTypeChangeHandler: Showing confirmation dialog for $targetType');
 
     // Close current bottom sheet
     Navigator.of(context).pop();
@@ -737,7 +819,9 @@ class UserTypeChangeHandler {
                     Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: themeManager.getUserTypeColor(targetType).withValues(alpha: 0.1),
+                        color: themeManager
+                            .getUserTypeColor(targetType)
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Icon(
@@ -782,7 +866,8 @@ class UserTypeChangeHandler {
                         controller: reasonController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'Tell us why you want to change your account type...',
+                          hintText:
+                              'Tell us why you want to change your account type...',
                           filled: true,
                           fillColor: themeManager.backgroundColor,
                           border: OutlineInputBorder(
@@ -820,7 +905,8 @@ class UserTypeChangeHandler {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: themeManager.getUserTypeColor(targetType),
+                          backgroundColor:
+                              themeManager.getUserTypeColor(targetType),
                         ),
                         child: Text('Change Type'),
                       ),
@@ -836,7 +922,8 @@ class UserTypeChangeHandler {
       });
     } catch (e) {
       reasonController.dispose();
-      _showErrorSnackBar(context, 'Error showing confirmation dialog: $e', themeManager);
+      _showErrorSnackBar(
+          context, 'Error showing confirmation dialog: $e', themeManager);
     }
   }
 
@@ -846,14 +933,16 @@ class UserTypeChangeHandler {
     required String targetType,
     required String reason,
   }) async {
-    debugPrint('🔄 UserTypeChangeHandler: Executing user type change to $targetType');
+    debugPrint(
+        '🔄 UserTypeChangeHandler: Executing user type change to $targetType');
 
     final themeManager = ThemeManager.of(context);
 
     try {
       final authToken = HiveService.getAuthToken();
       if (authToken == null) {
-        _showErrorSnackBar(context, 'Authentication token not found', themeManager);
+        _showErrorSnackBar(
+            context, 'Authentication token not found', themeManager);
         return;
       }
 
@@ -916,7 +1005,8 @@ class UserTypeChangeHandler {
                       ),
                       child: Icon(
                         Prbal.check,
-                        color: themeManager.getContrastingColor(themeManager.successColor),
+                        color: themeManager
+                            .getContrastingColor(themeManager.successColor),
                         size: 16.sp,
                       ),
                     ),
@@ -925,7 +1015,8 @@ class UserTypeChangeHandler {
                       child: Text(
                         'Account type changed successfully!',
                         style: TextStyle(
-                          color: themeManager.getContrastingColor(themeManager.successColor),
+                          color: themeManager
+                              .getContrastingColor(themeManager.successColor),
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.2,
                         ),
@@ -951,26 +1042,31 @@ class UserTypeChangeHandler {
           });
         }
       } else {
-        _showErrorSnackBar(context, 'Failed to change account type: ${response.message}', themeManager);
+        _showErrorSnackBar(context,
+            'Failed to change account type: ${response.message}', themeManager);
       }
     } catch (e) {
       debugPrint('❌ Error executing user type change: $e');
       if (context.mounted && Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       }
-      _showErrorSnackBar(context, 'Error changing account type: $e', themeManager);
+      _showErrorSnackBar(
+          context, 'Error changing account type: $e', themeManager);
     }
   }
 
   // Helper methods
-  static List<dynamic> _generateFallbackUserTypeChanges(String currentUserType) {
+  static List<dynamic> _generateFallbackUserTypeChanges(
+      String currentUserType) {
     final allUserTypes = [
       {'type': 'customer', 'display': 'Customer'},
       {'type': 'provider', 'display': 'Service Provider'},
       {'type': 'admin', 'display': 'Administrator'},
     ];
 
-    return allUserTypes.where((type) => type['type'] != currentUserType).toList();
+    return allUserTypes
+        .where((type) => type['type'] != currentUserType)
+        .toList();
   }
 
   static Future<void> _refreshUserTypeState(WidgetRef ref) async {
@@ -978,7 +1074,8 @@ class UserTypeChangeHandler {
     // This would update the authentication state and local storage
   }
 
-  static void _showInfoDialog(BuildContext context, String title, String message, ThemeManager themeManager) {
+  static void _showInfoDialog(BuildContext context, String title,
+      String message, ThemeManager themeManager) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -1038,7 +1135,8 @@ class UserTypeChangeHandler {
               child: Text(
                 'OK',
                 style: TextStyle(
-                  color: themeManager.getContrastingColor(themeManager.infoColor),
+                  color:
+                      themeManager.getContrastingColor(themeManager.infoColor),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1049,7 +1147,8 @@ class UserTypeChangeHandler {
     );
   }
 
-  static void _showErrorSnackBar(BuildContext context, String message, ThemeManager themeManager) {
+  static void _showErrorSnackBar(
+      BuildContext context, String message, ThemeManager themeManager) {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -1079,7 +1178,8 @@ class UserTypeChangeHandler {
                 ),
                 child: Icon(
                   Prbal.exclamationTriangle,
-                  color: themeManager.getContrastingColor(themeManager.errorColor),
+                  color:
+                      themeManager.getContrastingColor(themeManager.errorColor),
                   size: 16.sp,
                 ),
               ),
@@ -1088,7 +1188,8 @@ class UserTypeChangeHandler {
                 child: Text(
                   message,
                   style: TextStyle(
-                    color: themeManager.getContrastingColor(themeManager.errorColor),
+                    color: themeManager
+                        .getContrastingColor(themeManager.errorColor),
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.2,
                   ),

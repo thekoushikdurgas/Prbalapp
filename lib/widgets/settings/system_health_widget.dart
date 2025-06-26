@@ -39,7 +39,8 @@ class SystemHealthWidget extends StatefulWidget {
   State<SystemHealthWidget> createState() => _SystemHealthWidgetState();
 }
 
-class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _SystemHealthWidgetState extends State<SystemHealthWidget>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
   late Animation<double> _rotateAnimation;
@@ -77,12 +78,15 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
       debugPrint('✅ [SystemHealth] Healthy system - pulse animation enabled');
     } else {
       _animationController.repeat();
-      debugPrint('⚠️ [SystemHealth] Unhealthy system - alert animation enabled');
+      debugPrint(
+          '⚠️ [SystemHealth] Unhealthy system - alert animation enabled');
     }
 
     debugPrint('🎬 [SystemHealth] Animation controller initialized');
-    debugPrint('📊 [SystemHealth] Health status: ${widget.healthData.overallStatus}');
-    debugPrint('🔧 [SystemHealth] System version: ${widget.healthData.system.version}');
+    debugPrint(
+        '📊 [SystemHealth] Health status: ${widget.healthData.overallStatus}');
+    debugPrint(
+        '🔧 [SystemHealth] System version: ${widget.healthData.system.version}');
   }
 
   @override
@@ -109,15 +113,24 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
           color: themeManager.conditionalColor(
-            lightColor: (isHealthy ? themeManager.successColor : themeManager.warningColor).withValues(alpha: 77),
-            darkColor: (isHealthy ? themeManager.successColor : themeManager.warningColor).withValues(alpha: 102),
+            lightColor: (isHealthy
+                    ? themeManager.successColor
+                    : themeManager.warningColor)
+                .withValues(alpha: 77),
+            darkColor: (isHealthy
+                    ? themeManager.successColor
+                    : themeManager.warningColor)
+                .withValues(alpha: 102),
           ),
           width: 1.5,
         ),
         boxShadow: [
           // Enhanced primary shadow with theme awareness
           BoxShadow(
-            color: (isHealthy ? themeManager.successColor : themeManager.warningColor).withValues(alpha: 102),
+            color: (isHealthy
+                    ? themeManager.successColor
+                    : themeManager.warningColor)
+                .withValues(alpha: 102),
             blurRadius: 24,
             offset: const Offset(0, 12),
             spreadRadius: 0,
@@ -332,7 +345,9 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
-                  isHealthy ? 'All systems operational' : 'Issues detected - Admin action required',
+                  isHealthy
+                      ? 'All systems operational'
+                      : 'Issues detected - Admin action required',
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: Colors.white.withValues(alpha: 230),
@@ -381,7 +396,10 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.white.withValues(alpha: isHealthy ? (_pulseAnimation.value * 77).toDouble() : 51.0),
+                    color: Colors.white.withValues(
+                        alpha: isHealthy
+                            ? (_pulseAnimation.value * 77).toDouble()
+                            : 51.0),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -436,7 +454,8 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
             'API Service',
             widget.healthData.system.status,
             Prbal.server,
-            _getMetricStatusColor(widget.healthData.system.status, themeManager),
+            _getMetricStatusColor(
+                widget.healthData.system.status, themeManager),
           ),
         ),
         SizedBox(width: 20.w),
@@ -446,7 +465,8 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
             'Database',
             widget.healthData.database.status,
             Prbal.database,
-            _getMetricStatusColor(widget.healthData.database.status, themeManager),
+            _getMetricStatusColor(
+                widget.healthData.database.status, themeManager),
           ),
         ),
         SizedBox(width: 20.w),
@@ -483,7 +503,8 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
   }
 
   /// Builds enhanced individual health metric item
-  Widget _buildHealthMetric(ThemeManager themeManager, String label, String value, IconData icon, Color valueColor) {
+  Widget _buildHealthMetric(ThemeManager themeManager, String label,
+      String value, IconData icon, Color valueColor) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(

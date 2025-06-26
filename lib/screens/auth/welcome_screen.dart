@@ -14,7 +14,8 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProviderStateMixin {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
+    with TickerProviderStateMixin {
   late AnimationController _slideController;
   late AnimationController _fadeController;
   late AnimationController _buttonController;
@@ -101,8 +102,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     final isSmallScreen = screenHeight < 700; // Detect smaller screens
 
     debugPrint('🎬 WelcomeScreen: Building welcome screen');
-    debugPrint('🎨 WelcomeScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
-    debugPrint('📱 WelcomeScreen: Screen height: $screenHeight (Small: $isSmallScreen)');
+    debugPrint(
+        '🎨 WelcomeScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint(
+        '📱 WelcomeScreen: Screen height: $screenHeight (Small: $isSmallScreen)');
 
     return Scaffold(
       body: Container(
@@ -167,7 +170,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
                   },
                 ),
 
-                SizedBox(height: isSmallScreen ? 10.h : 20.h), // Further reduced for small screens
+                SizedBox(
+                    height: isSmallScreen
+                        ? 10.h
+                        : 20.h), // Further reduced for small screens
               ],
             ),
           ),

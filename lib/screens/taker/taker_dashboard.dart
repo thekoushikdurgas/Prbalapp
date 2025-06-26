@@ -30,7 +30,8 @@ class TakerDashboardContent extends ConsumerStatefulWidget {
   const TakerDashboardContent({super.key});
 
   @override
-  ConsumerState<TakerDashboardContent> createState() => _TakerDashboardContentState();
+  ConsumerState<TakerDashboardContent> createState() =>
+      _TakerDashboardContentState();
 }
 
 class _TakerDashboardContentState extends ConsumerState<TakerDashboardContent> {

@@ -199,7 +199,8 @@ class FeatureRoutes {
       pageBuilder: (context, state) => RouterUtils.buildPageTransition(
         context: context,
         state: state,
-        child: const BottomNavigation(initialIndex: 2), // 3rd tab for admin users
+        child:
+            const BottomNavigation(initialIndex: 2), // 3rd tab for admin users
       ),
     ),
 

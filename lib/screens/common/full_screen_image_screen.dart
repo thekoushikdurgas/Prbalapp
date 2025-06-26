@@ -21,15 +21,18 @@ class FullScreenImageScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FullScreenImageScreen> createState() => _FullScreenImageScreenState();
+  ConsumerState<FullScreenImageScreen> createState() =>
+      _FullScreenImageScreenState();
 }
 
-class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> with TickerProviderStateMixin {
+class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late PageController _pageController;
 
-  final TransformationController _transformationController = TransformationController();
+  final TransformationController _transformationController =
+      TransformationController();
   bool _isControlsVisible = true;
   int _currentIndex = 0;
 
@@ -98,7 +101,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
     _transformationController.dispose();
 
     // Restore system UI
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
 
     super.dispose();
   }
@@ -106,11 +110,14 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-    final hasMultipleImages = widget.imageUrls != null && widget.imageUrls!.length > 1;
+    final hasMultipleImages =
+        widget.imageUrls != null && widget.imageUrls!.length > 1;
 
     debugPrint('🖼️ FullScreenImageScreen: Building full screen image viewer');
-    debugPrint('🖼️ FullScreenImageScreen: Dark mode: ${themeManager.themeManager}');
-    debugPrint('🖼️ FullScreenImageScreen: Multiple images: $hasMultipleImages');
+    debugPrint(
+        '🖼️ FullScreenImageScreen: Dark mode: ${themeManager.themeManager}');
+    debugPrint(
+        '🖼️ FullScreenImageScreen: Multiple images: $hasMultipleImages');
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -119,7 +126,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
           // Image content
           GestureDetector(
             onTap: _toggleControls,
-            child: hasMultipleImages ? _buildImageGallery() : _buildSingleImage(),
+            child:
+                hasMultipleImages ? _buildImageGallery() : _buildSingleImage(),
           ),
 
           // Top controls
@@ -188,7 +196,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
                   children: [
                     CircularProgressIndicator(
                       value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
                           : null,
                       color: Colors.white,
                       strokeWidth: 2,
@@ -259,7 +268,9 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
 
         return Center(
           child: Hero(
-            tag: index == widget.initialIndex ? widget.heroTag : 'gallery_$index',
+            tag: index == widget.initialIndex
+                ? widget.heroTag
+                : 'gallery_$index',
             child: InteractiveViewer(
               transformationController: _transformationController,
               minScale: 0.5,
@@ -281,7 +292,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
                       children: [
                         CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
                               : null,
                           color: Colors.white,
                           strokeWidth: 2,
@@ -549,7 +561,9 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
                 width: 50.w,
                 height: 50.h,
                 decoration: BoxDecoration(
-                  color: _currentIndex > 0 ? Colors.white.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.1),
+                  color: _currentIndex > 0
+                      ? Colors.white.withValues(alpha: 0.2)
+                      : Colors.white.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(25.r),
                 ),
                 child: IconButton(
@@ -607,7 +621,9 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
                       : null,
                   icon: Icon(
                     Prbal.angleRight,
-                    color: _currentIndex < widget.imageUrls!.length - 1 ? Colors.white : Colors.white54,
+                    color: _currentIndex < widget.imageUrls!.length - 1
+                        ? Colors.white
+                        : Colors.white54,
                     size: 24.sp,
                   ),
                 ),
@@ -737,7 +753,9 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
   }
 
   void _copyImageUrl() {
-    final currentImageUrl = widget.imageUrls != null ? widget.imageUrls![_currentIndex] : widget.imageUrl;
+    final currentImageUrl = widget.imageUrls != null
+        ? widget.imageUrls![_currentIndex]
+        : widget.imageUrl;
 
     Clipboard.setData(ClipboardData(text: currentImageUrl));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -757,7 +775,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
     // Implement open in browser functionality
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Open in browser functionality would be implemented here'),
+        content: const Text(
+            'Open in browser functionality would be implemented here'),
         backgroundColor: const Color(0xFF3B82F6),
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.all(16.w),
@@ -801,7 +820,8 @@ class _FullScreenImageScreenState extends ConsumerState<FullScreenImageScreen> w
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFEF4444)),
             child: const Text('Report', style: TextStyle(color: Colors.white)),
           ),
         ],

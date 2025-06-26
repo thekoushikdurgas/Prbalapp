@@ -45,7 +45,8 @@ extension ContextExtension on BuildContext {
     final stopwatch = Stopwatch()..start();
 
     try {
-      debugPrint('🌐 Translation: Requesting key "$key"${args != null ? ' with args: $args' : ''}');
+      debugPrint(
+          '🌐 Translation: Requesting key "$key"${args != null ? ' with args: $args' : ''}');
 
       // Attempt translation using Easy Localization
       final translation = args != null ? tr(key, args: args) : tr(key);
@@ -57,25 +58,31 @@ extension ContextExtension on BuildContext {
         if (fallback != null) {
           debugPrint('🌐 Translation: 🔄 Using provided fallback: "$fallback"');
           stopwatch.stop();
-          debugPrint('🌐 Translation: ⏱️ Fallback operation: ${stopwatch.elapsedMicroseconds}μs');
+          debugPrint(
+              '🌐 Translation: ⏱️ Fallback operation: ${stopwatch.elapsedMicroseconds}μs');
           return fallback;
         } else {
-          debugPrint('🌐 Translation: ❌ No fallback provided, returning original key');
+          debugPrint(
+              '🌐 Translation: ❌ No fallback provided, returning original key');
         }
       } else {
-        debugPrint('🌐 Translation: ✅ Successfully translated "$key" → "$translation"');
+        debugPrint(
+            '🌐 Translation: ✅ Successfully translated "$key" → "$translation"');
       }
 
       stopwatch.stop();
-      debugPrint('🌐 Translation: ⏱️ Translation time: ${stopwatch.elapsedMicroseconds}μs');
+      debugPrint(
+          '🌐 Translation: ⏱️ Translation time: ${stopwatch.elapsedMicroseconds}μs');
       return translation;
     } catch (e) {
       stopwatch.stop();
       debugPrint('🌐 Translation: ❌ Error translating "$key": $e');
-      debugPrint('🌐 Translation: ⏱️ Error occurred after: ${stopwatch.elapsedMicroseconds}μs');
+      debugPrint(
+          '🌐 Translation: ⏱️ Error occurred after: ${stopwatch.elapsedMicroseconds}μs');
 
       if (fallback != null) {
-        debugPrint('🌐 Translation: 🔄 Using fallback due to error: "$fallback"');
+        debugPrint(
+            '🌐 Translation: 🔄 Using fallback due to error: "$fallback"');
         return fallback;
       } else {
         debugPrint('🌐 Translation: 🔄 Returning original key due to error');
@@ -101,7 +108,8 @@ extension ContextExtension on BuildContext {
   Locale getCurrentLocaleWithDebug() {
     try {
       final currentLocale = locale;
-      debugPrint('🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
+      debugPrint(
+          '🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
 
       // Additional information about the locale
       final displayName = _getLocaleDisplayName(currentLocale);
@@ -130,7 +138,8 @@ extension ContextExtension on BuildContext {
       final textDirection = Directionality.maybeOf(this);
       final isRTL = textDirection == ui.TextDirection.rtl;
 
-      debugPrint('🌐 Context: Locale ${currentLocale.languageCode} text direction: ${isRTL ? 'RTL' : 'LTR'}');
+      debugPrint(
+          '🌐 Context: Locale ${currentLocale.languageCode} text direction: ${isRTL ? 'RTL' : 'LTR'}');
       return isRTL;
     } catch (e) {
       debugPrint('🌐 Context: ❌ Error determining text direction: $e');
@@ -170,14 +179,18 @@ extension ContextExtension on BuildContext {
 
     try {
       final currentLocale = locale;
-      debugPrint('🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
-      debugPrint('🌐 Context: Requested locale: ${newLocale.languageCode}-${newLocale.countryCode}');
+      debugPrint(
+          '🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
+      debugPrint(
+          '🌐 Context: Requested locale: ${newLocale.languageCode}-${newLocale.countryCode}');
 
       // Check if already using the requested locale
       if (currentLocale == newLocale) {
-        debugPrint('🌐 Context: ⚠️ Already using requested locale, no change needed');
+        debugPrint(
+            '🌐 Context: ⚠️ Already using requested locale, no change needed');
         stopwatch.stop();
-        debugPrint('🌐 Context: ⏱️ No-op operation: ${stopwatch.elapsedMilliseconds}ms');
+        debugPrint(
+            '🌐 Context: ⏱️ No-op operation: ${stopwatch.elapsedMilliseconds}ms');
         debugPrint('🌐 Context: =========================================');
         return;
       }
@@ -187,13 +200,16 @@ extension ContextExtension on BuildContext {
 
       stopwatch.stop();
       debugPrint('🌐 Context: ✅ Locale changed successfully');
-      debugPrint('🌐 Context: ⏱️ Switch operation: ${stopwatch.elapsedMilliseconds}ms');
-      debugPrint('🌐 Context: New display name: ${_getLocaleDisplayName(newLocale)}');
+      debugPrint(
+          '🌐 Context: ⏱️ Switch operation: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🌐 Context: New display name: ${_getLocaleDisplayName(newLocale)}');
       debugPrint('🌐 Context: =========================================');
     } catch (e) {
       stopwatch.stop();
       debugPrint('🌐 Context: ❌ Locale change failed: $e');
-      debugPrint('🌐 Context: ⏱️ Failed after: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🌐 Context: ⏱️ Failed after: ${stopwatch.elapsedMilliseconds}ms');
       debugPrint('🌐 Context: 🔄 Staying with current locale');
       debugPrint('🌐 Context: =========================================');
       rethrow; // Re-throw to handle in calling code
@@ -223,7 +239,8 @@ extension ContextExtension on BuildContext {
       'pa': 'ਪੰਜਾਬੀ (Punjabi)',
     };
 
-    return languageNames[locale.languageCode] ?? '${locale.languageCode}-${locale.countryCode}';
+    return languageNames[locale.languageCode] ??
+        '${locale.languageCode}-${locale.countryCode}';
   }
 
   /// Log current translation context information
@@ -236,12 +253,16 @@ extension ContextExtension on BuildContext {
     try {
       final currentLocale = getCurrentLocaleWithDebug();
       final isRTL = isRTLWithDebug();
-      final supportedLocales = EasyLocalization.of(this)?.supportedLocales ?? [];
+      final supportedLocales =
+          EasyLocalization.of(this)?.supportedLocales ?? [];
 
-      debugPrint('🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
-      debugPrint('🌐 Context: Display name: ${_getLocaleDisplayName(currentLocale)}');
+      debugPrint(
+          '🌐 Context: Current locale: ${currentLocale.languageCode}-${currentLocale.countryCode}');
+      debugPrint(
+          '🌐 Context: Display name: ${_getLocaleDisplayName(currentLocale)}');
       debugPrint('🌐 Context: Text direction: ${isRTL ? 'RTL' : 'LTR'}');
-      debugPrint('🌐 Context: Supported locales count: ${supportedLocales.length}');
+      debugPrint(
+          '🌐 Context: Supported locales count: ${supportedLocales.length}');
       debugPrint(
           '🌐 Context: EasyLocalization instance: ${EasyLocalization.of(this) != null ? 'Available' : 'Not Available'}');
     } catch (e) {

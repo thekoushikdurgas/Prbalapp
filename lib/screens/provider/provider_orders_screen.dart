@@ -13,10 +13,12 @@ class ProviderOrdersScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProviderOrdersScreen> createState() => _ProviderOrdersScreenState();
+  ConsumerState<ProviderOrdersScreen> createState() =>
+      _ProviderOrdersScreenState();
 }
 
-class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> with TickerProviderStateMixin {
+class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -39,7 +41,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎯 ProviderOrdersScreen: Building screen with initialTabIndex: ${widget.initialTabIndex}');
+    debugPrint(
+        '🎯 ProviderOrdersScreen: Building screen with initialTabIndex: ${widget.initialTabIndex}');
     debugPrint(
         '🎨 ProviderOrdersScreen: ThemeManager - isDark: ${themeManager.themeManager}, primaryColor: ${themeManager.primaryColor}');
 
@@ -476,7 +479,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
                   icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: themeManager.infoColor,

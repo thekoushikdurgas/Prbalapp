@@ -72,7 +72,8 @@ class PrbalIconManager {
   }
 
   /// Enhanced debug function with ThemeManager context
-  void debugLogIconUsageWithTheme(BuildContext context, String usageContext, IconData iconData) {
+  void debugLogIconUsageWithTheme(
+      BuildContext context, String usageContext, IconData iconData) {
     final themeManager = ThemeManager.of(context);
     debugPrint('🎨 Enhanced Icon Usage Log:');
     debugPrint('   Context: $usageContext');
@@ -129,13 +130,17 @@ class PrbalIconManager {
 
   /// Get current theme name for debugging
   String _getCurrentThemeName() {
-    return WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark ? 'dark' : 'light';
+    return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+            Brightness.dark
+        ? 'dark'
+        : 'light';
   }
 
   /// Get current theme name with context for enhanced debugging
   String getCurrentThemeNameWithContext(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    debugPrint('🎨 PrbalIconManager: Theme context - brightness: ${brightness.name}');
+    debugPrint(
+        '🎨 PrbalIconManager: Theme context - brightness: ${brightness.name}');
     return brightness == Brightness.dark ? 'dark' : 'light';
   }
 
@@ -363,7 +368,8 @@ class PrbalIconManager {
     final brightness = Theme.of(context).brightness;
     final selectedIcon = brightness == Brightness.dark ? darkIcon : lightIcon;
 
-    debugPrint('🎨 PrbalIconManager: getThemedIcon - brightness: ${brightness.name}');
+    debugPrint(
+        '🎨 PrbalIconManager: getThemedIcon - brightness: ${brightness.name}');
     debugLogIconUsage('themed_icon_${brightness.name}');
     return selectedIcon;
   }
@@ -375,7 +381,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating primary icon with color: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating primary icon with color: ${themeManager.primaryColor}');
 
     return Icon(
       iconData,
@@ -391,7 +398,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating secondary icon with text secondary color');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating secondary icon with text secondary color');
 
     return Icon(
       iconData,
@@ -407,7 +415,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating success icon with color: ${themeManager.successColor}');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating success icon with color: ${themeManager.successColor}');
 
     return Icon(
       iconData,
@@ -423,7 +432,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating error icon with color: ${themeManager.errorColor}');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating error icon with color: ${themeManager.errorColor}');
 
     return Icon(
       iconData,
@@ -439,7 +449,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating warning icon with color: ${themeManager.warningColor}');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating warning icon with color: ${themeManager.warningColor}');
 
     return Icon(
       iconData,
@@ -455,7 +466,8 @@ class PrbalIconManager {
     double? size,
   }) {
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 PrbalIconManager: Creating info icon with color: ${themeManager.infoColor}');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating info icon with color: ${themeManager.infoColor}');
 
     return Icon(
       iconData,
@@ -478,13 +490,16 @@ class PrbalIconManager {
     final effectiveContainerSize = containerSize ?? 48.0;
     final effectiveIconSize = iconSize ?? 24.0;
 
-    debugPrint('🎨 PrbalIconManager: Creating styled container with surface styling');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating styled container with surface styling');
 
     return Container(
       width: effectiveContainerSize,
       height: effectiveContainerSize,
       decoration: BoxDecoration(
-        gradient: usePrimaryGradient ? themeManager.primaryGradient : themeManager.surfaceGradient,
+        gradient: usePrimaryGradient
+            ? themeManager.primaryGradient
+            : themeManager.surfaceGradient,
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: themeManager.subtleShadow,
         border: Border.all(
@@ -514,7 +529,8 @@ class PrbalIconManager {
     final effectiveContainerSize = containerSize ?? 56.0;
     final effectiveIconSize = iconSize ?? 28.0;
 
-    debugPrint('🎨 PrbalIconManager: Creating floating icon with primary gradient');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating floating icon with primary gradient');
 
     return GestureDetector(
       onTap: onTap,
@@ -570,7 +586,8 @@ class PrbalIconManager {
         statusColor = themeManager.textSecondary;
     }
 
-    debugPrint('🎨 PrbalIconManager: Creating status icon for "$status" with color: $statusColor');
+    debugPrint(
+        '🎨 PrbalIconManager: Creating status icon for "$status" with color: $statusColor');
 
     return Icon(
       iconData,
@@ -587,8 +604,10 @@ class PrbalIconManager {
   Map<String, IconData> getComprehensiveIconMap() {
     if (_iconCache != null &&
         _lastCacheTime != null &&
-        DateTime.now().difference(_lastCacheTime!).compareTo(_cacheValidity) < 0) {
-      debugPrint('🚀 PrbalIconManager: Using cached icon map (${_iconCache!.length} icons)');
+        DateTime.now().difference(_lastCacheTime!).compareTo(_cacheValidity) <
+            0) {
+      debugPrint(
+          '🚀 PrbalIconManager: Using cached icon map (${_iconCache!.length} icons)');
       return _iconCache!;
     }
 
@@ -621,7 +640,8 @@ class PrbalIconManager {
     _iconCache = Map<String, IconData>.from(icons);
     _lastCacheTime = DateTime.now();
 
-    debugPrint('🚀 PrbalIconManager: Built comprehensive icon map with ${icons.length} icons');
+    debugPrint(
+        '🚀 PrbalIconManager: Built comprehensive icon map with ${icons.length} icons');
     return icons;
   }
 
@@ -630,7 +650,8 @@ class PrbalIconManager {
     debugPrint('🎨 PrbalIconManager.getIcon: Resolving "$iconName"');
 
     if (iconName.trim().isEmpty) {
-      debugPrint('🎨 PrbalIconManager: Empty name, using default database icon');
+      debugPrint(
+          '🎨 PrbalIconManager: Empty name, using default database icon');
       return Prbal.database;
     }
 
@@ -645,8 +666,10 @@ class PrbalIconManager {
 
     // Try partial match
     for (final entry in iconMap.entries) {
-      if (entry.key.contains(normalizedName) || normalizedName.contains(entry.key)) {
-        debugPrint('🎨 PrbalIconManager: ✅ Found partial match "${entry.key}" for "$iconName"');
+      if (entry.key.contains(normalizedName) ||
+          normalizedName.contains(entry.key)) {
+        debugPrint(
+            '🎨 PrbalIconManager: ✅ Found partial match "${entry.key}" for "$iconName"');
         return entry.value;
       }
     }
@@ -654,12 +677,14 @@ class PrbalIconManager {
     // Category-based fallback
     final categoryIcon = getCategoryBasedIcon(normalizedName);
     if (categoryIcon != null) {
-      debugPrint('🎨 PrbalIconManager: ✅ Found category-based icon for "$iconName"');
+      debugPrint(
+          '🎨 PrbalIconManager: ✅ Found category-based icon for "$iconName"');
       return categoryIcon;
     }
 
     // Default fallback
-    debugPrint('🎨 PrbalIconManager: ⚠️ No match found for "$iconName", using default database icon');
+    debugPrint(
+        '🎨 PrbalIconManager: ⚠️ No match found for "$iconName", using default database icon');
     return Prbal.database;
   }
 
@@ -688,13 +713,15 @@ class PrbalIconManager {
 
     // Partial matches
     for (final entry in allIcons.entries) {
-      if (entry.key.contains(normalizedQuery) && !results.containsKey(entry.key)) {
+      if (entry.key.contains(normalizedQuery) &&
+          !results.containsKey(entry.key)) {
         results[entry.key] = entry.value;
         if (results.length >= 20) break; // Limit results
       }
     }
 
-    debugPrint('🔍 PrbalIconManager: Found ${results.length} matches for "$query"');
+    debugPrint(
+        '🔍 PrbalIconManager: Found ${results.length} matches for "$query"');
     return results;
   }
 
@@ -716,7 +743,13 @@ class PrbalIconManager {
     };
 
     if (iconName.trim().isEmpty) {
-      result['suggestions'] = ['home', 'user', 'settings', 'search', 'database'];
+      result['suggestions'] = [
+        'home',
+        'user',
+        'settings',
+        'search',
+        'database'
+      ];
       return result;
     }
 
@@ -745,10 +778,12 @@ class PrbalIconManager {
 
     result['suggestions'] = suggestions.take(5).toList();
     result['alternatives'] = alternatives.take(5).toList();
-    result['confidence'] = suggestions.isNotEmpty ? 0.8 : (alternatives.isNotEmpty ? 0.6 : 0.0);
+    result['confidence'] =
+        suggestions.isNotEmpty ? 0.8 : (alternatives.isNotEmpty ? 0.6 : 0.0);
 
     debugPrint('✅ PrbalIconManager: Icon "$iconName" not found');
-    debugPrint('✅ PrbalIconManager: Suggestions: ${suggestions.take(3).join(', ')}');
+    debugPrint(
+        '✅ PrbalIconManager: Suggestions: ${suggestions.take(3).join(', ')}');
 
     return result;
   }

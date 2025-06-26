@@ -47,7 +47,9 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 /// This component is designed to be used with settings screens
 /// and provides a standardized enhanced header appearance across all
 /// settings-related interfaces in the application with professional theming.
-class SettingAppbar extends StatelessWidget with ThemeAwareMixin implements PreferredSizeWidget {
+class SettingAppbar extends StatelessWidget
+    with ThemeAwareMixin
+    implements PreferredSizeWidget {
   const SettingAppbar({super.key});
 
   @override
@@ -236,7 +238,8 @@ class SettingAppbar extends StatelessWidget with ThemeAwareMixin implements Pref
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
                     color: themeManager.conditionalColor(
-                      lightColor: themeManager.borderColor.withValues(alpha: 102),
+                      lightColor:
+                          themeManager.borderColor.withValues(alpha: 102),
                       darkColor: themeManager.borderColor.withValues(alpha: 77),
                     ),
                     width: 1,
@@ -251,8 +254,10 @@ class SettingAppbar extends StatelessWidget with ThemeAwareMixin implements Pref
                       Navigator.of(context).pop();
                     },
                     borderRadius: BorderRadius.circular(12.r),
-                    splashColor: themeManager.primaryColor.withValues(alpha: 51),
-                    highlightColor: themeManager.primaryColor.withValues(alpha: 26),
+                    splashColor:
+                        themeManager.primaryColor.withValues(alpha: 51),
+                    highlightColor:
+                        themeManager.primaryColor.withValues(alpha: 26),
                     child: Container(
                       alignment: Alignment.center,
                       child: Icon(

@@ -71,7 +71,8 @@ class TokensSettingsWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🔐 [TokensSettings] Building tokens settings with comprehensive ThemeManager integration');
+    debugPrint(
+        '🔐 [TokensSettings] Building tokens settings with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
@@ -79,7 +80,8 @@ class TokensSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     // Comprehensive theme logging for debugging
     debugPrint('🔐 [TokensSettings] Primary: ${themeManager.primaryColor}');
     debugPrint('🔐 [TokensSettings] Secondary: ${themeManager.secondaryColor}');
-    debugPrint('🔐 [TokensSettings] Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '🔐 [TokensSettings] Background: ${themeManager.backgroundColor}');
     debugPrint('🔐 [TokensSettings] Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '🔐 [TokensSettings] Status Colors - Info: ${themeManager.infoColor}, Success: ${themeManager.successColor}, Accent: ${themeManager.accent3}');

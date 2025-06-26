@@ -170,7 +170,8 @@ class _PostRequestScreenState extends ConsumerState<PostRequestScreen> {
                 controller: _descriptionController,
                 maxLines: 4,
                 onChanged: (value) {
-                  debugPrint('📝 PostRequestScreen: Description changed: ${value.length} characters');
+                  debugPrint(
+                      '📝 PostRequestScreen: Description changed: ${value.length} characters');
                 },
                 decoration: InputDecoration(
                   hintText: 'Describe your requirements in detail...',
@@ -212,11 +213,13 @@ class _PostRequestScreenState extends ConsumerState<PostRequestScreen> {
         onPressed: () {
           debugPrint('📝 PostRequestScreen: Submit button pressed');
           debugPrint('📝 PostRequestScreen: Title: "${_titleController.text}"');
-          debugPrint('📝 PostRequestScreen: Description: "${_descriptionController.text}"');
+          debugPrint(
+              '📝 PostRequestScreen: Description: "${_descriptionController.text}"');
 
           // Validate inputs
           if (_titleController.text.trim().isEmpty) {
-            debugPrint('📝 PostRequestScreen: Validation failed - Title is empty');
+            debugPrint(
+                '📝 PostRequestScreen: Validation failed - Title is empty');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -235,7 +238,8 @@ class _PostRequestScreenState extends ConsumerState<PostRequestScreen> {
           }
 
           if (_descriptionController.text.trim().isEmpty) {
-            debugPrint('📝 PostRequestScreen: Validation failed - Description is empty');
+            debugPrint(
+                '📝 PostRequestScreen: Validation failed - Description is empty');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -253,7 +257,8 @@ class _PostRequestScreenState extends ConsumerState<PostRequestScreen> {
             return;
           }
 
-          debugPrint('📝 PostRequestScreen: Validation passed - Submitting request');
+          debugPrint(
+              '📝 PostRequestScreen: Validation passed - Submitting request');
           // TODO: Implement actual request submission logic
           _handleRequestSubmission(themeManager);
         },
@@ -301,7 +306,8 @@ class _PostRequestScreenState extends ConsumerState<PostRequestScreen> {
     _titleController.clear();
     _descriptionController.clear();
 
-    debugPrint('📝 PostRequestScreen: Form cleared, request submitted successfully');
+    debugPrint(
+        '📝 PostRequestScreen: Form cleared, request submitted successfully');
 
     // TODO: Navigate back or to request list
     // Navigator.pop(context);

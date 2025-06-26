@@ -34,10 +34,12 @@ class SettingsLoadingIndicatorWidget extends StatefulWidget {
   final bool showAnimation;
 
   @override
-  State<SettingsLoadingIndicatorWidget> createState() => _SettingsLoadingIndicatorWidgetState();
+  State<SettingsLoadingIndicatorWidget> createState() =>
+      _SettingsLoadingIndicatorWidgetState();
 }
 
-class _SettingsLoadingIndicatorWidgetState extends State<SettingsLoadingIndicatorWidget>
+class _SettingsLoadingIndicatorWidgetState
+    extends State<SettingsLoadingIndicatorWidget>
     with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -45,13 +47,13 @@ class _SettingsLoadingIndicatorWidgetState extends State<SettingsLoadingIndicato
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.showAnimation) {
       _animationController = AnimationController(
         duration: const Duration(milliseconds: 1500),
         vsync: this,
       );
-      
+
       _pulseAnimation = Tween<double>(
         begin: 0.8,
         end: 1.0,
@@ -59,7 +61,7 @@ class _SettingsLoadingIndicatorWidgetState extends State<SettingsLoadingIndicato
         parent: _animationController,
         curve: Curves.easeInOut,
       ));
-      
+
       _animationController.repeat(reverse: true);
     }
   }
@@ -77,7 +79,8 @@ class _SettingsLoadingIndicatorWidgetState extends State<SettingsLoadingIndicato
     final themeManager = ThemeManager.of(context);
 
     debugPrint('⚙️ [SettingsLoading] Building enhanced loading indicator');
-    debugPrint('🎯 [SettingsLoading] Message: ${widget.message}, Animation: ${widget.showAnimation}');
+    debugPrint(
+        '🎯 [SettingsLoading] Message: ${widget.message}, Animation: ${widget.showAnimation}');
 
     Widget loadingContent = Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -151,13 +154,14 @@ class _SettingsLoadingIndicatorWidgetState extends State<SettingsLoadingIndicato
               height: 20.h,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(themeManager.infoColor),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(themeManager.infoColor),
               ),
             ),
           ),
-          
+
           SizedBox(width: 16.w),
-          
+
           // Enhanced message display
           Expanded(
             child: Column(

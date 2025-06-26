@@ -34,10 +34,12 @@ class AdminSubcategoryManagerScreen extends ConsumerStatefulWidget {
   const AdminSubcategoryManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminSubcategoryManagerScreen> createState() => _AdminSubcategoryManagerScreenState();
+  ConsumerState<AdminSubcategoryManagerScreen> createState() =>
+      _AdminSubcategoryManagerScreenState();
 }
 
-class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategoryManagerScreen> {
+class _AdminSubcategoryManagerScreenState
+    extends ConsumerState<AdminSubcategoryManagerScreen> {
   // ========== STATE VARIABLES ==========
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -47,7 +49,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
   @override
   void initState() {
     super.initState();
-    debugPrint('🏷️ AdminSubcategoryManager: Initializing subcategory management screen');
+    debugPrint(
+        '🏷️ AdminSubcategoryManager: Initializing subcategory management screen');
 
     // Add search listener for real-time filtering
     _searchController.addListener(() {
@@ -55,7 +58,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
         setState(() {
           _searchQuery = _searchController.text;
         });
-        debugPrint('🔍 AdminSubcategoryManager: Search query updated: "$_searchQuery"');
+        debugPrint(
+            '🔍 AdminSubcategoryManager: Search query updated: "$_searchQuery"');
       }
     });
 
@@ -64,10 +68,12 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 AdminSubcategoryManager: Building subcategory management screen');
+    debugPrint(
+        '🎨 AdminSubcategoryManager: Building subcategory management screen');
 
     final themeManager = ThemeManager.of(context);
-    debugPrint('🎨 AdminSubcategoryManager: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '🎨 AdminSubcategoryManager: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
 
     return Scaffold(
       backgroundColor: themeManager.backgroundColor,
@@ -152,15 +158,19 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
                 size: 20.sp,
               ),
               onSelected: (value) {
-                debugPrint('🔧 AdminSubcategoryManager: Filter changed to: $value');
+                debugPrint(
+                    '🔧 AdminSubcategoryManager: Filter changed to: $value');
                 setState(() {
                   _currentFilter = value;
                 });
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(value: 'all', child: Text('All Subcategories')),
-                const PopupMenuItem(value: 'active', child: Text('Active Only')),
-                const PopupMenuItem(value: 'inactive', child: Text('Inactive Only')),
+                const PopupMenuItem(
+                    value: 'all', child: Text('All Subcategories')),
+                const PopupMenuItem(
+                    value: 'active', child: Text('Active Only')),
+                const PopupMenuItem(
+                    value: 'inactive', child: Text('Inactive Only')),
               ],
             ),
           ),
@@ -187,20 +197,25 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
               filter: _currentFilter,
               selectedIds: _selectedIds,
               onSelectionChanged: (subcategoryId) {
-                debugPrint('📋 AdminSubcategoryManager: Subcategory selection changed: $subcategoryId');
+                debugPrint(
+                    '📋 AdminSubcategoryManager: Subcategory selection changed: $subcategoryId');
                 setState(() {
                   if (_selectedIds.contains(subcategoryId)) {
                     _selectedIds.remove(subcategoryId);
-                    debugPrint('📋 AdminSubcategoryManager: Subcategory deselected: $subcategoryId');
+                    debugPrint(
+                        '📋 AdminSubcategoryManager: Subcategory deselected: $subcategoryId');
                   } else {
                     _selectedIds.add(subcategoryId);
-                    debugPrint('📋 AdminSubcategoryManager: Subcategory selected: $subcategoryId');
+                    debugPrint(
+                        '📋 AdminSubcategoryManager: Subcategory selected: $subcategoryId');
                   }
                 });
-                debugPrint('📋 AdminSubcategoryManager: Total selected subcategories: ${_selectedIds.length}');
+                debugPrint(
+                    '📋 AdminSubcategoryManager: Total selected subcategories: ${_selectedIds.length}');
               },
               onDataChanged: () {
-                debugPrint('📋 AdminSubcategoryManager: Subcategories data changed - triggering UI update');
+                debugPrint(
+                    '📋 AdminSubcategoryManager: Subcategories data changed - triggering UI update');
                 setState(() {
                   // Force UI update when data changes
                 });
@@ -214,7 +229,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
       floatingActionButton: _selectedIds.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
-                debugPrint('🔧 AdminSubcategoryManager: Bulk actions button pressed');
+                debugPrint(
+                    '🔧 AdminSubcategoryManager: Bulk actions button pressed');
                 _showBulkActionsBottomSheet(themeManager);
               },
               backgroundColor: const Color(0xFF8B5CF6),
@@ -267,7 +283,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   onPressed: () {
-                    debugPrint('🗑️ AdminSubcategoryManager: Clear search button pressed');
+                    debugPrint(
+                        '🗑️ AdminSubcategoryManager: Clear search button pressed');
                     _searchController.clear();
                   },
                   icon: Icon(
@@ -278,7 +295,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
                 )
               : null,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         ),
         onSubmitted: (value) {
           debugPrint('🔍 AdminSubcategoryManager: Search submitted: "$value"');
@@ -322,7 +340,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
           const Spacer(),
           TextButton(
             onPressed: () {
-              debugPrint('🗑️ AdminSubcategoryManager: Clear selection pressed');
+              debugPrint(
+                  '🗑️ AdminSubcategoryManager: Clear selection pressed');
               setState(() {
                 _selectedIds.clear();
               });
@@ -394,10 +413,14 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
             SizedBox(height: 20.h),
 
             // Actions
-            _buildBulkActionTile('Activate All', Prbal.checkCircle, themeManager.successColor, themeManager),
-            _buildBulkActionTile('Deactivate All', Prbal.closeOutline, themeManager.warningColor, themeManager),
-            _buildBulkActionTile('Export Selected', Prbal.download, themeManager.infoColor, themeManager),
-            _buildBulkActionTile('Delete All', Prbal.trash, themeManager.errorColor, themeManager),
+            _buildBulkActionTile('Activate All', Prbal.checkCircle,
+                themeManager.successColor, themeManager),
+            _buildBulkActionTile('Deactivate All', Prbal.closeOutline,
+                themeManager.warningColor, themeManager),
+            _buildBulkActionTile('Export Selected', Prbal.download,
+                themeManager.infoColor, themeManager),
+            _buildBulkActionTile('Delete All', Prbal.trash,
+                themeManager.errorColor, themeManager),
 
             SizedBox(height: 20.h),
           ],
@@ -407,7 +430,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
   }
 
   /// Build bulk action tile
-  Widget _buildBulkActionTile(String title, IconData icon, Color color, ThemeManager themeManager) {
+  Widget _buildBulkActionTile(
+      String title, IconData icon, Color color, ThemeManager themeManager) {
     return ListTile(
       leading: Icon(icon, color: color, size: 20.sp),
       title: Text(
@@ -434,7 +458,8 @@ class _AdminSubcategoryManagerScreenState extends ConsumerState<AdminSubcategory
 
   @override
   void dispose() {
-    debugPrint('🏷️ AdminSubcategoryManager: Disposing subcategory management screen');
+    debugPrint(
+        '🏷️ AdminSubcategoryManager: Disposing subcategory management screen');
     _searchController.dispose();
     debugPrint('🏷️ AdminSubcategoryManager: Screen disposed successfully');
     super.dispose();

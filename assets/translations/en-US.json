@@ -60,7 +60,26 @@
     "preparingApp": "Preparing app",
     "processingImage": "Processing image",
     "uploadingImage": "Uploading image",
-    "refreshingData": "Refreshing data"
+    "refreshingData": "Refreshing data",
+    "initializingApp": "Initializing app...",
+    "checkingStorage": "Checking local storage...",
+    "recoveringStorage": "Recovering local storage...",
+    "settingUpPerformance": "Setting up performance monitoring...",
+    "optimizingStartup": "Optimizing app startup...",
+    "optimizingImageLoading": "Optimizing image loading...",
+    "initializingHealth": "Initializing health monitoring...",
+    "checkingConnectivity": "Checking network connectivity...",
+    "checkingSystemHealth": "Checking system health...",
+    "usingCachedHealth": "Using cached health status...",
+    "performingHealthCheck": "Performing health check...",
+    "offlineMode": "Working in offline mode...",
+    "offlineReady": "Offline mode - Ready to launch!",
+    "systemHealthy": "System healthy - Ready to launch!",
+    "systemStatus": "System status",
+    "loadingPreferences": "Loading user preferences...",
+    "finalizingSetup": "Finalizing setup...",
+    "ready": "Ready!",
+    "initializationWarnings": "Initialization completed with warnings"
   },
   "navigation": {
     "home": "Home",
@@ -158,6 +177,11 @@
     "invalidFormat": "Invalid format",
     "passwordMismatch": "Passwords do not match",
     "weakPassword": "Password is too weak"
+  },
+  "footer": {
+    "copyright": "© 2024 Prbal",
+    "secure": "Secure",
+    "version": "v1.0.0"
   },
   "settingTitle": "Settings"
 }

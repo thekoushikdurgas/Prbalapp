@@ -16,10 +16,12 @@ class TakerPostRequestScreen extends ConsumerStatefulWidget {
   const TakerPostRequestScreen({super.key});
 
   @override
-  ConsumerState<TakerPostRequestScreen> createState() => _TakerPostRequestScreenState();
+  ConsumerState<TakerPostRequestScreen> createState() =>
+      _TakerPostRequestScreenState();
 }
 
-class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen> {
+class _TakerPostRequestScreenState
+    extends ConsumerState<TakerPostRequestScreen> {
   // Form controllers for capturing user input
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -33,13 +35,16 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
   void initState() {
     super.initState();
     debugPrint('🏠 TakerPostRequestScreen: Screen initialized');
-    debugPrint('🏠 TakerPostRequestScreen: Default category set to: $selectedCategory');
-    debugPrint('🏠 TakerPostRequestScreen: Default urgency set to: $selectedUrgency');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Default category set to: $selectedCategory');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Default urgency set to: $selectedUrgency');
   }
 
   @override
   void dispose() {
-    debugPrint('🏠 TakerPostRequestScreen: Disposing controllers and cleaning up resources');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Disposing controllers and cleaning up resources');
     _titleController.dispose();
     _descriptionController.dispose();
     _budgetController.dispose();
@@ -57,27 +62,32 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
 
     debugPrint(
         '🏠 TakerPostRequestScreen: Form data - Title: "$title", Description length: ${description.length}, Budget: "$budget"');
-    debugPrint('🏠 TakerPostRequestScreen: Form data - Category: "$selectedCategory", Urgency: "$selectedUrgency"');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Form data - Category: "$selectedCategory", Urgency: "$selectedUrgency"');
 
     if (title.isEmpty) {
-      debugPrint('❌ TakerPostRequestScreen: Validation failed - Title is empty');
+      debugPrint(
+          '❌ TakerPostRequestScreen: Validation failed - Title is empty');
       return false;
     }
 
     if (description.isEmpty) {
-      debugPrint('❌ TakerPostRequestScreen: Validation failed - Description is empty');
+      debugPrint(
+          '❌ TakerPostRequestScreen: Validation failed - Description is empty');
       return false;
     }
 
     if (budget.isEmpty) {
-      debugPrint('❌ TakerPostRequestScreen: Validation failed - Budget is empty');
+      debugPrint(
+          '❌ TakerPostRequestScreen: Validation failed - Budget is empty');
       return false;
     }
 
     // Validate budget is a valid number
     final budgetValue = double.tryParse(budget);
     if (budgetValue == null || budgetValue <= 0) {
-      debugPrint('❌ TakerPostRequestScreen: Validation failed - Invalid budget value: "$budget"');
+      debugPrint(
+          '❌ TakerPostRequestScreen: Validation failed - Invalid budget value: "$budget"');
       return false;
     }
 
@@ -87,10 +97,12 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
 
   /// Handles form submission - validates data and processes the request
   void _submitRequest() {
-    debugPrint('🏠 TakerPostRequestScreen: Submit button pressed - starting request submission');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Submit button pressed - starting request submission');
 
     if (!_validateForm()) {
-      debugPrint('❌ TakerPostRequestScreen: Submission aborted due to validation failure');
+      debugPrint(
+          '❌ TakerPostRequestScreen: Submission aborted due to validation failure');
       // TODO: Show user-friendly validation error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -111,13 +123,15 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
       'timestamp': DateTime.now().toIso8601String(),
     };
 
-    debugPrint('🏠 TakerPostRequestScreen: Request data prepared for submission:');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Request data prepared for submission:');
     debugPrint('📝 Request Details: $requestData');
 
     // TODO: Implement actual API call to submit request
     // await _apiService.submitServiceRequest(requestData);
 
-    debugPrint('✅ TakerPostRequestScreen: Request submission completed successfully');
+    debugPrint(
+        '✅ TakerPostRequestScreen: Request submission completed successfully');
 
     // Show success feedback to user
     ScaffoldMessenger.of(context).showSnackBar(
@@ -133,7 +147,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
 
   /// Clears all form fields and resets to default values
   void _clearForm() {
-    debugPrint('🏠 TakerPostRequestScreen: Clearing form and resetting to defaults');
+    debugPrint(
+        '🏠 TakerPostRequestScreen: Clearing form and resetting to defaults');
     _titleController.clear();
     _descriptionController.clear();
     _budgetController.clear();
@@ -183,7 +198,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                   SizedBox(height: 12.h),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       color: themeManager.inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
@@ -201,7 +217,13 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                           fontSize: 16.sp,
                         ),
                         dropdownColor: themeManager.surfaceColor,
-                        items: ['Home Services', 'Cleaning', 'Plumbing', 'Electrical', 'Others']
+                        items: [
+                          'Home Services',
+                          'Cleaning',
+                          'Plumbing',
+                          'Electrical',
+                          'Others'
+                        ]
                             .map((category) => DropdownMenuItem(
                                   value: category,
                                   child: Text(category),
@@ -213,7 +235,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                           setState(() {
                             selectedCategory = value!;
                           });
-                          debugPrint('🏠 TakerPostRequestScreen: Category selection updated in UI');
+                          debugPrint(
+                              '🏠 TakerPostRequestScreen: Category selection updated in UI');
                         },
                       ),
                     ),
@@ -261,7 +284,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                       color: themeManager.textPrimary,
                     ),
                     onChanged: (value) {
-                      debugPrint('🏠 TakerPostRequestScreen: Title input changed - Length: ${value.length}');
+                      debugPrint(
+                          '🏠 TakerPostRequestScreen: Title input changed - Length: ${value.length}');
                     },
                   ),
                 ],
@@ -308,7 +332,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                       color: themeManager.textPrimary,
                     ),
                     onChanged: (value) {
-                      debugPrint('🏠 TakerPostRequestScreen: Description input changed - Length: ${value.length}');
+                      debugPrint(
+                          '🏠 TakerPostRequestScreen: Description input changed - Length: ${value.length}');
                     },
                   ),
                 ],
@@ -338,7 +363,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                         SizedBox(height: 12.h),
                         TextField(
                           controller: _budgetController,
-                          keyboardType: TextInputType.number, // Numeric input only
+                          keyboardType:
+                              TextInputType.number, // Numeric input only
                           decoration: InputDecoration(
                             hintText: '500',
                             hintStyle: TextStyle(
@@ -359,13 +385,16 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                             color: themeManager.textPrimary,
                           ),
                           onChanged: (value) {
-                            debugPrint('🏠 TakerPostRequestScreen: Budget input changed - Value: "$value"');
+                            debugPrint(
+                                '🏠 TakerPostRequestScreen: Budget input changed - Value: "$value"');
                             // Validate budget input in real-time
                             final budgetValue = double.tryParse(value);
                             if (budgetValue != null) {
-                              debugPrint('🏠 TakerPostRequestScreen: Valid budget entered: ₹$budgetValue');
+                              debugPrint(
+                                  '🏠 TakerPostRequestScreen: Valid budget entered: ₹$budgetValue');
                             } else if (value.isNotEmpty) {
-                              debugPrint('⚠️ TakerPostRequestScreen: Invalid budget format entered');
+                              debugPrint(
+                                  '⚠️ TakerPostRequestScreen: Invalid budget format entered');
                             }
                           },
                         ),
@@ -392,7 +421,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                         SizedBox(height: 12.h),
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 12.h),
                           decoration: BoxDecoration(
                             color: themeManager.inputBackground,
                             borderRadius: BorderRadius.circular(12.r),
@@ -422,7 +452,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
                                 setState(() {
                                   selectedUrgency = value!;
                                 });
-                                debugPrint('🏠 TakerPostRequestScreen: Urgency selection updated in UI');
+                                debugPrint(
+                                    '🏠 TakerPostRequestScreen: Urgency selection updated in UI');
                               },
                             ),
                           ),
@@ -442,7 +473,8 @@ class _TakerPostRequestScreenState extends ConsumerState<TakerPostRequestScreen>
               height: 56.h,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint('🏠 TakerPostRequestScreen: Post Request button tapped');
+                  debugPrint(
+                      '🏠 TakerPostRequestScreen: Post Request button tapped');
                   _submitRequest();
                 },
                 style: ElevatedButton.styleFrom(

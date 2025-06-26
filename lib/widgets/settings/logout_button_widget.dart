@@ -79,12 +79,14 @@ class LogoutButtonWidget extends ConsumerStatefulWidget {
   ConsumerState<LogoutButtonWidget> createState() => _LogoutButtonWidgetState();
 }
 
-class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with ThemeAwareMixin {
+class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget>
+    with ThemeAwareMixin {
   bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🚪 LogoutButtonWidget: Building logout button with comprehensive ThemeManager integration');
+    debugPrint(
+        '🚪 LogoutButtonWidget: Building logout button with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
@@ -95,12 +97,16 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
     debugPrint('🚪 LogoutButtonWidget: → Is logging out: $_isLoggingOut');
     debugPrint(
         '🚪 LogoutButtonWidget: → Error Colors - Primary: ${themeManager.errorColor}, Light: ${themeManager.errorLight}, Dark: ${themeManager.errorDark}');
-    debugPrint('🚪 LogoutButtonWidget: → Background: ${themeManager.backgroundColor}');
-    debugPrint('🚪 LogoutButtonWidget: → Surface: ${themeManager.surfaceColor}');
-    debugPrint('🚪 LogoutButtonWidget: → Card Background: ${themeManager.cardBackground}');
+    debugPrint(
+        '🚪 LogoutButtonWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '🚪 LogoutButtonWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint(
+        '🚪 LogoutButtonWidget: → Card Background: ${themeManager.cardBackground}');
 
     return Container(
-      margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+      margin: widget.margin ??
+          EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: themeManager.conditionalGradient(
           lightGradient: LinearGradient(
@@ -154,10 +160,14 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: _isLoggingOut ? null : () => _showLogoutConfirmation(themeManager),
+          onTap: _isLoggingOut
+              ? null
+              : () => _showLogoutConfirmation(themeManager),
           child: Padding(
             padding: EdgeInsets.all(20.w),
-            child: _isLoggingOut ? _buildLoadingState(themeManager) : _buildLogoutButton(themeManager),
+            child: _isLoggingOut
+                ? _buildLoadingState(themeManager)
+                : _buildLogoutButton(themeManager),
           ),
         ),
       ),
@@ -319,7 +329,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
 
   /// Builds the logout confirmation bottom sheet with comprehensive theming
   Widget _buildLogoutConfirmationBottomSheet(ThemeManager themeManager) {
-    debugPrint('🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
+    debugPrint(
+        '🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
 
     return Container(
       decoration: BoxDecoration(
@@ -392,7 +403,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: themeManager.errorColor.withValues(alpha: 0.2),
+                            color:
+                                themeManager.errorColor.withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -541,7 +553,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
       // Step 1: Get current user tokens for debugging
       if (authState.accessToken != null) {
         debugPrint('📋 Getting user tokens...');
-        final tokensResponse = await userService.getUserTokens(authState.accessToken!);
+        final tokensResponse =
+            await userService.getUserTokens(authState.accessToken!);
         if (tokensResponse.isSuccess && tokensResponse.data != null) {
           final tokens = tokensResponse.data!['tokens'] as List<dynamic>? ?? [];
           debugPrint('✅ Found ${tokens.length} active tokens');
@@ -549,7 +562,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> with Th
 
         // Step 2: Revoke all tokens for security
         debugPrint('🔐 Revoking all tokens...');
-        final revokeResponse = await userService.revokeAllTokens(authState.accessToken!);
+        final revokeResponse =
+            await userService.revokeAllTokens(authState.accessToken!);
         if (revokeResponse.isSuccess) {
           debugPrint('✅ Successfully revoked all tokens');
         } else {

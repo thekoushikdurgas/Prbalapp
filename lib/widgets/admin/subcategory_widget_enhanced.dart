@@ -89,10 +89,12 @@ class ServiceSubcategoryCrudWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceSubcategoryCrudWidget> createState() => _ServiceSubcategoryCrudWidgetState();
+  ConsumerState<ServiceSubcategoryCrudWidget> createState() =>
+      _ServiceSubcategoryCrudWidgetState();
 }
 
-class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategoryCrudWidget> with ThemeAwareMixin {
+class _ServiceSubcategoryCrudWidgetState
+    extends ConsumerState<ServiceSubcategoryCrudWidget> with ThemeAwareMixin {
   // ========== STATE VARIABLES ==========
   List<ServiceSubcategory> _allSubcategories = [];
   List<ServiceSubcategory> _filteredSubcategories = [];
@@ -108,7 +110,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
   @override
   void initState() {
     super.initState();
-    debugPrint('🏷️ ServiceSubcategoryCrud: Initializing enhanced CRUD widget with comprehensive ThemeManager');
+    debugPrint(
+        '🏷️ ServiceSubcategoryCrud: Initializing enhanced CRUD widget with comprehensive ThemeManager');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeServiceAndLoadData();
@@ -117,14 +120,16 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
 
   /// Initialize service and start loading data
   Future<void> _initializeServiceAndLoadData() async {
-    debugPrint('🔧 ServiceSubcategoryCrud: Initializing service management service');
+    debugPrint(
+        '🔧 ServiceSubcategoryCrud: Initializing service management service');
 
     try {
       _serviceManagementService = ref.read(serviceManagementServiceProvider);
       await _loadCategories();
       await _loadSubcategories();
     } catch (e) {
-      debugPrint('❌ ServiceSubcategoryCrud: Service initialization failed - $e');
+      debugPrint(
+          '❌ ServiceSubcategoryCrud: Service initialization failed - $e');
       setState(() {
         _errorMessage = 'Failed to initialize service: $e';
         _isLoading = false;
@@ -199,13 +204,17 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
 
   /// Apply filters
   void _applyFilters() {
-    debugPrint('🔍 ServiceSubcategoryCrud: Applying filters with comprehensive theming');
+    debugPrint(
+        '🔍 ServiceSubcategoryCrud: Applying filters with comprehensive theming');
 
     List<ServiceSubcategory> filtered = List.from(_allSubcategories);
 
     // Apply parent category filter
-    if (widget.parentCategoryId != null && widget.parentCategoryId!.isNotEmpty) {
-      filtered = filtered.where((sub) => sub.category == widget.parentCategoryId).toList();
+    if (widget.parentCategoryId != null &&
+        widget.parentCategoryId!.isNotEmpty) {
+      filtered = filtered
+          .where((sub) => sub.category == widget.parentCategoryId)
+          .toList();
     }
 
     // Apply status filter
@@ -251,11 +260,16 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
 
     // Comprehensive theme logging for debugging
     themeManager.logThemeInfo();
-    debugPrint('🎨 ServiceSubcategoryCrud: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint('🎨 ServiceSubcategoryCrud: → Primary: ${themeManager.primaryColor}');
-    debugPrint('🎨 ServiceSubcategoryCrud: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint('🎨 ServiceSubcategoryCrud: → Background: ${themeManager.backgroundColor}');
-    debugPrint('🎨 ServiceSubcategoryCrud: → Surface: ${themeManager.surfaceColor}');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: → Primary: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '🎨 ServiceSubcategoryCrud: → Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '🎨 ServiceSubcategoryCrud: → Text Colors: ${themeManager.textPrimary}, ${themeManager.textSecondary}, ${themeManager.textTertiary}');
     debugPrint(
@@ -323,7 +337,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               color: themeManager.errorColor.withValues(alpha: 26),
-              border: Border.all(color: themeManager.errorColor.withValues(alpha: 77)),
+              border: Border.all(
+                  color: themeManager.errorColor.withValues(alpha: 77)),
             ),
             child: Text(
               _errorMessage ?? 'Unknown error occurred',
@@ -360,7 +375,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
             ),
             child: Center(
               child: CircularProgressIndicator(
-                color: themeManager.getContrastingColor(themeManager.primaryColor),
+                color:
+                    themeManager.getContrastingColor(themeManager.primaryColor),
                 strokeWidth: 3,
               ),
             ),
@@ -382,7 +398,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
   /// Build empty state with comprehensive ThemeManager integration
   Widget _buildEmptyState(ThemeManager themeManager) {
     final isSearchResult = widget.searchQuery.isNotEmpty;
-    final isFiltered = widget.filter != 'all' || widget.parentCategoryId != null;
+    final isFiltered =
+        widget.filter != 'all' || widget.parentCategoryId != null;
 
     String title;
     String subtitle;
@@ -475,7 +492,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
                 separatorBuilder: (context, index) => SizedBox(height: 16.h),
                 itemBuilder: (context, index) {
                   final subcategory = _filteredSubcategories[index];
-                  return _buildSubcategoryCard(subcategory, themeManager, index);
+                  return _buildSubcategoryCard(
+                      subcategory, themeManager, index);
                 },
               ),
             ),
@@ -535,16 +553,19 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
               ],
             ),
           ),
-          _buildStatCard('Active', _activeCount, themeManager.successColor, themeManager),
+          _buildStatCard(
+              'Active', _activeCount, themeManager.successColor, themeManager),
           SizedBox(width: 12.w),
-          _buildStatCard('Inactive', _inactiveCount, themeManager.warningColor, themeManager),
+          _buildStatCard('Inactive', _inactiveCount, themeManager.warningColor,
+              themeManager),
         ],
       ),
     );
   }
 
   /// Build stat card with comprehensive ThemeManager integration
-  Widget _buildStatCard(String label, int count, Color color, ThemeManager themeManager) {
+  Widget _buildStatCard(
+      String label, int count, Color color, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
@@ -583,7 +604,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
   }
 
   /// Build subcategory card with comprehensive ThemeManager integration
-  Widget _buildSubcategoryCard(ServiceSubcategory subcategory, ThemeManager themeManager, int index) {
+  Widget _buildSubcategoryCard(
+      ServiceSubcategory subcategory, ThemeManager themeManager, int index) {
     final isSelected = widget.selectedIds.contains(subcategory.id);
 
     return Container(
@@ -591,13 +613,18 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
         borderRadius: BorderRadius.circular(16.r),
         gradient: themeManager.conditionalGradient(
           lightGradient: themeManager.surfaceGradient,
-          darkGradient: LinearGradient(colors: [themeManager.cardBackground, themeManager.surfaceElevated]),
+          darkGradient: LinearGradient(colors: [
+            themeManager.cardBackground,
+            themeManager.surfaceElevated
+          ]),
         ),
         border: Border.all(
-          color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
+          color:
+              isSelected ? themeManager.primaryColor : themeManager.borderColor,
           width: isSelected ? 2 : 1,
         ),
-        boxShadow: isSelected ? themeManager.primaryShadow : themeManager.subtleShadow,
+        boxShadow:
+            isSelected ? themeManager.primaryShadow : themeManager.subtleShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -618,12 +645,19 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6.r),
                         border: Border.all(
-                          color: isSelected ? themeManager.primaryColor : themeManager.borderSecondary,
+                          color: isSelected
+                              ? themeManager.primaryColor
+                              : themeManager.borderSecondary,
                           width: 2,
                         ),
-                        color: isSelected ? themeManager.primaryColor : Colors.transparent,
+                        color: isSelected
+                            ? themeManager.primaryColor
+                            : Colors.transparent,
                       ),
-                      child: isSelected ? Icon(Prbal.check, size: 16.sp, color: themeManager.textInverted) : null,
+                      child: isSelected
+                          ? Icon(Prbal.check,
+                              size: 16.sp, color: themeManager.textInverted)
+                          : null,
                     ),
                     SizedBox(width: 12.w),
 
@@ -674,7 +708,8 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
 
                     // Status badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.r),
                         color: subcategory.isActive
@@ -691,7 +726,9 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
-                          color: subcategory.isActive ? themeManager.successColor : themeManager.warningColor,
+                          color: subcategory.isActive
+                              ? themeManager.successColor
+                              : themeManager.warningColor,
                         ),
                       ),
                     ),
@@ -736,7 +773,9 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
                     SizedBox(width: 8.w),
                     _buildActionButton(
                       icon: subcategory.isActive ? Prbal.pause : Prbal.play,
-                      color: subcategory.isActive ? themeManager.warningColor : themeManager.successColor,
+                      color: subcategory.isActive
+                          ? themeManager.warningColor
+                          : themeManager.successColor,
                       onTap: () => _toggleStatus(subcategory),
                       themeManager: themeManager,
                     ),
@@ -784,13 +823,15 @@ class _ServiceSubcategoryCrudWidgetState extends ConsumerState<ServiceSubcategor
   }
 
   /// Show edit dialog
-  void _showEditDialog(ServiceSubcategory subcategory, ThemeManager themeManager) {
+  void _showEditDialog(
+      ServiceSubcategory subcategory, ThemeManager themeManager) {
     // Implementation with comprehensive ThemeManager integration
     debugPrint('✏️ Edit dialog for: ${subcategory.name}');
   }
 
   /// Show delete dialog
-  void _showDeleteDialog(ServiceSubcategory subcategory, ThemeManager themeManager) {
+  void _showDeleteDialog(
+      ServiceSubcategory subcategory, ThemeManager themeManager) {
     // Implementation with comprehensive ThemeManager integration
     debugPrint('🗑️ Delete dialog for: ${subcategory.name}');
   }

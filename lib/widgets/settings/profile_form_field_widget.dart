@@ -58,7 +58,8 @@ class ProfileFormFieldWidget extends ConsumerWidget with ThemeAwareMixin {
 
     // 📊 Debug logging
     debugPrint('👤 [ProfileFormField] Building profile field: $label');
-    debugPrint('🎯 [ProfileFormField] User type: $userType, Required: $required, Enabled: $isEnabled');
+    debugPrint(
+        '🎯 [ProfileFormField] User type: $userType, Required: $required, Enabled: $isEnabled');
     debugPrint('🎨 [ProfileFormField] User type color: $userTypeColor');
 
     return Column(

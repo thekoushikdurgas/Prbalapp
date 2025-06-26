@@ -47,7 +47,8 @@ class ProjectLocales {
     const Locale('mr', 'IN'): 'मराठी (Marathi)', // 🇮🇳 Maharashtra
     const Locale('pa', 'IN'): 'ਪੰਜਾਬੀ (Punjabi)', // 🇮🇳 Punjab
     const Locale('ta', 'IN'): 'தமிழ் (Tamil)', // 🇮🇳 Tamil Nadu
-    const Locale('te', 'IN'): 'తెలుగు (Telugu)', // 🇮🇳 Andhra Pradesh/Telangana
+    const Locale('te', 'IN'):
+        'తెలుగు (Telugu)', // 🇮🇳 Andhra Pradesh/Telangana
   };
 
   /// Get list of supported locales for easy iteration
@@ -60,7 +61,8 @@ class ProjectLocales {
   /// ```
   static List<Locale> get supportedLocales {
     final locales = localesMap.keys.toList();
-    debugPrint('🌐 ProjectLocales: Retrieved ${locales.length} supported locales');
+    debugPrint(
+        '🌐 ProjectLocales: Retrieved ${locales.length} supported locales');
     return locales;
   }
 
@@ -91,8 +93,10 @@ class ProjectLocales {
   /// // Returns: "हिन्दी (Hindi)"
   /// ```
   static String getDisplayName(Locale locale) {
-    final displayName = localesMap[locale] ?? '${locale.languageCode}-${locale.countryCode}';
-    debugPrint('🌐 ProjectLocales: Display name for ${locale.languageCode}-${locale.countryCode}: $displayName');
+    final displayName =
+        localesMap[locale] ?? '${locale.languageCode}-${locale.countryCode}';
+    debugPrint(
+        '🌐 ProjectLocales: Display name for ${locale.languageCode}-${locale.countryCode}: $displayName');
     return displayName;
   }
 
@@ -111,7 +115,8 @@ class ProjectLocales {
   /// ```
   static bool isSupported(Locale locale) {
     final supported = localesMap.containsKey(locale);
-    debugPrint('🌐 ProjectLocales: Locale ${locale.languageCode}-${locale.countryCode} supported: $supported');
+    debugPrint(
+        '🌐 ProjectLocales: Locale ${locale.languageCode}-${locale.countryCode} supported: $supported');
     return supported;
   }
 
@@ -124,7 +129,8 @@ class ProjectLocales {
   /// Used as fallback when user's preferred locale is not supported
   static Locale get defaultLocale {
     const locale = Locale('en', 'US');
-    debugPrint('🌐 ProjectLocales: Using default locale: ${locale.languageCode}-${locale.countryCode}');
+    debugPrint(
+        '🌐 ProjectLocales: Using default locale: ${locale.languageCode}-${locale.countryCode}');
     return locale;
   }
 
@@ -142,7 +148,8 @@ class ProjectLocales {
   /// // Returns: Locale('hi', 'IN')
   /// ```
   static Locale getLocaleFromCode(String languageCode) {
-    debugPrint('🌐 ProjectLocales: Converting language code "$languageCode" to Locale');
+    debugPrint(
+        '🌐 ProjectLocales: Converting language code "$languageCode" to Locale');
 
     try {
       final parts = languageCode.split('-');
@@ -160,11 +167,13 @@ class ProjectLocales {
           return defaultLocale;
         }
       } else {
-        debugPrint('🌐 ProjectLocales: ❌ Invalid language code format: "$languageCode", using default');
+        debugPrint(
+            '🌐 ProjectLocales: ❌ Invalid language code format: "$languageCode", using default');
         return defaultLocale;
       }
     } catch (e) {
-      debugPrint('🌐 ProjectLocales: ❌ Error parsing language code "$languageCode": $e, using default');
+      debugPrint(
+          '🌐 ProjectLocales: ❌ Error parsing language code "$languageCode": $e, using default');
       return defaultLocale;
     }
   }
@@ -175,7 +184,8 @@ class ProjectLocales {
   /// Call this method during app initialization to see all available locales
   static void logSupportedLocales() {
     debugPrint('🌐 ProjectLocales: ========= SUPPORTED LOCALES =========');
-    debugPrint('🌐 ProjectLocales: Total supported languages: ${localesMap.length}');
+    debugPrint(
+        '🌐 ProjectLocales: Total supported languages: ${localesMap.length}');
 
     int index = 1;
     for (final entry in localesMap.entries) {

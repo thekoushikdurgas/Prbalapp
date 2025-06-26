@@ -35,7 +35,8 @@ class SettingsBottomSheets {
   }) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎨 [BottomSheets] Creating modern bottom sheet with ThemeManager integration');
+    debugPrint(
+        '🎨 [BottomSheets] Creating modern bottom sheet with ThemeManager integration');
 
     return showModalBottomSheet<T>(
       context: context,
@@ -217,7 +218,8 @@ class SettingsBottomSheets {
                   child: ElevatedButton(
                     onPressed: () {
                       stopwatch.stop();
-                      debugPrint('🎨 [BottomSheets] ⏱️ Selection time: ${stopwatch.elapsedMilliseconds}ms');
+                      debugPrint(
+                          '🎨 [BottomSheets] ⏱️ Selection time: ${stopwatch.elapsedMilliseconds}ms');
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -245,7 +247,8 @@ class SettingsBottomSheets {
       );
 
       stopwatch.stop();
-      debugPrint('🎨 [BottomSheets] ✅ Theme selection completed: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🎨 [BottomSheets] ✅ Theme selection completed: ${stopwatch.elapsedMilliseconds}ms');
     } catch (error) {
       stopwatch.stop();
       debugPrint('🎨 [BottomSheets] ❌ Error: $error');
@@ -257,13 +260,16 @@ class SettingsBottomSheets {
               children: [
                 Icon(Prbal.errorOutline, color: Colors.white, size: 20.sp),
                 SizedBox(width: 12.w),
-                const Expanded(child: Text('Theme selection unavailable. Please try again.')),
+                const Expanded(
+                    child:
+                        Text('Theme selection unavailable. Please try again.')),
               ],
             ),
             backgroundColor: themeManager.errorColor,
             duration: const Duration(seconds: 4),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r)),
           ),
         );
       }
@@ -346,7 +352,8 @@ class SettingsBottomSheets {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12.r),
                     splashColor: themeManager.infoColor.withValues(alpha: 26),
-                    highlightColor: themeManager.infoColor.withValues(alpha: 13),
+                    highlightColor:
+                        themeManager.infoColor.withValues(alpha: 13),
                     onTap: () {
                       context.setLocale(entry.key);
                       Navigator.pop(context);
@@ -358,16 +365,20 @@ class SettingsBottomSheets {
                             ? themeManager.conditionalGradient(
                                 lightGradient: LinearGradient(
                                   colors: [
-                                    themeManager.infoColor.withValues(alpha: 26),
-                                    themeManager.infoColor.withValues(alpha: 13),
+                                    themeManager.infoColor
+                                        .withValues(alpha: 26),
+                                    themeManager.infoColor
+                                        .withValues(alpha: 13),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 darkGradient: LinearGradient(
                                   colors: [
-                                    themeManager.infoColor.withValues(alpha: 51),
-                                    themeManager.infoColor.withValues(alpha: 26),
+                                    themeManager.infoColor
+                                        .withValues(alpha: 51),
+                                    themeManager.infoColor
+                                        .withValues(alpha: 26),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -392,7 +403,9 @@ class SettingsBottomSheets {
                               entry.value,
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
                                 color: isSelected
                                     ? themeManager.infoColor
                                     : themeManager.conditionalColor(
@@ -552,8 +565,10 @@ class SettingsBottomSheets {
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
                       color: themeManager.conditionalColor(
-                        lightColor: themeManager.borderColor.withValues(alpha: 128),
-                        darkColor: themeManager.borderColor.withValues(alpha: 77),
+                        lightColor:
+                            themeManager.borderColor.withValues(alpha: 128),
+                        darkColor:
+                            themeManager.borderColor.withValues(alpha: 77),
                       ),
                       width: 1,
                     ),
@@ -597,7 +612,8 @@ class SettingsBottomSheets {
                           onBiometricsChanged(value);
                         },
                         activeColor: themeManager.accent1,
-                        activeTrackColor: themeManager.accent1.withValues(alpha: 77),
+                        activeTrackColor:
+                            themeManager.accent1.withValues(alpha: 77),
                       ),
                     ],
                   ),
@@ -610,7 +626,8 @@ class SettingsBottomSheets {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12.r),
                     splashColor: themeManager.errorColor.withValues(alpha: 26),
-                    highlightColor: themeManager.errorColor.withValues(alpha: 13),
+                    highlightColor:
+                        themeManager.errorColor.withValues(alpha: 13),
                     onTap: () {
                       Navigator.pop(context);
                       onResetPin();
@@ -622,7 +639,8 @@ class SettingsBottomSheets {
                           lightGradient: LinearGradient(
                             colors: [
                               themeManager.surfaceColor.withValues(alpha: 242),
-                              themeManager.backgroundColor.withValues(alpha: 230),
+                              themeManager.backgroundColor
+                                  .withValues(alpha: 230),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -630,7 +648,8 @@ class SettingsBottomSheets {
                           darkGradient: LinearGradient(
                             colors: [
                               themeManager.surfaceColor.withValues(alpha: 230),
-                              themeManager.backgroundColor.withValues(alpha: 242),
+                              themeManager.backgroundColor
+                                  .withValues(alpha: 242),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -639,8 +658,10 @@ class SettingsBottomSheets {
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
                           color: themeManager.conditionalColor(
-                            lightColor: themeManager.borderColor.withValues(alpha: 128),
-                            darkColor: themeManager.borderColor.withValues(alpha: 77),
+                            lightColor:
+                                themeManager.borderColor.withValues(alpha: 128),
+                            darkColor:
+                                themeManager.borderColor.withValues(alpha: 77),
                           ),
                           width: 1,
                         ),
@@ -796,13 +817,17 @@ class SettingsBottomSheets {
             SizedBox(height: 24.h),
 
             // Enhanced storage items with ThemeManager colors
-            _buildStorageItem(themeManager, 'App Data', '45.2 MB', themeManager.infoColor),
+            _buildStorageItem(
+                themeManager, 'App Data', '45.2 MB', themeManager.infoColor),
             SizedBox(height: 12.h),
-            _buildStorageItem(themeManager, 'Cache', '12.8 MB', themeManager.warningColor),
+            _buildStorageItem(
+                themeManager, 'Cache', '12.8 MB', themeManager.warningColor),
             SizedBox(height: 12.h),
-            _buildStorageItem(themeManager, 'Images', '89.1 MB', themeManager.successColor),
+            _buildStorageItem(
+                themeManager, 'Images', '89.1 MB', themeManager.successColor),
             SizedBox(height: 12.h),
-            _buildStorageItem(themeManager, 'Documents', '23.4 MB', themeManager.accent1),
+            _buildStorageItem(
+                themeManager, 'Documents', '23.4 MB', themeManager.accent1),
             SizedBox(height: 24.h),
 
             // Enhanced close button
@@ -960,7 +985,8 @@ class SettingsBottomSheets {
                       borderRadius: BorderRadius.circular(12.r),
                       boxShadow: [
                         BoxShadow(
-                          color: themeManager.warningColor.withValues(alpha: 77),
+                          color:
+                              themeManager.warningColor.withValues(alpha: 77),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -996,7 +1022,8 @@ class SettingsBottomSheets {
   }
 
   /// Builds enhanced storage item row with ThemeManager integration
-  static Widget _buildStorageItem(ThemeManager themeManager, String label, String size, Color color) {
+  static Widget _buildStorageItem(
+      ThemeManager themeManager, String label, String size, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
       child: Row(

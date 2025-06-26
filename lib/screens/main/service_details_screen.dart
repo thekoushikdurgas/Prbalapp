@@ -14,10 +14,12 @@ class ServiceDetailsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
+  ConsumerState<ServiceDetailsScreen> createState() =>
+      _ServiceDetailsScreenState();
 }
 
-class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> with TickerProviderStateMixin {
+class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late TabController _tabController;
@@ -44,7 +46,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
     'provider': {
       'id': 'PRV-001',
       'name': 'Sarah Johnson',
-      'avatar': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
       'rating': 4.9,
       'reviewCount': 234,
       'joinDate': DateTime.now().subtract(const Duration(days: 365)),
@@ -95,25 +98,32 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
     {
       'id': '1',
       'user': 'Mike Wilson',
-      'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       'rating': 5,
-      'comment': 'Excellent service! Sarah was very professional and thorough. My house has never been cleaner.',
+      'comment':
+          'Excellent service! Sarah was very professional and thorough. My house has never been cleaner.',
       'date': DateTime.now().subtract(const Duration(days: 2)),
-      'images': ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200'],
+      'images': [
+        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200'
+      ],
     },
     {
       'id': '2',
       'user': 'Emily Davis',
-      'avatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
       'rating': 5,
-      'comment': 'Amazing attention to detail. Highly recommend this service to anyone!',
+      'comment':
+          'Amazing attention to detail. Highly recommend this service to anyone!',
       'date': DateTime.now().subtract(const Duration(days: 5)),
       'images': [],
     },
     {
       'id': '3',
       'user': 'David Chen',
-      'avatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      'avatar':
+          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
       'rating': 4,
       'comment': 'Good service overall. Very punctual and professional.',
       'date': DateTime.now().subtract(const Duration(days: 8)),
@@ -124,7 +134,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   @override
   void initState() {
     super.initState();
-    debugPrint('🎯 ServiceDetailsScreen: Initializing for service ${widget.serviceId}');
+    debugPrint(
+        '🎯 ServiceDetailsScreen: Initializing for service ${widget.serviceId}');
     _initializeAnimations();
     _startAnimations();
     _tabController = TabController(length: 3, vsync: this);
@@ -194,7 +205,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   }
 
   Widget _buildSliverAppBar(ThemeManager themeManager) {
-    debugPrint('🎨 ServiceDetailsScreen: Building sliver app bar with gradient overlay');
+    debugPrint(
+        '🎨 ServiceDetailsScreen: Building sliver app bar with gradient overlay');
     return SliverAppBar(
       expandedHeight: 300.h,
       floating: false,
@@ -204,7 +216,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
       leading: Container(
         margin: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
+          color: themeManager.backgroundColor
+              .withValues(alpha: 179), // 0.7 opacity
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: themeManager.subtleShadow,
         ),
@@ -223,14 +236,17 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
         Container(
           margin: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
+            color: themeManager.backgroundColor
+                .withValues(alpha: 179), // 0.7 opacity
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: themeManager.subtleShadow,
           ),
           child: IconButton(
             icon: Icon(
               _isFavorite ? Prbal.heart : Prbal.heart5,
-              color: _isFavorite ? themeManager.errorColor : themeManager.textPrimary,
+              color: _isFavorite
+                  ? themeManager.errorColor
+                  : themeManager.textPrimary,
             ),
             onPressed: () {
               debugPrint('💖 ServiceDetailsScreen: Toggling favorite status');
@@ -243,7 +259,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
         Container(
           margin: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: themeManager.backgroundColor.withValues(alpha: 179), // 0.7 opacity
+            color: themeManager.backgroundColor
+                .withValues(alpha: 179), // 0.7 opacity
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: themeManager.subtleShadow,
           ),
@@ -288,7 +305,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    themeManager.backgroundColor.withValues(alpha: 77), // 0.3 opacity
+                    themeManager.backgroundColor
+                        .withValues(alpha: 77), // 0.3 opacity
                   ],
                 ),
               ),
@@ -300,17 +318,20 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   }
 
   Widget _buildServiceHeader(ThemeManager themeManager) {
-    debugPrint('🎨 ServiceDetailsScreen: Building service header with theme colors');
+    debugPrint(
+        '🎨 ServiceDetailsScreen: Building service header with theme colors');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
           decoration: BoxDecoration(
-            color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+            color:
+                themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
             borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
-              color: themeManager.primaryColor.withValues(alpha: 77), // 0.3 opacity
+              color: themeManager.primaryColor
+                  .withValues(alpha: 77), // 0.3 opacity
             ),
           ),
           child: Text(
@@ -438,7 +459,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   }
 
   Widget _buildProviderCard(ThemeManager themeManager) {
-    debugPrint('🎨 ServiceDetailsScreen: Building provider card with gradient styling');
+    debugPrint(
+        '🎨 ServiceDetailsScreen: Building provider card with gradient styling');
     final provider = serviceData['provider'];
 
     return Container(
@@ -470,7 +492,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                   child: Image.network(
                     provider['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 30.sp),
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(Prbal.user, color: Colors.white, size: 30.sp),
                   ),
                 ),
               ),
@@ -524,7 +547,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: themeManager.primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  color: themeManager.primaryColor
+                      .withValues(alpha: 26), // 0.1 opacity
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -562,11 +586,13 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
     );
   }
 
-  Widget _buildProviderStat(String label, String value, IconData icon, ThemeManager themeManager) {
+  Widget _buildProviderStat(
+      String label, String value, IconData icon, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: themeManager.backgroundColor.withValues(alpha: 128), // 0.5 opacity
+        color:
+            themeManager.backgroundColor.withValues(alpha: 128), // 0.5 opacity
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: themeManager.borderColor,
@@ -604,7 +630,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   }
 
   Widget _buildTabSection(ThemeManager themeManager) {
-    debugPrint('🎨 ServiceDetailsScreen: Building tab section with theme styling');
+    debugPrint(
+        '🎨 ServiceDetailsScreen: Building tab section with theme styling');
     return Column(
       children: [
         Container(
@@ -832,7 +859,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                                 child: LinearProgressIndicator(
                                   value: percentage,
                                   backgroundColor: themeManager.borderColor,
-                                  valueColor: AlwaysStoppedAnimation<Color>(themeManager.warningColor),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      themeManager.warningColor),
                                   minHeight: 6.h,
                                 ),
                               ),
@@ -853,7 +881,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
     );
   }
 
-  Widget _buildReviewItem(Map<String, dynamic> review, ThemeManager themeManager) {
+  Widget _buildReviewItem(
+      Map<String, dynamic> review, ThemeManager themeManager) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.w),
@@ -883,7 +912,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                   child: Image.network(
                     review['avatar'],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(Prbal.user, color: Colors.white, size: 20.sp),
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(Prbal.user, color: Colors.white, size: 20.sp),
                   ),
                 ),
               ),
@@ -905,7 +935,9 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                         ...List.generate(5, (index) {
                           return Icon(
                             Prbal.star,
-                            color: index < review['rating'] ? themeManager.warningColor : themeManager.borderColor,
+                            color: index < review['rating']
+                                ? themeManager.warningColor
+                                : themeManager.borderColor,
                             size: 14.sp,
                           );
                         }),
@@ -1019,12 +1051,15 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                     runSpacing: 8.h,
                     children: dayData['slots'].map<Widget>((slot) {
                       return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
-                          color: themeManager.successColor.withValues(alpha: 26), // 0.1 opacity
+                          color: themeManager.successColor
+                              .withValues(alpha: 26), // 0.1 opacity
                           borderRadius: BorderRadius.circular(20.r),
                           border: Border.all(
-                            color: themeManager.successColor.withValues(alpha: 77), // 0.3 opacity
+                            color: themeManager.successColor
+                                .withValues(alpha: 77), // 0.3 opacity
                           ),
                         ),
                         child: Text(
@@ -1047,7 +1082,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
   }
 
   Widget _buildBottomBar(ThemeManager themeManager) {
-    debugPrint('🎨 ServiceDetailsScreen: Building bottom bar with gradient button');
+    debugPrint(
+        '🎨 ServiceDetailsScreen: Building bottom bar with gradient button');
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -1097,7 +1133,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    debugPrint('📅 ServiceDetailsScreen: Opening booking dialog');
+                    debugPrint(
+                        '📅 ServiceDetailsScreen: Opening booking dialog');
                     _showBookingDialog(themeManager);
                   },
                   style: ElevatedButton.styleFrom(
@@ -1210,7 +1247,8 @@ class _ServiceDetailsScreenState extends ConsumerState<ServiceDetailsScreen> wit
                     Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: themeManager.backgroundColor.withValues(alpha: 128), // 0.5 opacity
+                        color: themeManager.backgroundColor
+                            .withValues(alpha: 128), // 0.5 opacity
                         border: Border.all(
                           color: themeManager.borderColor,
                         ),
