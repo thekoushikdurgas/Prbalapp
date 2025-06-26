@@ -41,7 +41,8 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _progressController;
@@ -163,7 +164,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   Future<void> _startAnimationSequence() async {
     // Start logo and lottie animations simultaneously
     _logoController.forward();
-    _lottieController.duration = const Duration(milliseconds: 3000); // Set initial duration
+    _lottieController.duration =
+        const Duration(milliseconds: 3000); // Set initial duration
     _lottieController.repeat(); // Loop the Lottie animation
 
     // Wait for logo animation to finish
@@ -235,7 +237,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       // Check connectivity first
       _updateLoadingText('loading.checkingConnectivity'.tr());
       final connectivityStatus = await healthService.checkConnectivity();
-      debugPrint('🌐 Splash Screen: Connectivity status: ${connectivityStatus.name}');
+      debugPrint(
+          '🌐 Splash Screen: Connectivity status: ${connectivityStatus.name}');
 
       // First try to get quick status from cache
       final quickStatus = healthService.getQuickHealthStatus();
@@ -247,7 +250,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         }
         debugPrint('🏥 Using cached health status: ${quickStatus.name}');
         debugPrint('🏥 Skipping network health check - recent data available');
-        await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
+        await Future.delayed(
+            const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
         // Perform health check with connectivity awareness
         if (healthService.isOffline) {
@@ -261,8 +265,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         } else {
           // Network available - perform full health check
           _updateLoadingText('loading.performingHealthCheck'.tr());
-          debugPrint('🏥 Network available - performing comprehensive health check');
-          final healthCheckResult = await healthService.performHealthCheckWithWait(
+          debugPrint(
+              '🏥 Network available - performing comprehensive health check');
+          final healthCheckResult =
+              await healthService.performHealthCheckWithWait(
             networkTimeout: const Duration(seconds: 3),
           );
           if (healthCheckResult != null) {
@@ -278,13 +284,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       } else if (healthStatusResult.overallStatus == HealthStatus.healthy) {
         _updateLoadingText('loading.systemHealthy'.tr());
       } else {
-        _updateLoadingText('${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
+        _updateLoadingText(
+            '${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
       }
 
       if (kDebugMode) {
         final lastCheck = HiveService.getLastHealthCheck();
         if (lastCheck != null) {
-          debugPrint('🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
+          debugPrint(
+              '🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
         }
       }
 
@@ -402,29 +410,37 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       // User is logged in - check user type and navigate to appropriate dashboard
       // Also consider connectivity status for dashboard features
       final userData = HiveService.getUserData();
-      final userType = userData != null ? userData['userType'] as String : 'customer';
+      final userType =
+          userData != null ? userData['userType'] as String : 'customer';
 
       debugPrint('👤 User type detected: $userType');
 
       if (!isNetworkAvailable) {
-        debugPrint('🌐 Limited connectivity - dashboard may have reduced functionality');
+        debugPrint(
+            '🌐 Limited connectivity - dashboard may have reduced functionality');
         // Still navigate but user will see offline indicators in the dashboard
       }
 
       switch (userType.toLowerCase()) {
         case 'admin':
-          debugPrint('👑 Navigating to admin dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
-          context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
+          debugPrint(
+              '👑 Navigating to admin dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
+          context.go(RouteEnum.adminDashboard
+              .rawValue); // Will show admin dashboard through bottom navigation
           break;
         case 'provider':
-          debugPrint('🔧 Navigating to provider dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
-          context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
+          debugPrint(
+              '🔧 Navigating to provider dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
+          context.go(RouteEnum.providerDashboard
+              .rawValue); // Will show provider dashboard through bottom navigation
           break;
         case 'customer':
         case 'taker':
         default:
-          debugPrint('🏠 Navigating to taker dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
-          context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
+          debugPrint(
+              '🏠 Navigating to taker dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
+          context.go(RouteEnum.takerDashboard
+              .rawValue); // Will show taker dashboard through bottom navigation
           break;
       }
     }
@@ -447,7 +463,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     // Enhanced debug logging with all ThemeManager features
 
     debugPrint('🚀 SplashScreen: Building with enhanced ThemeManager features');
-    debugPrint('🚀 SplashScreen: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
+    debugPrint(
+        '🚀 SplashScreen: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
 
     return Scaffold(
       body: Container(
@@ -704,7 +721,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
           width: 100.w,
           height: 100.h,
           child: Lottie.asset(
-            themeManager.themeManager ? 'assets/animations/splash_dark.json' : 'assets/animations/splash_light.json',
+            themeManager.themeManager
+                ? 'assets/animations/splash_dark.json'
+                : 'assets/animations/splash_light.json',
             controller: _lottieController,
             fit: BoxFit.contain,
             repeat: true,
@@ -755,7 +774,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                 children: [
                   // App name with custom SourGummy font and gradient text effect
                   ShaderMask(
-                    shaderCallback: (bounds) => themeManager.primaryGradient.createShader(bounds),
+                    shaderCallback: (bounds) =>
+                        themeManager.primaryGradient.createShader(bounds),
                     child: Text(
                       'Prbal',
                       style: TextStyle(
@@ -772,7 +792,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                             offset: const Offset(0, 6),
                           ),
                           Shadow(
-                            color: themeManager.primaryColor.withValues(alpha: 128),
+                            color: themeManager.primaryColor
+                                .withValues(alpha: 128),
                             blurRadius: 25,
                             offset: const Offset(0, 12),
                           ),
@@ -785,7 +806,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
 
                   // Enhanced tagline with SourGummy SemiBold
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       gradient: themeManager.neutralGradient,
                       borderRadius: BorderRadius.circular(25.r),
@@ -825,7 +847,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
 
                   // Subtitle with custom font styling
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -886,7 +909,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
 
                   // Professional motto with enhanced typography
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       gradient: themeManager.shimmerGradient,
                       borderRadius: BorderRadius.circular(15.r),
@@ -902,7 +926,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         height: 1.2,
                         shadows: [
                           Shadow(
-                            color: themeManager.primaryColor.withValues(alpha: 51),
+                            color:
+                                themeManager.primaryColor.withValues(alpha: 51),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -929,10 +954,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildFeatureIcon(themeManager, Prbal.users, themeManager.accent1, 'Connect'),
-              _buildFeatureIcon(themeManager, Prbal.tools, themeManager.accent2, 'Serve'),
-              _buildFeatureIcon(themeManager, Prbal.trendingUp, themeManager.accent3, 'Grow'),
-              _buildFeatureIcon(themeManager, Prbal.star, themeManager.accent4, 'Excel'),
+              _buildFeatureIcon(
+                  themeManager, Prbal.users, themeManager.accent1, 'Connect'),
+              _buildFeatureIcon(
+                  themeManager, Prbal.tools, themeManager.accent2, 'Serve'),
+              _buildFeatureIcon(
+                  themeManager, Prbal.trendingUp, themeManager.accent3, 'Grow'),
+              _buildFeatureIcon(
+                  themeManager, Prbal.star, themeManager.accent4, 'Excel'),
             ],
           ),
         );
@@ -941,7 +970,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   }
 
   /// Build individual feature icon with custom font
-  Widget _buildFeatureIcon(ThemeManager themeManager, IconData icon, Color color, String label) {
+  Widget _buildFeatureIcon(
+      ThemeManager themeManager, IconData icon, Color color, String label) {
     return Column(
       children: [
         Container(
@@ -1024,11 +1054,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                           width: 10.w,
                           height: 10.h,
                           decoration: BoxDecoration(
-                            color: _isInitializationComplete ? themeManager.statusOnline : themeManager.statusAway,
+                            color: _isInitializationComplete
+                                ? themeManager.statusOnline
+                                : themeManager.statusAway,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: (_isInitializationComplete ? themeManager.statusOnline : themeManager.statusAway)
+                                color: (_isInitializationComplete
+                                        ? themeManager.statusOnline
+                                        : themeManager.statusAway)
                                     .withValues(alpha: 153),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
@@ -1038,18 +1072,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         ),
                         SizedBox(width: 10.w),
                         Text(
-                          _isInitializationComplete ? 'loading.ready'.tr() : 'loading.loading'.tr(),
+                          _isInitializationComplete
+                              ? 'loading.ready'.tr()
+                              : 'loading.loading'.tr(),
                           style: TextStyle(
                             fontFamily: ThemeManager.fontFamilySemiExpanded,
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600, // SemiBold
-                            color: _isInitializationComplete ? themeManager.successColor : themeManager.warningColor,
+                            color: _isInitializationComplete
+                                ? themeManager.successColor
+                                : themeManager.warningColor,
                             letterSpacing: 0.6,
                             shadows: [
                               Shadow(
-                                color:
-                                    (_isInitializationComplete ? themeManager.successColor : themeManager.warningColor)
-                                        .withValues(alpha: 77),
+                                color: (_isInitializationComplete
+                                        ? themeManager.successColor
+                                        : themeManager.warningColor)
+                                    .withValues(alpha: 77),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -1061,7 +1100,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                     SizedBox(height: 10.h),
                     // Loading text with enhanced styling
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 18.w, vertical: 10.h),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -1131,7 +1171,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 2.h),
                         decoration: BoxDecoration(
                           gradient: themeManager.accent4Gradient,
                           borderRadius: BorderRadius.circular(10.r),
@@ -1171,7 +1212,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                         // Background shimmer
                         Container(
                           decoration: BoxDecoration(
-                            gradient: _isInitializationComplete ? null : themeManager.shimmerGradient,
+                            gradient: _isInitializationComplete
+                                ? null
+                                : themeManager.shimmerGradient,
                             borderRadius: BorderRadius.circular(3.5.r),
                           ),
                         ),
@@ -1187,7 +1230,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                               borderRadius: BorderRadius.circular(3.5.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: (_isInitializationComplete ? themeManager.successColor : themeManager.accent1)
+                                  color: (_isInitializationComplete
+                                          ? themeManager.successColor
+                                          : themeManager.accent1)
                                       .withValues(alpha: 153),
                                   blurRadius: 6,
                                   offset: const Offset(0, 2),
@@ -1238,7 +1283,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                       letterSpacing: 0.4,
                       shadows: [
                         Shadow(
-                          color: themeManager.verifiedColor.withValues(alpha: 77),
+                          color:
+                              themeManager.verifiedColor.withValues(alpha: 77),
                           blurRadius: 3,
                           offset: const Offset(0, 1),
                         ),

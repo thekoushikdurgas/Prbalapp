@@ -146,7 +146,8 @@ class CategoryIconPicker extends StatefulWidget {
   final bool enableSearch;
   final bool enableCategorizedView;
   final bool enableSmartSuggestions;
-  final String? context; // Context for smart suggestions (e.g., 'service', 'business')
+  final String?
+      context; // Context for smart suggestions (e.g., 'service', 'business')
 
   const CategoryIconPicker({
     super.key,
@@ -176,7 +177,8 @@ class CategoryIconPicker extends StatefulWidget {
     debugPrint('🎨 CategoryIconPicker: =============================');
     debugPrint('🎨 CategoryIconPicker: OPENING MODAL BOTTOM SHEET');
     debugPrint('🎨 CategoryIconPicker: =============================');
-    debugPrint('🎨 CategoryIconPicker: → Initial selection: ${selectedIcon ?? 'none'}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Initial selection: ${selectedIcon ?? 'none'}');
     debugPrint('🎨 CategoryIconPicker: → Context: ${pickerContext ?? 'none'}');
 
     return await showModalBottomSheet<String?>(
@@ -224,17 +226,20 @@ class CategoryIconPickerBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<CategoryIconPickerBottomSheet> createState() => _CategoryIconPickerBottomSheetState();
+  State<CategoryIconPickerBottomSheet> createState() =>
+      _CategoryIconPickerBottomSheetState();
 }
 
-class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottomSheet> {
+class _CategoryIconPickerBottomSheetState
+    extends State<CategoryIconPickerBottomSheet> {
   String? _currentSelection;
 
   @override
   void initState() {
     super.initState();
     _currentSelection = widget.selectedIcon;
-    debugPrint('🎨 CategoryIconPickerBottomSheet: Initialized with selection: ${_currentSelection ?? 'none'}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: Initialized with selection: ${_currentSelection ?? 'none'}');
   }
 
   @override
@@ -245,13 +250,20 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
 
     // Comprehensive theme logging for debugging
 
-    debugPrint('🎨 CategoryIconPickerBottomSheet: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Primary: ${themeManager.primaryColor}');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Background: ${themeManager.backgroundColor}');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Surface: ${themeManager.surfaceColor}');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Modal Background: ${themeManager.modalBackground}');
-    debugPrint('🎨 CategoryIconPickerBottomSheet: → Card Background: ${themeManager.cardBackground}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Primary: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Surface: ${themeManager.surfaceColor}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Modal Background: ${themeManager.modalBackground}');
+    debugPrint(
+        '🎨 CategoryIconPickerBottomSheet: → Card Background: ${themeManager.cardBackground}');
     debugPrint(
         '🎨 CategoryIconPickerBottomSheet: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
 
@@ -377,7 +389,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   ),
                   child: Icon(
                     Prbal.palette,
-                    color: themeManager.getContrastingColor(themeManager.primaryColor),
+                    color: themeManager
+                        .getContrastingColor(themeManager.primaryColor),
                     size: 24.sp,
                   ),
                 ),
@@ -391,7 +404,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
-                          color: themeManager.getContrastingColor(themeManager.primaryColor),
+                          color: themeManager
+                              .getContrastingColor(themeManager.primaryColor),
                           letterSpacing: -0.5,
                           shadows: [
                             Shadow(
@@ -407,14 +421,17 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                         'Choose from 100+ icons with smart AI suggestions',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: themeManager.getContrastingColor(themeManager.primaryColor).withValues(alpha: 0.8),
+                          color: themeManager
+                              .getContrastingColor(themeManager.primaryColor)
+                              .withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.2,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 2.h),
                         decoration: BoxDecoration(
                           gradient: themeManager.conditionalGradient(
                             lightGradient: LinearGradient(
@@ -444,7 +461,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                             Icon(
                               Prbal.lightbulb1,
                               size: 10.sp,
-                              color: themeManager.getContrastingColor(themeManager.primaryColor),
+                              color: themeManager.getContrastingColor(
+                                  themeManager.primaryColor),
                             ),
                             SizedBox(width: 4.w),
                             Text(
@@ -452,7 +470,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                               style: TextStyle(
                                 fontSize: 9.sp,
                                 fontWeight: FontWeight.w600,
-                                color: themeManager.getContrastingColor(themeManager.primaryColor),
+                                color: themeManager.getContrastingColor(
+                                    themeManager.primaryColor),
                               ),
                             ),
                           ],
@@ -465,19 +484,22 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   decoration: themeManager.enhancedGlassMorphism.copyWith(
                     borderRadius: BorderRadius.circular(12.r),
                     color: themeManager.conditionalColor(
-                      lightColor: themeManager.errorColor.withValues(alpha: 0.2),
+                      lightColor:
+                          themeManager.errorColor.withValues(alpha: 0.2),
                       darkColor: themeManager.errorDark.withValues(alpha: 0.3),
                     ),
                   ),
                   child: IconButton(
                     onPressed: () {
-                      debugPrint('🎨 CategoryIconPickerBottomSheet: Close button pressed');
+                      debugPrint(
+                          '🎨 CategoryIconPickerBottomSheet: Close button pressed');
                       Navigator.pop(context);
                     },
                     icon: Icon(
                       Prbal.close2,
                       size: 20.sp,
-                      color: themeManager.getContrastingColor(themeManager.primaryColor),
+                      color: themeManager
+                          .getContrastingColor(themeManager.primaryColor),
                     ),
                     tooltip: 'Close Icon Picker',
                   ),
@@ -512,7 +534,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                     ],
                   ),
                 ),
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.r)),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20.r)),
                 border: Border.all(
                   color: themeManager.borderColor.withValues(alpha: 0.1),
                   width: 1,
@@ -532,7 +555,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   setState(() {
                     _currentSelection = icon;
                   });
-                  debugPrint('🎨 CategoryIconPickerBottomSheet: Icon selected: ${icon ?? 'none'}');
+                  debugPrint(
+                      '🎨 CategoryIconPickerBottomSheet: Icon selected: ${icon ?? 'none'}');
                 },
                 showSearchBar: widget.showSearchBar,
                 crossAxisCount: widget.crossAxisCount,
@@ -547,7 +571,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
 
           // Enhanced action buttons with comprehensive ThemeManager styling
           Container(
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h + safeAreaBottom),
+            padding:
+                EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h + safeAreaBottom),
             decoration: BoxDecoration(
               gradient: themeManager.conditionalGradient(
                 lightGradient: LinearGradient(
@@ -569,7 +594,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   ],
                 ),
               ),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.r)),
+              borderRadius:
+                  BorderRadius.vertical(bottom: Radius.circular(20.r)),
               boxShadow: [
                 ...themeManager.elevatedShadow,
                 BoxShadow(
@@ -624,7 +650,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                       boxShadow: [
                         ...themeManager.primaryShadow,
                         BoxShadow(
-                          color: themeManager.successColor.withValues(alpha: 0.3),
+                          color:
+                              themeManager.successColor.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -633,7 +660,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                     child: Icon(
                       CategoryUtils.getIconFromString(_currentSelection!),
                       size: 24.sp,
-                      color: themeManager.getContrastingColor(themeManager.primaryColor),
+                      color: themeManager
+                          .getContrastingColor(themeManager.primaryColor),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -645,12 +673,14 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 gradient: themeManager.successGradient,
                                 borderRadius: BorderRadius.circular(6.r),
                                 border: Border.all(
-                                  color: themeManager.successColor.withValues(alpha: 0.5),
+                                  color: themeManager.successColor
+                                      .withValues(alpha: 0.5),
                                 ),
                               ),
                               child: Row(
@@ -690,7 +720,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                         ),
                         SizedBox(height: 2.h),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 6.w, vertical: 1.h),
                           decoration: BoxDecoration(
                             gradient: themeManager.neutralGradient,
                             borderRadius: BorderRadius.circular(4.r),
@@ -714,14 +745,21 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   ),
                 ] else ...[
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       gradient: themeManager.conditionalGradient(
                         lightGradient: LinearGradient(
-                          colors: [themeManager.neutral100, themeManager.neutral200],
+                          colors: [
+                            themeManager.neutral100,
+                            themeManager.neutral200
+                          ],
                         ),
                         darkGradient: LinearGradient(
-                          colors: [themeManager.neutral700, themeManager.neutral800],
+                          colors: [
+                            themeManager.neutral700,
+                            themeManager.neutral800
+                          ],
                         ),
                       ),
                       borderRadius: BorderRadius.circular(10.r),
@@ -767,10 +805,16 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   decoration: BoxDecoration(
                     gradient: themeManager.conditionalGradient(
                       lightGradient: LinearGradient(
-                        colors: [themeManager.neutral200, themeManager.neutral300],
+                        colors: [
+                          themeManager.neutral200,
+                          themeManager.neutral300
+                        ],
                       ),
                       darkGradient: LinearGradient(
-                        colors: [themeManager.neutral600, themeManager.neutral700],
+                        colors: [
+                          themeManager.neutral600,
+                          themeManager.neutral700
+                        ],
                       ),
                     ),
                     borderRadius: BorderRadius.circular(10.r),
@@ -792,7 +836,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                   ),
                   child: TextButton.icon(
                     onPressed: () {
-                      debugPrint('🎨 CategoryIconPickerBottomSheet: Cancel button pressed');
+                      debugPrint(
+                          '🎨 CategoryIconPickerBottomSheet: Cancel button pressed');
                       Navigator.pop(context);
                     },
                     icon: Icon(
@@ -809,7 +854,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 12.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -845,10 +891,16 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                           )
                         : themeManager.conditionalGradient(
                             lightGradient: LinearGradient(
-                              colors: [themeManager.warningColor, themeManager.warningLight],
+                              colors: [
+                                themeManager.warningColor,
+                                themeManager.warningLight
+                              ],
                             ),
                             darkGradient: LinearGradient(
-                              colors: [themeManager.warningDark, themeManager.warningColor],
+                              colors: [
+                                themeManager.warningDark,
+                                themeManager.warningColor
+                              ],
                             ),
                           ),
                     borderRadius: BorderRadius.circular(10.r),
@@ -862,14 +914,16 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                       ..._currentSelection != null
                           ? [
                               BoxShadow(
-                                color: themeManager.successColor.withValues(alpha: 0.3),
+                                color: themeManager.successColor
+                                    .withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
                             ]
                           : [
                               BoxShadow(
-                                color: themeManager.warningColor.withValues(alpha: 0.3),
+                                color: themeManager.warningColor
+                                    .withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
@@ -890,14 +944,20 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                       Navigator.pop(context, _currentSelection);
                     },
                     icon: Icon(
-                      _currentSelection != null ? Prbal.checkCircle : Prbal.skipNext,
+                      _currentSelection != null
+                          ? Prbal.checkCircle
+                          : Prbal.skipNext,
                       size: 16.sp,
                       color: themeManager.getContrastingColor(
-                        _currentSelection != null ? themeManager.successColor : themeManager.warningColor,
+                        _currentSelection != null
+                            ? themeManager.successColor
+                            : themeManager.warningColor,
                       ),
                     ),
                     label: Text(
-                      _currentSelection != null ? 'Select Icon' : 'Skip Selection',
+                      _currentSelection != null
+                          ? 'Select Icon'
+                          : 'Skip Selection',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14.sp,
@@ -907,11 +967,14 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       foregroundColor: themeManager.getContrastingColor(
-                        _currentSelection != null ? themeManager.successColor : themeManager.warningColor,
+                        _currentSelection != null
+                            ? themeManager.successColor
+                            : themeManager.warningColor,
                       ),
                       shadowColor: Colors.transparent,
                       elevation: 0,
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.w, vertical: 14.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -927,7 +990,8 @@ class _CategoryIconPickerBottomSheetState extends State<CategoryIconPickerBottom
   }
 }
 
-class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProviderStateMixin {
+class _CategoryIconPickerState extends State<CategoryIconPicker>
+    with TickerProviderStateMixin {
   final _searchController = TextEditingController();
   late Map<String, IconData> _allIcons;
   late Map<String, IconData> _topPopularIcons;
@@ -968,28 +1032,38 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
     if (widget.enableCategorizedView && !widget.showTopPopular) {
       _isCategorizedMode = true;
       _selectedCategory = _categoryTabs.isNotEmpty ? _categoryTabs.first : null;
-      _displayedIcons =
-          _selectedCategory != null ? Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? []) : _topPopularIcons;
+      _displayedIcons = _selectedCategory != null
+          ? Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? [])
+          : _topPopularIcons;
     } else {
       _displayedIcons = widget.showTopPopular ? _topPopularIcons : _allIcons;
     }
 
-    debugPrint('🎨 CategoryIconPicker: → All available icons: ${_allIcons.length}');
-    debugPrint('🎨 CategoryIconPicker: → Top popular icons: ${_topPopularIcons.length}');
-    debugPrint('🎨 CategoryIconPicker: → Categorized icons: ${_categorizedIcons.length} categories');
-    debugPrint('🎨 CategoryIconPicker: → Initially displayed: ${_displayedIcons.length}');
-    debugPrint('🎨 CategoryIconPicker: → Pre-selected icon: ${_selectedIcon ?? 'none'}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → All available icons: ${_allIcons.length}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Top popular icons: ${_topPopularIcons.length}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Categorized icons: ${_categorizedIcons.length} categories');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Initially displayed: ${_displayedIcons.length}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Pre-selected icon: ${_selectedIcon ?? 'none'}');
     debugPrint(
         '🎨 CategoryIconPicker: → Enhanced features enabled: categorized=${widget.enableCategorizedView}, smart=${widget.enableSmartSuggestions}');
-    debugPrint('🎨 CategoryIconPicker: → Context for suggestions: ${widget.context ?? 'none'}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Context for suggestions: ${widget.context ?? 'none'}');
 
     // Validate pre-selected icon with enhanced validation
     if (_selectedIcon != null) {
       final validation = CategoryUtils.validateIconName(_selectedIcon!);
       if (!validation['isValid']) {
-        debugPrint('⚠️ CategoryIconPicker: → Pre-selected icon validation failed');
-        debugPrint('⚠️ CategoryIconPicker: → Suggestions: ${validation['suggestions']}');
-        debugPrint('⚠️ CategoryIconPicker: → Alternatives: ${validation['alternatives']}');
+        debugPrint(
+            '⚠️ CategoryIconPicker: → Pre-selected icon validation failed');
+        debugPrint(
+            '⚠️ CategoryIconPicker: → Suggestions: ${validation['suggestions']}');
+        debugPrint(
+            '⚠️ CategoryIconPicker: → Alternatives: ${validation['alternatives']}');
       }
     }
   }
@@ -1006,12 +1080,17 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
     // Comprehensive theme logging
 
-    debugPrint('🎨 CategoryIconPicker: Building enhanced picker UI v2.0 with ThemeManager');
-    debugPrint('🎨 CategoryIconPicker: → Currently displaying: ${_displayedIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: Building enhanced picker UI v2.0 with ThemeManager');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Currently displaying: ${_displayedIcons.length} icons');
     debugPrint('🎨 CategoryIconPicker: → Search mode: $_isSearchMode');
-    debugPrint('🎨 CategoryIconPicker: → Categorized mode: $_isCategorizedMode');
-    debugPrint('🎨 CategoryIconPicker: → Selected category: ${_selectedCategory ?? 'none'}');
-    debugPrint('🎨 CategoryIconPicker: → Current query: "$_currentSearchQuery"');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Categorized mode: $_isCategorizedMode');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Selected category: ${_selectedCategory ?? 'none'}');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Current query: "$_currentSearchQuery"');
     debugPrint(
         '🎨 CategoryIconPicker: → Theme colors - Primary: ${themeManager.primaryColor}, Surface: ${themeManager.surfaceColor}');
 
@@ -1134,7 +1213,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                 ...themeManager.primaryShadow,
                 BoxShadow(
                   color: themeManager.conditionalColor(
-                    lightColor: themeManager.primaryColor.withValues(alpha: 0.2),
+                    lightColor:
+                        themeManager.primaryColor.withValues(alpha: 0.2),
                     darkColor: themeManager.accent1.withValues(alpha: 0.3),
                   ),
                   blurRadius: 8,
@@ -1143,8 +1223,11 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
               ],
             ),
             child: Icon(
-              _isSearchMode ? Prbal.search6 : (_isCategorizedMode ? Prbal.grid3 : Prbal.palette),
-              color: themeManager.getContrastingColor(themeManager.primaryColor),
+              _isSearchMode
+                  ? Prbal.search6
+                  : (_isCategorizedMode ? Prbal.grid3 : Prbal.palette),
+              color:
+                  themeManager.getContrastingColor(themeManager.primaryColor),
               size: 20.sp,
             ),
           ),
@@ -1182,7 +1265,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
               child: TextButton.icon(
                 onPressed: () => _clearSelection(),
                 icon: Icon(Prbal.close2, size: 16.sp, color: Colors.white),
-                label: Text('Clear', style: TextStyle(fontSize: 12.sp, color: Colors.white)),
+                label: Text('Clear',
+                    style: TextStyle(fontSize: 12.sp, color: Colors.white)),
               ),
             ),
           SizedBox(width: 8.w),
@@ -1232,7 +1316,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                 Icon(
                   Prbal.database,
                   size: 10.sp,
-                  color: themeManager.getContrastingColor(themeManager.infoColor),
+                  color:
+                      themeManager.getContrastingColor(themeManager.infoColor),
                 ),
                 SizedBox(width: 4.w),
                 Text(
@@ -1240,7 +1325,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
-                    color: themeManager.getContrastingColor(themeManager.infoColor),
+                    color: themeManager
+                        .getContrastingColor(themeManager.infoColor),
                     letterSpacing: 0.3,
                   ),
                 ),
@@ -1283,7 +1369,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
               hintStyle: TextStyle(color: themeManager.textTertiary),
               prefixIcon: Container(
                 padding: EdgeInsets.all(8.w),
-                child: Icon(Prbal.search6, size: 18.sp, color: themeManager.primaryColor),
+                child: Icon(Prbal.search6,
+                    size: 18.sp, color: themeManager.primaryColor),
               ),
               suffixIcon: _searchController.text.isNotEmpty
                   ? Container(
@@ -1293,7 +1380,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                         children: [
                           // Enhanced results count
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6.w, vertical: 2.h),
                             decoration: BoxDecoration(
                               gradient: themeManager.successGradient,
                               borderRadius: BorderRadius.circular(6.r),
@@ -1309,7 +1397,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                           ),
                           SizedBox(width: 4.w),
                           // Smart suggestions indicator
-                          if (widget.enableSmartSuggestions && _currentSearchQuery.isNotEmpty)
+                          if (widget.enableSmartSuggestions &&
+                              _currentSearchQuery.isNotEmpty)
                             Container(
                               padding: EdgeInsets.all(4.w),
                               decoration: BoxDecoration(
@@ -1329,14 +1418,17 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: IconButton(
-                              icon: Icon(Prbal.close2, size: 16.sp, color: Colors.white),
+                              icon: Icon(Prbal.close2,
+                                  size: 16.sp, color: Colors.white),
                               onPressed: () => _clearSearch(),
                             ),
                           ),
                         ],
                       ),
                     )
-                  : (!_isSearchMode && !_isCategorizedMode && widget.enableCategorizedView)
+                  : (!_isSearchMode &&
+                          !_isCategorizedMode &&
+                          widget.enableCategorizedView)
                       ? Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
                           child: Row(
@@ -1348,7 +1440,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                                   borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 child: IconButton(
-                                  icon: Icon(Prbal.grid3, size: 16.sp, color: Colors.white),
+                                  icon: Icon(Prbal.grid3,
+                                      size: 16.sp, color: Colors.white),
                                   onPressed: () => _toggleCategorizedView(),
                                   tooltip: 'Browse by categories',
                                 ),
@@ -1360,7 +1453,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                                   borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 child: IconButton(
-                                  icon: Icon(Prbal.list6, size: 16.sp, color: Colors.white),
+                                  icon: Icon(Prbal.list6,
+                                      size: 16.sp, color: Colors.white),
                                   onPressed: () => _showAllIcons(),
                                   tooltip: 'Show all ${_allIcons.length} icons',
                                 ),
@@ -1381,7 +1475,9 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
         ),
 
         // Smart suggestions preview with ThemeManager styling
-        if (widget.enableSmartSuggestions && _currentSearchQuery.isNotEmpty && _currentSearchQuery.length >= 2)
+        if (widget.enableSmartSuggestions &&
+            _currentSearchQuery.isNotEmpty &&
+            _currentSearchQuery.length >= 2)
           _buildSmartSuggestionsPreview(themeManager),
       ],
     );
@@ -1389,7 +1485,9 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
   /// Build smart suggestions preview with ThemeManager styling
   Widget _buildSmartSuggestionsPreview(ThemeManager themeManager) {
-    final suggestions = CategoryUtils.getSmartIconSuggestions(_currentSearchQuery, context: widget.context);
+    final suggestions = CategoryUtils.getSmartIconSuggestions(
+        _currentSearchQuery,
+        context: widget.context);
     final topSuggestions = suggestions.entries.take(5).toList();
 
     if (topSuggestions.isEmpty) return const SizedBox();
@@ -1440,7 +1538,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(6.r),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    border:
+                        Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1468,7 +1567,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
   /// Apply smart suggestion
   void _applySmartSuggestion(String suggestion) {
-    debugPrint('🤖 CategoryIconPicker: → Applying smart suggestion: "$suggestion"');
+    debugPrint(
+        '🤖 CategoryIconPicker: → Applying smart suggestion: "$suggestion"');
     _searchController.text = suggestion;
     _onSearchChanged(suggestion);
   }
@@ -1518,7 +1618,9 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                   themeManager: themeManager,
                   label: 'All',
                   icon: Prbal.list6,
-                  isActive: !_isCategorizedMode && !_isSearchMode && _displayedIcons.length == _allIcons.length,
+                  isActive: !_isCategorizedMode &&
+                      !_isSearchMode &&
+                      _displayedIcons.length == _allIcons.length,
                   onTap: () => _showAllIcons(),
                 ),
               ],
@@ -1547,7 +1649,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
           color: isActive ? null : themeManager.backgroundColor,
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
-            color: isActive ? themeManager.primaryColor : themeManager.borderColor,
+            color:
+                isActive ? themeManager.primaryColor : themeManager.borderColor,
           ),
           boxShadow: isActive ? themeManager.primaryShadow : null,
         ),
@@ -1593,7 +1696,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
         labelColor: Colors.white,
         unselectedLabelColor: themeManager.textSecondary,
         labelStyle: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500),
+        unselectedLabelStyle:
+            TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500),
         tabs: _categoryTabs.map((category) {
           final iconCount = _categorizedIcons[category]?.length ?? 0;
           return Tab(
@@ -1658,7 +1762,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
         itemBuilder: (context, index) {
           // Bounds checking to prevent IndexError
           if (index >= iconsList.length) {
-            debugPrint('⚠️ CategoryIconPicker: Index $index out of bounds (max: ${iconsList.length - 1})');
+            debugPrint(
+                '⚠️ CategoryIconPicker: Index $index out of bounds (max: ${iconsList.length - 1})');
             return const SizedBox(); // Return empty widget for out-of-bounds
           }
 
@@ -1690,13 +1795,19 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         decoration: BoxDecoration(
-          gradient: isSelected ? themeManager.primaryGradient : themeManager.surfaceGradient,
+          gradient: isSelected
+              ? themeManager.primaryGradient
+              : themeManager.surfaceGradient,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected ? themeManager.primaryColor : themeManager.borderColor,
+            color: isSelected
+                ? themeManager.primaryColor
+                : themeManager.borderColor,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected ? themeManager.primaryShadow : themeManager.subtleShadow,
+          boxShadow: isSelected
+              ? themeManager.primaryShadow
+              : themeManager.subtleShadow,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1786,8 +1897,10 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
                 ),
                 child: TextButton.icon(
                   onPressed: () => _showSmartSuggestions(),
-                  icon: Icon(Prbal.lightbulb1, size: 14.sp, color: Colors.white),
-                  label: Text('Get Smart Suggestions', style: TextStyle(fontSize: 11.sp, color: Colors.white)),
+                  icon:
+                      Icon(Prbal.lightbulb1, size: 14.sp, color: Colors.white),
+                  label: Text('Get Smart Suggestions',
+                      style: TextStyle(fontSize: 11.sp, color: Colors.white)),
                 ),
               ),
             ],
@@ -1800,7 +1913,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
   /// Build enhanced footer with ThemeManager styling and performance info
   Widget _buildEnhancedFooter(ThemeManager themeManager) {
     final analytics = CategoryUtils.getIconUsageAnalytics();
-    final performanceMetrics = analytics['performanceMetrics'] as Map<String, dynamic>;
+    final performanceMetrics =
+        analytics['performanceMetrics'] as Map<String, dynamic>;
 
     return Container(
       padding: EdgeInsets.all(8.w),
@@ -1862,8 +1976,10 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
     // Validate icon before selection
     final validation = CategoryUtils.validateIconName(iconName);
     if (!validation['isValid']) {
-      debugPrint('⚠️ CategoryIconPicker: Icon validation warning for "$iconName"');
-      debugPrint('⚠️ CategoryIconPicker: → Suggestions: ${validation['suggestions']}');
+      debugPrint(
+          '⚠️ CategoryIconPicker: Icon validation warning for "$iconName"');
+      debugPrint(
+          '⚠️ CategoryIconPicker: → Suggestions: ${validation['suggestions']}');
     }
 
     // Track icon selection analytics
@@ -1874,7 +1990,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
       widget.context ?? 'unknown_category',
       iconName,
     ).then((performanceReport) {
-      debugPrint('⚡ CategoryIconPicker: → Performance score: ${performanceReport['performanceScore']}/100');
+      debugPrint(
+          '⚡ CategoryIconPicker: → Performance score: ${performanceReport['performanceScore']}/100');
     });
 
     setState(() {
@@ -1883,7 +2000,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
     widget.onIconSelected(iconName);
 
-    debugPrint('🎨 CategoryIconPicker: → Icon selection completed successfully');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Icon selection completed successfully');
   }
 
   /// Clear icon selection
@@ -1899,7 +2017,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
   /// Show all available icons (exit top popular mode)
   void _showAllIcons() {
-    debugPrint('🎨 CategoryIconPicker: Switching to show all ${_allIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: Switching to show all ${_allIcons.length} icons');
 
     setState(() {
       _isSearchMode = false;
@@ -1923,12 +2042,14 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
         // Return to top popular icons when search is cleared
         _isSearchMode = false;
         _displayedIcons = widget.showTopPopular ? _topPopularIcons : _allIcons;
-        debugPrint('🎨 CategoryIconPicker: → Returned to ${widget.showTopPopular ? 'popular' : 'all'} icons');
+        debugPrint(
+            '🎨 CategoryIconPicker: → Returned to ${widget.showTopPopular ? 'popular' : 'all'} icons');
       } else {
         // Enter search mode and use CategoryUtils search
         _isSearchMode = true;
         _displayedIcons = CategoryUtils.searchIcons(query);
-        debugPrint('🎨 CategoryIconPicker: → Found ${_displayedIcons.length} matching icons');
+        debugPrint(
+            '🎨 CategoryIconPicker: → Found ${_displayedIcons.length} matching icons');
 
         // Log sample results for debugging
         if (_displayedIcons.isNotEmpty) {
@@ -1938,7 +2059,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
       }
     });
 
-    debugPrint('🎨 CategoryIconPicker: Search completed - displaying ${_displayedIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: Search completed - displaying ${_displayedIcons.length} icons');
   }
 
   /// Clear search and return to initial state
@@ -1954,8 +2076,10 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
       _displayedIcons = widget.showTopPopular ? _topPopularIcons : _allIcons;
     });
 
-    debugPrint('🎨 CategoryIconPicker: → Returned to ${widget.showTopPopular ? 'popular' : 'all'} icons');
-    debugPrint('🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Returned to ${widget.showTopPopular ? 'popular' : 'all'} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
   }
 
   /// Toggle categorized view
@@ -1967,15 +2091,18 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
     setState(() {
       _isCategorizedMode = !_isCategorizedMode;
       if (_isCategorizedMode) {
-        _selectedCategory = _categoryTabs.isNotEmpty ? _categoryTabs.first : null;
-        _displayedIcons =
-            _selectedCategory != null ? Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? []) : _topPopularIcons;
+        _selectedCategory =
+            _categoryTabs.isNotEmpty ? _categoryTabs.first : null;
+        _displayedIcons = _selectedCategory != null
+            ? Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? [])
+            : _topPopularIcons;
       } else {
         _displayedIcons = widget.showTopPopular ? _topPopularIcons : _allIcons;
       }
     });
 
-    debugPrint('🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
   }
 
   /// Show smart suggestions
@@ -1986,7 +2113,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
     // Implement the logic to show smart suggestions
     // This is a placeholder and should be replaced with the actual implementation
-    debugPrint('🎨 CategoryIconPicker: → Smart suggestions feature not implemented');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Smart suggestions feature not implemented');
   }
 
   /// Update displayed icons based on selected category
@@ -1997,13 +2125,15 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
 
     setState(() {
       if (_selectedCategory != null) {
-        _displayedIcons = Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? []);
+        _displayedIcons =
+            Map.fromEntries(_categorizedIcons[_selectedCategory!] ?? []);
       } else {
         _displayedIcons = widget.showTopPopular ? _topPopularIcons : _allIcons;
       }
     });
 
-    debugPrint('🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Now displaying ${_displayedIcons.length} icons');
   }
 
   /// Switch to popular mode (exit categorized mode)
@@ -2019,7 +2149,8 @@ class _CategoryIconPickerState extends State<CategoryIconPicker> with TickerProv
       _displayedIcons = _topPopularIcons;
     });
 
-    debugPrint('🎨 CategoryIconPicker: → Switched to popular mode, displaying ${_displayedIcons.length} popular icons');
+    debugPrint(
+        '🎨 CategoryIconPicker: → Switched to popular mode, displaying ${_displayedIcons.length} popular icons');
   }
 }
 
@@ -2051,7 +2182,8 @@ Map<String, IconData> getTopPopularIcons() {
     'spa': Prbal.spa,
   };
 
-  debugPrint('🔥 CategoryIconPicker: → Returning ${topIcons.length} popular icons');
+  debugPrint(
+      '🔥 CategoryIconPicker: → Returning ${topIcons.length} popular icons');
   return topIcons;
 }
 
@@ -2098,7 +2230,8 @@ Map<String, List<MapEntry<String, IconData>>> getIconsByCategory() {
     ],
   };
 
-  debugPrint('🏗️ CategoryIconPicker: → Created ${categories.length} categories');
+  debugPrint(
+      '🏗️ CategoryIconPicker: → Created ${categories.length} categories');
   return categories;
 }
 

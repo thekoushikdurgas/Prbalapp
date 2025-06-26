@@ -45,7 +45,8 @@ class AppVersionWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📱 AppVersionWidget: Building app version with comprehensive ThemeManager integration');
+    debugPrint(
+        '📱 AppVersionWidget: Building app version with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
@@ -57,7 +58,8 @@ class AppVersionWidget extends StatelessWidget with ThemeAwareMixin {
         '📱 AppVersionWidget: → Text Colors - Primary: ${themeManager.textPrimary}, Secondary: ${themeManager.textSecondary}, Tertiary: ${themeManager.textTertiary}');
     debugPrint(
         '📱 AppVersionWidget: → Neutral Colors: ${themeManager.neutral400}, ${themeManager.neutral500}, ${themeManager.neutral600}');
-    debugPrint('📱 AppVersionWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint(
+        '📱 AppVersionWidget: → Background: ${themeManager.backgroundColor}');
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),

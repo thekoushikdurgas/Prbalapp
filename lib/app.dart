@@ -26,10 +26,12 @@ class MyApp extends StatelessWidget {
           builder: (context, themeState) {
             // Enhanced debug logging with theme state tracking
             debugPrint('🎨 MyApp: Current theme state: $themeState');
-            debugPrint('🎨 MyApp: Building MaterialApp with ThemeManager integration');
+            debugPrint(
+                '🎨 MyApp: Building MaterialApp with ThemeManager integration');
 
             // Log theme caching state
-            debugPrint('🎨 ThemeCaching: Current cached theme: ${ThemeCaching.initialTheme()}');
+            debugPrint(
+                '🎨 ThemeCaching: Current cached theme: ${ThemeCaching.initialTheme()}');
 
             return MaterialApp.router(
               title: 'Prbal',
@@ -59,11 +61,16 @@ class MyApp extends StatelessWidget {
                   themeManager.logThemeInfo();
                   themeManager.logTypographyInfo();
                   debugPrint('🎨 MyApp: ThemeManager initialized successfully');
-                  debugPrint('🎨 MyApp: Current brightness: ${Theme.of(context).brightness}');
-                  debugPrint('🎨 MyApp: Primary color: ${themeManager.primaryColor}');
-                  debugPrint('🎨 MyApp: Background color: ${themeManager.backgroundColor}');
-                  debugPrint('🎨 MyApp: Text primary color: ${themeManager.textPrimary}');
-                  debugPrint('🔤 MyApp: SourGummy fonts successfully integrated');
+                  debugPrint(
+                      '🎨 MyApp: Current brightness: ${Theme.of(context).brightness}');
+                  debugPrint(
+                      '🎨 MyApp: Primary color: ${themeManager.primaryColor}');
+                  debugPrint(
+                      '🎨 MyApp: Background color: ${themeManager.backgroundColor}');
+                  debugPrint(
+                      '🎨 MyApp: Text primary color: ${themeManager.textPrimary}');
+                  debugPrint(
+                      '🔤 MyApp: SourGummy fonts successfully integrated');
                 }
 
                 return child ?? const SizedBox.shrink();

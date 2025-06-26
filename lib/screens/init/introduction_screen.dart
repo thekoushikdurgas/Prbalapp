@@ -84,7 +84,8 @@ class IntroductionScreen extends StatefulWidget {
   State<IntroductionScreen> createState() => _IntroductionScreenState();
 }
 
-class _IntroductionScreenState extends State<IntroductionScreen> with TickerProviderStateMixin, ThemeAwareMixin {
+class _IntroductionScreenState extends State<IntroductionScreen>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   // ========== ANIMATION CONTROLLERS ==========
   late PageController pageController;
   late AnimationController _fadeController;
@@ -103,7 +104,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     pageController = PageController();
     _initializeAnimations();
     _startAnimations();
-    debugPrint('🎯 IntroductionScreen: Comprehensive initialization completed with ThemeManager integration');
+    debugPrint(
+        '🎯 IntroductionScreen: Comprehensive initialization completed with ThemeManager integration');
   }
 
   @override
@@ -119,35 +121,46 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   void _logComprehensiveThemeInitialization() {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎯 IntroductionScreen: ===== COMPREHENSIVE THEMEMANAGER INTEGRATION =====');
+    debugPrint(
+        '🎯 IntroductionScreen: ===== COMPREHENSIVE THEMEMANAGER INTEGRATION =====');
 
     // Comprehensive theme logging
 
     themeManager.logGradientInfo();
     themeManager.logAllColors();
 
-    debugPrint('🎯 IntroductionScreen: → Enhanced with ALL ThemeManager properties');
-    debugPrint('🎯 IntroductionScreen: → Background System: backgroundColor, backgroundSecondary, backgroundTertiary');
+    debugPrint(
+        '🎯 IntroductionScreen: → Enhanced with ALL ThemeManager properties');
+    debugPrint(
+        '🎯 IntroductionScreen: → Background System: backgroundColor, backgroundSecondary, backgroundTertiary');
     debugPrint(
         '🎯 IntroductionScreen: → Surface System: surfaceColor, surfaceElevated, cardBackground, modalBackground');
     debugPrint(
         '🎯 IntroductionScreen: → Text System: textPrimary, textSecondary, textTertiary, textQuaternary, textInverted');
-    debugPrint('🎯 IntroductionScreen: → Status System: success/warning/error/info with Light/Dark variants');
-    debugPrint('🎯 IntroductionScreen: → Accent System: accent1-5 with comprehensive gradients');
-    debugPrint('🎯 IntroductionScreen: → Border System: borderColor, borderSecondary, borderFocus, dividerColor');
-    debugPrint('🎯 IntroductionScreen: → Shadow System: primaryShadow, elevatedShadow, subtleShadow');
-    debugPrint('🎯 IntroductionScreen: → Glass Effects: glassMorphism, enhancedGlassMorphism');
+    debugPrint(
+        '🎯 IntroductionScreen: → Status System: success/warning/error/info with Light/Dark variants');
+    debugPrint(
+        '🎯 IntroductionScreen: → Accent System: accent1-5 with comprehensive gradients');
+    debugPrint(
+        '🎯 IntroductionScreen: → Border System: borderColor, borderSecondary, borderFocus, dividerColor');
+    debugPrint(
+        '🎯 IntroductionScreen: → Shadow System: primaryShadow, elevatedShadow, subtleShadow');
+    debugPrint(
+        '🎯 IntroductionScreen: → Glass Effects: glassMorphism, enhancedGlassMorphism');
     debugPrint(
         '🎯 IntroductionScreen: → Helper Methods: conditionalColor(), conditionalGradient(), getContrastingColor()');
-    debugPrint('🎯 IntroductionScreen: → Page count: ${_getEnhancedPages(context).length}');
-    debugPrint('🎯 IntroductionScreen: → Animation controllers ready with comprehensive theme integration');
+    debugPrint(
+        '🎯 IntroductionScreen: → Page count: ${_getEnhancedPages(context).length}');
+    debugPrint(
+        '🎯 IntroductionScreen: → Animation controllers ready with comprehensive theme integration');
   }
 
   /// Gets comprehensive theme-aware onboarding pages using ALL ThemeManager properties
   List<OnboardingPage> _getEnhancedPages(BuildContext context) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎨 IntroductionScreen: Building pages with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🎨 IntroductionScreen: Building pages with COMPREHENSIVE ThemeManager integration');
 
     return [
       OnboardingPage(
@@ -156,7 +169,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'From trusted services to skilled manpower — get exactly what you need, when you need it. 24/7 availability at your fingertips.',
         animationPath: 'assets/intro/work.json',
         color: themeManager.primaryColor,
-        gradientColors: [themeManager.primaryColor, themeManager.primaryLight, themeManager.accent1],
+        gradientColors: [
+          themeManager.primaryColor,
+          themeManager.primaryLight,
+          themeManager.accent1
+        ],
         icon: Prbal.clock,
         statusType: 'primary',
       ),
@@ -166,7 +183,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Access our large network with thousands of verified professionals and businesses ready to serve your needs.',
         animationPath: 'assets/intro/commerce.json',
         color: themeManager.successColor,
-        gradientColors: [themeManager.successColor, themeManager.successLight, themeManager.accent3],
+        gradientColors: [
+          themeManager.successColor,
+          themeManager.successLight,
+          themeManager.accent3
+        ],
         icon: Prbal.users,
         statusType: 'success',
       ),
@@ -176,7 +197,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Discover opportunities and services tailored to your skills with total flexibility. Take control of your professional journey.',
         animationPath: 'assets/intro/app.json',
         color: themeManager.infoColor,
-        gradientColors: [themeManager.infoColor, themeManager.infoLight, themeManager.accent5],
+        gradientColors: [
+          themeManager.infoColor,
+          themeManager.infoLight,
+          themeManager.accent5
+        ],
         icon: Prbal.graduationCap1,
         statusType: 'info',
       ),
@@ -186,7 +211,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Earn wages on an hourly basis with intelligent AI that helps optimize your work schedule and maximize your income.',
         animationPath: 'assets/intro/hourly.json',
         color: themeManager.warningColor,
-        gradientColors: [themeManager.warningColor, themeManager.warningLight, themeManager.accent4],
+        gradientColors: [
+          themeManager.warningColor,
+          themeManager.warningLight,
+          themeManager.accent4
+        ],
         icon: Prbal.laptop11,
         statusType: 'warning',
       ),
@@ -196,7 +225,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Make offers based on your skills, location, and experience. AI suggests fair wages based on market trends and job requirements.',
         animationPath: 'assets/intro/bidding.json',
         color: themeManager.errorColor,
-        gradientColors: [themeManager.errorColor, themeManager.errorLight, themeManager.accent2],
+        gradientColors: [
+          themeManager.errorColor,
+          themeManager.errorLight,
+          themeManager.accent2
+        ],
         icon: Prbal.hand,
         statusType: 'error',
       ),
@@ -206,7 +239,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Smart algorithm learns your preferences. Swipe right to like, left to pass. Get matched with perfect opportunities!',
         animationPath: 'assets/intro/match.json',
         color: themeManager.accent2,
-        gradientColors: [themeManager.accent2, themeManager.primaryColor, themeManager.accent1],
+        gradientColors: [
+          themeManager.accent2,
+          themeManager.primaryColor,
+          themeManager.accent1
+        ],
         icon: Prbal.heart,
         statusType: 'accent',
       ),
@@ -216,7 +253,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Clean, intuitive interface with large, clear images and seamless navigation. Built for the modern professional.',
         animationPath: 'assets/intro/design.json',
         color: themeManager.secondaryColor,
-        gradientColors: [themeManager.secondaryColor, themeManager.secondaryLight, themeManager.accent3],
+        gradientColors: [
+          themeManager.secondaryColor,
+          themeManager.secondaryLight,
+          themeManager.accent3
+        ],
         icon: Prbal.palette,
         statusType: 'secondary',
       ),
@@ -226,7 +267,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             'Complete background verification ensures you work with trusted professionals. Your safety and security is our priority.',
         animationPath: 'assets/intro/verification.json',
         color: themeManager.verifiedColor,
-        gradientColors: [themeManager.verifiedColor, themeManager.successColor, themeManager.accent3],
+        gradientColors: [
+          themeManager.verifiedColor,
+          themeManager.successColor,
+          themeManager.accent3
+        ],
         icon: Prbal.checkCircle,
         statusType: 'verified',
       ),
@@ -234,7 +279,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   }
 
   /// Gets comprehensive page gradient using ThemeManager gradient system
-  LinearGradient _getPageGradient(OnboardingPage page, ThemeManager themeManager) {
+  LinearGradient _getPageGradient(
+      OnboardingPage page, ThemeManager themeManager) {
     switch (page.statusType) {
       case 'primary':
         return themeManager.primaryGradient;
@@ -258,7 +304,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   }
 
   void _initializeAnimations() {
-    debugPrint('🎯 IntroductionScreen: Initializing comprehensive animation system');
+    debugPrint(
+        '🎯 IntroductionScreen: Initializing comprehensive animation system');
 
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 1200),
@@ -301,7 +348,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   }
 
   Future<void> _startAnimations() async {
-    debugPrint('🎯 IntroductionScreen: Starting comprehensive animation sequence');
+    debugPrint(
+        '🎯 IntroductionScreen: Starting comprehensive animation sequence');
 
     await Future.delayed(const Duration(milliseconds: 300));
     _fadeController.forward();
@@ -312,7 +360,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   }
 
   void _restartAnimations() {
-    debugPrint('🎯 IntroductionScreen: Restarting animations with page transition');
+    debugPrint(
+        '🎯 IntroductionScreen: Restarting animations with page transition');
 
     _slideController.reset();
     _slideController.forward();
@@ -321,7 +370,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
 
   @override
   void dispose() {
-    debugPrint('🎯 IntroductionScreen: Disposing comprehensive animation controllers');
+    debugPrint(
+        '🎯 IntroductionScreen: Disposing comprehensive animation controllers');
     pageController.dispose();
     _fadeController.dispose();
     _slideController.dispose();
@@ -333,10 +383,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎨 IntroductionScreen: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint('🎨 IntroductionScreen: → Background Gradient: ${themeManager.backgroundGradient.colors}');
-    debugPrint('🎨 IntroductionScreen: → Surface Gradient: ${themeManager.surfaceGradient.colors}');
-    debugPrint('🎨 IntroductionScreen: → Primary Colors: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 IntroductionScreen: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🎨 IntroductionScreen: → Background Gradient: ${themeManager.backgroundGradient.colors}');
+    debugPrint(
+        '🎨 IntroductionScreen: → Surface Gradient: ${themeManager.surfaceGradient.colors}');
+    debugPrint(
+        '🎨 IntroductionScreen: → Primary Colors: ${themeManager.primaryColor}');
     debugPrint(
         '🎨 IntroductionScreen: → Text Colors: Primary(${themeManager.textPrimary}), Secondary(${themeManager.textSecondary})');
 
@@ -407,8 +461,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
               center: Alignment.topRight,
               radius: 1.5,
               colors: [
-                currentPageData.color.withValues(alpha: 0.15 * _glowAnimation.value),
-                currentPageData.gradientColors[1].withValues(alpha: 0.08 * _glowAnimation.value),
+                currentPageData.color
+                    .withValues(alpha: 0.15 * _glowAnimation.value),
+                currentPageData.gradientColors[1]
+                    .withValues(alpha: 0.08 * _glowAnimation.value),
                 Colors.transparent,
               ],
               stops: const [0.0, 0.5, 1.0],
@@ -431,7 +487,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
             currentPage = index;
           });
           _restartAnimations();
-          debugPrint('🎯 IntroductionScreen: Enhanced page changed to $index with theme-aware styling');
+          debugPrint(
+              '🎯 IntroductionScreen: Enhanced page changed to $index with theme-aware styling');
         },
         itemCount: pages.length,
         itemBuilder: (context, index) {
@@ -461,7 +518,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                 GestureDetector(
                   onTap: _skipOnboarding,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                     decoration: BoxDecoration(
                       gradient: themeManager.conditionalGradient(
                         lightGradient: LinearGradient(
@@ -482,8 +540,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: themeManager.conditionalColor(
-                          lightColor: currentPageData.color.withValues(alpha: 0.3),
-                          darkColor: currentPageData.color.withValues(alpha: 0.4),
+                          lightColor:
+                              currentPageData.color.withValues(alpha: 0.3),
+                          darkColor:
+                              currentPageData.color.withValues(alpha: 0.4),
                         ),
                         width: 1.5,
                       ),
@@ -561,12 +621,15 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       gradient: _getPageGradient(currentPageData, themeManager),
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color: themeManager.getContrastingColor(currentPageData.color).withValues(alpha: 0.3),
+                        color: themeManager
+                            .getContrastingColor(currentPageData.color)
+                            .withValues(alpha: 0.3),
                         width: 2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: currentPageData.color.withValues(alpha: 0.4 * _glowAnimation.value),
+                          color: currentPageData.color
+                              .withValues(alpha: 0.4 * _glowAnimation.value),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -579,7 +642,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
-                          color: themeManager.getContrastingColor(currentPageData.color),
+                          color: themeManager
+                              .getContrastingColor(currentPageData.color),
                         ),
                       ),
                     ),
@@ -652,8 +716,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            currentPageData.color.withValues(alpha: 0.2 * _glowAnimation.value),
-                            currentPageData.color.withValues(alpha: 0.1 * _glowAnimation.value),
+                            currentPageData.color
+                                .withValues(alpha: 0.2 * _glowAnimation.value),
+                            currentPageData.color
+                                .withValues(alpha: 0.1 * _glowAnimation.value),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(10.r),
@@ -678,7 +744,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     );
   }
 
-  Widget _buildEnhancedPageContent(OnboardingPage page, ThemeManager themeManager) {
+  Widget _buildEnhancedPageContent(
+      OnboardingPage page, ThemeManager themeManager) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Padding(
@@ -712,20 +779,23 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       children: [
                         // Enhanced feature badge with comprehensive theming
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 6.h),
                           decoration: BoxDecoration(
                             gradient: themeManager.conditionalGradient(
                               lightGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.15),
                                   page.gradientColors[1].withValues(alpha: 0.1),
-                                  page.gradientColors[2].withValues(alpha: 0.05),
+                                  page.gradientColors[2]
+                                      .withValues(alpha: 0.05),
                                 ],
                               ),
                               darkGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.2),
-                                  page.gradientColors[1].withValues(alpha: 0.15),
+                                  page.gradientColors[1]
+                                      .withValues(alpha: 0.15),
                                   page.gradientColors[2].withValues(alpha: 0.1),
                                 ],
                               ),
@@ -829,7 +899,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     );
   }
 
-  Widget _buildEnhancedIllustration(OnboardingPage page, ThemeManager themeManager) {
+  Widget _buildEnhancedIllustration(
+      OnboardingPage page, ThemeManager themeManager) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -1010,7 +1081,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                 gradient: _getPageGradient(currentPageData, themeManager),
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: themeManager.getContrastingColor(currentPageData.color).withValues(alpha: 0.2),
+                  color: themeManager
+                      .getContrastingColor(currentPageData.color)
+                      .withValues(alpha: 0.2),
                   width: 1,
                 ),
                 boxShadow: [
@@ -1033,19 +1106,25 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          currentPage == pages.length - 1 ? 'Get Started' : 'Next',
+                          currentPage == pages.length - 1
+                              ? 'Get Started'
+                              : 'Next',
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
-                            color: themeManager.getContrastingColor(currentPageData.color),
+                            color: themeManager
+                                .getContrastingColor(currentPageData.color),
                             letterSpacing: 0.5,
                           ),
                         ),
                         SizedBox(width: 8.w),
                         Icon(
-                          currentPage == pages.length - 1 ? Prbal.rocket2 : Prbal.arrowDown,
+                          currentPage == pages.length - 1
+                              ? Prbal.rocket2
+                              : Prbal.arrowDown,
                           size: 18.sp,
-                          color: themeManager.getContrastingColor(currentPageData.color),
+                          color: themeManager
+                              .getContrastingColor(currentPageData.color),
                         ),
                       ],
                     ),
@@ -1061,7 +1140,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
 
   void _skipOnboarding() {
     final pages = _getEnhancedPages(context);
-    debugPrint('🎯 IntroductionScreen: Skip button pressed - jumping to last page with comprehensive theming');
+    debugPrint(
+        '🎯 IntroductionScreen: Skip button pressed - jumping to last page with comprehensive theming');
     HapticFeedback.mediumImpact();
 
     pageController.animateToPage(
@@ -1073,7 +1153,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
 
   void _handlePrevious() {
     if (currentPage > 0) {
-      debugPrint('🎯 IntroductionScreen: Previous button pressed - going to page ${currentPage - 1}');
+      debugPrint(
+          '🎯 IntroductionScreen: Previous button pressed - going to page ${currentPage - 1}');
       HapticFeedback.lightImpact();
       pageController.previousPage(
         duration: const Duration(milliseconds: 400),
@@ -1086,21 +1167,24 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     final pages = _getEnhancedPages(context);
 
     if (currentPage < pages.length - 1) {
-      debugPrint('🎯 IntroductionScreen: Next button pressed - going to page ${currentPage + 1}');
+      debugPrint(
+          '🎯 IntroductionScreen: Next button pressed - going to page ${currentPage + 1}');
       HapticFeedback.lightImpact();
       pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOutCubic,
       );
     } else {
-      debugPrint('🎯 IntroductionScreen: Get Started button pressed - completing comprehensive onboarding');
+      debugPrint(
+          '🎯 IntroductionScreen: Get Started button pressed - completing comprehensive onboarding');
       HapticFeedback.heavyImpact();
       _handleGetStarted();
     }
   }
 
   Future<void> _handleGetStarted() async {
-    debugPrint('🎯 IntroductionScreen: Setting intro as watched and navigating to welcome with comprehensive theming');
+    debugPrint(
+        '🎯 IntroductionScreen: Setting intro as watched and navigating to welcome with comprehensive theming');
     await HiveService.setIntroWatched();
     NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
   }

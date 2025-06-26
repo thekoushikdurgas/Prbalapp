@@ -46,7 +46,8 @@ class CategoryFabActions extends StatefulWidget with ThemeAwareMixin {
   State<CategoryFabActions> createState() => _CategoryFabActionsState();
 }
 
-class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProviderStateMixin {
+class _CategoryFabActionsState extends State<CategoryFabActions>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -100,9 +101,12 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
 
     // Comprehensive debug logging for theme operations
 
-    debugPrint('🚀 CategoryFabActions: Building enhanced FAB with comprehensive ThemeManager integration');
-    debugPrint('🎨 CategoryFabActions: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
-    debugPrint('🚀 CategoryFabActions: hasSelection: ${widget.hasSelection}, selectedCount: ${widget.selectedCount}');
+    debugPrint(
+        '🚀 CategoryFabActions: Building enhanced FAB with comprehensive ThemeManager integration');
+    debugPrint(
+        '🎨 CategoryFabActions: Theme mode: ${themeManager.themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '🚀 CategoryFabActions: hasSelection: ${widget.hasSelection}, selectedCount: ${widget.selectedCount}');
     debugPrint(
         '🌈 CategoryFabActions: Using gradients - Primary: ${themeManager.primaryGradient.colors.length} colors, Surface: ${themeManager.surfaceGradient.colors.length} colors');
 
@@ -134,7 +138,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   }
 
   /// Build enhanced bulk actions floating action button with comprehensive ThemeManager styling
-  Widget _buildEnhancedBulkActionsFAB(BuildContext context, ThemeManager themeManager) {
+  Widget _buildEnhancedBulkActionsFAB(
+      BuildContext context, ThemeManager themeManager) {
     debugPrint(
         '⚡ CategoryFabActions: Building enhanced bulk actions FAB for ${widget.selectedCount} selected categories');
 
@@ -203,8 +208,10 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   }
 
   /// Build enhanced add category floating action button with comprehensive ThemeManager styling
-  Widget _buildEnhancedAddCategoryFAB(BuildContext context, ThemeManager themeManager) {
-    debugPrint('➕ CategoryFabActions: Building enhanced add category FAB with comprehensive theming');
+  Widget _buildEnhancedAddCategoryFAB(
+      BuildContext context, ThemeManager themeManager) {
+    debugPrint(
+        '➕ CategoryFabActions: Building enhanced add category FAB with comprehensive theming');
 
     return Container(
       decoration: BoxDecoration(
@@ -261,8 +268,10 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   }
 
   /// Show enhanced bulk actions bottom sheet with comprehensive ThemeManager integration
-  void _showEnhancedBulkActionsBottomSheet(BuildContext context, ThemeManager themeManager) {
-    debugPrint('⚡ CategoryFabActions: Showing enhanced bulk actions bottom sheet with comprehensive ThemeManager');
+  void _showEnhancedBulkActionsBottomSheet(
+      BuildContext context, ThemeManager themeManager) {
+    debugPrint(
+        '⚡ CategoryFabActions: Showing enhanced bulk actions bottom sheet with comprehensive ThemeManager');
 
     showModalBottomSheet(
       context: context,
@@ -376,7 +385,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     gradient: themeManager.accent2Gradient,
                     borderRadius: BorderRadius.circular(12.r),
@@ -445,7 +455,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   }
 
   /// Build enhanced action options with comprehensive ThemeManager integration
-  Widget _buildEnhancedActionOptions(BuildContext context, ThemeManager themeManager) {
+  Widget _buildEnhancedActionOptions(
+      BuildContext context, ThemeManager themeManager) {
     return Container(
       padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 32.h),
       decoration: BoxDecoration(
@@ -587,7 +598,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
         child: InkWell(
           onTap: onTap != null
               ? () {
-                  debugPrint('⚡ CategoryFabActions: Enhanced bulk action "$title" pressed');
+                  debugPrint(
+                      '⚡ CategoryFabActions: Enhanced bulk action "$title" pressed');
                   Navigator.of(context).pop();
                   HapticFeedback.lightImpact();
                   onTap();
@@ -627,16 +639,19 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
                       ),
                       SizedBox(height: 6.h),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
-                          color: themeManager.textInverted.withValues(alpha: 0.1),
+                          color:
+                              themeManager.textInverted.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
                           subtitle,
                           style: TextStyle(
                             fontSize: 13.sp,
-                            color: themeManager.textInverted.withValues(alpha: 0.9),
+                            color: themeManager.textInverted
+                                .withValues(alpha: 0.9),
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.1,
                           ),

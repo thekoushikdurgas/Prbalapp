@@ -19,7 +19,8 @@ class RouterUtils {
     // Log theme information for debugging
 
     debugPrint('🚀 RouterUtils: Building page transition for ${state.uri}');
-    debugPrint('🎨 RouterUtils: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
+    debugPrint(
+        '🎨 RouterUtils: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
 
     return CustomTransitionPage<T>(
       key: state.pageKey,
@@ -29,7 +30,8 @@ class RouterUtils {
         const end = Offset.zero;
         const curve = Curves.easeInOutCubic;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -51,7 +53,8 @@ class RouterUtils {
     final themeManager = ThemeManager.of(context);
 
     debugPrint('🖼️ RouterUtils: Building fade transition for image viewing');
-    debugPrint('🎨 RouterUtils: Overlay background: ${themeManager.overlayBackground}');
+    debugPrint(
+        '🎨 RouterUtils: Overlay background: ${themeManager.overlayBackground}');
 
     return CustomTransitionPage<void>(
       key: state.pageKey,
@@ -115,7 +118,8 @@ class RouterUtils {
 
                 // Main Error Title with Primary Gradient
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     gradient: themeManager.primaryGradient,
                     borderRadius: BorderRadius.circular(16),
@@ -167,7 +171,8 @@ class RouterUtils {
                           const SizedBox(width: 12),
                           Text(
                             'Error Details',
-                            style: themeManager.theme.textTheme.titleMedium?.copyWith(
+                            style: themeManager.theme.textTheme.titleMedium
+                                ?.copyWith(
                               color: themeManager.textPrimary,
                               fontWeight: FontWeight.w600,
                             ),
@@ -181,11 +186,13 @@ class RouterUtils {
                         decoration: BoxDecoration(
                           color: themeManager.cardBackground,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: themeManager.borderSecondary),
+                          border:
+                              Border.all(color: themeManager.borderSecondary),
                         ),
                         child: Text(
                           'Error: ${state.error}',
-                          style: themeManager.theme.textTheme.bodyMedium?.copyWith(
+                          style:
+                              themeManager.theme.textTheme.bodyMedium?.copyWith(
                             color: themeManager.textSecondary,
                             height: 1.5,
                           ),
@@ -220,7 +227,9 @@ class RouterUtils {
                       'Theme',
                       themeManager.themeManager ? 'Dark' : 'Light',
                       themeManager.infoColor,
-                      themeManager.themeManager ? Prbal.moonStroke : Prbal.sunStroke,
+                      themeManager.themeManager
+                          ? Prbal.moonStroke
+                          : Prbal.sunStroke,
                     ),
                   ],
                 ),
@@ -266,7 +275,8 @@ class RouterUtils {
                                 const SizedBox(width: 8),
                                 Text(
                                   'Go Back',
-                                  style: themeManager.theme.textTheme.labelLarge?.copyWith(
+                                  style: themeManager.theme.textTheme.labelLarge
+                                      ?.copyWith(
                                     color: themeManager.textInverted,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -285,7 +295,8 @@ class RouterUtils {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          debugPrint('🏠 RouterUtils: Go to home button pressed');
+                          debugPrint(
+                              '🏠 RouterUtils: Go to home button pressed');
                           context.go('/');
                         },
                         style: ElevatedButton.styleFrom(
@@ -317,7 +328,8 @@ class RouterUtils {
                               const SizedBox(width: 8),
                               Text(
                                 'Go to Home',
-                                style: themeManager.theme.textTheme.labelLarge?.copyWith(
+                                style: themeManager.theme.textTheme.labelLarge
+                                    ?.copyWith(
                                   color: themeManager.textSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -362,7 +374,8 @@ class RouterUtils {
                           const SizedBox(width: 8),
                           Text(
                             'Debug Information',
-                            style: themeManager.theme.textTheme.labelMedium?.copyWith(
+                            style: themeManager.theme.textTheme.labelMedium
+                                ?.copyWith(
                               color: themeManager.textTertiary,
                               fontWeight: FontWeight.w500,
                             ),
@@ -370,10 +383,14 @@ class RouterUtils {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      _buildDebugRow(themeManager, 'Route:', state.uri.toString()),
-                      _buildDebugRow(themeManager, 'Theme Mode:', themeManager.themeManager ? 'Dark' : 'Light'),
-                      _buildDebugRow(themeManager, 'Primary Color:', themeManager.primaryColor.toString()),
-                      _buildDebugRow(themeManager, 'Background Color:', themeManager.backgroundColor.toString()),
+                      _buildDebugRow(
+                          themeManager, 'Route:', state.uri.toString()),
+                      _buildDebugRow(themeManager, 'Theme Mode:',
+                          themeManager.themeManager ? 'Dark' : 'Light'),
+                      _buildDebugRow(themeManager, 'Primary Color:',
+                          themeManager.primaryColor.toString()),
+                      _buildDebugRow(themeManager, 'Background Color:',
+                          themeManager.backgroundColor.toString()),
                     ],
                   ),
                 ),
@@ -439,7 +456,8 @@ class RouterUtils {
   }
 
   /// Build debug information row
-  static Widget _buildDebugRow(ThemeManager themeManager, String key, String value) {
+  static Widget _buildDebugRow(
+      ThemeManager themeManager, String key, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -470,7 +488,8 @@ class RouterUtils {
   }
 
   /// Enhanced error page with animation showcase
-  static Widget buildAnimatedErrorPage(BuildContext context, GoRouterState state) {
+  static Widget buildAnimatedErrorPage(
+      BuildContext context, GoRouterState state) {
     final themeManager = ThemeManager.of(context);
 
     return Scaffold(

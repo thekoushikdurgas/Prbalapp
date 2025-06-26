@@ -64,7 +64,10 @@ class SettingsUtils {
   static int getRealBookingCount(Map<String, dynamic>? userData) {
     if (userData == null) return 0;
 
-    final bookings = userData['total_bookings'] ?? userData['bookings'] ?? userData['booking_count'] ?? 0;
+    final bookings = userData['total_bookings'] ??
+        userData['bookings'] ??
+        userData['booking_count'] ??
+        0;
     if (bookings is String) {
       return int.tryParse(bookings) ?? 0;
     }
@@ -159,10 +162,12 @@ class SettingsUtils {
   /// - All shadow and decoration effects
   /// - All utility methods and helpers
   /// - Complete debug logging capabilities
-  static void demonstrateAllThemeManagerFeatures(BuildContext context, String source) {
+  static void demonstrateAllThemeManagerFeatures(
+      BuildContext context, String source) {
     final themeManager = ThemeManager.of(context);
 
-    debugPrint('🎨 SettingsUtils: === COMPLETE THEMEMANAGER SHOWCASE ($source) ===');
+    debugPrint(
+        '🎨 SettingsUtils: === COMPLETE THEMEMANAGER SHOWCASE ($source) ===');
 
     // Use ALL ThemeManager debug utilities
 
@@ -181,10 +186,12 @@ class SettingsUtils {
     debugPrint('🌈 SettingsUtils: === ALL GRADIENTS DEMONSTRATION ===');
 
     // Core gradients
-    debugPrint('🌈 Background Gradient: ${themeManager.backgroundGradient.colors}');
+    debugPrint(
+        '🌈 Background Gradient: ${themeManager.backgroundGradient.colors}');
     debugPrint('🌈 Surface Gradient: ${themeManager.surfaceGradient.colors}');
     debugPrint('🌈 Primary Gradient: ${themeManager.primaryGradient.colors}');
-    debugPrint('🌈 Secondary Gradient: ${themeManager.secondaryGradient.colors}');
+    debugPrint(
+        '🌈 Secondary Gradient: ${themeManager.secondaryGradient.colors}');
     debugPrint('🌈 Neutral Gradient: ${themeManager.neutralGradient.colors}');
 
     // Status gradients
@@ -193,10 +200,14 @@ class SettingsUtils {
     debugPrint('🌈 Error Gradient: ${themeManager.errorGradient.colors}');
 
     // Accent gradients
-    debugPrint('🌈 Accent 1 Gradient (Purple): ${themeManager.accent1Gradient.colors}');
-    debugPrint('🌈 Accent 2 Gradient (Pink): ${themeManager.accent2Gradient.colors}');
-    debugPrint('🌈 Accent 3 Gradient (Teal): ${themeManager.accent3Gradient.colors}');
-    debugPrint('🌈 Accent 4 Gradient (Orange): ${themeManager.accent4Gradient.colors}');
+    debugPrint(
+        '🌈 Accent 1 Gradient (Purple): ${themeManager.accent1Gradient.colors}');
+    debugPrint(
+        '🌈 Accent 2 Gradient (Pink): ${themeManager.accent2Gradient.colors}');
+    debugPrint(
+        '🌈 Accent 3 Gradient (Teal): ${themeManager.accent3Gradient.colors}');
+    debugPrint(
+        '🌈 Accent 4 Gradient (Orange): ${themeManager.accent4Gradient.colors}');
 
     // Special gradients
     debugPrint('🌈 Glass Gradient: ${themeManager.glassGradient.colors}');
@@ -246,7 +257,8 @@ class SettingsUtils {
         '🎨 Warning: ${themeManager.warningColor} (Light: ${themeManager.warningLight}, Dark: ${themeManager.warningDark})');
     debugPrint(
         '🎨 Error: ${themeManager.errorColor} (Light: ${themeManager.errorLight}, Dark: ${themeManager.errorDark})');
-    debugPrint('🎨 Info: ${themeManager.infoColor} (Light: ${themeManager.infoLight}, Dark: ${themeManager.infoDark})');
+    debugPrint(
+        '🎨 Info: ${themeManager.infoColor} (Light: ${themeManager.infoLight}, Dark: ${themeManager.infoDark})');
 
     // Accent colors
     debugPrint('🎨 Accent 1 (Purple): ${themeManager.accent1}');
@@ -256,8 +268,10 @@ class SettingsUtils {
     debugPrint('🎨 Accent 5 (Indigo): ${themeManager.accent5}');
 
     // Neutral colors
-    debugPrint('🎨 Neutrals: ${themeManager.neutral50}, ${themeManager.neutral100}, ${themeManager.neutral200}');
-    debugPrint('🎨 Neutrals: ${themeManager.neutral300}, ${themeManager.neutral400}, ${themeManager.neutral500}');
+    debugPrint(
+        '🎨 Neutrals: ${themeManager.neutral50}, ${themeManager.neutral100}, ${themeManager.neutral200}');
+    debugPrint(
+        '🎨 Neutrals: ${themeManager.neutral300}, ${themeManager.neutral400}, ${themeManager.neutral500}');
     debugPrint(
         '🎨 Neutrals: ${themeManager.neutral600}, ${themeManager.neutral700}, ${themeManager.neutral800}, ${themeManager.neutral900}');
 
@@ -291,13 +305,16 @@ class SettingsUtils {
     debugPrint('💫 SettingsUtils: === ALL SHADOWS & EFFECTS DEMONSTRATION ===');
 
     // Shadow effects
-    debugPrint('💫 Primary Shadow: ${themeManager.primaryShadow.length} shadows');
-    debugPrint('💫 Elevated Shadow: ${themeManager.elevatedShadow.length} shadows');
+    debugPrint(
+        '💫 Primary Shadow: ${themeManager.primaryShadow.length} shadows');
+    debugPrint(
+        '💫 Elevated Shadow: ${themeManager.elevatedShadow.length} shadows');
     debugPrint('💫 Subtle Shadow: ${themeManager.subtleShadow.length} shadows');
 
     // Glass morphism effects
     debugPrint('💫 Glass Morphism: ${themeManager.glassMorphism.color}');
-    debugPrint('💫 Enhanced Glass Morphism: ${themeManager.enhancedGlassMorphism.color}');
+    debugPrint(
+        '💫 Enhanced Glass Morphism: ${themeManager.enhancedGlassMorphism.color}');
 
     // Access theme properties
     debugPrint('💫 Theme Data: ${themeManager.theme.brightness}');
@@ -324,27 +341,34 @@ class SettingsUtils {
     debugPrint('🛠️ Conditional Gradient: ${conditionalGradient.colors}');
 
     // Text color for backgrounds
-    final textForPrimary = themeManager.getTextColorForBackground(themeManager.primaryColor);
-    final textForSurface = themeManager.getTextColorForBackground(themeManager.surfaceColor);
+    final textForPrimary =
+        themeManager.getTextColorForBackground(themeManager.primaryColor);
+    final textForSurface =
+        themeManager.getTextColorForBackground(themeManager.surfaceColor);
     debugPrint('🛠️ Text for Primary: $textForPrimary');
     debugPrint('🛠️ Text for Surface: $textForSurface');
 
     // Contrasting colors
-    final contrastForPrimary = themeManager.getContrastingColor(themeManager.primaryColor);
-    final contrastForError = themeManager.getContrastingColor(themeManager.errorColor);
+    final contrastForPrimary =
+        themeManager.getContrastingColor(themeManager.primaryColor);
+    final contrastForError =
+        themeManager.getContrastingColor(themeManager.errorColor);
     debugPrint('🛠️ Contrast for Primary: $contrastForPrimary');
     debugPrint('🛠️ Contrast for Error: $contrastForError');
 
     // Theme alpha
-    final alphaColor = themeManager.withThemeAlpha(themeManager.primaryColor, 0.5);
+    final alphaColor =
+        themeManager.withThemeAlpha(themeManager.primaryColor, 0.5);
     debugPrint('🛠️ Alpha Color (50%): $alphaColor');
   }
 
   /// Demonstrates theme-aware utilities
   static void _demonstrateThemeAwareUtilities(ThemeManager themeManager) {
     debugPrint('⚙️ SettingsUtils: === THEME-AWARE UTILITIES ===');
-    debugPrint('⚙️ Theme Mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
-    debugPrint('⚙️ Font Family: ${themeManager.theme.textTheme.bodyMedium?.fontFamily ?? 'Default'}');
+    debugPrint(
+        '⚙️ Theme Mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
+    debugPrint(
+        '⚙️ Font Family: ${themeManager.theme.textTheme.bodyMedium?.fontFamily ?? 'Default'}');
     debugPrint('⚙️ Material 3: ${themeManager.theme.useMaterial3}');
   }
 
@@ -367,7 +391,8 @@ class SettingsUtils {
   /// SettingsUtils.logThemeDebugInfo(context, 'settings_screen_init');
   /// ```
   static void logThemeDebugInfo(BuildContext context, String source) {
-    debugPrint('🎨 SettingsUtils: === COMPREHENSIVE THEME DEBUG INFO ($source) ===');
+    debugPrint(
+        '🎨 SettingsUtils: === COMPREHENSIVE THEME DEBUG INFO ($source) ===');
 
     try {
       final themeManager = ThemeManager.of(context);
@@ -378,9 +403,12 @@ class SettingsUtils {
       themeManager.logGradientInfo();
 
       // Theme basic information
-      debugPrint('🎨 SettingsUtils: Theme brightness: ${themeManager.theme.brightness.name}');
-      debugPrint('🎨 SettingsUtils: System brightness: ${mediaQuery.platformBrightness.name}');
-      debugPrint('🎨 SettingsUtils: Material 3: ${themeManager.theme.useMaterial3}');
+      debugPrint(
+          '🎨 SettingsUtils: Theme brightness: ${themeManager.theme.brightness.name}');
+      debugPrint(
+          '🎨 SettingsUtils: System brightness: ${mediaQuery.platformBrightness.name}');
+      debugPrint(
+          '🎨 SettingsUtils: Material 3: ${themeManager.theme.useMaterial3}');
 
       // Color scheme analysis using ThemeManager colors
       _logColorSchemeAnalysisEnhanced(themeManager);
@@ -418,11 +446,13 @@ class SettingsUtils {
     // Background colors
     debugPrint('🎨 SettingsUtils: Background: ${themeManager.backgroundColor}');
     debugPrint('🎨 SettingsUtils: Surface: ${themeManager.surfaceColor}');
-    debugPrint('🎨 SettingsUtils: Card Background: ${themeManager.cardBackground}');
+    debugPrint(
+        '🎨 SettingsUtils: Card Background: ${themeManager.cardBackground}');
 
     // Text colors
     debugPrint('🎨 SettingsUtils: Text Primary: ${themeManager.textPrimary}');
-    debugPrint('🎨 SettingsUtils: Text Secondary: ${themeManager.textSecondary}');
+    debugPrint(
+        '🎨 SettingsUtils: Text Secondary: ${themeManager.textSecondary}');
     debugPrint('🎨 SettingsUtils: Text Tertiary: ${themeManager.textTertiary}');
 
     // Status colors
@@ -442,30 +472,40 @@ class SettingsUtils {
   /// Analyzes all gradients
   static void _logGradientAnalysis(ThemeManager themeManager) {
     debugPrint('🌈 SettingsUtils: === GRADIENT ANALYSIS ===');
-    debugPrint('🌈 Background Gradient: ${themeManager.backgroundGradient.colors.length} colors');
-    debugPrint('🌈 Surface Gradient: ${themeManager.surfaceGradient.colors.length} colors');
-    debugPrint('🌈 Primary Gradient: ${themeManager.primaryGradient.colors.length} colors');
-    debugPrint('🌈 Success Gradient: ${themeManager.successGradient.colors.length} colors');
-    debugPrint('🌈 Warning Gradient: ${themeManager.warningGradient.colors.length} colors');
-    debugPrint('🌈 Error Gradient: ${themeManager.errorGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Background Gradient: ${themeManager.backgroundGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Surface Gradient: ${themeManager.surfaceGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Primary Gradient: ${themeManager.primaryGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Success Gradient: ${themeManager.successGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Warning Gradient: ${themeManager.warningGradient.colors.length} colors');
+    debugPrint(
+        '🌈 Error Gradient: ${themeManager.errorGradient.colors.length} colors');
   }
 
   /// Analyzes all shadows
   static void _logShadowAnalysis(ThemeManager themeManager) {
     debugPrint('💫 SettingsUtils: === SHADOW ANALYSIS ===');
-    debugPrint('💫 Primary Shadow: ${themeManager.primaryShadow.length} shadows');
-    debugPrint('💫 Elevated Shadow: ${themeManager.elevatedShadow.length} shadows');
+    debugPrint(
+        '💫 Primary Shadow: ${themeManager.primaryShadow.length} shadows');
+    debugPrint(
+        '💫 Elevated Shadow: ${themeManager.elevatedShadow.length} shadows');
     debugPrint('💫 Subtle Shadow: ${themeManager.subtleShadow.length} shadows');
 
     // Analyze first shadow in each set
     if (themeManager.primaryShadow.isNotEmpty) {
       final shadow = themeManager.primaryShadow.first;
-      debugPrint('💫 Primary Shadow Details: Blur ${shadow.blurRadius}, Offset ${shadow.offset}');
+      debugPrint(
+          '💫 Primary Shadow Details: Blur ${shadow.blurRadius}, Offset ${shadow.offset}');
     }
   }
 
   /// Validates theme consistency between different states
-  static bool validateThemeConsistency(BuildContext context, ThemeMode expectedMode) {
+  static bool validateThemeConsistency(
+      BuildContext context, ThemeMode expectedMode) {
     debugPrint('🎨 SettingsUtils: === THEME CONSISTENCY VALIDATION ===');
 
     try {
@@ -478,28 +518,34 @@ class SettingsUtils {
       switch (expectedMode) {
         case ThemeMode.light:
           isConsistent = actualBrightness == Brightness.light;
-          debugPrint('🎨 SettingsUtils: Light mode check: ${isConsistent ? '✅' : '❌'}');
+          debugPrint(
+              '🎨 SettingsUtils: Light mode check: ${isConsistent ? '✅' : '❌'}');
           break;
 
         case ThemeMode.dark:
           isConsistent = actualBrightness == Brightness.dark;
-          debugPrint('🎨 SettingsUtils: Dark mode check: ${isConsistent ? '✅' : '❌'}');
+          debugPrint(
+              '🎨 SettingsUtils: Dark mode check: ${isConsistent ? '✅' : '❌'}');
           break;
 
         case ThemeMode.system:
           isConsistent = actualBrightness == systemBrightness;
-          debugPrint('🎨 SettingsUtils: System mode check: ${isConsistent ? '✅' : '❌'}');
-          debugPrint('🎨 SettingsUtils: Expected: ${systemBrightness.name}, Actual: ${actualBrightness.name}');
+          debugPrint(
+              '🎨 SettingsUtils: System mode check: ${isConsistent ? '✅' : '❌'}');
+          debugPrint(
+              '🎨 SettingsUtils: Expected: ${systemBrightness.name}, Actual: ${actualBrightness.name}');
           break;
       }
 
       // Additional ThemeManager consistency checks
       _validateThemeManagerConsistency(themeManager);
 
-      debugPrint('🎨 SettingsUtils: Overall consistency: ${isConsistent ? '✅ PASS' : '❌ FAIL'}');
+      debugPrint(
+          '🎨 SettingsUtils: Overall consistency: ${isConsistent ? '✅ PASS' : '❌ FAIL'}');
       return isConsistent;
     } catch (error) {
-      debugPrint('🎨 SettingsUtils: ❌ Error validating theme consistency: $error');
+      debugPrint(
+          '🎨 SettingsUtils: ❌ Error validating theme consistency: $error');
       return false;
     }
   }
@@ -514,18 +560,24 @@ class SettingsUtils {
     final expectedBrightness = isDark ? Brightness.dark : Brightness.light;
 
     final brightnessConsistent = actualBrightness == expectedBrightness;
-    debugPrint('🎨 SettingsUtils: Brightness consistency: ${brightnessConsistent ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Brightness consistency: ${brightnessConsistent ? '✅' : '❌'}');
 
     // Check color relationships
-    final primaryContrast = _calculateContrastRatio(themeManager.primaryColor, themeManager.textPrimary);
-    final surfaceContrast = _calculateContrastRatio(themeManager.surfaceColor, themeManager.textPrimary);
+    final primaryContrast = _calculateContrastRatio(
+        themeManager.primaryColor, themeManager.textPrimary);
+    final surfaceContrast = _calculateContrastRatio(
+        themeManager.surfaceColor, themeManager.textPrimary);
 
-    debugPrint('🎨 SettingsUtils: Primary contrast: ${primaryContrast.toStringAsFixed(2)}:1');
-    debugPrint('🎨 SettingsUtils: Surface contrast: ${surfaceContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Primary contrast: ${primaryContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Surface contrast: ${surfaceContrast.toStringAsFixed(2)}:1');
   }
 
   /// Monitors theme change performance with ThemeManager
-  static void monitorThemeChangePerformance(String operation, Function() themeOperation) {
+  static void monitorThemeChangePerformance(
+      String operation, Function() themeOperation) {
     debugPrint('🎨 SettingsUtils: === THEME PERFORMANCE MONITORING ===');
     debugPrint('🎨 SettingsUtils: Operation: $operation');
 
@@ -546,11 +598,13 @@ class SettingsUtils {
       } else if (duration < 200) {
         debugPrint('🎨 SettingsUtils: ⚠️ Acceptable performance');
       } else {
-        debugPrint('🎨 SettingsUtils: 🐌 Slow performance - consider optimization');
+        debugPrint(
+            '🎨 SettingsUtils: 🐌 Slow performance - consider optimization');
       }
     } catch (error) {
       stopwatch.stop();
-      debugPrint('🎨 SettingsUtils: ❌ Operation failed after ${stopwatch.elapsedMilliseconds}ms: $error');
+      debugPrint(
+          '🎨 SettingsUtils: ❌ Operation failed after ${stopwatch.elapsedMilliseconds}ms: $error');
     }
   }
 
@@ -559,7 +613,8 @@ class SettingsUtils {
     try {
       debugPrint('🎨 SettingsUtils: === THEME CACHE ANALYSIS ===');
       debugPrint('🎨 SettingsUtils: Cache analysis would be performed here');
-      debugPrint('🎨 SettingsUtils: Note: Import ThemeCaching for full analysis');
+      debugPrint(
+          '🎨 SettingsUtils: Note: Import ThemeCaching for full analysis');
     } catch (error) {
       debugPrint('🎨 SettingsUtils: ❌ Cache analysis error: $error');
     }
@@ -569,29 +624,43 @@ class SettingsUtils {
   static void _logThemePerformanceMetrics(ThemeData theme) {
     debugPrint('🎨 SettingsUtils: === THEME PERFORMANCE METRICS ===');
     debugPrint('🎨 SettingsUtils: Theme hash: ${theme.hashCode}');
-    debugPrint('🎨 SettingsUtils: Color scheme hash: ${theme.colorScheme.hashCode}');
-    debugPrint('🎨 SettingsUtils: Text theme hash: ${theme.textTheme.hashCode}');
+    debugPrint(
+        '🎨 SettingsUtils: Color scheme hash: ${theme.colorScheme.hashCode}');
+    debugPrint(
+        '🎨 SettingsUtils: Text theme hash: ${theme.textTheme.hashCode}');
 
     final estimatedMemory = _estimateThemeMemoryUsage(theme);
     debugPrint('🎨 SettingsUtils: Estimated memory: ~${estimatedMemory}KB');
   }
 
   /// Enhanced theme accessibility analysis using ThemeManager colors
-  static void _logThemeAccessibilityAnalysisEnhanced(ThemeManager themeManager) {
-    debugPrint('🎨 SettingsUtils: === ENHANCED THEME ACCESSIBILITY ANALYSIS ===');
+  static void _logThemeAccessibilityAnalysisEnhanced(
+      ThemeManager themeManager) {
+    debugPrint(
+        '🎨 SettingsUtils: === ENHANCED THEME ACCESSIBILITY ANALYSIS ===');
 
     // Check contrast ratios for all important color combinations
-    final primaryContrast = _calculateContrastRatio(themeManager.primaryColor, themeManager.textInverted);
-    final surfaceContrast = _calculateContrastRatio(themeManager.surfaceColor, themeManager.textPrimary);
-    final backgroundContrast = _calculateContrastRatio(themeManager.backgroundColor, themeManager.textPrimary);
-    final errorContrast = _calculateContrastRatio(themeManager.errorColor, themeManager.textInverted);
-    final successContrast = _calculateContrastRatio(themeManager.successColor, themeManager.textInverted);
+    final primaryContrast = _calculateContrastRatio(
+        themeManager.primaryColor, themeManager.textInverted);
+    final surfaceContrast = _calculateContrastRatio(
+        themeManager.surfaceColor, themeManager.textPrimary);
+    final backgroundContrast = _calculateContrastRatio(
+        themeManager.backgroundColor, themeManager.textPrimary);
+    final errorContrast = _calculateContrastRatio(
+        themeManager.errorColor, themeManager.textInverted);
+    final successContrast = _calculateContrastRatio(
+        themeManager.successColor, themeManager.textInverted);
 
-    debugPrint('🎨 SettingsUtils: Primary contrast: ${primaryContrast.toStringAsFixed(2)}:1');
-    debugPrint('🎨 SettingsUtils: Surface contrast: ${surfaceContrast.toStringAsFixed(2)}:1');
-    debugPrint('🎨 SettingsUtils: Background contrast: ${backgroundContrast.toStringAsFixed(2)}:1');
-    debugPrint('🎨 SettingsUtils: Error contrast: ${errorContrast.toStringAsFixed(2)}:1');
-    debugPrint('🎨 SettingsUtils: Success contrast: ${successContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Primary contrast: ${primaryContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Surface contrast: ${surfaceContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Background contrast: ${backgroundContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Error contrast: ${errorContrast.toStringAsFixed(2)}:1');
+    debugPrint(
+        '🎨 SettingsUtils: Success contrast: ${successContrast.toStringAsFixed(2)}:1');
 
     // WCAG AA compliance (4.5:1 for normal text)
     final primaryCompliant = primaryContrast >= 4.5;
@@ -600,11 +669,16 @@ class SettingsUtils {
     final errorCompliant = errorContrast >= 4.5;
     final successCompliant = successContrast >= 4.5;
 
-    debugPrint('🎨 SettingsUtils: Primary WCAG AA: ${primaryCompliant ? '✅' : '❌'}');
-    debugPrint('🎨 SettingsUtils: Surface WCAG AA: ${surfaceCompliant ? '✅' : '❌'}');
-    debugPrint('🎨 SettingsUtils: Background WCAG AA: ${backgroundCompliant ? '✅' : '❌'}');
-    debugPrint('🎨 SettingsUtils: Error WCAG AA: ${errorCompliant ? '✅' : '❌'}');
-    debugPrint('🎨 SettingsUtils: Success WCAG AA: ${successCompliant ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Primary WCAG AA: ${primaryCompliant ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Surface WCAG AA: ${surfaceCompliant ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Background WCAG AA: ${backgroundCompliant ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Error WCAG AA: ${errorCompliant ? '✅' : '❌'}');
+    debugPrint(
+        '🎨 SettingsUtils: Success WCAG AA: ${successCompliant ? '✅' : '❌'}');
   }
 
   /// Estimates theme memory usage (rough calculation)
@@ -686,12 +760,16 @@ class SettingsUtils {
         'estimatedMemoryKB': _estimateThemeMemoryUsage(themeManager.theme),
       },
       'accessibility': {
-        'primaryContrast': _calculateContrastRatio(themeManager.primaryColor, themeManager.textInverted),
-        'surfaceContrast': _calculateContrastRatio(themeManager.surfaceColor, themeManager.textPrimary),
-        'backgroundContrast': _calculateContrastRatio(themeManager.backgroundColor, themeManager.textPrimary),
+        'primaryContrast': _calculateContrastRatio(
+            themeManager.primaryColor, themeManager.textInverted),
+        'surfaceContrast': _calculateContrastRatio(
+            themeManager.surfaceColor, themeManager.textPrimary),
+        'backgroundContrast': _calculateContrastRatio(
+            themeManager.backgroundColor, themeManager.textPrimary),
       },
       'gradients': {
-        'backgroundGradientColors': themeManager.backgroundGradient.colors.length,
+        'backgroundGradientColors':
+            themeManager.backgroundGradient.colors.length,
         'primaryGradientColors': themeManager.primaryGradient.colors.length,
         'successGradientColors': themeManager.successGradient.colors.length,
       },
@@ -727,14 +805,18 @@ class SettingsUtils {
       decoration = BoxDecoration(
         gradient: themeManager.primaryGradient,
         borderRadius: borderRadius ?? BorderRadius.circular(12),
-        boxShadow: useElevatedShadow ? themeManager.elevatedShadow : themeManager.subtleShadow,
+        boxShadow: useElevatedShadow
+            ? themeManager.elevatedShadow
+            : themeManager.subtleShadow,
       );
     } else {
       decoration = BoxDecoration(
         color: themeManager.surfaceColor,
         borderRadius: borderRadius ?? BorderRadius.circular(12),
         border: Border.all(color: themeManager.borderColor),
-        boxShadow: useElevatedShadow ? themeManager.elevatedShadow : themeManager.subtleShadow,
+        boxShadow: useElevatedShadow
+            ? themeManager.elevatedShadow
+            : themeManager.subtleShadow,
       );
     }
 

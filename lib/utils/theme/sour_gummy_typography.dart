@@ -13,29 +13,28 @@ import 'package:prbal/utils/theme/theme_manager.dart';
 /// - Responsive font sizing with ScreenUtil
 /// - Font weight and style variations
 /// - Letter spacing and line height optimization
-/// 
+///
 /// **Usage**:
 /// ```dart
 /// Text(
 ///   'Hello World',
 ///   style: SourGummyTypography.displayLarge(context),
 /// )
-/// 
+///
 /// Text(
 ///   'Button Text',
 ///   style: SourGummyTypography.button(context, color: Colors.white),
 /// )
 /// ```
 class SourGummyTypography {
-  
   // =================== FONT FAMILY CONSTANTS ===================
-  
+
   /// Primary SourGummy font family for standard text
   static const String primary = ThemeManager.fontFamilyPrimary;
-  
+
   /// SourGummy Expanded for headings and emphasis
   static const String expanded = ThemeManager.fontFamilyExpanded;
-  
+
   /// SourGummy SemiExpanded for subheadings and titles
   static const String semiExpanded = ThemeManager.fontFamilySemiExpanded;
 
@@ -260,7 +259,8 @@ class SourGummyTypography {
   // =================== SPECIALIZED STYLES ===================
 
   /// Logo text style - SourGummy Expanded with branding
-  static TextStyle logo(BuildContext context, {Color? color, double? fontSize}) {
+  static TextStyle logo(BuildContext context,
+      {Color? color, double? fontSize}) {
     final themeManager = ThemeManager.of(context);
     return TextStyle(
       fontFamily: expanded,
@@ -422,27 +422,27 @@ class SourGummyTypography {
     debugPrint('  - displayLarge: $expanded | 57sp | w800');
     debugPrint('  - displayMedium: $expanded | 45sp | w700');
     debugPrint('  - displaySmall: $semiExpanded | 36sp | w700');
-    
+
     debugPrint('📰 HEADLINE STYLES:');
     debugPrint('  - headlineLarge: $semiExpanded | 32sp | w700');
     debugPrint('  - headlineMedium: $semiExpanded | 28sp | w600');
     debugPrint('  - headlineSmall: $primary | 24sp | w600');
-    
+
     debugPrint('🏷️ TITLE STYLES:');
     debugPrint('  - titleLarge: $primary | 22sp | w600');
     debugPrint('  - titleMedium: $primary | 16sp | w600');
     debugPrint('  - titleSmall: $primary | 14sp | w600');
-    
+
     debugPrint('📝 BODY STYLES:');
     debugPrint('  - bodyLarge: $primary | 16sp | w400');
     debugPrint('  - bodyMedium: $primary | 14sp | w400');
     debugPrint('  - bodySmall: $primary | 12sp | w400');
-    
+
     debugPrint('🏷️ LABEL STYLES:');
     debugPrint('  - labelLarge: $primary | 14sp | w600');
     debugPrint('  - labelMedium: $primary | 12sp | w500');
     debugPrint('  - labelSmall: $primary | 11sp | w500');
-    
+
     debugPrint('🎨 SPECIALIZED STYLES:');
     debugPrint('  - logo: $expanded | 32sp | w800');
     debugPrint('  - button: $semiExpanded | 14sp | w600');
@@ -450,13 +450,13 @@ class SourGummyTypography {
     debugPrint('  - cardTitle: $semiExpanded | 18sp | w600');
     debugPrint('  - cardSubtitle: $primary | 13sp | w400');
     debugPrint('  - overline: $primary | 10sp | w500');
-    
+
     debugPrint('📊 STATUS STYLES:');
     debugPrint('  - success: $primary | 14sp | w600');
     debugPrint('  - warning: $primary | 14sp | w600');
     debugPrint('  - error: $primary | 14sp | w600');
     debugPrint('  - info: $primary | 14sp | w600');
-    
+
     debugPrint('🔤 =================================================');
   }
-} 
+}
