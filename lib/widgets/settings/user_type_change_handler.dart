@@ -49,10 +49,6 @@ class UserTypeChangeHandler {
     try {
       // First, get user type change info from API
       final authToken = HiveService.getAuthToken();
-      if (authToken == null) {
-        _showErrorSnackBar(context, 'Please log in to change account type', themeManager);
-        return;
-      }
 
       // Show enhanced loading while fetching user type change info
       showDialog(
@@ -853,10 +849,6 @@ class UserTypeChangeHandler {
 
     try {
       final authToken = HiveService.getAuthToken();
-      if (authToken == null) {
-        _showErrorSnackBar(context, 'Authentication token not found', themeManager);
-        return;
-      }
 
       // Show loading dialog
       showDialog(

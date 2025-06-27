@@ -112,6 +112,8 @@ flutter run --android-skip-build-dependency-validation --verbose
 
 
 flutter clean
+flutter pub get
+flutter run
 cd android && gradlew clean && cd ..
 flutter pub get
 flutter run --android-skip-build-dependency-validation --verbose

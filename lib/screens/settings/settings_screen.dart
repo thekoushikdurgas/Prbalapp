@@ -151,9 +151,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       final userData = HiveService.getUserData();
       if (mounted) {
         setState(() {
-          _notificationsEnabled = userData?['notifications_enabled'] ?? true;
-          _biometricsEnabled = userData?['biometrics_enabled'] ?? false;
-          _analyticsEnabled = userData?['analytics_enabled'] ?? true;
+          _notificationsEnabled = userData.notificationsEnabled;
+          _biometricsEnabled = userData.biometricsEnabled;
+          _analyticsEnabled = userData.analyticsEnabled;
         });
         debugPrint('⚙️ SettingsScreen: User preferences loaded');
       }
@@ -573,19 +573,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
           debugPrint('🖼️ Updating authentication state with new profile picture');
 
           final authNotifier = ref.read(authenticationStateProvider.notifier);
-          final updatedUserData = {
-            ...authState.userData ?? {},
-            'profile_picture': newProfilePictureUrl,
-            'profilePicture': newProfilePictureUrl, // Both formats for compatibility
-            'updated_at': DateTime.now().toIso8601String(),
-          };
+          final updatedUserData = authState.userData?.copyWith(
+            profilePicture: newProfilePictureUrl,
+            updatedAt: DateTime.now(),
+          );
 
-          debugPrint('🖼️ Updated user data keys: ${updatedUserData.keys.toList()}');
+          // debugPrint('🖼️ Updated user data keys: ${updatedUserData.toJson().keys.toList()}');
 
           await authNotifier.setAuthenticated(
             accessToken: authState.accessToken!,
             refreshToken: authState.refreshToken,
-            userData: updatedUserData,
+            userData: updatedUserData!,
             userType: authState.userType,
           );
 
@@ -857,8 +855,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   // HELPER METHODS
   // ============================================================================
 
-  /// Helper methods for user data extraction
-  bool _isVerified(Map<String, dynamic>? userData) => SettingsUtils.isVerified(userData);
+  // /// Helper methods for user data extraction
+  // bool _isVerified(AppUser userData) => SettingsUtils.isVerified(userData);
 
   /// Saves notification preference
   Future<void> _saveNotificationPreference(bool enabled) async {
@@ -934,13 +932,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
     final themeManager = ThemeManager.of(context);
     final authState = ref.read(authenticationStateProvider);
-    final userData = authState.userData;
+    final AppUser userData = authState.userData as AppUser;
 
     // Extract user information
     final displayName = getDisplayName(userData);
-    final userType = userData?['user_type'] ?? userData?['userType'] ?? 'customer';
-    final profilePicture = userData?['profile_picture'] ?? userData?['profilePicture'];
-    final isVerified = _isVerified(userData);
+    final userType = userData.userType;
+    final profilePicture = userData.profilePicture;
+    final isVerified = userData.isVerified;
     final rating = _getRealRating(userData);
     final bookingCount = _getRealBookingCount(userData);
     final userTypeColor = themeManager.getUserTypeColor(userType);
@@ -1117,7 +1115,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                     ),
 
                     // Stats for providers
-                    if (userType == 'provider') ...[
+                    if (userType == UserType.provider) ...[
                       SizedBox(height: 24.h),
                       Row(
                         children: [
@@ -1185,18 +1183,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
     final themeManager = ThemeManager.of(context);
     final authState = ref.read(authenticationStateProvider);
-    final userData = authState.userData;
+    final userData = authState.userData as AppUser;
 
     // Form controllers with current data
-    final firstNameController = TextEditingController(text: userData?['first_name'] ?? userData?['firstName'] ?? '');
-    final lastNameController = TextEditingController(text: userData?['last_name'] ?? userData?['lastName'] ?? '');
-    final usernameController = TextEditingController(text: userData?['username'] ?? '');
-    final bioController = TextEditingController(text: userData?['bio'] ?? '');
-    final locationController = TextEditingController(text: userData?['location'] ?? '');
+    final firstNameController = TextEditingController(text: userData.firstName);
+    final lastNameController = TextEditingController(text: userData.lastName);
+    final usernameController = TextEditingController(text: userData.username);
+    final bioController = TextEditingController(text: userData.bio);
+    final locationController = TextEditingController(text: userData.location);
 
     // Form key for validation
     final formKey = GlobalKey<FormState>();
-    final userTypeColor = themeManager.getUserTypeColor(userData?['user_type'] ?? userData?['userType'] ?? 'customer');
+    final userTypeColor = themeManager.getUserTypeColor(userData.userType);
 
     // State management
     bool isLoading = false;
@@ -1536,8 +1534,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: themeManager
-                    .getUserTypeColor(ref.read(authenticationStateProvider).userData?['user_type'] ?? 'customer'),
+                color: themeManager.getUserTypeColor(ref.read(authenticationStateProvider).userData!.userType),
                 width: 2,
               ),
             ),
@@ -1590,9 +1587,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     try {
       // Get current auth token
       final authToken = HiveService.getAuthToken();
-      if (authToken == null) {
-        throw Exception('No authentication token found');
-      }
 
       // Prepare update request
       final updateRequest = UpdateProfileRequest(
@@ -1625,21 +1619,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
         final currentState = ref.read(authenticationStateProvider);
 
         // Update user data with new type
-        final updatedUserData = {
-          ...currentState.userData ?? {},
-          'first_name': response.data!.firstName,
-          'lastName': response.data!.lastName,
-          'username': response.data!.username,
-          'bio': response.data!.bio,
-          'location': response.data!.location,
-          'updated_at': response.data!.updatedAt.toIso8601String(),
-        };
+        final updatedUserData = currentState.userData?.copyWith(
+          firstName: response.data!.firstName,
+          lastName: response.data!.lastName,
+          username: response.data!.username,
+          bio: response.data!.bio,
+          location: response.data!.location,
+          updatedAt: response.data!.updatedAt,
+        );
 
         // Update authentication state
         await authNotifier.setAuthenticated(
           accessToken: currentState.accessToken!,
           refreshToken: currentState.refreshToken,
-          userData: updatedUserData,
+          userData: updatedUserData!,
           userType: currentState.userType,
         );
 
@@ -1743,11 +1736,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   }
 
   /// Helper methods for user data extraction
-  String getDisplayName(Map<String, dynamic>? userData) => SettingsUtils.getDisplayName(userData);
+  String getDisplayName(AppUser userData) => SettingsUtils.getDisplayName(userData);
 
-  double _getRealRating(Map<String, dynamic>? userData) => SettingsUtils.getRealRating(userData);
+  double _getRealRating(AppUser userData) => SettingsUtils.getRealRating(userData);
 
-  int _getRealBookingCount(Map<String, dynamic>? userData) => SettingsUtils.getRealBookingCount(userData);
+  int _getRealBookingCount(AppUser userData) => SettingsUtils.getRealBookingCount(userData);
 
   // IconData getUserTypeIcon(UserType userType) => SettingsUtils.getUserTypeIcon(userType);
 

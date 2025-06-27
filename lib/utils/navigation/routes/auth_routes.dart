@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:prbal/screens/auth/pin_verification_screen.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// Authentication related routes
@@ -15,7 +16,7 @@ class AuthRoutes {
         return PinVerificationScreen(
           phoneNumber: extra?['phoneNumber'] as String? ?? '',
           isNewUser: extra?['isNewUser'] as bool? ?? false,
-          userData: extra?['userData'] as Map<String, dynamic>?,
+          userData: extra?['userData'] as AppUser,
         );
       },
     ),

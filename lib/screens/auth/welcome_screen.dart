@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
-import 'package:prbal/widgets/phone_login_bottom_sheet.dart';
+import 'package:prbal/screens/auth/phone_login_bottom_sheet.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 

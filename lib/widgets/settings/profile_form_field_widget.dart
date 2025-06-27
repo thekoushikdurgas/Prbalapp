@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Services
 import 'package:prbal/services/service_providers.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// **THEMEMANAGER INTEGRATED** ProfileFormFieldWidget - Reusable form field for profile editing
@@ -53,7 +54,7 @@ class ProfileFormFieldWidget extends ConsumerWidget with ThemeAwareMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeManager = ThemeManager.of(context);
     final authState = ref.read(authenticationStateProvider);
-    final userType = authState.userData?['user_type'] ?? 'customer';
+    final userType = authState.userData?.userType ?? UserType.customer;
     final userTypeColor = themeManager.getUserTypeColor(userType);
 
     // 📊 Debug logging

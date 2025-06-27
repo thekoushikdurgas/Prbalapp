@@ -21,7 +21,7 @@ import 'package:prbal/screens/settings/profile_screen.dart';
 import 'package:prbal/screens/common/add_service_screen.dart';
 import 'package:prbal/screens/common/post_request_screen.dart';
 import 'package:prbal/screens/common/notifications_screen.dart';
-import 'package:prbal/widgets/bottom_navigation.dart';
+import 'package:prbal/screens/common/bottom_navigation.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 // Admin management screen imports
 import 'package:prbal/screens/admin/admin_category_manager_screen.dart';

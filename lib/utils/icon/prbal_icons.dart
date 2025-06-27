@@ -9321,4 +9321,5 @@ class Prbal {
   static const IconData zoom = IconData(0xf663, fontFamily: _fontFamily);
   static const IconData zorin = IconData(0xf664, fontFamily: _fontFamily);
   static const IconData zulip = IconData(0xf665, fontFamily: _fontFamily);
+  static const IconData cookie = Icons.cookie;
 }

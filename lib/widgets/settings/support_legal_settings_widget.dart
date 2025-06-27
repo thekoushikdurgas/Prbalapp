@@ -4,6 +4,10 @@ import 'package:prbal/utils/theme/theme_manager.dart';
 
 // Components
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
+import 'package:prbal/widgets/settings/help_center_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/contact_us_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/terms_of_service_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/privacy_policy_bottom_sheet.dart';
 
 /// ====================================================================
 /// SUPPORT LEGAL SETTINGS WIDGET - COMPREHENSIVE THEMEMANAGER INTEGRATION
@@ -65,8 +69,7 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '📞 [SupportLegal] Building support & legal settings with comprehensive ThemeManager integration');
+    debugPrint('📞 [SupportLegal] Building support & legal settings with comprehensive ThemeManager integration');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
@@ -96,7 +99,7 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('📞 [SupportLegal] Help Center tapped');
-            // TODO: Navigate to help center
+            HelpCenterBottomSheet.show(context);
           },
         ),
 
@@ -111,7 +114,7 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('📞 [SupportLegal] Contact Us tapped');
-            // TODO: Navigate to contact
+            ContactUsBottomSheet.show(context);
           },
         ),
 
@@ -126,7 +129,7 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('📞 [SupportLegal] Terms of Service tapped');
-            // TODO: Navigate to terms
+            TermsOfServiceBottomSheet.show(context);
           },
         ),
 
@@ -141,7 +144,7 @@ class SupportLegalSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('📞 [SupportLegal] Privacy Policy tapped');
-            // TODO: Navigate to privacy policy
+            PrivacyPolicyBottomSheet.show(context);
           },
         ),
       ],

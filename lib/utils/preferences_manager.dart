@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Services
 import 'package:prbal/services/hive_service.dart';
+import 'package:prbal/services/user_service.dart';
 
 /// Utility class for managing user preferences and settings
 class PreferencesManager {
@@ -12,22 +13,18 @@ class PreferencesManager {
     required bool enabled,
     required BuildContext context,
   }) async {
-    debugPrint(
-        '⚙️ PreferencesManager: Saving notification preference: $enabled');
+    debugPrint('⚙️ PreferencesManager: Saving notification preference: $enabled');
 
     try {
-      final userData = HiveService.getUserData();
-      if (userData == null) return;
-      userData['notifications_enabled'] = enabled;
+      AppUser userData = HiveService.getUserData();
+      userData = userData.copyWith(notificationsEnabled: enabled);
       HiveService.saveUserData(userData).then((value) {
         if (context.mounted) {
           HapticFeedback.lightImpact();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                  enabled ? 'Notifications enabled' : 'Notifications disabled'),
-              backgroundColor:
-                  enabled ? const Color(0xFF48BB78) : const Color(0xFFED8936),
+              content: Text(enabled ? 'Notifications enabled' : 'Notifications disabled'),
+              backgroundColor: enabled ? const Color(0xFF48BB78) : const Color(0xFFED8936),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
@@ -38,8 +35,7 @@ class PreferencesManager {
         }
       });
     } catch (e) {
-      debugPrint(
-          '❌ PreferencesManager: Failed to save notification preference: $e');
+      debugPrint('❌ PreferencesManager: Failed to save notification preference: $e');
     }
   }
 
@@ -51,16 +47,14 @@ class PreferencesManager {
     debugPrint('⚙️ PreferencesManager: Saving analytics preference: $enabled');
 
     try {
-      final userData = HiveService.getUserData();
-      if (userData == null) return;
-      userData['analytics_enabled'] = enabled;
+      AppUser userData = HiveService.getUserData();
+      userData = userData.copyWith(analyticsEnabled: enabled);
       HiveService.saveUserData(userData).then((value) {
         if (context.mounted) {
           HapticFeedback.lightImpact();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text(enabled ? 'Analytics enabled' : 'Analytics disabled'),
+              content: Text(enabled ? 'Analytics enabled' : 'Analytics disabled'),
               backgroundColor: const Color(0xFF4299E1),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -72,8 +66,7 @@ class PreferencesManager {
         }
       });
     } catch (e) {
-      debugPrint(
-          '❌ PreferencesManager: Failed to save analytics preference: $e');
+      debugPrint('❌ PreferencesManager: Failed to save analytics preference: $e');
     }
   }
 
@@ -85,17 +78,15 @@ class PreferencesManager {
     debugPrint('⚙️ PreferencesManager: Saving biometric preference: $enabled');
 
     try {
-      final userData = HiveService.getUserData() ?? {};
-      userData['biometrics_enabled'] = enabled;
+      AppUser userData = HiveService.getUserData();
+      userData = userData.copyWith(biometricsEnabled: enabled);
       await HiveService.saveUserData(userData);
 
       if (context.mounted) {
         HapticFeedback.lightImpact();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(enabled
-                ? 'Biometric authentication enabled'
-                : 'Biometric authentication disabled'),
+            content: Text(enabled ? 'Biometric authentication enabled' : 'Biometric authentication disabled'),
             backgroundColor: const Color(0xFF9F7AEA),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -106,8 +97,7 @@ class PreferencesManager {
         );
       }
     } catch (e) {
-      debugPrint(
-          '❌ PreferencesManager: Failed to save biometric preference: $e');
+      debugPrint('❌ PreferencesManager: Failed to save biometric preference: $e');
     }
   }
 
@@ -118,9 +108,9 @@ class PreferencesManager {
     try {
       final userData = HiveService.getUserData();
       return {
-        'notifications_enabled': userData?['notifications_enabled'] ?? true,
-        'biometrics_enabled': userData?['biometrics_enabled'] ?? false,
-        'analytics_enabled': userData?['analytics_enabled'] ?? true,
+        'notifications_enabled': userData.notificationsEnabled,
+        'biometrics_enabled': userData.biometricsEnabled,
+        'analytics_enabled': userData.analyticsEnabled,
       };
     } catch (e) {
       debugPrint('❌ PreferencesManager: Error loading user preferences: $e');

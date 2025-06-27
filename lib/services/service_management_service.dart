@@ -474,11 +474,9 @@ class ServiceManagementService {
   final ApiService _apiService;
 
   // Cache timers for different data types
-  Timer? _categoryCacheTimer;
   Timer? _serviceCacheTimer;
 
   // Cache duration constants
-  static const Duration _categoryCacheDuration = Duration(minutes: 30);
   static const Duration _serviceCacheDuration = Duration(minutes: 15);
 
   // Stream controllers for real-time updates
@@ -520,7 +518,6 @@ class ServiceManagementService {
     debugPrint('🔧   → PATCH  /services/subcategories/{id}/ (Partial update - Admin)');
     debugPrint('🔧   → DELETE /services/subcategories/{id}/ (Delete subcategory - Admin)');
     debugPrint('🔧 💾 CACHING STRATEGY:');
-    debugPrint('🔧   → Categories Cache Duration: $_categoryCacheDuration');
     debugPrint('🔧   → Services Cache Duration: $_serviceCacheDuration');
     debugPrint('🔧   → Cache Storage: Local Hive database');
     debugPrint('🔧   → Cache Invalidation: On write operations');
@@ -545,12 +542,11 @@ class ServiceManagementService {
   // Based on /categories/ endpoints from Postman collection
   // ====================================================================
 
-  /// Get all service categories with optional caching
+  /// Get all service categories
   ///
   /// 🔍 CATEGORY RETRIEVAL ANALYSIS:
   /// - Endpoint: GET /api/services/categories/
   /// - Supports filtering, searching, and sorting
-  /// - Intelligent caching with configurable duration
   /// - Real-time stream updates for UI synchronization
   /// - Admin and user access with permission validation
   ///
@@ -559,16 +555,10 @@ class ServiceManagementService {
   /// - search: Text search in name and description
   /// - ordering: Sort by name, sort_order, created_at
   /// - page/page_size: Pagination support
-  ///
-  /// 💾 CACHING STRATEGY:
-  /// - Local cache with configurable TTL
-  /// - Cache invalidation on write operations
-  /// - Fallback to API on cache miss/expiry
   Future<ApiResponse<List<ServiceCategory>>> getCategories({
     bool activeOnly = false,
     String? search,
     String ordering = 'sort_order',
-    bool useCache = true,
   }) async {
     final startTime = DateTime.now();
     debugPrint('🔧 ServiceManagementService.getCategories: ============================');
@@ -578,12 +568,11 @@ class ServiceManagementService {
     debugPrint('🔧   → Active Only Filter: ${activeOnly ? 'ENABLED' : 'DISABLED'}');
     debugPrint('🔧   → Search Query: ${search ?? 'NONE'}');
     debugPrint('🔧   → Ordering Strategy: $ordering');
-    debugPrint('🔧   → Caching Enabled: ${useCache ? 'YES' : 'NO'}');
     debugPrint('🔧   → Request Timestamp: ${startTime.toIso8601String()}');
     debugPrint('🔧 → 🔐 PERMISSION ANALYSIS:');
     debugPrint('🔧   → User Type: ${HiveService.getUserType()}');
     debugPrint('🔧   → Is Admin: ${HiveService.isAdmin() ? 'YES' : 'NO'}');
-    debugPrint('🔧   → Auth Token Present: ${HiveService.getAuthToken() != null ? 'YES' : 'NO'}');
+    // debugPrint('🔧   → Auth Token Present: ${HiveService.getAuthToken() != null ? 'YES' : 'NO'}');
 
     // Analyze search query if provided
     if (search != null && search.isNotEmpty) {
@@ -594,93 +583,6 @@ class ServiceManagementService {
     }
 
     try {
-      // Check cache first if enabled
-      debugPrint('🔧 → 💾 CACHE STRATEGY ANALYSIS:');
-      if (useCache) {
-        debugPrint('🔧   → Cache Check: ENABLED - Checking local storage');
-        debugPrint('🔧   → Cache TTL: ${_categoryCacheDuration.inMinutes} minutes');
-
-        final cacheStartTime = DateTime.now();
-        final cachedCategories = await _getCachedCategories();
-        final cacheCheckDuration = DateTime.now().difference(cacheStartTime).inMilliseconds;
-
-        debugPrint('🔧   → Cache Lookup Time: ${cacheCheckDuration}ms');
-
-        if (cachedCategories != null && cachedCategories.isNotEmpty) {
-          debugPrint('🔧   → Cache Hit: ✅ SUCCESS');
-          debugPrint('🔧   → Cached Categories Count: ${cachedCategories.length}');
-          debugPrint('🔧   → Cache Performance: Saved API call');
-
-          // Analyze cached data freshness
-          final oldestCategory = cachedCategories.reduce((a, b) => a.updatedAt.isBefore(b.updatedAt) ? a : b);
-          final newestCategory = cachedCategories.reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
-
-          debugPrint('🔧   → Data Freshness Analysis:');
-          debugPrint(
-              '🔧     → Oldest Entry: ${oldestCategory.name} (${DateTime.now().difference(oldestCategory.updatedAt).inHours}h ago)');
-          debugPrint(
-              '🔧     → Newest Entry: ${newestCategory.name} (${DateTime.now().difference(newestCategory.updatedAt).inHours}h ago)');
-
-          // Apply filters to cached data if needed
-          var filteredCategories = cachedCategories;
-
-          if (activeOnly) {
-            filteredCategories = filteredCategories.where((c) => c.isActive).toList();
-            debugPrint(
-                '🔧   → Active Filter Applied: ${filteredCategories.length}/${cachedCategories.length} categories');
-          }
-
-          if (search != null && search.isNotEmpty) {
-            final searchLower = search.toLowerCase();
-            filteredCategories = filteredCategories
-                .where((c) =>
-                    c.name.toLowerCase().contains(searchLower) || c.description.toLowerCase().contains(searchLower))
-                .toList();
-            debugPrint(
-                '🔧   → Search Filter Applied: ${filteredCategories.length}/${cachedCategories.length} categories match "$search"');
-          }
-
-          // Apply ordering to cached data
-          switch (ordering) {
-            case 'name':
-              filteredCategories.sort((a, b) => a.name.compareTo(b.name));
-              break;
-            case '-name':
-              filteredCategories.sort((a, b) => b.name.compareTo(a.name));
-              break;
-            case 'sort_order':
-              filteredCategories.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-              break;
-            case '-sort_order':
-              filteredCategories.sort((a, b) => b.sortOrder.compareTo(a.sortOrder));
-              break;
-            case 'created_at':
-              filteredCategories.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-              break;
-            case '-created_at':
-              filteredCategories.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              break;
-          }
-          debugPrint('🔧   → Ordering Applied: $ordering (${filteredCategories.length} categories sorted)');
-
-          final totalDuration = DateTime.now().difference(startTime).inMilliseconds;
-          debugPrint('🔧 ServiceManagementService.getCategories: ✅ CACHE SUCCESS');
-          debugPrint('🔧   → Final Result: ${filteredCategories.length} categories from cache');
-          debugPrint('🔧   → Total Processing Time: ${totalDuration}ms');
-
-          return ApiResponse.success(
-            data: filteredCategories,
-            message: 'Categories retrieved from cache',
-          );
-        } else {
-          debugPrint('🔧   → Cache Miss: ❌ No valid cached data found');
-          debugPrint('🔧   → Reason: ${cachedCategories == null ? 'Cache empty' : 'Cache expired'}');
-          debugPrint('🔧   → Fallback: Proceeding with API call');
-        }
-      } else {
-        debugPrint('🔧   → Cache Check: DISABLED - Proceeding directly to API');
-      }
-
       // Build query parameters with detailed analysis
       debugPrint('🔧 → 🌐 API CALL PREPARATION:');
       final queryParams = <String, String>{
@@ -763,13 +665,6 @@ class ServiceManagementService {
           debugPrint('🔧   → Category Names: ${categories.map((c) => c.name).join(', ')}');
         }
 
-        // Cache the results with performance tracking
-        debugPrint('🔧 → 💾 CACHING RESULTS...');
-        final cacheStartTime = DateTime.now();
-        await _cacheCategories(categories);
-        final cacheDuration = DateTime.now().difference(cacheStartTime).inMilliseconds;
-        debugPrint('🔧   → Cache Write Time: ${cacheDuration}ms');
-
         // Update real-time stream
         debugPrint('🔧 → 📡 UPDATING REAL-TIME STREAM...');
         _categoryStreamController.add(categories);
@@ -780,7 +675,6 @@ class ServiceManagementService {
         debugPrint('🔧   → Final Result: ${categories.length} categories retrieved');
         debugPrint('🔧   → Performance Breakdown:');
         debugPrint('🔧     → API Call: ${apiDuration}ms');
-        debugPrint('🔧     → Caching: ${cacheDuration}ms');
         debugPrint('🔧     → Total: ${finalDuration}ms');
 
         return ApiResponse.success(
@@ -884,9 +778,6 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         debugPrint('🔧 ServiceManagementService: Successfully created category: ${response.data!.name}');
 
-        // Clear cache to ensure fresh data on next fetch
-        await _clearCategoryCache();
-
         return response;
       } else {
         debugPrint('🔧 ServiceManagementService: Failed to create category - ${response.message}');
@@ -950,9 +841,6 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         debugPrint('🔧 ServiceManagementService: Successfully updated category: ${response.data!.name}');
 
-        // Clear cache to ensure fresh data on next fetch
-        await _clearCategoryCache();
-
         return response;
       } else {
         debugPrint('🔧 ServiceManagementService: Failed to update category - ${response.message}');
@@ -993,9 +881,6 @@ class ServiceManagementService {
 
       if (response.isSuccess) {
         debugPrint('🔧 ServiceManagementService: Successfully deleted category ID: $categoryId');
-
-        // Clear cache to ensure fresh data on next fetch
-        await _clearCategoryCache();
 
         return ApiResponse.success(
           data: null,
@@ -1057,74 +942,6 @@ class ServiceManagementService {
         message: 'Failed to get category statistics: $e',
         statusCode: 500,
       );
-    }
-  }
-
-  // ====================================================================
-  // CACHING METHODS FOR CATEGORIES
-  // ====================================================================
-
-  /// Cache categories to local storage
-  Future<void> _cacheCategories(List<ServiceCategory> categories) async {
-    try {
-      final categoryData = categories.map((c) => c.toJson()).toList();
-      await HiveService.saveUserProfile({
-        'cached_categories': categoryData,
-        'categories_cache_time': DateTime.now().millisecondsSinceEpoch,
-      });
-
-      debugPrint('🔧 ServiceManagementService: Cached ${categories.length} categories');
-
-      // Set cache timer
-      _categoryCacheTimer?.cancel();
-      _categoryCacheTimer = Timer(_categoryCacheDuration, () {
-        debugPrint('🔧 ServiceManagementService: Category cache expired');
-      });
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to cache categories - $e');
-    }
-  }
-
-  /// Get cached categories from local storage
-  Future<List<ServiceCategory>?> _getCachedCategories() async {
-    try {
-      final profile = HiveService.getUserProfile();
-      if (profile == null) return null;
-
-      final cacheTime = profile['categories_cache_time'] as int?;
-      if (cacheTime == null) return null;
-
-      final cacheAge = DateTime.now().millisecondsSinceEpoch - cacheTime;
-      if (cacheAge > _categoryCacheDuration.inMilliseconds) {
-        debugPrint('🔧 ServiceManagementService: Category cache expired (${cacheAge}ms old)');
-        return null;
-      }
-
-      final categoryData = profile['cached_categories'] as List<dynamic>?;
-      if (categoryData == null) return null;
-
-      final categories = categoryData.map((data) => ServiceCategory.fromJson(Map<String, dynamic>.from(data))).toList();
-
-      debugPrint('🔧 ServiceManagementService: Found ${categories.length} cached categories');
-      return categories;
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to get cached categories - $e');
-      return null;
-    }
-  }
-
-  /// Clear category cache
-  Future<void> _clearCategoryCache() async {
-    try {
-      final profile = HiveService.getUserProfile() ?? <String, dynamic>{};
-      profile.remove('cached_categories');
-      profile.remove('categories_cache_time');
-      await HiveService.saveUserProfile(profile);
-
-      _categoryCacheTimer?.cancel();
-      debugPrint('🔧 ServiceManagementService: Category cache cleared');
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to clear category cache - $e');
     }
   }
 
@@ -1193,30 +1010,12 @@ class ServiceManagementService {
   Future<ApiResponse<List<ServiceSubcategory>>> getSubcategories({
     String? categoryId,
     bool activeOnly = false,
-    bool useCache = true,
   }) async {
     final startTime = DateTime.now();
     debugPrint('🔧 ServiceManagementService: Getting subcategories');
     debugPrint('🔧 Parameters: categoryId=$categoryId, activeOnly=$activeOnly');
 
     try {
-      // Check cache first if enabled
-      if (useCache) {
-        final cachedSubcategories = await _getCachedSubcategories();
-        if (cachedSubcategories != null && cachedSubcategories.isNotEmpty) {
-          // Filter cached results if category filter is provided
-          final filteredSubcategories = categoryId != null
-              ? cachedSubcategories.where((s) => s.category == categoryId).toList()
-              : cachedSubcategories;
-
-          debugPrint('🔧 ServiceManagementService: Returning ${filteredSubcategories.length} cached subcategories');
-          return ApiResponse.success(
-            data: filteredSubcategories,
-            message: 'Subcategories retrieved from cache',
-          );
-        }
-      }
-
       // Build query parameters
       final queryParams = <String, String>{};
 
@@ -1247,9 +1046,6 @@ class ServiceManagementService {
         final subcategories = response.data!.results;
         debugPrint(
             '🔧 ServiceManagementService: Successfully retrieved ${subcategories.length} subcategories in ${duration}ms');
-
-        // Cache the results
-        await _cacheSubcategories(subcategories);
 
         // Update stream
         _subcategoryStreamController.add(subcategories);
@@ -1335,9 +1131,6 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         debugPrint('🔧 ServiceManagementService: Successfully created subcategory: ${response.data!.name}');
 
-        // Clear cache to ensure fresh data on next fetch
-        await _clearSubcategoryCache();
-
         return response;
       } else {
         debugPrint('🔧 ServiceManagementService: Failed to create subcategory - ${response.message}');
@@ -1387,9 +1180,6 @@ class ServiceManagementService {
 
       if (response.isSuccess && response.data != null) {
         debugPrint('🔧 ServiceManagementService: Successfully updated subcategory: ${response.data!.name}');
-
-        // Clear cache to ensure fresh data on next fetch
-        await _clearSubcategoryCache();
 
         return response;
       } else {
@@ -1464,9 +1254,6 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         debugPrint('🔧 ServiceManagementService: Successfully patched subcategory: ${response.data!.name}');
 
-        // Clear cache to ensure fresh data on next fetch
-        await _clearSubcategoryCache();
-
         return response;
       } else {
         debugPrint('🔧 ServiceManagementService: Failed to patch subcategory - ${response.message}');
@@ -1507,9 +1294,6 @@ class ServiceManagementService {
 
       if (response.isSuccess) {
         debugPrint('🔧 ServiceManagementService: Successfully deleted subcategory ID: $subcategoryId');
-
-        // Clear cache to ensure fresh data on next fetch
-        await _clearSubcategoryCache();
 
         return ApiResponse.success(
           data: null,
@@ -2085,74 +1869,10 @@ class ServiceManagementService {
         profile.remove(key);
       }
 
-      await HiveService.saveUserProfile(profile);
+      // await HiveService.saveUserProfile(profile);
       debugPrint('🔧 ServiceManagementService: Request cache cleared (${keysToRemove.length} keys)');
     } catch (e) {
       debugPrint('🔧 ServiceManagementService: Failed to clear request cache - $e');
-    }
-  }
-
-  // ====================================================================
-  // CACHING METHODS FOR SUBCATEGORIES
-  // ====================================================================
-
-  /// Cache subcategories to local storage
-  Future<void> _cacheSubcategories(List<ServiceSubcategory> subcategories) async {
-    try {
-      final subcategoryData = subcategories.map((s) => s.toJson()).toList();
-      final profile = HiveService.getUserProfile() ?? <String, dynamic>{};
-
-      profile['cached_subcategories'] = subcategoryData;
-      profile['subcategories_cache_time'] = DateTime.now().millisecondsSinceEpoch;
-
-      await HiveService.saveUserProfile(profile);
-
-      debugPrint('🔧 ServiceManagementService: Cached ${subcategories.length} subcategories');
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to cache subcategories - $e');
-    }
-  }
-
-  /// Get cached subcategories from local storage
-  Future<List<ServiceSubcategory>?> _getCachedSubcategories() async {
-    try {
-      final profile = HiveService.getUserProfile();
-      if (profile == null) return null;
-
-      final cacheTime = profile['subcategories_cache_time'] as int?;
-      if (cacheTime == null) return null;
-
-      final cacheAge = DateTime.now().millisecondsSinceEpoch - cacheTime;
-      if (cacheAge > _categoryCacheDuration.inMilliseconds) {
-        debugPrint('🔧 ServiceManagementService: Subcategory cache expired (${cacheAge}ms old)');
-        return null;
-      }
-
-      final subcategoryData = profile['cached_subcategories'] as List<dynamic>?;
-      if (subcategoryData == null) return null;
-
-      final subcategories =
-          subcategoryData.map((data) => ServiceSubcategory.fromJson(Map<String, dynamic>.from(data))).toList();
-
-      debugPrint('🔧 ServiceManagementService: Found ${subcategories.length} cached subcategories');
-      return subcategories;
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to get cached subcategories - $e');
-      return null;
-    }
-  }
-
-  /// Clear subcategory cache
-  Future<void> _clearSubcategoryCache() async {
-    try {
-      final profile = HiveService.getUserProfile() ?? <String, dynamic>{};
-      profile.remove('cached_subcategories');
-      profile.remove('subcategories_cache_time');
-      await HiveService.saveUserProfile(profile);
-
-      debugPrint('🔧 ServiceManagementService: Subcategory cache cleared');
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to clear subcategory cache - $e');
     }
   }
 
@@ -2675,7 +2395,7 @@ class ServiceManagementService {
       profile['${cacheKey}_time'] = DateTime.now().millisecondsSinceEpoch;
       profile['${cacheKey}_params'] = queryParams;
 
-      await HiveService.saveUserProfile(profile);
+      // await HiveService.saveUserProfile(profile);
       debugPrint('🔧 ServiceManagementService: Cached ${services.length} services with key: $cacheKey');
     } catch (e) {
       debugPrint('🔧 ServiceManagementService: Failed to cache services - $e');
@@ -2719,31 +2439,17 @@ class ServiceManagementService {
   /// Get current user type for debugging
   UserType get currentUserType => HiveService.getUserType();
 
-  /// Clear all service management caches
-  Future<void> clearAllCaches() async {
-    debugPrint('🔧 ServiceManagementService: Clearing all caches');
-
-    try {
-      await _clearCategoryCache();
-      await _clearSubcategoryCache();
-
-      debugPrint('🔧 ServiceManagementService: All caches cleared successfully');
-    } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error clearing caches - $e');
-    }
-  }
-
   /// Force refresh all cached data
   Future<void> refreshAllData() async {
     debugPrint('🔧 ServiceManagementService: Force refreshing all data');
 
     try {
-      // Clear caches first
-      await clearAllCaches();
+      // Category caches have been removed as part of cleanup
+      debugPrint('🔧 ServiceManagementService: Category caches removed, only service data refresh needed');
 
       // Fetch fresh data
-      final categoriesResponse = await getCategories(useCache: false);
-      final subcategoriesResponse = await getSubcategories(useCache: false);
+      final categoriesResponse = await getCategories();
+      final subcategoriesResponse = await getSubcategories();
 
       debugPrint('🔧 ServiceManagementService: Data refresh completed');
       debugPrint('🔧 Categories loaded: ${categoriesResponse.isSuccess}');
@@ -2765,7 +2471,6 @@ class ServiceManagementService {
         'is_customer': isCustomer,
       },
       'cache_settings': {
-        'category_cache_duration_minutes': _categoryCacheDuration.inMinutes,
         'service_cache_duration_minutes': _serviceCacheDuration.inMinutes,
       },
       'stream_controllers': {
@@ -2775,7 +2480,6 @@ class ServiceManagementService {
         'request_stream_active': !_requestStreamController.isClosed,
       },
       'timers': {
-        'category_cache_timer_active': _categoryCacheTimer?.isActive ?? false,
         'service_cache_timer_active': _serviceCacheTimer?.isActive ?? false,
       },
     };
@@ -2840,7 +2544,6 @@ class ServiceManagementService {
 
     try {
       // Cancel all active timers
-      _categoryCacheTimer?.cancel();
       _serviceCacheTimer?.cancel();
       debugPrint('🔧 ServiceManagementService: Cache timers cancelled');
 
@@ -2862,11 +2565,10 @@ class ServiceManagementService {
     debugPrint('🔧 ServiceManagementService: Performing emergency cleanup');
 
     try {
-      // Clear all caches
-      await clearAllCaches();
+      // Category caches have been removed as part of cleanup
+      debugPrint('🔧 ServiceManagementService: Category caches already removed, only service cache cleanup needed');
 
       // Cancel timers
-      _categoryCacheTimer?.cancel();
       _serviceCacheTimer?.cancel();
 
       debugPrint('🔧 ServiceManagementService: Emergency cleanup completed');
@@ -2892,7 +2594,6 @@ class ServiceManagementService {
 
     // Print cache information
     debugPrint('🔧 CACHE INFORMATION:');
-    debugPrint('🔧 Category cache timer: ${_categoryCacheTimer?.isActive ?? false}');
     debugPrint('🔧 Service cache timer: ${_serviceCacheTimer?.isActive ?? false}');
 
     // Print stream information

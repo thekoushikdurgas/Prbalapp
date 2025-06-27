@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/services/performance_service.dart';
@@ -271,42 +272,102 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   }
 
   Future<void> _performNavigation() async {
+    debugPrint('🏠 SplashScreen: ====== NAVIGATION DECISION PROCESS STARTED ======');
+
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
 
-    // Check connectivity before navigation
+    debugPrint('🏠 SplashScreen: Widget is still mounted, proceeding with navigation');
+
+    // Get all authentication and onboarding status
+    debugPrint('🏠 SplashScreen: Checking user authentication and onboarding status...');
 
     final isLoggedIn = HiveService.isLoggedIn();
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
     final isLanguageSelected = HiveService.isLanguageSelected();
 
-    // Note: We could set a default language here for first-time users,
-    // but explicit language selection provides better UX
-    if (!isLanguageSelected) {
-      context.go(RouteEnum.languageSelection.rawValue);
-    } else if (!hasIntroBeenWatched) {
-      context.go(RouteEnum.onboarding.rawValue);
-    } else if (!isLoggedIn) {
-      context.go(RouteEnum.welcome.rawValue);
-    } else {
-      // User is logged in - check user type and navigate to appropriate dashboard
-      // Also consider connectivity status for dashboard features
-      final userData = HiveService.getUserData();
-      final userType = userData != null ? userData['userType'] as String : 'customer';
+    debugPrint('🏠 SplashScreen: ====== STATUS SUMMARY ======');
+    debugPrint('🏠 SplashScreen: Language selected: $isLanguageSelected');
+    debugPrint('🏠 SplashScreen: Intro watched: $hasIntroBeenWatched');
+    debugPrint('🏠 SplashScreen: User logged in: $isLoggedIn');
 
-      switch (userType.toLowerCase()) {
-        case 'admin':
-          context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
-          break;
-        case 'provider':
-          context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
-          break;
-        case 'customer':
-        default:
-          context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
-          break;
-      }
+    // Navigation decision tree with comprehensive logging
+    if (!isLanguageSelected) {
+      debugPrint('🏠 SplashScreen: ➡️ Language not selected - navigating to language selection');
+      debugPrint('🏠 SplashScreen: Route: ${RouteEnum.languageSelection.rawValue}');
+      context.go(RouteEnum.languageSelection.rawValue);
+      return;
     }
+
+    if (!hasIntroBeenWatched) {
+      debugPrint('🏠 SplashScreen: ➡️ Intro not watched - navigating to onboarding');
+      debugPrint('🏠 SplashScreen: Route: ${RouteEnum.onboarding.rawValue}');
+      context.go(RouteEnum.onboarding.rawValue);
+      return;
+    }
+
+    if (!isLoggedIn) {
+      debugPrint('🏠 SplashScreen: ➡️ User not logged in - navigating to welcome screen');
+      debugPrint('🏠 SplashScreen: Route: ${RouteEnum.welcome.rawValue}');
+      context.go(RouteEnum.welcome.rawValue);
+      return;
+    }
+
+    // User appears to be logged in - let's verify user data exists
+    debugPrint('🏠 SplashScreen: ====== USER DATA VERIFICATION ======');
+    debugPrint('🏠 SplashScreen: User appears logged in, verifying user data...');
+
+    final userData = HiveService.getUserDataSafe();
+
+    if (userData == null) {
+      debugPrint('🏠 SplashScreen: ❌ CRITICAL: User marked as logged in but no user data found!');
+      debugPrint('🏠 SplashScreen: This indicates an inconsistent authentication state');
+      debugPrint('🏠 SplashScreen: Clearing authentication state and redirecting to welcome');
+
+      // Clean up inconsistent state
+      await HiveService.setLoggedIn(false);
+      await HiveService.removeAuthToken();
+      await HiveService.removeRefreshToken();
+
+      debugPrint('🏠 SplashScreen: ➡️ Authentication state cleared - navigating to welcome screen');
+      context.go(RouteEnum.welcome.rawValue);
+      return;
+    }
+
+    // User data exists - proceed with dashboard navigation
+    final UserType userType = userData.userType;
+
+    debugPrint('🏠 SplashScreen: ✅ User data found and verified');
+    debugPrint('🏠 SplashScreen: User ID: ${userData.id}');
+    debugPrint('🏠 SplashScreen: Username: ${userData.username}');
+    debugPrint('🏠 SplashScreen: User type: $userType');
+    debugPrint('🏠 SplashScreen: Display name: ${userData.firstName} ${userData.lastName}');
+    debugPrint('🏠 SplashScreen: Phone: ${userData.phoneNumber}');
+    debugPrint('🏠 SplashScreen: Email: ${userData.email}');
+
+    debugPrint('🏠 SplashScreen: ====== DASHBOARD NAVIGATION ======');
+
+    switch (userType) {
+      case UserType.admin:
+        debugPrint('🏠 SplashScreen: ➡️ Admin user - navigating to admin dashboard');
+        debugPrint('🏠 SplashScreen: Route: ${RouteEnum.adminDashboard.rawValue}');
+        context.go(RouteEnum.adminDashboard.rawValue);
+        break;
+
+      case UserType.provider:
+        debugPrint('🏠 SplashScreen: ➡️ Provider user - navigating to provider dashboard');
+        debugPrint('🏠 SplashScreen: Route: ${RouteEnum.providerDashboard.rawValue}');
+        context.go(RouteEnum.providerDashboard.rawValue);
+        break;
+
+      case UserType.customer:
+        debugPrint('🏠 SplashScreen: ➡️ Customer user - navigating to taker dashboard');
+        debugPrint('🏠 SplashScreen: Route: ${RouteEnum.takerDashboard.rawValue}');
+        context.go(RouteEnum.takerDashboard.rawValue);
+        break;
+    }
+
+    debugPrint('🏠 SplashScreen: ====== NAVIGATION COMPLETED ======');
   }
 
   @override

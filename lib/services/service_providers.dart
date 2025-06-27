@@ -441,7 +441,7 @@ final servicesInitializationProvider = FutureProvider<void>((ref) async {
       // Pre-load categories for better UX with analytics
       try {
         final categoriesResponse =
-            await serviceManagement.getCategories(useCache: true);
+            await serviceManagement.getCategories();
         debugPrint('✅ ServiceProviders: Categories pre-loaded successfully');
         debugPrint(
             '🚀   → Categories loaded: ${categoriesResponse.data?.length ?? 0}');

@@ -6,7 +6,6 @@ import 'package:prbal/services/user_service.dart';
 /// Enhanced with comprehensive debug logging for better development experience
 class HiveService {
   const HiveService._();
-
   // Box names
   static const String _introBoxName = 'intro';
   static const String _authBoxName = 'auth';
@@ -37,23 +36,27 @@ class HiveService {
   // static late Box _offlineBox;
 
   /// Initialize all Hive boxes
+  /// Note: This implementation uses JSON storage for AppUser objects to avoid
+  /// the need for Hive adapters, which simplifies the storage approach
   static Future<void> init() async {
     debugPrint('📦 HiveService: Initializing Hive database and opening boxes');
+    debugPrint('📦 HiveService: Using JSON storage approach - no custom adapters needed');
 
     try {
       await Hive.initFlutter();
       debugPrint('📦 HiveService: Hive Flutter initialized successfully');
 
       _introBox = await Hive.openBox(_introBoxName);
-      debugPrint('📦 HiveService: Intro box opened successfully');
+      debugPrint('📦 HiveService: Intro box opened successfully (${_introBox.keys.length} keys)');
 
       _authBox = await Hive.openBox(_authBoxName);
-      debugPrint('📦 HiveService: Auth box opened successfully');
+      debugPrint('📦 HiveService: Auth box opened successfully (${_authBox.keys.length} keys)');
 
       _userBox = await Hive.openBox(_userBoxName);
-      debugPrint('📦 HiveService: User box opened successfully');
+      debugPrint('📦 HiveService: User box opened successfully (${_userBox.keys.length} keys)');
 
       debugPrint('📦 HiveService: All Hive boxes initialized successfully');
+      debugPrint('📦 HiveService: Storage approach: JSON-based (AppUser ↔ Map<String, dynamic>)');
     } catch (e) {
       debugPrint('📦 HiveService: Failed to initialize Hive - $e');
       throw Exception('Failed to initialize Hive: $e');
@@ -218,15 +221,51 @@ class HiveService {
   // === AUTHENTICATION METHODS ===
 
   /// Check if user is logged in
+  /// This method checks the login flag AND validates that user data actually exists
+  /// A user is only considered logged in if both conditions are met
   static bool isLoggedIn() {
-    debugPrint('📦 HiveService: Checking if user is logged in');
+    debugPrint('📦 HiveService: ====== COMPREHENSIVE LOGIN STATUS CHECK ======');
 
     try {
-      final result = _authBox.get(_isLoggedInKey, defaultValue: false) as bool;
-      debugPrint('📦 HiveService: User login status: $result');
-      return result;
+      // Check the basic login flag
+      final loginFlag = _authBox.get(_isLoggedInKey, defaultValue: false) as bool;
+      debugPrint('📦 HiveService: Basic login flag: $loginFlag');
+
+      if (!loginFlag) {
+        debugPrint('📦 HiveService: ❌ User not logged in (login flag is false)');
+        return false;
+      }
+
+      // Check if user data actually exists
+      final hasUserData = _hasUserData();
+      debugPrint('📦 HiveService: User data exists: $hasUserData');
+
+      // Check if auth token exists
+      final hasAuthToken = _hasAuthToken();
+      debugPrint('📦 HiveService: Auth token exists: $hasAuthToken');
+
+      // For a user to be truly logged in, they need:
+      // 1. Login flag = true
+      // 2. User data must exist
+      // Auth token is optional (can be refreshed)
+      final isActuallyLoggedIn = loginFlag && hasUserData;
+
+      debugPrint('📦 HiveService: ====== LOGIN STATUS SUMMARY ======');
+      debugPrint('📦 HiveService: Login flag: $loginFlag');
+      debugPrint('📦 HiveService: Has user data: $hasUserData');
+      debugPrint('📦 HiveService: Has auth token: $hasAuthToken');
+      debugPrint('📦 HiveService: Final login status: $isActuallyLoggedIn');
+
+      if (loginFlag && !hasUserData) {
+        debugPrint('📦 HiveService: ⚠️ INCONSISTENT STATE: Login flag is true but no user data exists');
+        debugPrint('📦 HiveService: This suggests a previous login session was not properly cleaned up');
+        debugPrint('📦 HiveService: User will be directed to welcome screen to re-authenticate');
+      }
+
+      return isActuallyLoggedIn;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to check login status - $e');
+      debugPrint('📦 HiveService: ❌ Failed to check login status - $e');
+      debugPrint('📦 HiveService: Defaulting to not logged in for safety');
       return false;
     }
   }
@@ -249,16 +288,18 @@ class HiveService {
   }
 
   /// Get auth token
-  static String? getAuthToken() {
+  static String getAuthToken() {
     debugPrint('📦 HiveService: Getting auth token');
 
     try {
-      final token = _authBox.get(_authTokenKey) as String?;
-      debugPrint('📦 HiveService: Auth token exists: ${token != null}');
+      String? token = _authBox.get(_authTokenKey);
+      if (token == null) {
+        throw Exception('Auth token not found');
+      }
       return token;
     } catch (e) {
       debugPrint('📦 HiveService: Failed to get auth token - $e');
-      return null;
+      throw Exception('Auth token not found');
     }
   }
 
@@ -373,12 +414,19 @@ class HiveService {
   // === USER DATA METHODS ===
 
   /// Save user data
-  static Future<void> saveUserData(Map<String, dynamic> userData) async {
-    debugPrint('📦 HiveService: Saving user data with ${userData.keys.length} fields');
+  /// Stores AppUser data as JSON Map to avoid Hive adapter requirements
+  static Future<void> saveUserData(AppUser userData) async {
+    debugPrint('📦 HiveService: Saving user data with ${userData.toJson().keys.length} fields');
+    debugPrint('📦 HiveService: Converting AppUser to JSON for Hive storage');
 
     try {
-      await _userBox.put(_userDataKey, userData);
-      debugPrint('📦 HiveService: User data saved successfully');
+      // Convert AppUser to JSON Map for Hive storage
+      final userDataJson = userData.toJson();
+      debugPrint('📦 HiveService: User data JSON keys: ${userDataJson.keys.toList()}');
+      debugPrint('📦 HiveService: User type in JSON: ${userDataJson['user_type']}');
+
+      await _userBox.put(_userDataKey, userDataJson);
+      debugPrint('📦 HiveService: User data saved successfully as JSON');
     } catch (e) {
       debugPrint('📦 HiveService: Failed to save user data - $e');
       throw Exception('Failed to save user data: $e');
@@ -386,19 +434,111 @@ class HiveService {
   }
 
   /// Get user data
-  static Map<String, dynamic>? getUserData() {
-    debugPrint('📦 HiveService: Getting user data');
+  /// Retrieves user data from JSON Map and converts back to AppUser
+  /// WARNING: This method throws an exception if no user data is found
+  /// Use getUserDataSafe() for safer access that returns null instead
+  static AppUser getUserData() {
+    debugPrint('📦 HiveService: Getting user data (UNSAFE - throws exception)');
 
     try {
       final userData = _userBox.get(_userDataKey);
-      final result = userData != null ? Map<String, dynamic>.from(userData) : null;
-      debugPrint('📦 HiveService: User data exists: ${result != null}');
-      if (result != null) {
-        debugPrint('📦 HiveService: User data fields: ${result.keys.toList()}');
+      debugPrint('📦 HiveService: Raw user data type: ${userData.runtimeType}');
+
+      if (userData == null) {
+        debugPrint('📦 HiveService: No user data found in Hive');
+        throw Exception("No user data found");
       }
-      return result;
+
+      // Convert to Map<String, dynamic> if it's not already
+      Map<String, dynamic> userDataMap;
+      if (userData is Map<String, dynamic>) {
+        userDataMap = userData;
+      } else if (userData is Map) {
+        userDataMap = Map<String, dynamic>.from(userData);
+      } else {
+        debugPrint('📦 HiveService: Unexpected user data format: ${userData.runtimeType}');
+        throw Exception("Invalid user data format");
+      }
+
+      debugPrint('📦 HiveService: User data map keys: ${userDataMap.keys.toList()}');
+      debugPrint('📦 HiveService: User type from storage: ${userDataMap['user_type']}');
+
+      if (userDataMap.isEmpty) {
+        debugPrint('📦 HiveService: User data map is empty');
+        throw Exception("User data is empty");
+      }
+
+      final appUser = AppUser.fromJson(userDataMap);
+      debugPrint('📦 HiveService: Successfully converted JSON to AppUser');
+      debugPrint('📦 HiveService: User ID: ${appUser.id}');
+      debugPrint('📦 HiveService: User type: ${appUser.userType}');
+
+      return appUser;
     } catch (e) {
       debugPrint('📦 HiveService: Failed to get user data - $e');
+      throw Exception("Failed to get user data: $e");
+    }
+  }
+
+  /// Safely get user data without throwing exceptions
+  /// Returns null if no user data is found or if there's an error
+  /// This is the preferred method for checking user data existence
+  static AppUser? getUserDataSafe() {
+    debugPrint('📦 HiveService: ====== SAFELY GETTING USER DATA ======');
+    debugPrint('📦 HiveService: This method returns null instead of throwing exceptions');
+
+    try {
+      final userData = _userBox.get(_userDataKey);
+      debugPrint('📦 HiveService: Raw user data type: ${userData.runtimeType}');
+      debugPrint('📦 HiveService: User data exists: ${userData != null}');
+
+      if (userData == null) {
+        debugPrint('📦 HiveService: No user data found in Hive - returning null');
+        return null;
+      }
+
+      // Convert to Map<String, dynamic> if it's not already
+      Map<String, dynamic> userDataMap;
+      if (userData is Map<String, dynamic>) {
+        userDataMap = userData;
+        debugPrint('📦 HiveService: Data is already Map<String, dynamic>');
+      } else if (userData is Map) {
+        userDataMap = Map<String, dynamic>.from(userData);
+        debugPrint('📦 HiveService: Converted Map to Map<String, dynamic>');
+      } else {
+        debugPrint('📦 HiveService: ❌ Unexpected user data format: ${userData.runtimeType}');
+        debugPrint('📦 HiveService: Expected Map but got ${userData.runtimeType} - returning null');
+        return null;
+      }
+
+      debugPrint('📦 HiveService: User data map keys: ${userDataMap.keys.toList()}');
+      debugPrint('📦 HiveService: User type from storage: ${userDataMap['user_type']}');
+      debugPrint('📦 HiveService: User data map size: ${userDataMap.length} fields');
+
+      if (userDataMap.isEmpty) {
+        debugPrint('📦 HiveService: ❌ User data map is empty - returning null');
+        return null;
+      }
+
+      // Attempt to convert to AppUser
+      debugPrint('📦 HiveService: Converting JSON map to AppUser object...');
+      final appUser = AppUser.fromJson(userDataMap);
+
+      debugPrint('📦 HiveService: ✅ Successfully converted JSON to AppUser');
+      debugPrint('📦 HiveService: User ID: ${appUser.id}');
+      debugPrint('📦 HiveService: Username: ${appUser.username}');
+      debugPrint('📦 HiveService: User type: ${appUser.userType}');
+      debugPrint('📦 HiveService: Display name: ${appUser.firstName} ${appUser.lastName}');
+      debugPrint('📦 HiveService: Phone: ${appUser.phoneNumber}');
+      debugPrint('📦 HiveService: Email: ${appUser.email}');
+      debugPrint('📦 HiveService: Is verified: ${appUser.isVerified}');
+
+      return appUser;
+    } catch (e, stackTrace) {
+      debugPrint('📦 HiveService: ❌ Error getting user data safely - $e');
+      debugPrint('📦 HiveService: Error type: ${e.runtimeType}');
+      debugPrint('📦 HiveService: Stack trace preview: ${stackTrace.toString().split('\n').take(2).join('\n')}');
+      debugPrint('📦 HiveService: Returning null due to error');
       return null;
     }
   }
@@ -454,13 +594,14 @@ class HiveService {
         },
         'auth': {
           'isLoggedIn': isLoggedIn(),
-          'hasAuthToken': getAuthToken() != null,
+          'hasAuthToken': _hasAuthToken(),
           'phoneNumber': getPhoneNumber(),
           'lastLogin': getLastLogin()?.toIso8601String(),
           'authBoxKeys': _authBox.keys.toList(),
         },
         'user': {
-          'hasUserData': getUserData() != null,
+          'hasUserData': _hasUserData(),
+          'userType': _safeGetUserType(),
           'userBoxKeys': _userBox.keys.toList(),
         },
       };
@@ -470,6 +611,35 @@ class HiveService {
     } catch (e) {
       debugPrint('📦 HiveService: Failed to generate debug info - $e');
       return {'error': e.toString()};
+    }
+  }
+
+  /// Helper method to safely check if auth token exists
+  static bool _hasAuthToken() {
+    try {
+      getAuthToken();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Helper method to safely check if user data exists
+  static bool _hasUserData() {
+    try {
+      final userData = _userBox.get(_userDataKey);
+      return userData != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Helper method to safely get user type without throwing
+  static String _safeGetUserType() {
+    try {
+      return getUserType().name;
+    } catch (e) {
+      return 'unknown';
     }
   }
 
@@ -494,12 +664,18 @@ class HiveService {
   // === SYNC DATA METHODS ===
 
   /// Save user profile for sync
-  static Future<void> saveUserProfile(Map<String, dynamic> profileData) async {
-    debugPrint('📦 HiveService: Saving user profile with ${profileData.keys.length} fields');
+  /// Stores user profile data as JSON Map to avoid Hive adapter requirements
+  static Future<void> saveUserProfile(AppUser profileData) async {
+    debugPrint('📦 HiveService: Saving user profile with ${profileData.toJson().keys.length} fields');
+    debugPrint('📦 HiveService: Converting AppUser profile to JSON for Hive storage');
 
     try {
-      await _userBox.put(_userProfileKey, profileData);
-      debugPrint('📦 HiveService: User profile saved successfully');
+      // Convert AppUser to JSON Map for Hive storage
+      final profileDataJson = profileData.toJson();
+      debugPrint('📦 HiveService: Profile data JSON keys: ${profileDataJson.keys.toList()}');
+
+      await _userBox.put(_userProfileKey, profileDataJson);
+      debugPrint('📦 HiveService: User profile saved successfully as JSON');
     } catch (e) {
       debugPrint('📦 HiveService: Failed to save user profile - $e');
       throw Exception('Failed to save user profile: $e');
@@ -651,8 +827,8 @@ class HiveService {
 
     try {
       final userData = getUserData();
-      final userType = userData?['userType'] as UserType;
-      return userType;
+      // final userType = userData.userType;
+      return userData.userType;
     } catch (e) {
       debugPrint('📦 HiveService: Failed to get user type - $e');
       return UserType.customer; // Default fallback
@@ -732,14 +908,10 @@ class HiveService {
   /// Update user type in stored data
   static Future<void> updateUserType(UserType userType) async {
     try {
-      final userData = getUserData();
-      if (userData != null) {
-        userData['userType'] = userType;
-        await saveUserData(userData);
-        debugPrint('📦 HiveService: User type updated successfully');
-      } else {
-        debugPrint('📦 HiveService: No user data found, cannot update user type');
-      }
+      AppUser userData = getUserData();
+      userData = userData.copyWith(userType: userType);
+      await saveUserData(userData);
+      debugPrint('📦 HiveService: User type updated successfully');
     } catch (e) {
       debugPrint('📦 HiveService: Failed to update user type - $e');
       throw Exception('Failed to update user type: $e');
@@ -757,14 +929,10 @@ class HiveService {
     debugPrint('📦 HiveService: Clearing user type');
 
     try {
-      final userData = getUserData();
-      if (userData != null) {
-        userData.remove('userType');
-        await saveUserData(userData);
-        debugPrint('📦 HiveService: User type cleared successfully');
-      } else {
-        debugPrint('📦 HiveService: No user data found, nothing to clear');
-      }
+      AppUser userData = getUserData();
+      userData = userData.copyWith(userType: UserType.customer);
+      await saveUserData(userData);
+      debugPrint('📦 HiveService: User type cleared successfully');
     } catch (e) {
       debugPrint('📦 HiveService: Failed to clear user type - $e');
       throw Exception('Failed to clear user type: $e');

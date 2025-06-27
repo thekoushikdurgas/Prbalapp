@@ -145,7 +145,6 @@ class _ServiceSubcategoryCrudWidgetState
       final response = await _serviceManagementService.getCategories(
         activeOnly: false,
         ordering: 'sort_order',
-        useCache: !_isInitialLoad,
       );
 
       if (response.isSuccess && response.data != null) {
@@ -170,7 +169,6 @@ class _ServiceSubcategoryCrudWidgetState
       final response = await _serviceManagementService.getSubcategories(
         categoryId: widget.parentCategoryId,
         activeOnly: false,
-        useCache: !_isInitialLoad,
       );
 
       if (response.isSuccess && response.data != null) {

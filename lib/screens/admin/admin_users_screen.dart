@@ -263,10 +263,42 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> with Ticker
       child: TabBarView(
         controller: _tabController,
         children: [
+          _buildAllUsersList(themeManager), // All users (providers + customers)
           _buildUserList(UserType.provider, themeManager), // Service providers only
           _buildUserList(UserType.customer, themeManager), // Customers/takers only
         ],
       ),
+    );
+  }
+
+  /// Builds the list showing all users (both providers and customers)
+  Widget _buildAllUsersList(ThemeManager themeManager) {
+    debugPrint('👥 AdminUsersScreen: Building all users list');
+    debugPrint('👥 AdminUsersScreen: Applied filter: $_selectedFilter');
+
+    // TODO: Replace with actual API call to fetch all users
+    // This should filter based on _selectedFilter and include both user types
+    const int mockUserCount = 40; // More users since we're showing all types
+
+    return ListView.builder(
+      padding: EdgeInsets.all(20.w),
+      itemCount: mockUserCount,
+      itemBuilder: (context, index) {
+        // Alternate between provider and customer for demo
+        final userType = index % 2 == 0 ? UserType.provider : UserType.customer;
+        
+        debugPrint('👥 AdminUsersScreen: Building user card $index for all users (type: $userType)');
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 12.h),
+          decoration: BoxDecoration(
+            color: themeManager.surfaceColor,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: themeManager.subtleShadow,
+          ),
+          child: _buildUserCard(index, userType, themeManager),
+        );
+      },
     );
   }
 

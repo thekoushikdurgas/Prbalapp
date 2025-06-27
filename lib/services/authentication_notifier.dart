@@ -14,7 +14,7 @@ class AuthenticationState {
   final bool isAuthenticated;
   final String? accessToken;
   final String? refreshToken;
-  final Map<String, dynamic>? userData;
+  final AppUser? userData;
   final UserType userType;
   final DateTime? tokenExpiresAt;
   final bool isLoading;
@@ -74,7 +74,7 @@ class AuthenticationState {
   AuthenticationState copyWithAuthentication({
     required String accessToken,
     String? refreshToken,
-    required Map<String, dynamic> userData,
+    required AppUser userData,
     required UserType userType,
     DateTime? tokenExpiresAt,
   }) {
@@ -103,11 +103,9 @@ class AuthenticationState {
 
   /// Get user display name
   String get displayName {
-    if (userData == null) return 'Guest';
-
-    final firstName = userData!['first_name'] ?? userData!['firstName'];
-    final lastName = userData!['last_name'] ?? userData!['lastName'];
-    final username = userData!['username'];
+    final firstName = userData?.firstName;
+    final lastName = userData?.lastName;
+    final username = userData?.username;
 
     if (firstName != null && lastName != null) {
       return '$firstName $lastName';
@@ -156,32 +154,32 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       // Get saved user data and tokens
       final userData = HiveService.getUserData();
       final UserType userType = HiveService.getUserType();
-      final phoneNumber = HiveService.getPhoneNumber();
+      // HiveService.getPhoneNumber();
       final authToken = HiveService.getAuthToken();
       final refreshToken = HiveService.getRefreshToken();
 
-      if (userData != null && userData.isNotEmpty && authToken != null) {
-        debugPrint('🔐 AuthenticationNotifier: Restored user data from Hive');
-        debugPrint('🔐 → User type: $userType');
-        debugPrint('🔐 → Phone: $phoneNumber');
-        debugPrint('🔐 → Auth token exists: ✅');
-        debugPrint('🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
+      // if (userData != null) {
+      //   debugPrint('🔐 AuthenticationNotifier: Restored user data from Hive');
+      //   debugPrint('🔐 → User type: $userType');
+      //   debugPrint('🔐 → Phone: $phoneNumber');
+      //   debugPrint('🔐 → Auth token exists: ✅');
+      //   debugPrint('🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
 
-        // Create authenticated state with actual tokens
-        state = state.copyWithAuthentication(
-          accessToken: authToken,
-          refreshToken: refreshToken,
-          userData: userData,
-          userType: userType,
-        );
+      // Create authenticated state with actual tokens
+      state = state.copyWithAuthentication(
+        accessToken: authToken,
+        refreshToken: refreshToken,
+        userData: userData,
+        userType: userType,
+      );
 
-        debugPrint('🔐 AuthenticationNotifier: Authentication state restored successfully');
-      } else {
-        debugPrint('🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
-        debugPrint('🔐 → User data exists: ${userData != null && userData.isNotEmpty}');
-        debugPrint('🔐 → Auth token exists: ${authToken != null}');
-        state = const AuthenticationState.initial();
-      }
+      debugPrint('🔐 AuthenticationNotifier: Authentication state restored successfully');
+      // } else {
+      debugPrint('🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
+      // debugPrint('🔐 → User data exists: ${userData.isNotEmpty}');
+      // debugPrint('🔐 → Auth token exists: ${authToken != null}');
+      state = const AuthenticationState.initial();
+      // }
     } catch (e) {
       debugPrint('🔐 AuthenticationNotifier: Error initializing: $e');
       state = state.copyWithError('Failed to initialize authentication: $e');
@@ -192,7 +190,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   Future<void> setAuthenticated({
     required String accessToken,
     String? refreshToken,
-    required Map<String, dynamic> userData,
+    required AppUser userData,
     required UserType userType,
     DateTime? tokenExpiresAt,
   }) async {
@@ -222,7 +220,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       }
 
       // Save phone number if available
-      final phoneNumber = userData['phone_number'] ?? userData['phoneNumber'];
+      final phoneNumber = userData.phoneNumber;
       if (phoneNumber != null) {
         await HiveService.setPhoneNumber(phoneNumber);
       }
@@ -315,7 +313,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   }
 
   /// Update user data
-  Future<void> updateUserData(Map<String, dynamic> newUserData) async {
+  Future<void> updateUserData(AppUser newUserData) async {
     debugPrint('🔐 AuthenticationNotifier: Updating user data');
 
     try {
@@ -325,10 +323,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       }
 
       // Merge new data with existing data
-      final updatedUserData = {
-        ...state.userData ?? {},
-        ...newUserData,
-      };
+      final updatedUserData = newUserData;
 
       // Update state
       state = state.copyWithAuthentication(
@@ -390,10 +385,10 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     return {
       'state_authenticated': state.isAuthenticated,
       'hive_logged_in': isLoggedIn,
-      'hive_auth_token_exists': authToken != null,
-      'hive_auth_token_length': authToken?.length ?? 0,
-      'hive_refresh_token_exists': refreshToken != null,
-      'hive_user_data_exists': userData != null,
+      'hive_auth_token': authToken,
+      'hive_auth_token_length': authToken.length,
+      'hive_refresh_token': refreshToken,
+      'hive_user_data': userData,
       'hive_user_type': userType,
       'state_user_type': state.userType,
       'auth_tokens_match': state.accessToken == authToken,

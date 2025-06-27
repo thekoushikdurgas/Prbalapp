@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/service_providers.dart';
@@ -14,29 +13,46 @@ import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// PhoneLoginBottomSheet - A comprehensive phone authentication bottom sheet
 ///
-/// This widget provides a modern, animated phone login interface with:
+/// **📱 PHONE AUTHENTICATION COMPONENT OVERVIEW**
+/// This widget provides a modern, animated phone login interface with comprehensive
+/// debug logging and state management.
 ///
-/// **Features:**
-/// - Smooth slide-up and fade-in animations
-/// - Phone number validation with country code selection
+/// **🎯 CORE FEATURES:**
+/// - Smooth slide-up and fade-in animations with debug tracking
+/// - Phone number validation with extensive logging
+/// - Country code selection with search functionality
 /// - Integration with authentication service for user lookup
-/// - Social login options (Google, Apple)
-/// - Responsive design with theme-aware styling
-/// - Error handling with visual feedback
-/// - Proper authentication state management
+/// - Social login options (Google, Apple) - placeholder implementation
+/// - Responsive design with comprehensive ThemeManager integration
+/// - Error handling with visual feedback and debug traces
+/// - Proper authentication state management with Riverpod
 ///
-/// **Authentication Flow:**
-/// 1. User enters phone number with country code
-/// 2. System validates phone number format
-/// 3. API call to check if user exists
-/// 4. Navigation to PIN entry with user data
-/// 5. Authentication state is properly managed
+/// **🔄 AUTHENTICATION FLOW WITH DEBUG TRACKING:**
+/// 1. Widget initialization → Debug prints for state setup
+/// 2. User enters phone number → Input change logging
+/// 3. Country selection → Country picker interaction logging
+/// 4. Phone number validation → Detailed validation debug output
+/// 5. API call to search user → Complete request/response logging
+/// 6. Navigate to PIN entry → Navigation data logging
+/// 7. Error handling → Comprehensive error trace logging
 ///
-/// **State Management:**
-/// - Uses Riverpod for authentication state
-/// - Local state for form validation and UI interactions
-/// - Animation controllers for smooth transitions
-/// - Proper error handling and loading states
+/// **🏗️ ARCHITECTURE COMPONENTS:**
+/// - **State Management**: Riverpod providers with debug logging
+/// - **Animations**: Custom controllers with animation progress tracking
+/// - **UI Components**: ThemeManager integration with theme debug info
+/// - **API Integration**: UserService with comprehensive request/response logging
+/// - **Local Storage**: HiveService integration with cache operation logging
+/// - **Navigation**: GoRouter integration with route transition logging
+///
+/// **🐛 DEBUG FEATURES:**
+/// - Comprehensive debug prints throughout all methods
+/// - State change logging with before/after values
+/// - API request/response detailed logging
+/// - Error handling with stack trace information
+/// - Animation progress tracking
+/// - User interaction logging (taps, input changes, selections)
+/// - Theme and UI state logging
+/// - Performance timing for critical operations
 class PhoneLoginBottomSheet extends ConsumerStatefulWidget {
   const PhoneLoginBottomSheet({super.key});
 
@@ -69,27 +85,51 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   @override
   void initState() {
     super.initState();
+    debugPrint(' PhoneLoginBottomSheet : 🚀 PhoneLoginBottomSheet: Initializing widget state');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Default country: $_selectedCountryCode $_selectedCountryFlag');
+
     _initializeAnimations();
     _startAnimations();
     _loadCachedPhoneNumber();
+
+    debugPrint(' PhoneLoginBottomSheet : ✅ PhoneLoginBottomSheet: Widget initialization completed');
   }
 
   /// Load cached phone number if available for better UX
+  ///
+  /// **Purpose:** Restore previously entered phone number to improve user experience
+  /// **Process:**
+  /// 1. Retrieve cached phone number from local storage
+  /// 2. Parse country code and phone number using regex
+  /// 3. Find matching country from countries list
+  /// 4. Update UI state with cached values
   void _loadCachedPhoneNumber() {
+    debugPrint(' PhoneLoginBottomSheet : 📞 PhoneLoginBottomSheet: Loading cached phone number');
+
     final cachedPhone = HiveService.getPhoneNumber();
+    debugPrint(' PhoneLoginBottomSheet : 💾 Cached phone from storage: $cachedPhone');
+
     if (cachedPhone != null && cachedPhone.isNotEmpty) {
-      // Extract country code and phone number
+      debugPrint(' PhoneLoginBottomSheet : 🔍 Parsing cached phone number: $cachedPhone');
+
+      // Extract country code and phone number using regex pattern
       final phoneRegex = RegExp(r'^(\+\d{1,2})(.*)$');
       final match = phoneRegex.firstMatch(cachedPhone);
+
       if (match != null) {
         final countryCode = match.group(1)!;
         final phoneNumber = match.group(2)!;
 
-        // Find matching country
-        final country = _countries.firstWhere(
+        debugPrint(' PhoneLoginBottomSheet : 🌍 Extracted country code: $countryCode');
+        debugPrint(' PhoneLoginBottomSheet : 📱 Extracted phone number: $phoneNumber');
+
+        // Find matching country from the countries list
+        final country = countries.firstWhere(
           (c) => c['code'] == countryCode,
           orElse: () => {'code': '+91', 'flag': '🇮🇳'},
         );
+
+        debugPrint(' PhoneLoginBottomSheet : 🏳️ Found country: ${country['name']} ${country['flag']}');
 
         setState(() {
           _selectedCountryCode = countryCode;
@@ -97,25 +137,40 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           _phoneNumber = phoneNumber;
           _phoneController.text = phoneNumber;
         });
+
+        debugPrint(' PhoneLoginBottomSheet : ✅ Phone number state updated successfully');
+        debugPrint(' PhoneLoginBottomSheet : 📊 Current state - Country: $countryCode, Phone: $phoneNumber');
+      } else {
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Failed to parse cached phone number format');
       }
+    } else {
+      debugPrint(' PhoneLoginBottomSheet : ℹ️ No cached phone number found, using defaults');
     }
   }
 
   /// Initializes animation controllers and animation objects
   ///
-  /// Creates slide and fade animations for smooth bottom sheet presentation
+  /// **Purpose:** Creates smooth slide and fade animations for bottom sheet presentation
+  /// **Animations Created:**
+  /// - Slide animation: Bottom-to-center movement (400ms, easeOut curve)
+  /// - Fade animation: Opacity transition (300ms, easeIn curve)
+  /// **Performance:** Uses TickerProviderStateMixin for optimized animations
   void _initializeAnimations() {
+    debugPrint(' PhoneLoginBottomSheet : 🎬 PhoneLoginBottomSheet: Initializing animations');
+
     // Slide animation controller - controls the upward slide motion
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
+    debugPrint(' PhoneLoginBottomSheet : ⬆️ Slide controller created (400ms duration)');
 
     // Fade animation controller - controls the opacity transition
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+    debugPrint(' PhoneLoginBottomSheet : 🌟 Fade controller created (300ms duration)');
 
     // Slide animation from bottom to center
     _slideAnimation = Tween<Offset>(
@@ -125,6 +180,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       parent: _slideController,
       curve: Curves.easeOut, // Smooth deceleration
     ));
+    debugPrint(' PhoneLoginBottomSheet : 📐 Slide animation configured: Offset(0,1) → Offset(0,0) with easeOut');
 
     // Fade animation from transparent to opaque
     _fadeAnimation = Tween<double>(
@@ -134,176 +190,317 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       parent: _fadeController,
       curve: Curves.easeIn, // Smooth acceleration
     ));
+    debugPrint(' PhoneLoginBottomSheet : 💫 Fade animation configured: 0.0 → 1.0 opacity with easeIn');
+    debugPrint(' PhoneLoginBottomSheet : ✅ All animations initialized successfully');
   }
 
   /// Starts the entry animations with staggered timing
   ///
-  /// First slides the bottom sheet up, then fades in the content
+  /// **Purpose:** Creates smooth, layered animation entrance
+  /// **Process:**
+  /// 1. Start slide animation immediately
+  /// 2. Wait 100ms for staggered effect
+  /// 3. Start fade animation if widget is still mounted
+  /// **UX Benefit:** Provides professional, polished feel to the modal
   Future<void> _startAnimations() async {
+    debugPrint(' PhoneLoginBottomSheet : 🎭 PhoneLoginBottomSheet: Starting entrance animations');
+
     // Start slide animation immediately
     _slideController.forward();
+    debugPrint(' PhoneLoginBottomSheet : ⬆️ Slide animation started');
 
     // Wait briefly then start fade animation for staggered effect
     await Future.delayed(const Duration(milliseconds: 100));
+    debugPrint(' PhoneLoginBottomSheet : ⏰ Stagger delay completed (100ms)');
+
     if (mounted) {
       _fadeController.forward();
+      debugPrint(' PhoneLoginBottomSheet : 🌟 Fade animation started');
+      debugPrint(' PhoneLoginBottomSheet : ✅ All entrance animations running');
+    } else {
+      debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, skipping fade animation');
     }
   }
 
   @override
   void dispose() {
+    debugPrint(' PhoneLoginBottomSheet : 🧹 PhoneLoginBottomSheet: Starting cleanup process');
+
     // Clean up controllers to prevent memory leaks
+    debugPrint(' PhoneLoginBottomSheet : 📝 Disposing text controllers');
     _phoneController.dispose();
     _searchController.dispose();
+
+    debugPrint(' PhoneLoginBottomSheet : 🎬 Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
 
+    debugPrint(' PhoneLoginBottomSheet : ✅ PhoneLoginBottomSheet: All resources cleaned up successfully');
     super.dispose();
   }
 
   /// Validates phone number format
+  ///
+  /// **Purpose:** Ensure phone number meets basic requirements before API call
+  /// **Validation Rules:**
+  /// - Must not be empty
+  /// - Must be at least 10 digits long
+  /// - Must contain only numeric digits
+  /// - Must be maximum 15 digits (international standard)
+  /// **Returns:** true if valid, false if invalid
   bool _isValidPhoneNumber(String phone) {
-    // Basic phone number validation
-    if (phone.isEmpty || phone.length < 10) return false;
+    debugPrint(' PhoneLoginBottomSheet : 🔍 PhoneLoginBottomSheet: Validating phone number');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Phone to validate: "$phone" (length: ${phone.length})');
 
-    // Check if phone contains only digits
+    // Basic phone number validation - check length
+    if (phone.isEmpty) {
+      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone number is empty');
+      return false;
+    }
+
+    if (phone.length < 10) {
+      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone number too short (${phone.length} < 10)');
+      return false;
+    }
+
+    // Check if phone contains only digits using regex
     final phoneRegex = RegExp(r'^\d{10,15}$');
-    return phoneRegex.hasMatch(phone);
+    final isValidFormat = phoneRegex.hasMatch(phone);
+
+    if (isValidFormat) {
+      debugPrint(' PhoneLoginBottomSheet : ✅ Phone number validation passed');
+    } else {
+      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone contains non-digits or invalid length');
+    }
+
+    debugPrint(' PhoneLoginBottomSheet : 📊 Validation result: $isValidFormat');
+    return isValidFormat;
   }
 
   /// Validates phone number and initiates authentication flow
   ///
+  /// **Purpose:** Core authentication method that handles phone verification
   /// **Process:**
   /// 1. Validates phone number format and length
   /// 2. Makes API call to check if user exists
   /// 3. Prepares user data for PIN entry screen
   /// 4. Navigates to PIN entry with appropriate data
   /// 5. Caches phone number for future use
+  /// **API Integration:** Uses UserService.searchUserByPhone()
+  /// **Navigation:** Transitions to PIN entry screen with user context
   Future<void> _verifyPhoneNumber() async {
-    // Validate phone number format
+    debugPrint(' PhoneLoginBottomSheet : 🚀 PhoneLoginBottomSheet: Starting phone verification process');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Current phone number: "$_phoneNumber"');
+    debugPrint(' PhoneLoginBottomSheet : 🌍 Selected country: $_selectedCountryCode $_selectedCountryFlag');
+
+    // Step 1: Validate phone number format before API call
     if (!_isValidPhoneNumber(_phoneNumber)) {
+      debugPrint(' PhoneLoginBottomSheet : ❌ Phone verification failed: Invalid phone number format');
       setState(() {
         _errorMessage = 'auth.phoneLogin.validation.invalidPhone'.tr();
       });
+      debugPrint(' PhoneLoginBottomSheet : 🔄 UI updated with validation error message');
       return;
     }
 
-    // Provide haptic feedback for better UX
+    // Step 2: Provide haptic feedback for better UX
     HapticFeedback.lightImpact();
+    debugPrint(' PhoneLoginBottomSheet : 📳 Haptic feedback provided to user');
 
-    // Update UI to show loading state
+    // Step 3: Update UI to show loading state
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
+    debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state activated, error message cleared');
 
     try {
-      // Get UserService instance from provider
+      // Step 4: Get UserService instance from Riverpod provider
       final userService = ref.read(userServiceProvider);
       final fullPhoneNumber = _selectedCountryCode + _phoneNumber;
+      debugPrint(' PhoneLoginBottomSheet : 📞 Full phone number: $fullPhoneNumber');
+      debugPrint(' PhoneLoginBottomSheet : 🔍 Searching for existing user via API...');
 
-      // Check if user exists by phone number via API
+      // Step 5: Check if user exists by phone number via API
       final userSearchResponse = await userService.searchUserByPhone(fullPhoneNumber);
+      debugPrint(' PhoneLoginBottomSheet : 📡 API call completed');
+      // debugPrint(' PhoneLoginBottomSheet : 📊 API response success: ${userSearchResponse.success}');
+      // debugPrint(' PhoneLoginBottomSheet : 👤 User found: ${userSearchResponse.data != null}');
 
-      // Process API response
-      AppUser? existingUser;
-      Map<String, dynamic> userData;
+      // Step 6: Process API response and prepare user data
+      // final AppUser? existingUser;
+      AppUser? userData;
 
-      if (userSearchResponse.data == null) {
+      if (userSearchResponse.id == '') {
+        debugPrint(' PhoneLoginBottomSheet : 🆕 New user detected - generating random user data');
+        Map<String, String> randomData = generateRandomUserData();
+        debugPrint(' PhoneLoginBottomSheet : 🎲 Generated data: $randomData');
+
         // User doesn't exist, prepare new user data with default provider type
-        userData = {
-          'phoneNumber': fullPhoneNumber,
-          'phone_number': fullPhoneNumber,
-          'userType': 'provider', // Default new users to provider
-          'user_type': 'provider',
-          'isNewUser': true,
-          'is_new_user': true,
-        };
+        userData = AppUser(
+          phoneNumber: fullPhoneNumber,
+          userType: UserType.provider,
+          id: '',
+          firstName: randomData['firstName']!,
+          lastName: randomData['lastName']!,
+          username: randomData['username']!,
+          email: randomData['email']!,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        debugPrint(' PhoneLoginBottomSheet : ✅ New user data prepared successfully');
+        debugPrint(
+            ' PhoneLoginBottomSheet : 👤 New user: ${userData.firstName} ${userData.lastName} (${userData.username})');
       } else {
+        debugPrint(' PhoneLoginBottomSheet : 👋 Existing user found in database');
         // User exists, use their complete data from AppUser model
-        existingUser = userSearchResponse.data as AppUser;
-        userData = existingUser.toJson();
-        userData['isNewUser'] = false;
-        userData['is_new_user'] = false;
-        // Ensure phone number is set if it was null in the user data
-        userData['phone_number'] = existingUser.phoneNumber ?? fullPhoneNumber;
-        userData['phoneNumber'] = existingUser.phoneNumber ?? fullPhoneNumber;
+        // existingUser = userSearchResponse.data;
+        userData = userSearchResponse;
+        debugPrint(' PhoneLoginBottomSheet : ✅ Existing user data loaded successfully');
+        debugPrint(' PhoneLoginBottomSheet : 👤 User: ${userData.firstName} ${userData.lastName}');
+        debugPrint(' PhoneLoginBottomSheet : 📧 Email: ${userData.email}');
+        debugPrint(' PhoneLoginBottomSheet : 🏷️ User Type: ${userData.userType}');
+        debugPrint(' PhoneLoginBottomSheet : ⭐ Verified: ${userData.isVerified}');
       }
 
-      // Cache phone number for future use
+      // Step 7: Cache phone number for future use
+      debugPrint(' PhoneLoginBottomSheet : 💾 Caching phone number for future sessions...');
       await HiveService.setPhoneNumber(fullPhoneNumber);
+      debugPrint(' PhoneLoginBottomSheet : ✅ Phone number cached successfully');
 
-      // Update UI to hide loading state
+      // Step 8: Update UI to hide loading state and navigate
       if (mounted) {
+        debugPrint(' PhoneLoginBottomSheet : 🔄 Widget still mounted, updating UI state');
         setState(() {
           _isLoading = false;
         });
+        debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state deactivated');
 
         // Navigate to PIN entry screen with user data
+        debugPrint(' PhoneLoginBottomSheet : 🚪 Closing current bottom sheet...');
         context.pop(); // Close current bottom sheet
+
+        debugPrint(' PhoneLoginBottomSheet : 🧭 Navigating to PIN entry screen...');
+        debugPrint(' PhoneLoginBottomSheet : 📦 Navigation data:');
+        debugPrint(' PhoneLoginBottomSheet :   - phoneNumber: $fullPhoneNumber');
+        // debugPrint(' PhoneLoginBottomSheet :   - isNewUser: ${userSearchResponse.data == null}');
+        debugPrint(' PhoneLoginBottomSheet :   - userData: ${userData.toString()}');
 
         // Navigate with proper data structure
         context.push(
           RouteEnum.pinEntry.rawValue,
           extra: {
             'phoneNumber': fullPhoneNumber,
-            'phone_number': fullPhoneNumber,
-            'isNewUser': (userSearchResponse.data == null),
-            'is_new_user': (userSearchResponse.data == null),
+            'isNewUser': (userSearchResponse.id == ''),
             'userData': userData,
-            'user_data': userData,
-            if (existingUser != null) 'userModel': existingUser, // Pass the AppUser model directly
-            if (existingUser != null) 'user_model': existingUser,
           },
         );
+        debugPrint(' PhoneLoginBottomSheet : ✅ Navigation completed successfully');
+      } else {
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted during API call, skipping UI update');
       }
     } catch (e) {
+      debugPrint(' PhoneLoginBottomSheet : 💥 Error occurred during phone verification:');
+      debugPrint(' PhoneLoginBottomSheet : ❌ Error type: ${e.runtimeType}');
+      debugPrint(' PhoneLoginBottomSheet : ❌ Error message: $e');
+      debugPrint(' PhoneLoginBottomSheet : 📱 Stack trace: ${StackTrace.current}');
+
       if (mounted) {
+        debugPrint(' PhoneLoginBottomSheet : 🔄 Updating UI with error state');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.validation.networkError'.tr();
         });
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Network error message displayed to user');
+      } else {
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, cannot update error state');
       }
     }
+
+    debugPrint(' PhoneLoginBottomSheet : 🏁 Phone verification process completed');
   }
 
   /// Handle social login with proper error handling
+  ///
+  /// **Purpose:** Placeholder implementation for future social authentication
+  /// **Supported Providers:** Google, Apple (planned)
+  /// **Current Status:** Simulated implementation with "Coming Soon" message
+  /// **Future Implementation:** Will integrate OAuth flows for each provider
   Future<void> _handleSocialLogin(String provider) async {
-    // Provide haptic feedback
-    HapticFeedback.lightImpact();
+    debugPrint(' PhoneLoginBottomSheet : 🔐 PhoneLoginBottomSheet: Social login initiated');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Provider: $provider');
+    debugPrint(' PhoneLoginBottomSheet : ⚠️ Note: This is currently a placeholder implementation');
 
-    // Show loading state
+    // Provide haptic feedback for user interaction
+    HapticFeedback.lightImpact();
+    debugPrint(' PhoneLoginBottomSheet : 📳 Haptic feedback provided for social login tap');
+
+    // Show loading state to user
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
+    debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state activated for social login');
+    debugPrint(' PhoneLoginBottomSheet : 🧹 Previous error messages cleared');
 
     try {
+      debugPrint(' PhoneLoginBottomSheet : 🚀 Starting social login simulation...');
       // TODO: Implement actual social login logic
       // This is a placeholder for future implementation
+      //
+      // FUTURE IMPLEMENTATION PLAN:
+      // 1. Google Sign-In: Use google_sign_in package
+      // 2. Apple Sign-In: Use sign_in_with_apple package
+      // 3. Handle OAuth token exchange
+      // 4. Create/update user profile with social data
+      // 5. Navigate to main app or PIN setup
+
       await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      debugPrint(' PhoneLoginBottomSheet : ⏰ Social login simulation completed (2 second delay)');
 
       if (mounted) {
+        debugPrint(' PhoneLoginBottomSheet : 🔄 Widget mounted, updating UI with "Coming Soon" message');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.socialLogin.comingSoon'.tr();
         });
+        debugPrint(' PhoneLoginBottomSheet : ℹ️ "Coming Soon" message displayed to user');
+      } else {
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted during social login, skipping UI update');
       }
     } catch (e) {
+      debugPrint(' PhoneLoginBottomSheet : 💥 Error occurred during social login simulation:');
+      debugPrint(' PhoneLoginBottomSheet : ❌ Error type: ${e.runtimeType}');
+      debugPrint(' PhoneLoginBottomSheet : ❌ Error message: $e');
+
       if (mounted) {
+        debugPrint(' PhoneLoginBottomSheet : 🔄 Updating UI with social login error state');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.socialLogin.failed'.tr();
         });
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Social login failure message displayed to user');
+      } else {
+        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, cannot update error state');
       }
     }
+
+    debugPrint(' PhoneLoginBottomSheet : 🏁 Social login process completed');
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(' PhoneLoginBottomSheet : 🎨 PhoneLoginBottomSheet: Building UI');
+    debugPrint(' PhoneLoginBottomSheet : 📊 Current state - Loading: $_isLoading, Error: ${_errorMessage != null}');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Current phone: "$_phoneNumber", Country: $_selectedCountryCode');
+
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
     final screenSize = MediaQuery.of(context).size;
+
+    debugPrint(' PhoneLoginBottomSheet : 🎨 Theme loaded: ${themeManager.runtimeType}');
+    debugPrint(' PhoneLoginBottomSheet : 📐 Screen size: ${screenSize.width} x ${screenSize.height}');
+    debugPrint(' PhoneLoginBottomSheet : 📱 Max height: ${screenSize.height * 0.9}');
 
     return SlideTransition(
       position: _slideAnimation,
@@ -514,11 +711,21 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                   ),
                                 ),
                                 onChanged: (value) {
+                                  debugPrint(
+                                      ' PhoneLoginBottomSheet : 📱 PhoneLoginBottomSheet: Phone number input changed');
+                                  debugPrint(' PhoneLoginBottomSheet : 📝 Old value: "$_phoneNumber"');
+                                  debugPrint(' PhoneLoginBottomSheet : 📝 New value: "$value"');
+
                                   _phoneNumber = value;
+                                  debugPrint(' PhoneLoginBottomSheet : ✅ Phone number state updated');
+
+                                  // Clear error message when user starts typing
                                   if (_errorMessage != null) {
+                                    debugPrint(' PhoneLoginBottomSheet : 🧹 Clearing error message on input change');
                                     setState(() {
                                       _errorMessage = null;
                                     });
+                                    debugPrint(' PhoneLoginBottomSheet : ✅ Error message cleared');
                                   }
                                 },
                               ),
@@ -531,6 +738,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       if (_errorMessage != null) ...[
                         SizedBox(height: 8.h),
                         Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Prbal.exclamationTriangle,
@@ -538,11 +746,15 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               color: const Color(0xFFEF4444),
                             ),
                             SizedBox(width: 8.w),
-                            Text(
-                              _errorMessage!,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: const Color(0xFFEF4444),
+                            Flexible(
+                              child: Text(
+                                _errorMessage!,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: const Color(0xFFEF4444),
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -641,31 +853,30 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       // Social login buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Expanded(
-                          //   child:
-                          _buildSocialButton(
-                            'auth.phoneLogin.socialLogin.google'.tr(),
-                            Prbal.google11,
-                            Colors.red,
-                            () => _handleSocialLogin('google'),
-                            themeManager,
-                          ),
-                          // ),
-                          // SizedBox(width: 16.w),
-                          // Expanded(
-                          //   child:
-                          _buildSocialButton(
-                            'auth.phoneLogin.socialLogin.apple'.tr(),
-                            Prbal.apple,
-                            themeManager.conditionalColor(
-                              lightColor: Colors.black,
-                              darkColor: Colors.white,
+                          Flexible(
+                            child: _buildSocialButton(
+                              'auth.phoneLogin.socialLogin.google'.tr(),
+                              Prbal.google11,
+                              Colors.red,
+                              () => _handleSocialLogin('google'),
+                              themeManager,
                             ),
-                            () => _handleSocialLogin('apple'),
-                            themeManager,
                           ),
-                          // ),
+                          SizedBox(width: 16.w),
+                          Flexible(
+                            child: _buildSocialButton(
+                              'auth.phoneLogin.socialLogin.apple'.tr(),
+                              Prbal.apple,
+                              themeManager.conditionalColor(
+                                lightColor: Colors.black,
+                                darkColor: Colors.white,
+                              ),
+                              () => _handleSocialLogin('apple'),
+                              themeManager,
+                            ),
+                          ),
                         ],
                       ),
 
@@ -715,6 +926,20 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     );
   }
 
+  /// Build social login button with consistent styling and theme integration
+  ///
+  /// **Purpose:** Create reusable social login buttons (Google, Apple, etc.)
+  /// **Design Features:**
+  /// - Circular button with gradient background
+  /// - Theme-aware colors and shadows
+  /// - Consistent 60x60 sizing for balanced layout
+  /// - Subtle border and elevation effects
+  /// **Parameters:**
+  /// - [label]: Button accessibility label (for future tooltips)
+  /// - [icon]: Social platform icon (Google, Apple, etc.)
+  /// - [iconColor]: Brand-specific icon color
+  /// - [onPressed]: Callback function for button interaction
+  /// - [themeManager]: Theme manager for consistent styling
   Widget _buildSocialButton(
     String label,
     IconData icon,
@@ -722,7 +947,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     VoidCallback onPressed,
     ThemeManager themeManager,
   ) {
+    debugPrint(' PhoneLoginBottomSheet : 🔨 Building social button: $label');
+    debugPrint(' PhoneLoginBottomSheet : 🎨 Icon color: $iconColor');
+
     return Container(
+      width: 60.w,
+      height: 60.h,
       decoration: BoxDecoration(
         gradient: themeManager.conditionalGradient(
           lightGradient: LinearGradient(
@@ -739,7 +969,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           ),
         ),
         shape: BoxShape.circle,
-        // borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: themeManager.conditionalColor(
             lightColor: themeManager.borderColor,
@@ -757,43 +986,41 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           foregroundColor: themeManager.textPrimary,
           side: BorderSide.none,
           backgroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 30.sp,
-              color: iconColor,
-            ),
-            // SizedBox(width: 8.w),
-            // Text(
-            //   label,
-            //   style: TextStyle(
-            //     fontSize: 14.sp,
-            //     fontWeight: FontWeight.w500,
-            //     color: themeManager.textPrimary,
-            //   ),
-            // ),
-          ],
+        child: Icon(
+          icon,
+          size: 24.sp,
+          color: iconColor,
         ),
       ),
     );
   }
 
   /// Show country picker with improved search and selection
+  ///
+  /// **Purpose:** Display modal bottom sheet with searchable country list
+  /// **Features:**
+  /// - Real-time search filtering by country name or code
+  /// - Theme-aware design with gradients and animations
+  /// - Haptic feedback on selection
+  /// - Smooth animations and professional UI
+  /// **UX Benefits:** Easy country selection with visual feedback
   void _showCountryPicker() {
-    final themeManager = ThemeManager.of(context);
+    debugPrint(' PhoneLoginBottomSheet : 🌍 PhoneLoginBottomSheet: Opening country picker');
+    debugPrint(' PhoneLoginBottomSheet : 🎯 Current selection: $_selectedCountryFlag $_selectedCountryCode');
 
-    // Clear search query when opening
+    final themeManager = ThemeManager.of(context);
+    debugPrint(' PhoneLoginBottomSheet : 🎨 Theme loaded for country picker modal');
+
+    // Clear search query when opening to show all countries
+    debugPrint(' PhoneLoginBottomSheet : 🧹 Clearing search controller and query');
     _searchController.clear();
     setState(() {
       _searchQuery = '';
     });
+    debugPrint(' PhoneLoginBottomSheet : ✅ Search state reset, showing all countries');
 
     showModalBottomSheet(
       context: context,
@@ -1073,9 +1300,15 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     fontSize: 15.sp,
                   ),
                   onChanged: (value) {
+                    debugPrint(' PhoneLoginBottomSheet : 🔍 Country picker: Search input changed');
+                    debugPrint(' PhoneLoginBottomSheet : 📝 Search value: "$value"');
+
                     setModalState(() {
                       _searchQuery = value.toLowerCase();
                     });
+
+                    debugPrint(' PhoneLoginBottomSheet : 🔎 Search query updated: "$_searchQuery"');
+                    debugPrint(' PhoneLoginBottomSheet : 🌍 Filtering countries list...');
                   },
                 ),
               ),
@@ -1084,7 +1317,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
               Expanded(
                 child: Builder(
                   builder: (context) {
-                    final filteredCountries = _countries.where((country) {
+                    final filteredCountries = countries.where((country) {
                       if (_searchQuery.isEmpty) return true;
                       return country['name']!.toLowerCase().contains(_searchQuery) ||
                           country['code']!.toLowerCase().contains(_searchQuery.replaceAll('+', ''));
@@ -1273,15 +1506,27 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               ],
                             ),
                             onTap: () {
-                              // Provide haptic feedback
-                              HapticFeedback.selectionClick();
+                              debugPrint(' PhoneLoginBottomSheet : 🌍 Country picker: Country selected');
+                              debugPrint(' PhoneLoginBottomSheet : 📍 Selected country: ${country['name']}');
+                              debugPrint(' PhoneLoginBottomSheet : 🏳️ Flag: ${country['flag']}');
+                              debugPrint(' PhoneLoginBottomSheet : 📞 Code: ${country['code']}');
 
+                              // Provide haptic feedback for selection
+                              HapticFeedback.selectionClick();
+                              debugPrint(' PhoneLoginBottomSheet : 📳 Selection haptic feedback provided');
+
+                              debugPrint(' PhoneLoginBottomSheet : 🔄 Updating selected country state...');
                               setState(() {
                                 _selectedCountryCode = country['code']!;
                                 _selectedCountryFlag = country['flag']!;
                               });
+                              debugPrint(' PhoneLoginBottomSheet : ✅ Country state updated successfully');
+                              debugPrint(
+                                  ' PhoneLoginBottomSheet : 🎯 New selection: $_selectedCountryFlag $_selectedCountryCode');
 
+                              debugPrint(' PhoneLoginBottomSheet : 🚪 Closing country picker modal');
                               Navigator.pop(context);
+                              debugPrint(' PhoneLoginBottomSheet : ✅ Country selection process completed');
                             },
                           ),
                         );
@@ -1296,256 +1541,4 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       ),
     );
   }
-
-  // Comprehensive list of countries with codes and flags
-  final List<Map<String, String>> _countries = [
-    {'name': 'Afghanistan', 'code': '+93', 'flag': '🇦🇫'},
-    {'name': 'Åland Islands', 'code': '+358', 'flag': '🇦🇽'},
-    {'name': 'Albania', 'code': '+355', 'flag': '🇦🇱'},
-    {'name': 'Algeria', 'code': '+213', 'flag': '🇩🇿'},
-    {'name': 'American Samoa', 'code': '+1', 'flag': '🇦🇸'},
-    {'name': 'Andorra', 'code': '+376', 'flag': '🇦🇩'},
-    {'name': 'Angola', 'code': '+244', 'flag': '🇦🇴'},
-    {'name': 'Anguilla', 'code': '+1', 'flag': '🇦🇮'},
-    {'name': 'Antarctica', 'code': '+672', 'flag': '🇦🇶'},
-    {'name': 'Antigua and Barbuda', 'code': '+1', 'flag': '🇦🇬'},
-    {'name': 'Argentina', 'code': '+54', 'flag': '🇦🇷'},
-    {'name': 'Armenia', 'code': '+374', 'flag': '🇦🇲'},
-    {'name': 'Aruba', 'code': '+297', 'flag': '🇦🇼'},
-    {'name': 'Australia', 'code': '+61', 'flag': '🇦🇺'},
-    {'name': 'Austria', 'code': '+43', 'flag': '🇦🇹'},
-    {'name': 'Azerbaijan', 'code': '+994', 'flag': '🇦🇿'},
-    {'name': 'Bahamas', 'code': '+1', 'flag': '🇧🇸'},
-    {'name': 'Bahrain', 'code': '+973', 'flag': '🇧🇭'},
-    {'name': 'Bangladesh', 'code': '+880', 'flag': '🇧🇩'},
-    {'name': 'Barbados', 'code': '+1', 'flag': '🇧🇧'},
-    {'name': 'Belarus', 'code': '+375', 'flag': '🇧🇾'},
-    {'name': 'Belgium', 'code': '+32', 'flag': '🇧🇪'},
-    {'name': 'Belize', 'code': '+501', 'flag': '🇧🇿'},
-    {'name': 'Benin', 'code': '+229', 'flag': '🇧🇯'},
-    {'name': 'Bermuda', 'code': '+1', 'flag': '🇧🇲'},
-    {'name': 'Bhutan', 'code': '+975', 'flag': '🇧🇹'},
-    {'name': 'Bolivia', 'code': '+591', 'flag': '🇧🇴'},
-    {'name': 'Bonaire, Sint Eustatius and Saba', 'code': '+599', 'flag': '🇧🇶'},
-    {'name': 'Bosnia and Herzegovina', 'code': '+387', 'flag': '🇧🇦'},
-    {'name': 'Botswana', 'code': '+267', 'flag': '🇧🇼'},
-    {'name': 'Bouvet Island', 'code': '+47', 'flag': '🇧🇻'},
-    {'name': 'Brazil', 'code': '+55', 'flag': '🇧🇷'},
-    {'name': 'British Virgin Islands', 'code': '+1', 'flag': '🇻🇬'},
-    {'name': 'Brunei', 'code': '+673', 'flag': '🇧🇳'},
-    {'name': 'Bulgaria', 'code': '+359', 'flag': '🇧🇬'},
-    {'name': 'Burkina Faso', 'code': '+226', 'flag': '🇧🇫'},
-    {'name': 'Burundi', 'code': '+257', 'flag': '🇧🇮'},
-    {'name': 'Cabo Verde', 'code': '+238', 'flag': '🇨🇻'},
-    {'name': 'Cambodia', 'code': '+855', 'flag': '🇰🇭'},
-    {'name': 'Cameroon', 'code': '+237', 'flag': '🇨🇲'},
-    {'name': 'Canada', 'code': '+1', 'flag': '🇨🇦'},
-    {'name': 'Cayman Islands', 'code': '+1', 'flag': '🇰🇾'},
-    {'name': 'Central African Republic', 'code': '+236', 'flag': '🇨🇫'},
-    {'name': 'Chad', 'code': '+235', 'flag': '🇹🇩'},
-    {'name': 'Chile', 'code': '+56', 'flag': '🇨🇱'},
-    {'name': 'China', 'code': '+86', 'flag': '🇨🇳'},
-    {'name': 'Christmas Island', 'code': '+61', 'flag': '🇨🇽'},
-    {'name': 'Cocos (Keeling) Islands', 'code': '+61', 'flag': '🇨🇨'},
-    {'name': 'Colombia', 'code': '+57', 'flag': '🇨🇴'},
-    {'name': 'Comoros', 'code': '+269', 'flag': '🇰🇲'},
-    {'name': 'Congo', 'code': '+242', 'flag': '🇨🇬'},
-    {'name': 'Congo (Democratic Republic)', 'code': '+243', 'flag': '🇨🇩'},
-    {'name': 'Cook Islands', 'code': '+682', 'flag': '🇨🇰'},
-    {'name': 'Costa Rica', 'code': '+506', 'flag': '🇨🇷'},
-    {'name': 'Côte d\'Ivoire', 'code': '+225', 'flag': '🇨🇮'},
-    {'name': 'Croatia', 'code': '+385', 'flag': '🇭🇷'},
-    {'name': 'Cuba', 'code': '+53', 'flag': '🇨🇺'},
-    {'name': 'Curaçao', 'code': '+599', 'flag': '🇨🇼'},
-    {'name': 'Cyprus', 'code': '+357', 'flag': '🇨🇾'},
-    {'name': 'Czech Republic', 'code': '+420', 'flag': '🇨🇿'},
-    {'name': 'Denmark', 'code': '+45', 'flag': '🇩🇰'},
-    {'name': 'Djibouti', 'code': '+253', 'flag': '🇩🇯'},
-    {'name': 'Dominica', 'code': '+1', 'flag': '🇩🇲'},
-    {'name': 'Dominican Republic', 'code': '+1', 'flag': '🇩🇴'},
-    {'name': 'Ecuador', 'code': '+593', 'flag': '🇪🇨'},
-    {'name': 'Egypt', 'code': '+20', 'flag': '🇪🇬'},
-    {'name': 'El Salvador', 'code': '+503', 'flag': '🇸🇻'},
-    {'name': 'Equatorial Guinea', 'code': '+240', 'flag': '🇬🇶'},
-    {'name': 'Eritrea', 'code': '+291', 'flag': '🇪🇷'},
-    {'name': 'Estonia', 'code': '+372', 'flag': '🇪🇪'},
-    {'name': 'Eswatini', 'code': '+268', 'flag': '🇸🇿'},
-    {'name': 'Ethiopia', 'code': '+251', 'flag': '🇪🇹'},
-    {'name': 'Falkland Islands', 'code': '+500', 'flag': '🇫🇰'},
-    {'name': 'Faroe Islands', 'code': '+298', 'flag': '🇫🇴'},
-    {'name': 'Fiji', 'code': '+679', 'flag': '🇫🇯'},
-    {'name': 'Finland', 'code': '+358', 'flag': '🇫🇮'},
-    {'name': 'France', 'code': '+33', 'flag': '🇫🇷'},
-    {'name': 'French Guiana', 'code': '+594', 'flag': '🇬🇫'},
-    {'name': 'French Polynesia', 'code': '+689', 'flag': '🇵🇫'},
-    {'name': 'French Southern Territories', 'code': '+262', 'flag': '🇹🇫'},
-    {'name': 'Gabon', 'code': '+241', 'flag': '🇬🇦'},
-    {'name': 'Gambia', 'code': '+220', 'flag': '🇬🇲'},
-    {'name': 'Georgia', 'code': '+995', 'flag': '🇬🇪'},
-    {'name': 'Germany', 'code': '+49', 'flag': '🇩🇪'},
-    {'name': 'Ghana', 'code': '+233', 'flag': '🇬🇭'},
-    {'name': 'Gibraltar', 'code': '+350', 'flag': '🇬🇮'},
-    {'name': 'Greece', 'code': '+30', 'flag': '🇬🇷'},
-    {'name': 'Greenland', 'code': '+299', 'flag': '🇬🇱'},
-    {'name': 'Grenada', 'code': '+1', 'flag': '🇬🇩'},
-    {'name': 'Guadeloupe', 'code': '+590', 'flag': '🇬🇵'},
-    {'name': 'Guam', 'code': '+1', 'flag': '🇬🇺'},
-    {'name': 'Guatemala', 'code': '+502', 'flag': '🇬🇹'},
-    {'name': 'Guernsey', 'code': '+44', 'flag': '🇬🇬'},
-    {'name': 'Guinea', 'code': '+224', 'flag': '🇬🇳'},
-    {'name': 'Guinea-Bissau', 'code': '+245', 'flag': '🇬🇼'},
-    {'name': 'Guyana', 'code': '+592', 'flag': '🇬🇾'},
-    {'name': 'Haiti', 'code': '+509', 'flag': '🇭🇹'},
-    {'name': 'Heard Island and McDonald Islands', 'code': '+672', 'flag': '🇭🇲'},
-    {'name': 'Holy See', 'code': '+379', 'flag': '🇻🇦'},
-    {'name': 'Honduras', 'code': '+504', 'flag': '🇭🇳'},
-    {'name': 'Hong Kong', 'code': '+852', 'flag': '🇭🇰'},
-    {'name': 'Hungary', 'code': '+36', 'flag': '🇭🇺'},
-    {'name': 'Iceland', 'code': '+354', 'flag': '🇮🇸'},
-    {'name': 'India', 'code': '+91', 'flag': '🇮🇳'},
-    {'name': 'Indonesia', 'code': '+62', 'flag': '🇮🇩'},
-    {'name': 'Iran', 'code': '+98', 'flag': '🇮🇷'},
-    {'name': 'Iraq', 'code': '+964', 'flag': '🇮🇶'},
-    {'name': 'Ireland', 'code': '+353', 'flag': '🇮🇪'},
-    {'name': 'Isle of Man', 'code': '+44', 'flag': '🇮🇲'},
-    {'name': 'Israel', 'code': '+972', 'flag': '🇮🇱'},
-    {'name': 'Italy', 'code': '+39', 'flag': '🇮🇹'},
-    {'name': 'Jamaica', 'code': '+1', 'flag': '🇯🇲'},
-    {'name': 'Japan', 'code': '+81', 'flag': '🇯🇵'},
-    {'name': 'Jersey', 'code': '+44', 'flag': '🇯🇪'},
-    {'name': 'Jordan', 'code': '+962', 'flag': '🇯🇴'},
-    {'name': 'Kazakhstan', 'code': '+7', 'flag': '🇰🇿'},
-    {'name': 'Kenya', 'code': '+254', 'flag': '🇰🇪'},
-    {'name': 'Kiribati', 'code': '+686', 'flag': '🇰🇮'},
-    {'name': 'Kuwait', 'code': '+965', 'flag': '🇰🇼'},
-    {'name': 'Kyrgyzstan', 'code': '+996', 'flag': '🇰🇬'},
-    {'name': 'Laos', 'code': '+856', 'flag': '🇱🇦'},
-    {'name': 'Latvia', 'code': '+371', 'flag': '🇱🇻'},
-    {'name': 'Lebanon', 'code': '+961', 'flag': '🇱🇧'},
-    {'name': 'Lesotho', 'code': '+266', 'flag': '🇱🇸'},
-    {'name': 'Liberia', 'code': '+231', 'flag': '🇱🇷'},
-    {'name': 'Libya', 'code': '+218', 'flag': '🇱🇾'},
-    {'name': 'Liechtenstein', 'code': '+423', 'flag': '🇱🇮'},
-    {'name': 'Lithuania', 'code': '+370', 'flag': '🇱🇹'},
-    {'name': 'Luxembourg', 'code': '+352', 'flag': '🇱🇺'},
-    {'name': 'Macao', 'code': '+853', 'flag': '🇲🇴'},
-    {'name': 'Madagascar', 'code': '+261', 'flag': '🇲🇬'},
-    {'name': 'Malawi', 'code': '+265', 'flag': '🇲🇼'},
-    {'name': 'Malaysia', 'code': '+60', 'flag': '🇲🇾'},
-    {'name': 'Maldives', 'code': '+960', 'flag': '🇲🇻'},
-    {'name': 'Mali', 'code': '+223', 'flag': '🇲🇱'},
-    {'name': 'Malta', 'code': '+356', 'flag': '🇲🇹'},
-    {'name': 'Marshall Islands', 'code': '+692', 'flag': '🇲🇭'},
-    {'name': 'Martinique', 'code': '+596', 'flag': '🇲🇶'},
-    {'name': 'Mauritania', 'code': '+222', 'flag': '🇲🇷'},
-    {'name': 'Mauritius', 'code': '+230', 'flag': '🇲🇺'},
-    {'name': 'Mayotte', 'code': '+262', 'flag': '🇾🇹'},
-    {'name': 'Mexico', 'code': '+52', 'flag': '🇲🇽'},
-    {'name': 'Micronesia', 'code': '+691', 'flag': '🇫🇲'},
-    {'name': 'Moldova', 'code': '+373', 'flag': '🇲🇩'},
-    {'name': 'Monaco', 'code': '+377', 'flag': '🇲🇨'},
-    {'name': 'Mongolia', 'code': '+976', 'flag': '🇲🇳'},
-    {'name': 'Montenegro', 'code': '+382', 'flag': '🇲🇪'},
-    {'name': 'Montserrat', 'code': '+1', 'flag': '🇲🇸'},
-    {'name': 'Morocco', 'code': '+212', 'flag': '🇲🇦'},
-    {'name': 'Mozambique', 'code': '+258', 'flag': '🇲🇿'},
-    {'name': 'Myanmar', 'code': '+95', 'flag': '🇲🇲'},
-    {'name': 'Namibia', 'code': '+264', 'flag': '🇳🇦'},
-    {'name': 'Nauru', 'code': '+674', 'flag': '🇳🇷'},
-    {'name': 'Nepal', 'code': '+977', 'flag': '🇳🇵'},
-    {'name': 'Netherlands', 'code': '+31', 'flag': '🇳🇱'},
-    {'name': 'New Caledonia', 'code': '+687', 'flag': '🇳🇨'},
-    {'name': 'New Zealand', 'code': '+64', 'flag': '🇳🇿'},
-    {'name': 'Nicaragua', 'code': '+505', 'flag': '🇳🇮'},
-    {'name': 'Niger', 'code': '+227', 'flag': '🇳🇪'},
-    {'name': 'Nigeria', 'code': '+234', 'flag': '🇳🇬'},
-    {'name': 'Niue', 'code': '+683', 'flag': '🇳🇺'},
-    {'name': 'Norfolk Island', 'code': '+672', 'flag': '🇳🇫'},
-    {'name': 'North Korea', 'code': '+850', 'flag': '🇰🇵'},
-    {'name': 'North Macedonia', 'code': '+389', 'flag': '🇲🇰'},
-    {'name': 'Northern Mariana Islands', 'code': '+1', 'flag': '🇲🇵'},
-    {'name': 'Norway', 'code': '+47', 'flag': '🇳🇴'},
-    {'name': 'Oman', 'code': '+968', 'flag': '🇴🇲'},
-    {'name': 'Pakistan', 'code': '+92', 'flag': '🇵🇰'},
-    {'name': 'Palau', 'code': '+680', 'flag': '🇵🇼'},
-    {'name': 'Palestine', 'code': '+970', 'flag': '🇵🇸'},
-    {'name': 'Panama', 'code': '+507', 'flag': '🇵🇦'},
-    {'name': 'Papua New Guinea', 'code': '+675', 'flag': '🇵🇬'},
-    {'name': 'Paraguay', 'code': '+595', 'flag': '🇵🇾'},
-    {'name': 'Peru', 'code': '+51', 'flag': '🇵🇪'},
-    {'name': 'Philippines', 'code': '+63', 'flag': '🇵🇭'},
-    {'name': 'Pitcairn', 'code': '+64', 'flag': '🇵🇳'},
-    {'name': 'Poland', 'code': '+48', 'flag': '🇵🇱'},
-    {'name': 'Portugal', 'code': '+351', 'flag': '🇵🇹'},
-    {'name': 'Puerto Rico', 'code': '+1', 'flag': '🇵🇷'},
-    {'name': 'Qatar', 'code': '+974', 'flag': '🇶🇦'},
-    {'name': 'Réunion', 'code': '+262', 'flag': '🇷🇪'},
-    {'name': 'Romania', 'code': '+40', 'flag': '🇷🇴'},
-    {'name': 'Russia', 'code': '+7', 'flag': '🇷🇺'},
-    {'name': 'Rwanda', 'code': '+250', 'flag': '🇷🇼'},
-    {'name': 'Saint Barthélemy', 'code': '+590', 'flag': '🇧🇱'},
-    {'name': 'Saint Helena', 'code': '+290', 'flag': '🇸🇭'},
-    {'name': 'Saint Kitts and Nevis', 'code': '+1', 'flag': '🇰🇳'},
-    {'name': 'Saint Lucia', 'code': '+1', 'flag': '🇱🇨'},
-    {'name': 'Saint Martin (French part)', 'code': '+590', 'flag': '🇲🇫'},
-    {'name': 'Saint Pierre and Miquelon', 'code': '+508', 'flag': '🇵🇲'},
-    {'name': 'Saint Vincent and the Grenadines', 'code': '+1', 'flag': '🇻🇨'},
-    {'name': 'Samoa', 'code': '+685', 'flag': '🇼🇸'},
-    {'name': 'San Marino', 'code': '+378', 'flag': '🇸🇲'},
-    {'name': 'São Tomé and Príncipe', 'code': '+239', 'flag': '🇸🇹'},
-    {'name': 'Saudi Arabia', 'code': '+966', 'flag': '🇸🇦'},
-    {'name': 'Senegal', 'code': '+221', 'flag': '🇸🇳'},
-    {'name': 'Serbia', 'code': '+381', 'flag': '🇷🇸'},
-    {'name': 'Seychelles', 'code': '+248', 'flag': '🇸🇨'},
-    {'name': 'Sierra Leone', 'code': '+232', 'flag': '🇸🇱'},
-    {'name': 'Singapore', 'code': '+65', 'flag': '🇸🇬'},
-    {'name': 'Sint Maarten (Dutch part)', 'code': '+1', 'flag': '🇸🇽'},
-    {'name': 'Slovakia', 'code': '+421', 'flag': '🇸🇰'},
-    {'name': 'Slovenia', 'code': '+386', 'flag': '🇸🇮'},
-    {'name': 'Solomon Islands', 'code': '+677', 'flag': '🇸🇧'},
-    {'name': 'Somalia', 'code': '+252', 'flag': '🇸🇴'},
-    {'name': 'South Africa', 'code': '+27', 'flag': '🇿🇦'},
-    {'name': 'South Georgia and the South Sandwich Islands', 'code': '+500', 'flag': '🇬🇸'},
-    {'name': 'South Korea', 'code': '+82', 'flag': '🇰🇷'},
-    {'name': 'South Sudan', 'code': '+211', 'flag': '🇸🇸'},
-    {'name': 'Spain', 'code': '+34', 'flag': '🇪🇸'},
-    {'name': 'Sri Lanka', 'code': '+94', 'flag': '🇱🇰'},
-    {'name': 'Sudan', 'code': '+249', 'flag': '🇸🇩'},
-    {'name': 'Suriname', 'code': '+597', 'flag': '🇸🇷'},
-    {'name': 'Svalbard and Jan Mayen', 'code': '+47', 'flag': '🇸🇯'},
-    {'name': 'Sweden', 'code': '+46', 'flag': '🇸🇪'},
-    {'name': 'Switzerland', 'code': '+41', 'flag': '🇨🇭'},
-    {'name': 'Syria', 'code': '+963', 'flag': '🇸🇾'},
-    {'name': 'Taiwan', 'code': '+886', 'flag': '🇹🇼'},
-    {'name': 'Tajikistan', 'code': '+992', 'flag': '🇹🇯'},
-    {'name': 'Tanzania', 'code': '+255', 'flag': '🇹🇿'},
-    {'name': 'Thailand', 'code': '+66', 'flag': '🇹🇭'},
-    {'name': 'Timor-Leste', 'code': '+670', 'flag': '🇹🇱'},
-    {'name': 'Togo', 'code': '+228', 'flag': '🇹🇬'},
-    {'name': 'Tokelau', 'code': '+690', 'flag': '🇹🇰'},
-    {'name': 'Tonga', 'code': '+676', 'flag': '🇹🇴'},
-    {'name': 'Trinidad and Tobago', 'code': '+1', 'flag': '🇹🇹'},
-    {'name': 'Tunisia', 'code': '+216', 'flag': '🇹🇳'},
-    {'name': 'Turkey', 'code': '+90', 'flag': '🇹🇷'},
-    {'name': 'Turkmenistan', 'code': '+993', 'flag': '🇹🇲'},
-    {'name': 'Turks and Caicos Islands', 'code': '+1', 'flag': '🇹🇨'},
-    {'name': 'Tuvalu', 'code': '+688', 'flag': '🇹🇻'},
-    {'name': 'Uganda', 'code': '+256', 'flag': '🇺🇬'},
-    {'name': 'Ukraine', 'code': '+380', 'flag': '🇺🇦'},
-    {'name': 'United Arab Emirates', 'code': '+971', 'flag': '🇦🇪'},
-    {'name': 'United Kingdom', 'code': '+44', 'flag': '🇬🇧'},
-    {'name': 'United States', 'code': '+1', 'flag': '🇺🇸'},
-    {'name': 'United States Minor Outlying Islands', 'code': '+1', 'flag': '🇺🇲'},
-    {'name': 'Uruguay', 'code': '+598', 'flag': '🇺🇾'},
-    {'name': 'US Virgin Islands', 'code': '+1', 'flag': '🇻🇮'},
-    {'name': 'Uzbekistan', 'code': '+998', 'flag': '🇺🇿'},
-    {'name': 'Vanuatu', 'code': '+678', 'flag': '🇻🇺'},
-    {'name': 'Venezuela', 'code': '+58', 'flag': '🇻🇪'},
-    {'name': 'Vietnam', 'code': '+84', 'flag': '🇻🇳'},
-    {'name': 'Wallis and Futuna', 'code': '+681', 'flag': '🇼🇫'},
-    {'name': 'Western Sahara', 'code': '+212', 'flag': '🇪🇭'},
-    {'name': 'Yemen', 'code': '+967', 'flag': '🇾🇪'},
-    {'name': 'Zambia', 'code': '+260', 'flag': '🇿🇲'},
-    {'name': 'Zimbabwe', 'code': '+263', 'flag': '🇿🇼'},
-  ];
 }

@@ -125,9 +125,9 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
         // Verification with status-aware styling
         SettingsItemWidget(
           title: 'Verification',
-          subtitle: _isVerified(authState.userData) ? 'Account verified' : 'Complete verification',
+          subtitle: authState.userData?.isVerified ?? false ? 'Account verified' : 'Complete verification',
           icon: Prbal.security,
-          iconColor: _isVerified(authState.userData)
+          iconColor: authState.userData?.isVerified ?? false
               ? themeManager.conditionalColor(
                   lightColor: themeManager.successColor,
                   darkColor: themeManager.successLight,
@@ -196,12 +196,11 @@ class AccountSettingsWidget extends StatelessWidget with ThemeAwareMixin {
     );
   }
 
-  /// Helper methods for user data extraction with enhanced theme integration
-  bool _isVerified(Map<String, dynamic>? userData) {
-    if (userData == null) return false;
-    final isVerified = userData['is_verified'] ?? userData['isVerified'];
-    if (isVerified is bool) return isVerified;
-    if (isVerified is String) return isVerified.toLowerCase() == 'true';
-    return false;
-  }
+  // /// Helper methods for user data extraction with enhanced theme integration
+  // bool _isVerified(AppUser userData) {
+  //   final isVerified = userData['is_verified'] ?? userData['isVerified'];
+  //   if (isVerified is bool) return isVerified;
+  //   if (isVerified is String) return isVerified.toLowerCase() == 'true';
+  //   return false;
+  // }
 }

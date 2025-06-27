@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/screens/init/language_selection_screen.dart';
-import 'package:prbal/widgets/bottom_navigation.dart';
+import 'package:prbal/screens/common/bottom_navigation.dart';
 
 /// Main navigation routes (home, explore, orders, settings)
 class MainNavigationRoutes {

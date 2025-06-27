@@ -5,6 +5,8 @@ import 'package:prbal/utils/theme/theme_manager.dart';
 // Components
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
 import 'package:prbal/widgets/settings/settings_bottom_sheets.dart';
+import 'package:prbal/widgets/settings/export_data_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/data_sync_bottom_sheet.dart';
 
 /// ====================================================================
 /// DATA STORAGE SETTINGS WIDGET - COMPREHENSIVE THEMEMANAGER INTEGRATION
@@ -77,18 +79,14 @@ class DataStorageSettingsWidget extends StatelessWidget with ThemeAwareMixin {
 
     // Comprehensive theme logging for debugging
 
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Primary: ${themeManager.primaryColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Secondary: ${themeManager.secondaryColor}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Accent Colors: ${themeManager.accent1}, ${themeManager.accent2}, ${themeManager.accent3}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '⚙️ DataStorageSettingsWidget: → Surface: ${themeManager.surfaceColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Background: ${themeManager.backgroundColor}');
+    debugPrint('⚙️ DataStorageSettingsWidget: → Surface: ${themeManager.surfaceColor}');
     debugPrint(
         '⚙️ DataStorageSettingsWidget: → Text Colors - Primary: ${themeManager.textPrimary}, Secondary: ${themeManager.textSecondary}');
 
@@ -130,7 +128,7 @@ class DataStorageSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('⚙️ DataStorageSettingsWidget: Export Data tapped');
-            // TODO: Navigate to export data
+            ExportDataBottomSheet.show(context);
           },
         ),
 
@@ -145,7 +143,7 @@ class DataStorageSettingsWidget extends StatelessWidget with ThemeAwareMixin {
           ),
           onTap: () {
             debugPrint('⚙️ DataStorageSettingsWidget: Data Sync tapped');
-            // TODO: Navigate to data sync settings
+            DataSyncBottomSheet.show(context);
           },
         ),
       ],

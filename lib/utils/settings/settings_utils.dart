@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:prbal/services/user_service.dart';
 import 'dart:math' as math;
 import '../theme/theme_manager.dart';
 
@@ -18,22 +19,18 @@ class SettingsUtils {
   // USER DATA UTILITIES WITH THEME INTEGRATION
   // ============================================================================
 
-  /// Helper methods for user data extraction
-  static bool isVerified(Map<String, dynamic>? userData) {
-    if (userData == null) return false;
-    final isVerified = userData['is_verified'] ?? userData['isVerified'];
-    if (isVerified is bool) return isVerified;
-    if (isVerified is String) return isVerified.toLowerCase() == 'true';
-    return false;
-  }
+  // /// Helper methods for user data extraction
+  // static bool isVerified(AppUser userData) {
+  //   // if (userData == null) return false;
+  //   final isVerified = userData.isVerified;
+  //   return isVerified;
+  // }
 
   /// Gets display name from user data
-  static String getDisplayName(Map<String, dynamic>? userData) {
-    if (userData == null) return 'User';
-
-    final firstName = userData['first_name'] ?? userData['firstName'] ?? '';
-    final lastName = userData['last_name'] ?? userData['lastName'] ?? '';
-    final username = userData['username'] ?? '';
+  static String getDisplayName(AppUser userData) {
+    final firstName = userData.firstName;
+    final lastName = userData.lastName;
+    final username = userData.username;
 
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
       return '$firstName $lastName';
@@ -46,31 +43,19 @@ class SettingsUtils {
   }
 
   /// Gets real rating from user data
-  static double getRealRating(Map<String, dynamic>? userData) {
-    if (userData == null) return 0.0;
-
-    final rating = userData['rating'] ?? userData['average_rating'] ?? 0;
-    if (rating is String) {
-      return double.tryParse(rating) ?? 0.0;
-    }
-    if (rating is num) {
-      return rating.toDouble();
-    }
-    return 0.0;
+  static double getRealRating(AppUser userData) {
+    final rating = userData.rating;
+    // if (rating is String) {
+    //   return double.tryParse(rating) ?? 0.0;
+    // }
+    return rating.toDouble();
+    // return 0.0;
   }
 
   /// Gets real booking count from user data
-  static int getRealBookingCount(Map<String, dynamic>? userData) {
-    if (userData == null) return 0;
-
-    final bookings = userData['total_bookings'] ?? userData['bookings'] ?? userData['booking_count'] ?? 0;
-    if (bookings is String) {
-      return int.tryParse(bookings) ?? 0;
-    }
-    if (bookings is num) {
-      return bookings.toInt();
-    }
-    return 0;
+  static int getRealBookingCount(AppUser userData) {
+    final bookings = userData.totalBookings;
+    return bookings;
   }
 
   /// Formats datetime string to readable format
