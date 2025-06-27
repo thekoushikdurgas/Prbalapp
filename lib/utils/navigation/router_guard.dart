@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/services/hive_service.dart';
 
@@ -17,9 +18,7 @@ class RouterGuard {
       return null;
     }
 
-    return _handleAuthenticationFlow(state) ??
-        _handleOnboardingFlow(state) ??
-        _handleAuthenticatedUserFlow(state);
+    return _handleAuthenticationFlow(state) ?? _handleOnboardingFlow(state) ?? _handleAuthenticatedUserFlow(state);
   }
 
   /// Handle authentication-related redirects
@@ -40,15 +39,12 @@ class RouterGuard {
     final isLoggedIn = HiveService.isLoggedIn();
 
     // If intro hasn't been watched, redirect to onboarding
-    if (!hasIntroBeenWatched &&
-        state.matchedLocation != RouteEnum.onboarding.rawValue) {
+    if (!hasIntroBeenWatched && state.matchedLocation != RouteEnum.onboarding.rawValue) {
       return RouteEnum.onboarding.rawValue;
     }
 
     // If intro has been watched but user is not logged in, redirect to welcome
-    if (hasIntroBeenWatched &&
-        !isLoggedIn &&
-        !_isAuthScreen(state.matchedLocation)) {
+    if (hasIntroBeenWatched && !isLoggedIn && !_isAuthScreen(state.matchedLocation)) {
       return RouteEnum.welcome.rawValue;
     }
 
@@ -65,34 +61,31 @@ class RouterGuard {
     }
 
     // Get user type from Hive for type-specific redirects
-    final userType = HiveService.getUserType();
+    final UserType userType = HiveService.getUserType();
 
     // If user is on a generic home route, redirect to their specific dashboard
     if (state.matchedLocation == RouteEnum.home.rawValue) {
       switch (userType) {
-        case 'provider':
+        case UserType.provider:
           return RouteEnum.providerDashboard.rawValue;
-        case 'admin':
+        case UserType.admin:
           return RouteEnum.adminDashboard.rawValue;
-        case 'customer':
-        default:
+        case UserType.customer:
           return RouteEnum.takerDashboard.rawValue;
       }
     }
 
     // Prevent wrong user types from accessing specific dashboards
     if (_isUserTypeSpecificRoute(state.matchedLocation)) {
-      final expectedUserType =
-          _getExpectedUserTypeForRoute(state.matchedLocation);
-      if (expectedUserType != null && expectedUserType != userType) {
+      final UserType expectedUserType = _getExpectedUserTypeForRoute(state.matchedLocation);
+      if (expectedUserType != userType) {
         // Redirect to correct dashboard for their user type
         switch (userType) {
-          case 'provider':
+          case UserType.provider:
             return RouteEnum.providerDashboard.rawValue;
-          case 'admin':
+          case UserType.admin:
             return RouteEnum.adminDashboard.rawValue;
-          case 'customer':
-          default:
+          case UserType.customer:
             return RouteEnum.takerDashboard.rawValue;
         }
       }
@@ -103,8 +96,7 @@ class RouterGuard {
 
   /// Check if the current location is an authentication screen
   static bool _isAuthScreen(String location) {
-    return location == RouteEnum.welcome.rawValue ||
-        location == RouteEnum.pinEntry.rawValue;
+    return location == RouteEnum.welcome.rawValue || location == RouteEnum.pinEntry.rawValue;
   }
 
   /// Check if the route is user-type specific
@@ -115,16 +107,16 @@ class RouterGuard {
   }
 
   /// Get expected user type for a specific route
-  static String? _getExpectedUserTypeForRoute(String location) {
+  static UserType _getExpectedUserTypeForRoute(String location) {
     switch (location) {
       case '/provider-dashboard':
-        return 'provider';
+        return UserType.provider;
       case '/admin-dashboard':
-        return 'admin';
+        return UserType.admin;
       case '/taker-dashboard':
-        return 'customer';
+        return UserType.customer;
       default:
-        return null;
+        return UserType.customer;
     }
   }
 
@@ -140,35 +132,34 @@ class RouterGuard {
 
   /// Get appropriate dashboard route for user type
   static String getDashboardRouteForUserType() {
-    final userType = HiveService.getUserType();
+    final UserType userType = HiveService.getUserType();
     switch (userType) {
-      case 'provider':
+      case UserType.provider:
         return RouteEnum.providerDashboard.rawValue;
-      case 'admin':
+      case UserType.admin:
         return RouteEnum.adminDashboard.rawValue;
-      case 'customer':
-      default:
+      case UserType.customer:
         return RouteEnum.takerDashboard.rawValue;
     }
   }
 
   /// Check if user has permission to access a route based on user type
   static bool hasPermissionForRoute(String route) {
-    final userType = HiveService.getUserType();
+    final UserType userType = HiveService.getUserType();
 
     // Admin users can access all routes
-    if (userType == 'admin') {
+    if (userType == UserType.admin) {
       return true;
     }
 
     // Provider-specific routes
     if (route.contains('provider') || route.contains('add-service')) {
-      return userType == 'provider';
+      return userType == UserType.provider;
     }
 
     // Admin-specific routes
     if (route.contains('admin')) {
-      return userType == 'admin';
+      return userType == UserType.admin;
     }
 
     // Customer/taker routes are accessible by default

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:prbal/utils/localization/project_locales.dart';
 import 'package:prbal/services/hive_service.dart';
@@ -356,27 +357,16 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
   Widget _buildLanguageList(ThemeManager themeManager) {
     debugPrint('🌐 LanguageSelectionScreen: Building language list with ${ProjectLocales.localesMap.length} languages');
 
-    return Container(
-      decoration: BoxDecoration(
-        color: themeManager.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: themeManager.borderColor,
-          width: 1,
-        ),
-        boxShadow: themeManager.elevatedShadow,
-      ),
-      child: Column(
-        children: ProjectLocales.localesMap.entries
-            .map((entry) => _buildLanguageItem(
-                  locale: entry.key,
-                  name: entry.value,
-                  flag: _getFlagForLocale(entry.key),
-                  themeManager: themeManager,
-                  isLast: entry == ProjectLocales.localesMap.entries.last,
-                ))
-            .toList(),
-      ),
+    return Column(
+      children: ProjectLocales.localesMap.entries
+          .map((entry) => _buildLanguageItem(
+                locale: entry.key,
+                name: entry.value,
+                flag: _getFlagForLocale(entry.key),
+                themeManager: themeManager,
+                isLast: entry == ProjectLocales.localesMap.entries.last,
+              ))
+          .toList(),
     );
   }
 
@@ -408,16 +398,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
         '🌐 LanguageSelectionScreen: Building language item: ${locale.languageCode}-${locale.countryCode} (Selected: $isSelected)');
 
     return Container(
-      decoration: BoxDecoration(
-        border: isLast
-            ? null
-            : Border(
-                bottom: BorderSide(
-                  color: themeManager.borderColor,
-                  width: 1,
-                ),
-              ),
-      ),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -438,20 +419,17 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
             bottom: isLast ? Radius.circular(20.r) : Radius.zero,
           ),
           child: Container(
-            padding: EdgeInsets.all(20.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: themeManager.surfaceColor,
+              borderRadius: BorderRadius.circular(10.r),
+            ),
             child: Row(
               children: [
                 // Flag container with modern styling
-                Container(
+                SizedBox(
                   width: 48.w,
                   height: 48.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: themeManager.borderColor,
-                      width: 1,
-                    ),
-                  ),
                   child: Center(
                     child: Text(
                       flag,
@@ -476,16 +454,16 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
                           color: themeManager.textPrimary,
                         ),
                       ),
-                      SizedBox(height: 4.h),
+                      // SizedBox(height: 4.h),
 
-                      // Language code for developers/debugging
-                      Text(
-                        '${locale.languageCode.toUpperCase()}-${locale.countryCode}',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: themeManager.textSecondary,
-                        ),
-                      ),
+                      // // Language code for developers/debugging
+                      // Text(
+                      //   '${locale.languageCode.toUpperCase()}-${locale.countryCode}',
+                      //   style: TextStyle(
+                      //     fontSize: 12.sp,
+                      //     color: themeManager.textSecondary,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -531,7 +509,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
     debugPrint('🌐 LanguageSelectionScreen: Building apply button');
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       decoration: BoxDecoration(
         gradient: themeManager.primaryGradient,
         borderRadius: BorderRadius.circular(16.r),
@@ -580,7 +558,7 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
     debugPrint('🌐 LanguageSelectionScreen: Building skip button');
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       decoration: BoxDecoration(
         // gradient: themeManager.primaryGradient,
         color: Colors.transparent,
@@ -599,28 +577,25 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
           debugPrint('🌐 LanguageSelectionScreen: Skip button tapped (bottom)');
           _setDefaultLanguageAndContinue(context);
         },
-        borderRadius: BorderRadius.circular(16.r),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Prbal.arrowRight,
+        borderRadius: BorderRadius.circular(10.r),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Prbal.arrowRight,
+              color: themeManager.textSecondary,
+              size: 20.sp,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'Skip',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
                 color: themeManager.textSecondary,
-                size: 20.sp,
               ),
-              SizedBox(width: 12.w),
-              Text(
-                'Skip for Now',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: themeManager.textSecondary,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       // ),
@@ -710,10 +685,21 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
       await HiveService.setSelectedLanguage(languageCode);
       debugPrint('🌐 LanguageSelectionScreen: ✅ Language saved successfully');
 
-      // TODO: Implement locale change logic here
-      // This would typically involve updating a provider/state management
-      // and restarting the app with the new locale
-      debugPrint('🌐 LanguageSelectionScreen: 📝 TODO: Implement actual locale change');
+      // Step 2.5: Apply locale change using EasyLocalization
+      debugPrint('🌐 LanguageSelectionScreen: Applying locale change with EasyLocalization...');
+
+      if (context.mounted) {
+        try {
+          // Change the app's locale immediately using EasyLocalization
+          await context.setLocale(_selectedLocale);
+          debugPrint('🌐 LanguageSelectionScreen: ✅ EasyLocalization locale changed successfully');
+          debugPrint(
+              '🌐 LanguageSelectionScreen: 🎯 App now using: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
+        } catch (localeError) {
+          debugPrint('🌐 LanguageSelectionScreen: ⚠️ EasyLocalization setLocale failed: $localeError');
+          debugPrint('🌐 LanguageSelectionScreen: 🔄 Continuing anyway - locale may change on next app start');
+        }
+      }
 
       // Step 3: Provide haptic feedback for successful action
       HapticFeedback.mediumImpact();
@@ -746,7 +732,12 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
-            margin: EdgeInsets.all(16.w),
+            margin: EdgeInsets.only(
+              bottom: 100.h,
+              left: 16.w,
+              right: 16.w,
+            ),
+            duration: const Duration(seconds: 2),
           ),
         );
         debugPrint('🌐 LanguageSelectionScreen: ✅ Success notification shown');
@@ -792,7 +783,12 @@ class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScree
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
-            margin: EdgeInsets.all(16.w),
+            margin: EdgeInsets.only(
+              bottom: 100.h,
+              left: 16.w,
+              right: 16.w,
+            ),
+            duration: const Duration(seconds: 3),
           ),
         );
         debugPrint('🌐 LanguageSelectionScreen: ❌ Error notification shown');

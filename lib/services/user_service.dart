@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'api_service.dart';
 
 // ================================
@@ -142,10 +143,8 @@ class AppUser {
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
     debugPrint('🔄 AppUser.fromJson: Parsing user data');
-    debugPrint(
-        '📊 Raw rating: ${json['rating']} (${json['rating'].runtimeType})');
-    debugPrint(
-        '💰 Raw balance: ${json['balance']} (${json['balance'].runtimeType})');
+    debugPrint('📊 Raw rating: ${json['rating']} (${json['rating'].runtimeType})');
+    debugPrint('💰 Raw balance: ${json['balance']} (${json['balance'].runtimeType})');
 
     // Helper function to safely parse string or number to double
     double parseDouble(dynamic value) {
@@ -181,14 +180,10 @@ class AppUser {
       rating: rating,
       balance: balance,
       totalBookings: json['total_bookings'] ?? 0,
-      skills: json['skills'] != null
-          ? Map<String, String>.from(json['skills'])
-          : null,
+      skills: json['skills'] != null ? Map<String, String>.from(json['skills']) : null,
       availability: json['availability'],
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-      updatedAt:
-          DateTime.tryParse(json['updated_at'] ?? json['created_at'] ?? '') ??
-              DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updated_at'] ?? json['created_at'] ?? '') ?? DateTime.now(),
     );
   }
 
@@ -490,8 +485,7 @@ class Verification {
     return Verification(
       id: json['id'] ?? 0,
       userId: json['user'] ?? '',
-      verificationType:
-          VerificationType.fromString(json['verification_type'] ?? 'identity'),
+      verificationType: VerificationType.fromString(json['verification_type'] ?? 'identity'),
       documentType: json['document_type'] ?? '',
       documentNumber: json['document_number'],
       status: VerificationStatus.fromString(json['status'] ?? 'pending'),
@@ -501,9 +495,7 @@ class Verification {
       verifiedBy: json['verified_by'],
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-      verifiedAt: json['verified_at'] != null
-          ? DateTime.tryParse(json['verified_at'])
-          : null,
+      verifiedAt: json['verified_at'] != null ? DateTime.tryParse(json['verified_at']) : null,
     );
   }
 
@@ -580,8 +572,7 @@ class UserService {
 
   /// PIN-based login
   /// POST /users/auth/login/
-  Future<ApiResponse<Map<String, dynamic>>> pinLogin(
-      PinLoginRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> pinLogin(PinLoginRequest request) async {
     debugPrint('🔐 UserService: PIN Login Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
 
@@ -603,8 +594,7 @@ class UserService {
 
   /// PIN-based registration
   /// POST /users/auth/register/
-  Future<ApiResponse<Map<String, dynamic>>> pinRegister(
-      PinRegistrationRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> pinRegister(PinRegistrationRequest request) async {
     debugPrint('🔐 UserService: PIN Registration Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
     debugPrint('👤 Username: ${request.username}');
@@ -628,8 +618,7 @@ class UserService {
 
   /// Admin registration
   /// POST /users/auth/admin/register/
-  Future<ApiResponse<Map<String, dynamic>>> adminRegister(
-      Map<String, dynamic> request) async {
+  Future<ApiResponse<Map<String, dynamic>>> adminRegister(Map<String, dynamic> request) async {
     debugPrint('🔐 UserService: Admin Registration Request');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -641,8 +630,7 @@ class UserService {
 
   /// Change PIN
   /// POST /users/auth/pin/change/
-  Future<ApiResponse<Map<String, dynamic>>> changePin(
-      ChangePinRequest request, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> changePin(ChangePinRequest request, String token) async {
     debugPrint('🔐 UserService: Change PIN Request');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -655,8 +643,7 @@ class UserService {
 
   /// Reset PIN
   /// POST /users/auth/pin/reset/
-  Future<ApiResponse<Map<String, dynamic>>> resetPin(
-      ResetPinRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> resetPin(ResetPinRequest request) async {
     debugPrint('🔐 UserService: Reset PIN Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
 
@@ -693,8 +680,7 @@ class UserService {
 
   /// Get user type change info
   /// GET /users/auth/user-type-change/
-  Future<ApiResponse<Map<String, dynamic>>> getUserTypeChangeInfo(
-      String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> getUserTypeChangeInfo(String token) async {
     debugPrint('🔐 UserService: Get User Type Change Info');
 
     final response = await _apiService.get<Map<String, dynamic>>(
@@ -710,8 +696,7 @@ class UserService {
       debugPrint('✅ UserService: User type change info retrieved successfully');
       debugPrint('🔄 Response data keys: ${response.data?.keys.toList()}');
     } else {
-      debugPrint(
-          '❌ UserService: Failed to get user type change info: ${response.message}');
+      debugPrint('❌ UserService: Failed to get user type change info: ${response.message}');
     }
 
     return response;
@@ -736,8 +721,7 @@ class UserService {
 
   /// Refresh token
   /// POST /users/auth/token/refresh/
-  Future<ApiResponse<Map<String, dynamic>>> refreshToken(
-      String refreshToken) async {
+  Future<ApiResponse<Map<String, dynamic>>> refreshToken(String refreshToken) async {
     debugPrint('🔐 UserService: Refresh Token');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -766,8 +750,7 @@ class UserService {
           // Handle nested data structure if response has 'data' wrapper
           Map<String, dynamic> userData;
           if (json is Map<String, dynamic>) {
-            if (json.containsKey('data') &&
-                json['data'] is Map<String, dynamic>) {
+            if (json.containsKey('data') && json['data'] is Map<String, dynamic>) {
               userData = json['data'] as Map<String, dynamic>;
               debugPrint('📦 Extracted user data from wrapper: $userData');
             } else {
@@ -775,8 +758,7 @@ class UserService {
               debugPrint('📦 Using direct user data: $userData');
             }
           } else {
-            throw Exception(
-                'Invalid JSON format: expected Map<String, dynamic>, got ${json.runtimeType}');
+            throw Exception('Invalid JSON format: expected Map<String, dynamic>, got ${json.runtimeType}');
           }
 
           return AppUser.fromJson(userData);
@@ -802,8 +784,7 @@ class UserService {
 
   /// Update user profile (full update)
   /// PUT /users/users/me/
-  Future<ApiResponse<AppUser>> updateProfile(
-      UpdateProfileRequest request, String token) async {
+  Future<ApiResponse<AppUser>> updateProfile(UpdateProfileRequest request, String token) async {
     debugPrint('👤 UserService: Update Profile (PUT)');
     debugPrint('📝 Fields: ${request.toJson().keys.join(', ')}');
 
@@ -817,8 +798,7 @@ class UserService {
 
   /// Update user profile (partial update)
   /// PATCH /users/users/me/
-  Future<ApiResponse<AppUser>> updateProfilePartial(
-      UpdateProfileRequest request, String token) async {
+  Future<ApiResponse<AppUser>> updateProfilePartial(UpdateProfileRequest request, String token) async {
     debugPrint('👤 UserService: Update Profile (PATCH)');
     debugPrint('📝 Fields: ${request.toJson().keys.join(', ')}');
 
@@ -832,8 +812,7 @@ class UserService {
 
   /// Upload profile image (file)
   /// POST /users/users/profile/image/
-  Future<ApiResponse<Map<String, dynamic>>> uploadProfileImage(
-      File imageFile, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> uploadProfileImage(File imageFile, String token) async {
     debugPrint('👤 UserService: Upload Profile Image');
     debugPrint('📄 File: ${imageFile.path}');
 
@@ -881,8 +860,7 @@ class UserService {
 
   /// Deactivate account
   /// POST /users/users/deactivate/
-  Future<ApiResponse<Map<String, dynamic>>> deactivateAccount(
-      String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> deactivateAccount(String token) async {
     debugPrint('👤 UserService: Deactivate Account');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -925,8 +903,7 @@ class UserService {
 
   /// Revoke specific token
   /// POST /users/users/me/tokens/{tokenId}/revoke/
-  Future<ApiResponse<Map<String, dynamic>>> revokeToken(
-      String tokenId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> revokeToken(String tokenId, String token) async {
     debugPrint('🔑 UserService: Revoke Token');
     debugPrint('🆔 Token ID: $tokenId');
 
@@ -939,8 +916,7 @@ class UserService {
 
   /// Revoke all tokens
   /// POST /users/users/me/tokens/revoke_all/
-  Future<ApiResponse<Map<String, dynamic>>> revokeAllTokens(
-      String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> revokeAllTokens(String token) async {
     debugPrint('🔑 UserService: Revoke All Tokens');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -956,8 +932,7 @@ class UserService {
 
   /// Like user profile
   /// POST /users/users/{userId}/like/
-  Future<ApiResponse<Map<String, dynamic>>> likeUser(
-      String userId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> likeUser(String userId, String token) async {
     debugPrint('❤️ UserService: Like User');
     debugPrint('🆔 User ID: $userId');
 
@@ -970,8 +945,7 @@ class UserService {
 
   /// Pass user profile
   /// POST /users/users/{userId}/pass/
-  Future<ApiResponse<Map<String, dynamic>>> passUser(
-      String userId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> passUser(String userId, String token) async {
     debugPrint('👋 UserService: Pass User');
     debugPrint('🆔 User ID: $userId');
 
@@ -1023,8 +997,7 @@ class UserService {
   ) async {
     debugPrint('🔍 UserService: Search Users (POST)');
     debugPrint('🔎 Search Term: ${request.searchTerm}');
-    debugPrint(
-        '👥 User Types: ${request.userTypes?.map((t) => t.name).join(', ')}');
+    debugPrint('👥 User Types: ${request.userTypes?.map((t) => t.name).join(', ')}');
 
     return await _apiService.post<PaginatedResponse<AppUser>>(
       '/users/search/',
@@ -1132,8 +1105,7 @@ class UserService {
 
   /// Get verification details
   /// GET /users/verifications/{verificationId}/
-  Future<ApiResponse<Verification>> getVerification(
-      int verificationId, String token) async {
+  Future<ApiResponse<Verification>> getVerification(int verificationId, String token) async {
     debugPrint('📋 UserService: Get Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1182,8 +1154,7 @@ class UserService {
 
   /// Delete verification
   /// DELETE /users/verifications/{verificationId}/
-  Future<ApiResponse<void>> deleteVerification(
-      int verificationId, String token) async {
+  Future<ApiResponse<void>> deleteVerification(int verificationId, String token) async {
     debugPrint('📋 UserService: Delete Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1195,8 +1166,7 @@ class UserService {
 
   /// Cancel verification
   /// POST /users/verifications/{verificationId}/cancel/
-  Future<ApiResponse<Verification>> cancelVerification(
-      int verificationId, String token) async {
+  Future<ApiResponse<Verification>> cancelVerification(int verificationId, String token) async {
     debugPrint('📋 UserService: Cancel Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1272,8 +1242,7 @@ class UserService {
 
   /// Get verification status summary (Admin)
   /// GET /users/verifications/status_summary/
-  Future<ApiResponse<Map<String, dynamic>>> getVerificationStatusSummary(
-      String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> getVerificationStatusSummary(String token) async {
     debugPrint('📋 UserService: Get Verification Status Summary');
 
     return await _apiService.get<Map<String, dynamic>>(
@@ -1371,4 +1340,46 @@ class UserService {
       return false;
     }
   }
+}
+
+// =============================================================================
+// USER TYPE ICONS
+// =============================================================================
+
+/// Get user type icon
+IconData getUserTypeIcon(UserType userType) {
+  switch (userType) {
+    case UserType.admin:
+      return Prbal.userSecret;
+    case UserType.provider:
+      return Prbal.designServices;
+    case UserType.customer:
+      return Prbal.user;
+  }
+}
+
+String getUserTypeDisplayName(UserType userType) {
+  switch (userType) {
+    case UserType.provider:
+      return 'Service Provider';
+    case UserType.admin:
+      return 'Administrator';
+    case UserType.customer:
+      return 'Customer';
+  }
+}
+
+String getDisplayName(AppUser user) {
+  final firstName = user.firstName;
+  final lastName = user.lastName;
+  final username = user.username;
+
+  if (firstName != null && lastName != null) {
+    return '$firstName $lastName';
+  } else if (firstName != null) {
+    return firstName;
+  } else if (username.isNotEmpty) {
+    return username;
+  }
+  return 'User';
 }

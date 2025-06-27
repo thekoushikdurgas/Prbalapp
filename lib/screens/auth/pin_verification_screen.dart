@@ -17,19 +17,13 @@ class PinVerificationScreen extends ConsumerStatefulWidget {
   final bool isNewUser;
   final Map<String, dynamic>? userData;
 
-  const PinVerificationScreen(
-      {super.key,
-      required this.phoneNumber,
-      this.isNewUser = false,
-      this.userData});
+  const PinVerificationScreen({super.key, required this.phoneNumber, this.isNewUser = false, this.userData});
 
   @override
-  ConsumerState<PinVerificationScreen> createState() =>
-      _PinVerificationScreenState();
+  ConsumerState<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
-class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
-    with TickerProviderStateMixin {
+class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> with TickerProviderStateMixin {
   final List<TextEditingController> _controllers = [];
   final List<FocusNode> _focusNodes = [];
   bool _isLoading = false;
@@ -42,8 +36,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🔐 PinVerificationScreen: Initializing PIN verification for ${widget.phoneNumber}');
+    debugPrint('🔐 PinVerificationScreen: Initializing PIN verification for ${widget.phoneNumber}');
     debugPrint('🔐 PinVerificationScreen: Is new user: ${widget.isNewUser}');
     _initializeControllers();
     _setupAnimations();
@@ -59,23 +52,19 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
 
   void _setupAnimations() {
     debugPrint('🔐 PinVerificationScreen: Setting up animations');
-    _shakeController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
+    _shakeController = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
 
     _shakeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(
-        CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
+    ).animate(CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
 
-    _pulseController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+    _pulseController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
       end: 1.1,
-    ).animate(
-        CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
+    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
 
     _pulseController.repeat(reverse: true);
   }
@@ -101,16 +90,14 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   /// Show top-right alert dialog for PIN validation errors
   void _showPinValidationAlert(String title, String message) {
     final themeManager = ThemeManager.of(context);
-    debugPrint(
-        '🚨 PinVerificationScreen: Showing PIN validation alert: $title - $message');
+    debugPrint('🚨 PinVerificationScreen: Showing PIN validation alert: $title - $message');
 
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: themeManager.surfaceColor,
           elevation: 8,
           title: Row(
@@ -149,8 +136,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 foregroundColor: themeManager.primaryColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
               ),
               child: Text(
                 'Got it',
@@ -229,14 +215,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
             widget.userData!['email'] == null ||
             widget.userData!['firstName'] == null ||
             widget.userData!['lastName'] == null) {
-          debugPrint(
-              '🎲 Generating random user data for incomplete registration data');
+          debugPrint('🎲 Generating random user data for incomplete registration data');
           randomData = _generateRandomUserData();
         }
 
         // Set PIN for new user - using PIN registration with random data fallback
-        final setPinResponse =
-            await userService.pinRegister(PinRegistrationRequest(
+        final setPinResponse = await userService.pinRegister(PinRegistrationRequest(
           username: widget.userData?['username'] ?? randomData['username'],
           email: widget.userData?['email'] ?? randomData['email'],
           phoneNumber: widget.phoneNumber,
@@ -251,8 +235,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           debugPrint('🔍 Raw Errors: ${setPinResponse.errors}');
 
           // Extract specific PIN validation error and show in alert dialog
-          final specificError =
-              _extractPinValidationError(setPinResponse.errors);
+          final specificError = _extractPinValidationError(setPinResponse.errors);
           debugPrint('🎯 Extracted PIN Error: $specificError');
 
           // Show top-right alert dialog with specific error
@@ -276,35 +259,26 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           refreshToken = tokens['refresh'] as String?;
         } else {
           // Alternative token locations in response
-          accessToken = setPinResponse.data?['access_token'] as String? ??
-              setPinResponse.data?['access'] as String?;
-          refreshToken = setPinResponse.data?['refresh_token'] as String? ??
-              setPinResponse.data?['refresh'] as String?;
+          accessToken = setPinResponse.data?['access_token'] as String? ?? setPinResponse.data?['access'] as String?;
+          refreshToken = setPinResponse.data?['refresh_token'] as String? ?? setPinResponse.data?['refresh'] as String?;
         }
 
         // Extract basic user data from response
-        final responseUserData =
-            setPinResponse.data?['user'] as Map<String, dynamic>?;
-        final userType = responseUserData?['user_type'] ??
-            widget.userData?['userType'] ??
-            'customer';
+        final responseUserData = setPinResponse.data?['user'] as Map<String, dynamic>?;
+        final userType = responseUserData?['user_type'] ?? widget.userData?['userType'] ?? 'customer';
 
         // Build initial user data
         final initialUserData = {
           'userId': responseUserData?['id'],
-          'username':
-              responseUserData?['username'] ?? widget.userData?['username'],
+          'username': responseUserData?['username'] ?? widget.userData?['username'],
           'email': responseUserData?['email'] ?? widget.userData?['email'],
-          'firstName':
-              responseUserData?['first_name'] ?? widget.userData?['firstName'],
-          'lastName':
-              responseUserData?['last_name'] ?? widget.userData?['lastName'],
+          'firstName': responseUserData?['first_name'] ?? widget.userData?['firstName'],
+          'lastName': responseUserData?['last_name'] ?? widget.userData?['lastName'],
           'phoneNumber': widget.phoneNumber,
           'userType': userType,
           'isNewUser': true,
           'isVerified': responseUserData?['is_verified'] ?? false,
-          'createdAt': responseUserData?['created_at'] ??
-              DateTime.now().toIso8601String(),
+          'createdAt': responseUserData?['created_at'] ?? DateTime.now().toIso8601String(),
           ...?widget.userData, // Spread any additional data passed
         };
 
@@ -313,8 +287,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         if (accessToken != null) {
           try {
             debugPrint('🔄 Fetching complete user profile for new user...');
-            final profileResponse =
-                await userService.getCurrentUserProfile(accessToken);
+            final profileResponse = await userService.getCurrentUserProfile(accessToken);
 
             if (profileResponse.isSuccess && profileResponse.data != null) {
               final userProfile = profileResponse.data!;
@@ -344,11 +317,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                 'skills': userProfile.skills,
                 'availability': userProfile.availability,
               };
-              debugPrint(
-                  '📊 Updated user data with complete profile information');
+              debugPrint('📊 Updated user data with complete profile information');
             } else {
-              debugPrint(
-                  '⚠️ Failed to fetch complete profile, using initial data');
+              debugPrint('⚠️ Failed to fetch complete profile, using initial data');
             }
           } catch (e) {
             debugPrint('❌ Error fetching complete profile: $e');
@@ -378,8 +349,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           await HiveService.saveUserData(completeUserData);
         }
 
-        debugPrint(
-            '✅ New user data saved successfully with userType: $userType');
+        debugPrint('✅ New user data saved successfully with userType: $userType');
 
         if (mounted) {
           // Navigate to appropriate dashboard based on user type
@@ -420,13 +390,10 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           accessToken = tokens['access'] as String?;
           refreshToken = tokens['refresh'] as String?;
         } else {
-          debugPrint(
-              '⚠️ No tokens found in login response - checking alternative locations');
+          debugPrint('⚠️ No tokens found in login response - checking alternative locations');
           // Alternative token locations in response
-          accessToken = response.data?['access_token'] as String? ??
-              response.data?['access'] as String?;
-          refreshToken = response.data?['refresh_token'] as String? ??
-              response.data?['refresh'] as String?;
+          accessToken = response.data?['access_token'] as String? ?? response.data?['access'] as String?;
+          refreshToken = response.data?['refresh_token'] as String? ?? response.data?['refresh'] as String?;
         }
 
         // Get initial user data from login response
@@ -435,8 +402,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         final userType = userData?['user_type'] ?? 'customer';
 
         if (userData != null) {
-          debugPrint(
-              '✅ Successfully retrieved initial user data with type: $userType');
+          debugPrint('✅ Successfully retrieved initial user data with type: $userType');
 
           // Build initial user data from login response
           final initialUserData = {
@@ -465,10 +431,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
           Map<String, dynamic> completeUserData = initialUserData;
           if (accessToken != null) {
             try {
-              debugPrint(
-                  '🔄 Fetching complete user profile for existing user...');
-              final profileResponse =
-                  await userService.getCurrentUserProfile(accessToken);
+              debugPrint('🔄 Fetching complete user profile for existing user...');
+              final profileResponse = await userService.getCurrentUserProfile(accessToken);
 
               if (profileResponse.isSuccess && profileResponse.data != null) {
                 final userProfile = profileResponse.data!;
@@ -498,11 +462,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                   'skills': userProfile.skills,
                   'availability': userProfile.availability,
                 };
-                debugPrint(
-                    '📊 Updated user data with complete, up-to-date profile information');
+                debugPrint('📊 Updated user data with complete, up-to-date profile information');
               } else {
-                debugPrint(
-                    '⚠️ Failed to fetch complete profile, using login response data');
+                debugPrint('⚠️ Failed to fetch complete profile, using login response data');
               }
             } catch (e) {
               debugPrint('❌ Error fetching complete profile: $e');
@@ -558,7 +520,6 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
               context.go(RouteEnum.providerDashboard.rawValue);
               break;
             case 'customer':
-            case 'taker':
             default:
               debugPrint('🧭 Navigating to taker/customer dashboard');
               context.go(RouteEnum.takerDashboard.rawValue);
@@ -618,8 +579,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
   ///
   /// @returns Map containing generated firstName, lastName, username, email
   Map<String, String> _generateRandomUserData() {
-    debugPrint(
-        '🎲 PinVerificationScreen: Generating random user data for new registration');
+    debugPrint('🎲 PinVerificationScreen: Generating random user data for new registration');
 
     final random = Random();
 
@@ -836,6 +796,44 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
     return generatedData;
   }
 
+  /// Get user type display name
+  String _getUserTypeDisplayName(UserType userType) {
+    switch (userType) {
+      case UserType.admin:
+        return 'Administrator';
+      case UserType.provider:
+        return 'Service Provider';
+      case UserType.customer:
+        return 'Customer';
+    }
+  }
+
+  /// Get display name from user data
+  String getDisplayName() {
+    if (widget.userData != null) {
+      final firstName = widget.userData!['firstName'] as String?;
+      final lastName = widget.userData!['lastName'] as String?;
+      final username = widget.userData!['username'] as String?;
+
+      if (firstName != null && lastName != null) {
+        return '$firstName $lastName';
+      } else if (username != null) {
+        return username;
+      }
+    }
+    return 'User';
+  }
+
+  /// Get username from user data
+  String? _getUsername() {
+    return widget.userData?['username'] as String?;
+  }
+
+  /// Get user type from user data
+  UserType _getUserType() {
+    return widget.userData?['userType'] as UserType;
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
@@ -848,315 +846,400 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Prbal.arrowLeft, color: themeManager.textPrimary),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          widget.isNewUser ? 'Set PIN' : 'Enter PIN',
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
+          icon: Icon(
+            Prbal.chevronLeft3,
             color: themeManager.textPrimary,
           ),
+          onPressed: () => context.pop(),
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(24.w),
-          child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).viewPadding.top -
-                    MediaQuery.of(context).viewPadding.bottom -
-                    kToolbarHeight -
-                    48.h, // padding
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 20.h),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).viewPadding.top -
+                  MediaQuery.of(context).viewPadding.bottom -
+                  kToolbarHeight -
+                  48.h, // padding
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20.h),
 
-                    // Header Card
-                    Card(
-                      elevation: 4,
-                      shadowColor:
-                          themeManager.textTertiary.withValues(alpha: 77),
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(32.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          gradient: themeManager.surfaceGradient,
-                        ),
-                        child: Column(
-                          children: [
-                            // Lock icon with animation
-                            AnimatedBuilder(
-                              animation: _pulseAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _pulseAnimation.value,
-                                  child: Container(
-                                    width: 80.w,
-                                    height: 80.h,
-                                    decoration: BoxDecoration(
-                                      gradient: themeManager.primaryGradient,
-                                      shape: BoxShape.circle,
-                                      boxShadow: themeManager.primaryShadow,
+                  // Header Card
+                  Card(
+                    elevation: 4,
+                    shadowColor: themeManager.textTertiary.withValues(alpha: 77),
+                    child: Container(
+                      padding: EdgeInsets.all(32.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        gradient: themeManager.surfaceGradient,
+                      ),
+                      child: Column(
+                        children: [
+                          // User Info Section (only show if userData is available)
+                          if (widget.userData != null && !widget.isNewUser) ...[
+                            // User Avatar and Name
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // User Avatar
+                                Container(
+                                  width: 50.w,
+                                  height: 50.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        themeManager.getUserTypeColor(
+                                          _getUserType(),
+                                        ),
+                                        themeManager.getUserTypeColor(_getUserType()).withValues(alpha: 179),
+                                      ],
                                     ),
-                                    child: Icon(
-                                      widget.isNewUser
-                                          ? Prbal.lockOpen
-                                          : Prbal.lock,
-                                      size: 40.sp,
-                                      color: Colors.white,
-                                    ),
+                                    shape: BoxShape.circle,
                                   ),
-                                );
-                              },
-                            ),
-
-                            SizedBox(height: 24.h),
-
-                            Text(
-                              widget.isNewUser
-                                  ? 'Create Your PIN'
-                                  : 'Enter Your PIN',
-                              style: TextStyle(
-                                fontSize: 28.sp,
-                                fontWeight: FontWeight.w700,
-                                color: themeManager.textPrimary,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-
-                            SizedBox(height: 12.h),
-
-                            Text(
-                              widget.isNewUser
-                                  ? 'Set a 4-digit PIN to secure your account'
-                                  : 'Enter your 4-digit PIN to continue',
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                color: themeManager.textSecondary,
-                              ),
-                              textAlign: TextAlign.center,
+                                  child: Icon(
+                                    Prbal.user,
+                                    size: 24.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(width: 16.w),
+                                // User Name and Type
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        getDisplayName(),
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeManager.textPrimary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      if (_getUsername() != null) ...[
+                                        SizedBox(height: 2.h),
+                                        Text(
+                                          '@${_getUsername()}',
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: themeManager.textSecondary,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
 
                             SizedBox(height: 16.h),
 
+                            // User Type Badge
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w, vertical: 8.h),
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                               decoration: BoxDecoration(
-                                color: themeManager.primaryColor
-                                    .withValues(alpha: 26),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Text(
-                                widget.phoneNumber,
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: themeManager.primaryColor,
+                                color: themeManager.getUserTypeColor(_getUserType()).withValues(alpha: 26),
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(
+                                  color: themeManager.getUserTypeColor(_getUserType()).withValues(alpha: 77),
+                                  width: 1,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 40.h),
-
-                    // PIN Input Fields with shake animation
-                    AnimatedBuilder(
-                      animation: _shakeAnimation,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(
-                              _shakeAnimation.value *
-                                  10 *
-                                  (1 - 2 * _shakeAnimation.value).abs(),
-                              0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: List.generate(4, (index) {
-                              final isActive =
-                                  _controllers[index].text.isNotEmpty;
-                              return Container(
-                                width: 65.w,
-                                height: 65.h,
-                                decoration: BoxDecoration(
-                                  gradient: isActive
-                                      ? themeManager.primaryGradient
-                                      : null,
-                                  color: isActive
-                                      ? null
-                                      : themeManager.surfaceColor,
-                                  border: Border.all(
-                                    color: isActive
-                                        ? themeManager.primaryColor
-                                        : themeManager.borderColor,
-                                    width: isActive ? 2 : 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.r),
-                                  boxShadow: isActive
-                                      ? themeManager.primaryShadow
-                                      : null,
-                                ),
-                                child: TextField(
-                                  controller: _controllers[index],
-                                  focusNode: _focusNodes[index],
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 1,
-                                  obscureText: true,
-                                  style: TextStyle(
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeManager.textPrimary,
-                                  ),
-                                  decoration: const InputDecoration(
-                                      counterText: '',
-                                      border: InputBorder.none),
-                                  onChanged: (value) {
-                                    if (value.isNotEmpty) {
-                                      if (index < 3) {
-                                        _focusNodes[index + 1].requestFocus();
-                                      } else {
-                                        _focusNodes[index].unfocus();
-                                        _verifyPin();
-                                      }
-                                    } else if (value.isEmpty && index > 0) {
-                                      _focusNodes[index - 1].requestFocus();
-                                    }
-                                    setState(() {});
-                                  },
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                ),
-                              );
-                            }),
-                          ),
-                        );
-                      },
-                    ),
-
-                    SizedBox(height: 32.h),
-
-                    // Error message
-                    if (_errorMessage != null)
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          color: themeManager.errorColor.withValues(alpha: 26),
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                              color:
-                                  themeManager.errorColor.withValues(alpha: 77),
-                              width: 1),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Prbal.exclamationTriangle,
-                                color: themeManager.errorColor, size: 20.sp),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Text(
-                                _errorMessage!,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: themeManager.errorColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    SizedBox(height: 32.h),
-
-                    // Verify/Set PIN Button
-                    Container(
-                      width: double.infinity,
-                      height: 56.h,
-                      decoration: BoxDecoration(
-                        gradient: themeManager.primaryGradient,
-                        borderRadius: BorderRadius.circular(16.r),
-                        boxShadow: themeManager.primaryShadow,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _verifyPin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.r)),
-                        ),
-                        child: _isLoading
-                            ? SizedBox(
-                                width: 24.w,
-                                height: 24.h,
-                                child: const CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    widget.isNewUser
-                                        ? Prbal.check
-                                        : Prbal.unlock,
-                                    color: Colors.white,
-                                    size: 20.sp,
+                                    getUserTypeIcon(_getUserType()),
+                                    size: 16.sp,
+                                    color: themeManager.getUserTypeColor(_getUserType()),
                                   ),
-                                  SizedBox(width: 12.w),
+                                  SizedBox(width: 8.w),
                                   Text(
-                                    widget.isNewUser ? 'Set PIN' : 'Verify PIN',
+                                    _getUserTypeDisplayName(_getUserType()),
                                     style: TextStyle(
-                                      fontSize: 18.sp,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                      color: themeManager.getUserTypeColor(_getUserType()),
                                     ),
                                   ),
                                 ],
                               ),
+                            ),
+
+                            SizedBox(height: 24.h),
+                          ],
+
+                          // New User Welcome Section
+                          if (widget.isNewUser && widget.userData != null) ...[
+                            // Welcome New User
+                            Container(
+                              padding: EdgeInsets.all(16.w),
+                              decoration: BoxDecoration(
+                                color: themeManager.primaryColor.withValues(alpha: 26),
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color: themeManager.primaryColor.withValues(alpha: 77),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Prbal.stars,
+                                        size: 20.sp,
+                                        color: themeManager.primaryColor,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        'Welcome to Prbal!',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeManager.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Hello ${getDisplayName()},',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: themeManager.textPrimary,
+                                    ),
+                                  ),
+                                  if (_getUsername() != null) ...[
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      'Username: @${_getUsername()}',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: themeManager.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                  ...[
+                                    SizedBox(height: 8.h),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          getUserTypeIcon(_getUserType()),
+                                          size: 14.sp,
+                                          color: themeManager.getUserTypeColor(_getUserType()),
+                                        ),
+                                        SizedBox(width: 6.w),
+                                        Text(
+                                          'Account Type: ${_getUserTypeDisplayName(_getUserType())}',
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: themeManager.getUserTypeColor(_getUserType()),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 24.h),
+                          ],
+
+                          // Lock icon with animation
+                          AnimatedBuilder(
+                            animation: _pulseAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _pulseAnimation.value,
+                                child: Container(
+                                  width: 80.w,
+                                  height: 80.h,
+                                  decoration: BoxDecoration(
+                                    gradient: themeManager.primaryGradient,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    widget.isNewUser ? Prbal.lockOpen2 : Prbal.lockStripes1,
+                                    size: 40.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                          SizedBox(height: 24.h),
+
+                          Text(
+                            widget.isNewUser ? 'Create Your PIN' : 'Enter Your PIN',
+                            style: TextStyle(
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.w700,
+                              color: themeManager.textPrimary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          SizedBox(height: 12.h),
+
+                          Text(
+                            widget.isNewUser
+                                ? 'Set a 4-digit PIN to secure your account'
+                                : 'Enter your 4-digit PIN to continue',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: themeManager.textSecondary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          SizedBox(height: 16.h),
+
+                          // Phone Number Display
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                            decoration: BoxDecoration(
+                              color: themeManager.primaryColor.withValues(alpha: 26),
+                              borderRadius: BorderRadius.circular(20.r),
+                              border: Border.all(
+                                color: themeManager.primaryColor.withValues(alpha: 77),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Prbal.phone,
+                                  size: 16.sp,
+                                  color: themeManager.primaryColor,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  widget.phoneNumber,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: themeManager.primaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
 
-                    const Spacer(),
+                  SizedBox(height: 40.h),
 
-                    // Security note
+                  // PIN Input Fields with shake animation
+                  AnimatedBuilder(
+                    animation: _shakeAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(_shakeAnimation.value * 10 * (1 - 2 * _shakeAnimation.value).abs(), 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: List.generate(4, (index) {
+                            final isActive = _controllers[index].text.isNotEmpty;
+                            return Container(
+                              width: 65.w,
+                              height: 65.h,
+                              decoration: BoxDecoration(
+                                gradient: isActive ? themeManager.primaryGradient : null,
+                                color: isActive ? null : themeManager.surfaceColor,
+                                border: Border.all(
+                                  color: isActive ? themeManager.primaryColor : themeManager.borderColor,
+                                  width: isActive ? 2 : 1,
+                                ),
+                                borderRadius: BorderRadius.circular(10.r),
+                                // boxShadow: isActive ? themeManager.primaryShadow : null,
+                              ),
+                              child: TextField(
+                                controller: _controllers[index],
+                                focusNode: _focusNodes[index],
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                maxLength: 1,
+                                obscureText: true,
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: themeManager.textPrimary,
+                                ),
+                                decoration: const InputDecoration(
+                                  counterText: '',
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (value) {
+                                  if (value.isNotEmpty) {
+                                    if (index < 3) {
+                                      _focusNodes[index + 1].requestFocus();
+                                    } else {
+                                      _focusNodes[index].unfocus();
+                                      _verifyPin();
+                                    }
+                                  } else if (value.isEmpty && index > 0) {
+                                    _focusNodes[index - 1].requestFocus();
+                                  }
+                                  setState(() {});
+                                },
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    },
+                  ),
+
+                  if (_errorMessage != null) SizedBox(height: 32.h),
+
+                  // Error message
+                  if (_errorMessage != null)
                     Container(
+                      // width: double.infinity,
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: themeManager.surfaceColor.withValues(alpha: 128),
+                        color: themeManager.errorColor.withValues(alpha: 26),
                         borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                            color:
-                                themeManager.borderColor.withValues(alpha: 51),
-                            width: 1),
+                        border: Border.all(color: themeManager.errorColor.withValues(alpha: 77), width: 1),
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Prbal.shield4,
-                              color: themeManager.primaryColor, size: 20.sp),
+                          Icon(
+                            Prbal.exclamationTriangle,
+                            color: themeManager.errorColor,
+                            size: 20.sp,
+                          ),
                           SizedBox(width: 12.w),
                           Expanded(
                             child: Text(
-                              widget.isNewUser
-                                  ? 'Your PIN will be used to secure your account'
-                                  : 'Keep your PIN confidential and secure',
+                              _errorMessage!,
                               style: TextStyle(
-                                fontSize: 12.sp,
-                                color: themeManager.textSecondary,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: themeManager.errorColor,
                               ),
                             ),
                           ),
@@ -1164,13 +1247,100 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
                       ),
                     ),
 
-                    SizedBox(height: 24.h),
-                  ],
-                ),
+                  SizedBox(height: 32.h),
+
+                  // Verify/Set PIN Button
+                  Container(
+                    // width: double.infinity,
+                    margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 2.h),
+                    height: 56.h,
+                    decoration: BoxDecoration(
+                      gradient: themeManager.primaryGradient,
+                      borderRadius: BorderRadius.circular(10.r),
+                      // boxShadow: themeManager.primaryShadow,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _verifyPin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                              width: 24.w,
+                              height: 24.h,
+                              child: CircularProgressIndicator(
+                                color: themeManager.onPrimaryColor,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  widget.isNewUser ? Prbal.check : Prbal.unlock,
+                                  color: Colors.white,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 12.w),
+                                Text(
+                                  widget.isNewUser ? 'Set PIN' : 'Verify PIN',
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+
+                  // const Spacer(),
+
+                  // Security note
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 40.w, vertical: 2.h),
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                        // color: themeManager.surfaceColor.withValues(alpha: 128),
+                        // borderRadius: BorderRadius.circular(12.r),
+                        // border: Border.all(color: themeManager.borderColor.withValues(alpha: 51), width: 1),
+                        ),
+                    child: Row(
+                      // mainAxisSize: MainAxisSize.min,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Prbal.shield4,
+                          color: themeManager.primaryColor,
+                          size: 20.sp,
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Text(
+                            widget.isNewUser
+                                ? 'Your PIN will be used to secure your account'
+                                : 'Keep your PIN confidential and secure',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: themeManager.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 24.h),
+                ],
               ),
             ),
           ),
         ),
+        // ),
       ),
     );
   }

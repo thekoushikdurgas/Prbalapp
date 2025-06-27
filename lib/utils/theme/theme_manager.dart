@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/services/user_service.dart';
 
 /// **ThemeManager** - Centralized theme management utility
 ///
@@ -740,6 +741,7 @@ class ThemeManager {
   /// Primary brand color variants
   Color get primaryLight => themeManager ? const Color(0xFFA78BFA) : const Color(0xFF8B5DFF);
   Color get primaryDark => themeManager ? const Color(0xFF6D28D9) : const Color(0xFF5B21B6);
+  Color get onPrimaryColor => themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
 
   /// Secondary brand color variants
   Color get secondaryLight => themeManager ? const Color(0xFF34D399) : const Color(0xFF34D399);
@@ -880,16 +882,14 @@ class ThemeManager {
   }
 
   /// Get color for user type
-  Color getUserTypeColor(String? userType) {
+  Color getUserTypeColor(UserType userType) {
     switch (userType) {
-      case 'provider':
+      case UserType.provider:
         return themeManager ? successColor : successLight;
-      case 'customer':
+      case UserType.customer:
         return themeManager ? infoColor : infoLight;
-      case 'admin':
+      case UserType.admin:
         return themeManager ? warningColor : warningLight;
-      default:
-        return themeManager ? infoColor : infoLight;
     }
   }
   // =================== DEBUG UTILITIES ===================

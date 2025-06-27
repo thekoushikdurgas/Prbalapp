@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
@@ -40,8 +41,7 @@ class PhoneLoginBottomSheet extends ConsumerStatefulWidget {
   const PhoneLoginBottomSheet({super.key});
 
   @override
-  ConsumerState<PhoneLoginBottomSheet> createState() =>
-      _PhoneLoginBottomSheetState();
+  ConsumerState<PhoneLoginBottomSheet> createState() => _PhoneLoginBottomSheetState();
 }
 
 class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
@@ -69,7 +69,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   @override
   void initState() {
     super.initState();
-    debugPrint('📱 PhoneLoginBottomSheet: Initializing phone login component');
     _initializeAnimations();
     _startAnimations();
     _loadCachedPhoneNumber();
@@ -98,8 +97,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           _phoneNumber = phoneNumber;
           _phoneController.text = phoneNumber;
         });
-
-        debugPrint('📱 PhoneLoginBottomSheet: Loaded cached phone number');
       }
     }
   }
@@ -108,8 +105,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   ///
   /// Creates slide and fade animations for smooth bottom sheet presentation
   void _initializeAnimations() {
-    debugPrint('📱 PhoneLoginBottomSheet: Setting up animation controllers');
-
     // Slide animation controller - controls the upward slide motion
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),
@@ -139,16 +134,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       parent: _fadeController,
       curve: Curves.easeIn, // Smooth acceleration
     ));
-
-    debugPrint('📱 PhoneLoginBottomSheet: Animation setup complete');
   }
 
   /// Starts the entry animations with staggered timing
   ///
   /// First slides the bottom sheet up, then fades in the content
   Future<void> _startAnimations() async {
-    debugPrint('📱 PhoneLoginBottomSheet: Starting entry animations');
-
     // Start slide animation immediately
     _slideController.forward();
 
@@ -157,14 +148,10 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     if (mounted) {
       _fadeController.forward();
     }
-
-    debugPrint('📱 PhoneLoginBottomSheet: Entry animations started');
   }
 
   @override
   void dispose() {
-    debugPrint('📱 PhoneLoginBottomSheet: Disposing resources');
-
     // Clean up controllers to prevent memory leaks
     _phoneController.dispose();
     _searchController.dispose();
@@ -193,25 +180,16 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// 4. Navigates to PIN entry with appropriate data
   /// 5. Caches phone number for future use
   Future<void> _verifyPhoneNumber() async {
-    debugPrint('📱 PhoneLoginBottomSheet: Starting phone number verification');
-    debugPrint('📱 PhoneLoginBottomSheet: Phone number entered: $_phoneNumber');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Selected country code: $_selectedCountryCode');
-
     // Validate phone number format
     if (!_isValidPhoneNumber(_phoneNumber)) {
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Phone validation failed - invalid format');
       setState(() {
-        _errorMessage = 'Please enter a valid phone number (10-15 digits)';
+        _errorMessage = 'auth.phoneLogin.validation.invalidPhone'.tr();
       });
       return;
     }
 
     // Provide haptic feedback for better UX
     HapticFeedback.lightImpact();
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Phone validation passed, starting API call');
 
     // Update UI to show loading state
     setState(() {
@@ -223,26 +201,15 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       // Get UserService instance from provider
       final userService = ref.read(userServiceProvider);
       final fullPhoneNumber = _selectedCountryCode + _phoneNumber;
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Full phone number: $fullPhoneNumber');
 
       // Check if user exists by phone number via API
-      final userSearchResponse =
-          await userService.searchUserByPhone(fullPhoneNumber);
-
-      debugPrint('📱 PhoneLoginBottomSheet: API response received');
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: API response success: ${userSearchResponse.success}');
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: API response message: ${userSearchResponse.message}');
+      final userSearchResponse = await userService.searchUserByPhone(fullPhoneNumber);
 
       // Process API response
       AppUser? existingUser;
       Map<String, dynamic> userData;
 
       if (userSearchResponse.data == null) {
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: New user detected - preparing default data');
         // User doesn't exist, prepare new user data with default provider type
         userData = {
           'phoneNumber': fullPhoneNumber,
@@ -252,11 +219,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           'isNewUser': true,
           'is_new_user': true,
         };
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: New user data prepared: $userData');
       } else {
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: Existing user found - processing user data');
         // User exists, use their complete data from AppUser model
         existingUser = userSearchResponse.data as AppUser;
         userData = existingUser.toJson();
@@ -265,7 +228,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
         // Ensure phone number is set if it was null in the user data
         userData['phone_number'] = existingUser.phoneNumber ?? fullPhoneNumber;
         userData['phoneNumber'] = existingUser.phoneNumber ?? fullPhoneNumber;
-        debugPrint('📱 PhoneLoginBottomSheet: Existing user data: $userData');
       }
 
       // Cache phone number for future use
@@ -278,7 +240,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
         });
 
         // Navigate to PIN entry screen with user data
-        debugPrint('📱 PhoneLoginBottomSheet: Navigating to PIN entry screen');
         context.pop(); // Close current bottom sheet
 
         // Navigate with proper data structure
@@ -291,22 +252,16 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
             'is_new_user': (userSearchResponse.data == null),
             'userData': userData,
             'user_data': userData,
-            if (existingUser != null)
-              'userModel': existingUser, // Pass the AppUser model directly
+            if (existingUser != null) 'userModel': existingUser, // Pass the AppUser model directly
             if (existingUser != null) 'user_model': existingUser,
           },
         );
-        debugPrint(
-            '📱 PhoneLoginBottomSheet: Navigation to PIN entry completed');
       }
     } catch (e) {
-      debugPrint(
-          '📱 PhoneLoginBottomSheet: Error during phone verification: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              'Unable to verify phone number. Please check your connection and try again.';
+          _errorMessage = 'auth.phoneLogin.validation.networkError'.tr();
         });
       }
     }
@@ -314,8 +269,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
   /// Handle social login with proper error handling
   Future<void> _handleSocialLogin(String provider) async {
-    debugPrint('📱 PhoneLoginBottomSheet: Social login with $provider');
-
     // Provide haptic feedback
     HapticFeedback.lightImpact();
 
@@ -333,15 +286,14 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Social login coming soon!';
+          _errorMessage = 'auth.phoneLogin.socialLogin.comingSoon'.tr();
         });
       }
     } catch (e) {
-      debugPrint('📱 PhoneLoginBottomSheet: Social login error: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Social login failed. Please try again.';
+          _errorMessage = 'auth.phoneLogin.socialLogin.failed'.tr();
         });
       }
     }
@@ -349,34 +301,9 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Building UI components with comprehensive ThemeManager integration');
-
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
     final themeManager = ThemeManager.of(context);
     final screenSize = MediaQuery.of(context).size;
-
-    // Comprehensive theme logging for debugging
-
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Background: ${themeManager.backgroundColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Surface: ${themeManager.surfaceColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Card Background: ${themeManager.cardBackground}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Text Primary: ${themeManager.textPrimary}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Text Secondary: ${themeManager.textSecondary}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: → Success: ${themeManager.successColor}');
-    debugPrint('📱 PhoneLoginBottomSheet: → Error: ${themeManager.errorColor}');
-    debugPrint(
-        '📱 PhoneLoginBottomSheet: Screen size: ${screenSize.width}x${screenSize.height}');
 
     return SlideTransition(
       position: _slideAnimation,
@@ -386,29 +313,30 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           maxHeight: screenSize.height * 0.9,
         ),
         decoration: BoxDecoration(
-          // Theme-aware background with gradient
-          gradient: themeManager.conditionalGradient(
-            lightGradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                themeManager.backgroundColor,
-                themeManager.surfaceElevated,
-                themeManager.cardBackground,
-              ],
-              stops: const [0.0, 0.6, 1.0],
-            ),
-            darkGradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                themeManager.backgroundColor,
-                themeManager.backgroundSecondary,
-                themeManager.surfaceElevated,
-              ],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-          ),
+          color: themeManager.backgroundColor,
+          // // Theme-aware background with gradient
+          // gradient: themeManager.conditionalGradient(
+          //   lightGradient: LinearGradient(
+          //     begin: Alignment.topCenter,
+          //     end: Alignment.bottomCenter,
+          //     colors: [
+          //       themeManager.backgroundColor,
+          //       themeManager.surfaceElevated,
+          //       themeManager.cardBackground,
+          //     ],
+          //     stops: const [0.0, 0.6, 1.0],
+          //   ),
+          //   darkGradient: LinearGradient(
+          //     begin: Alignment.topCenter,
+          //     end: Alignment.bottomCenter,
+          //     colors: [
+          //       themeManager.backgroundColor,
+          //       themeManager.backgroundSecondary,
+          //       themeManager.surfaceElevated,
+          //     ],
+          //     stops: const [0.0, 0.5, 1.0],
+          //   ),
+          // ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
           border: Border.all(
             color: themeManager.conditionalColor(
@@ -417,19 +345,19 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
             ),
             width: 1.5,
           ),
-          boxShadow: [
-            ...themeManager.elevatedShadow,
-            BoxShadow(
-              color: themeManager.shadowDark,
-              blurRadius: 25,
-              offset: const Offset(0, -8),
-            ),
-            BoxShadow(
-              color: themeManager.primaryColor.withValues(alpha: 0.05),
-              blurRadius: 30,
-              offset: const Offset(0, -12),
-            ),
-          ],
+          // boxShadow: [
+          //   ...themeManager.elevatedShadow,
+          //   BoxShadow(
+          //     color: themeManager.shadowDark,
+          //     blurRadius: 25,
+          //     offset: const Offset(0, -8),
+          //   ),
+          //   BoxShadow(
+          //     color: themeManager.primaryColor.withValues(alpha: 0.05),
+          //     blurRadius: 30,
+          //     offset: const Offset(0, -12),
+          //   ),
+          // ],
         ),
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -446,443 +374,338 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Handle bar for visual feedback with ThemeManager styling
-                  Container(
-                    width: 40.w,
-                    height: 4.h,
-                    margin: EdgeInsets.only(top: 12.h),
-                    decoration: BoxDecoration(
-                      gradient: themeManager.conditionalGradient(
-                        lightGradient: LinearGradient(
-                          colors: [
-                            themeManager.neutral300,
-                            themeManager.neutral400,
-                          ],
+                  // Padding(
+                  //   padding: EdgeInsets.all(24.w),
+                  //   child:
+                  SizedBox(height: 10.h),
+                  Column(
+                    children: [
+                      Text(
+                        'auth.phoneLogin.title'.tr(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: themeManager.textSecondary,
+                          height: 1.4,
                         ),
-                        darkGradient: LinearGradient(
-                          colors: [
-                            themeManager.neutral600,
-                            themeManager.neutral500,
-                          ],
-                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      borderRadius: BorderRadius.circular(2.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: themeManager.shadowLight,
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-
-                  // Header section with title and close button
-                  Padding(
-                    padding: EdgeInsets.all(24.w),
-                    child: Column(
-                      children: [
-                        // Header row with close button
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(
-                                width: 40), // Spacer for center alignment
-                            Text(
-                              'Welcome Back',
-                              style: TextStyle(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
-                                color: themeManager.textPrimary,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                            // Close button with comprehensive ThemeManager styling
-                            GestureDetector(
-                              onTap: () {
-                                debugPrint(
-                                    '📱 PhoneLoginBottomSheet: Close button tapped');
-                                HapticFeedback.lightImpact();
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                width: 40.w,
-                                height: 40.h,
-                                decoration: BoxDecoration(
-                                  gradient: themeManager.conditionalGradient(
-                                    lightGradient: LinearGradient(
-                                      colors: [
-                                        themeManager.neutral100,
-                                        themeManager.neutral200,
-                                      ],
-                                    ),
-                                    darkGradient: LinearGradient(
-                                      colors: [
-                                        themeManager.neutral800,
-                                        themeManager.neutral700,
-                                      ],
-                                    ),
-                                  ),
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  border: Border.all(
-                                    color: themeManager.conditionalColor(
-                                      lightColor: themeManager.borderColor
-                                          .withValues(alpha: 0.3),
-                                      darkColor: themeManager.borderSecondary
-                                          .withValues(alpha: 0.4),
-                                    ),
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    ...themeManager.subtleShadow,
-                                  ],
-                                ),
-                                child: Icon(
-                                  Prbal.cross,
-                                  size: 20.sp,
-                                  color: themeManager.conditionalColor(
-                                    lightColor: themeManager.neutral600,
-                                    darkColor: themeManager.neutral400,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 8.h),
-
-                        // Subtitle with ThemeManager styling
-                        Text(
-                          'Enter your phone number to continue',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: themeManager.textSecondary,
-                            height: 1.4,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: 20.h),
+                  // ),
 
                   // Phone input section
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Phone number label with ThemeManager styling
-                        Text(
-                          'Phone Number',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: themeManager.textPrimary,
-                            letterSpacing: 0.3,
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                  //   child:
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Phone input field with comprehensive ThemeManager styling
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: themeManager.conditionalGradient(
+                            lightGradient: LinearGradient(
+                              colors: [
+                                themeManager.inputBackground,
+                                themeManager.surfaceElevated,
+                              ],
+                            ),
+                            darkGradient: LinearGradient(
+                              colors: [
+                                themeManager.inputBackground,
+                                themeManager.backgroundTertiary,
+                              ],
+                            ),
                           ),
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: _errorMessage != null
+                                ? themeManager.errorColor
+                                : themeManager.conditionalColor(
+                                    lightColor: themeManager.borderColor,
+                                    darkColor: themeManager.borderSecondary,
+                                  ),
+                            width: 1.5,
+                          ),
+                          boxShadow: _errorMessage != null
+                              ? [
+                                  BoxShadow(
+                                    color: themeManager.errorColor.withValues(alpha: 0.2),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : [
+                                  ...themeManager.subtleShadow,
+                                ],
                         ),
-
-                        SizedBox(height: 8.h),
-
-                        // Phone input field with comprehensive ThemeManager styling
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: themeManager.conditionalGradient(
-                              lightGradient: LinearGradient(
-                                colors: [
-                                  themeManager.inputBackground,
-                                  themeManager.surfaceElevated,
-                                ],
-                              ),
-                              darkGradient: LinearGradient(
-                                colors: [
-                                  themeManager.inputBackground,
-                                  themeManager.backgroundTertiary,
-                                ],
-                              ),
-                            ),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: _errorMessage != null
-                                  ? themeManager.errorColor
-                                  : themeManager.conditionalColor(
-                                      lightColor: themeManager.borderColor,
-                                      darkColor: themeManager.borderSecondary,
+                        child: Row(
+                          children: [
+                            // Country code selector
+                            GestureDetector(
+                              onTap: _showCountryPicker,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: themeManager.conditionalColor(
+                                        lightColor: themeManager.borderColor,
+                                        darkColor: themeManager.borderSecondary,
+                                      ),
+                                      width: 1,
                                     ),
-                              width: 1.5,
-                            ),
-                            boxShadow: _errorMessage != null
-                                ? [
-                                    BoxShadow(
-                                      color: themeManager.errorColor
-                                          .withValues(alpha: 0.2),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _selectedCountryFlag,
+                                      style: TextStyle(fontSize: 16.sp),
                                     ),
-                                  ]
-                                : [
-                                    ...themeManager.subtleShadow,
+                                    SizedBox(width: 8.w),
+                                    Text(
+                                      _selectedCountryCode,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: themeManager.textPrimary,
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Icon(
+                                      Prbal.angleDown,
+                                      size: 16.sp,
+                                      color: themeManager.onPrimaryColor,
+                                    ),
                                   ],
-                          ),
-                          child: Row(
-                            children: [
-                              // Country code selector
-                              GestureDetector(
-                                onTap: _showCountryPicker,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
+                                ),
+                              ),
+                            ),
+
+                            // Phone number input
+                            Expanded(
+                              child: TextField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: themeManager.textPrimary,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'auth.phoneLogin.phoneHint'.tr(),
+                                  hintStyle: TextStyle(
+                                    color: themeManager.textSecondary,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
                                     horizontal: 16.w,
                                     vertical: 16.h,
                                   ),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      right: BorderSide(
-                                        color: themeManager.conditionalColor(
-                                          lightColor: themeManager.borderColor,
-                                          darkColor:
-                                              themeManager.borderSecondary,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        _selectedCountryFlag,
-                                        style: TextStyle(fontSize: 16.sp),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        _selectedCountryCode,
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: themeManager.textPrimary,
-                                        ),
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      Icon(
-                                        Prbal.angleDown,
-                                        size: 16.sp,
-                                        color: themeManager.conditionalColor(
-                                          lightColor: themeManager.neutral600,
-                                          darkColor: themeManager.neutral400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
+                                onChanged: (value) {
+                                  _phoneNumber = value;
+                                  if (_errorMessage != null) {
+                                    setState(() {
+                                      _errorMessage = null;
+                                    });
+                                  }
+                                },
                               ),
-
-                              // Phone number input
-                              Expanded(
-                                child: TextField(
-                                  controller: _phoneController,
-                                  keyboardType: TextInputType.phone,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                    LengthLimitingTextInputFormatter(10),
-                                  ],
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: themeManager.textPrimary,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: '1234567890',
-                                    hintStyle: TextStyle(
-                                      color: themeManager.textSecondary,
-                                    ),
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.w,
-                                      vertical: 16.h,
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    _phoneNumber = value;
-                                    if (_errorMessage != null) {
-                                      setState(() {
-                                        _errorMessage = null;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
 
-                        // Error message
-                        if (_errorMessage != null) ...[
-                          SizedBox(height: 8.h),
-                          Row(
-                            children: [
-                              Icon(
-                                Prbal.exclamationTriangle,
-                                size: 16.sp,
+                      // Error message
+                      if (_errorMessage != null) ...[
+                        SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            Icon(
+                              Prbal.exclamationTriangle,
+                              size: 16.sp,
+                              color: const Color(0xFFEF4444),
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              _errorMessage!,
+                              style: TextStyle(
+                                fontSize: 12.sp,
                                 color: const Color(0xFFEF4444),
                               ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                _errorMessage!,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: const Color(0xFFEF4444),
+                            ),
+                          ],
+                        ),
+                      ],
+
+                      SizedBox(height: 24.h),
+
+                      // Continue button
+                      SizedBox(
+                        // width: double.infinity,
+                        height: 56.h,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _verifyPhoneNumber,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF3B82F6),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            disabledBackgroundColor: themeManager.conditionalColor(
+                              lightColor: themeManager.neutral300,
+                              darkColor: themeManager.neutral700,
+                            ),
+                          ),
+                          child: _isLoading
+                              ? SizedBox(
+                                  width: 20.w,
+                                  height: 20.h,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(themeManager.onPrimaryColor),
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'auth.phoneLogin.continue'.tr(),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Icon(
+                                      Prbal.chevronsRight,
+                                      size: 20.sp,
+                                      color: Colors.white,
+                                    ),
+                                  ],
                                 ),
+                        ),
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      // Divider with "or" - ThemeManager enhanced
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: themeManager.conditionalColor(
+                                lightColor: themeManager.neutral300,
+                                darkColor: themeManager.neutral600,
                               ),
-                            ],
+                              thickness: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Text(
+                              'auth.phoneLogin.or'.tr(),
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: themeManager.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: themeManager.conditionalColor(
+                                lightColor: themeManager.neutral300,
+                                darkColor: themeManager.neutral600,
+                              ),
+                              thickness: 1,
+                            ),
                           ),
                         ],
+                      ),
 
-                        SizedBox(height: 24.h),
+                      SizedBox(height: 24.h),
 
-                        // Continue button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56.h,
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : _verifyPhoneNumber,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF3B82F6),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              disabledBackgroundColor:
-                                  themeManager.conditionalColor(
-                                lightColor: themeManager.neutral300,
-                                darkColor: themeManager.neutral700,
-                              ),
-                            ),
-                            child: _isLoading
-                                ? SizedBox(
-                                    width: 20.w,
-                                    height: 20.h,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  )
-                                : Text(
-                                    'Continue',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                      // Social login buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Expanded(
+                          //   child:
+                          _buildSocialButton(
+                            'auth.phoneLogin.socialLogin.google'.tr(),
+                            Prbal.google11,
+                            Colors.red,
+                            () => _handleSocialLogin('google'),
+                            themeManager,
                           ),
-                        ),
+                          // ),
+                          // SizedBox(width: 16.w),
+                          // Expanded(
+                          //   child:
+                          _buildSocialButton(
+                            'auth.phoneLogin.socialLogin.apple'.tr(),
+                            Prbal.apple,
+                            themeManager.conditionalColor(
+                              lightColor: Colors.black,
+                              darkColor: Colors.white,
+                            ),
+                            () => _handleSocialLogin('apple'),
+                            themeManager,
+                          ),
+                          // ),
+                        ],
+                      ),
 
-                        SizedBox(height: 24.h),
+                      SizedBox(height: 32.h),
 
-                        // Divider with "or" - ThemeManager enhanced
-                        Row(
+                      // Terms text with ThemeManager styling
+                      Text.rich(
+                        TextSpan(
+                          text: 'auth.phoneLogin.terms.prefix'.tr(),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: themeManager.textSecondary,
+                            height: 1.4,
+                          ),
                           children: [
-                            Expanded(
-                              child: Divider(
-                                color: themeManager.conditionalColor(
-                                  lightColor: themeManager.neutral300,
-                                  darkColor: themeManager.neutral600,
-                                ),
-                                thickness: 1,
+                            TextSpan(
+                              text: 'auth.phoneLogin.terms.termsOfService'.tr(),
+                              style: TextStyle(
+                                color: themeManager.primaryColor,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: Text(
-                                'or',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: themeManager.textSecondary,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                            TextSpan(text: 'auth.phoneLogin.terms.and'.tr()),
+                            TextSpan(
+                              text: 'auth.phoneLogin.terms.privacyPolicy'.tr(),
+                              style: TextStyle(
+                                color: themeManager.primaryColor,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            Expanded(
-                              child: Divider(
-                                color: themeManager.conditionalColor(
-                                  lightColor: themeManager.neutral300,
-                                  darkColor: themeManager.neutral600,
-                                ),
-                                thickness: 1,
-                              ),
-                            ),
+                            TextSpan(text: 'auth.phoneLogin.terms.suffix'.tr()),
                           ],
                         ),
+                        textAlign: TextAlign.center,
+                      ),
 
-                        SizedBox(height: 24.h),
-
-                        // Social login buttons
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildSocialButton(
-                                'Google',
-                                Prbal.google11,
-                                Colors.red,
-                                () => _handleSocialLogin('google'),
-                                themeManager,
-                              ),
-                            ),
-                            SizedBox(width: 16.w),
-                            Expanded(
-                              child: _buildSocialButton(
-                                'Apple',
-                                Prbal.apple,
-                                themeManager.conditionalColor(
-                                  lightColor: Colors.black,
-                                  darkColor: Colors.white,
-                                ),
-                                () => _handleSocialLogin('apple'),
-                                themeManager,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 32.h),
-
-                        // Terms text with ThemeManager styling
-                        Text.rich(
-                          TextSpan(
-                            text: 'By continuing, you agree to our ',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: themeManager.textSecondary,
-                              height: 1.4,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: 'Terms of Service',
-                                style: TextStyle(
-                                  color: themeManager.primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Privacy Policy',
-                                style: TextStyle(
-                                  color: themeManager.primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const TextSpan(text: '.'),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-
-                        SizedBox(height: 40.h),
-                      ],
-                    ),
+                      // SizedBox(height: 40.h),
+                    ],
                   ),
+                  // ),
                 ],
               ),
             ),
@@ -915,7 +738,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
             ],
           ),
         ),
-        borderRadius: BorderRadius.circular(12.r),
+        shape: BoxShape.circle,
+        // borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: themeManager.conditionalColor(
             lightColor: themeManager.borderColor,
@@ -943,18 +767,18 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           children: [
             Icon(
               icon,
-              size: 20.sp,
+              size: 30.sp,
               color: iconColor,
             ),
-            SizedBox(width: 8.w),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: themeManager.textPrimary,
-              ),
-            ),
+            // SizedBox(width: 8.w),
+            // Text(
+            //   label,
+            //   style: TextStyle(
+            //     fontSize: 14.sp,
+            //     fontWeight: FontWeight.w500,
+            //     color: themeManager.textPrimary,
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -973,7 +797,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: themeManager.backgroundColor,
       isScrollControlled: true,
       enableDrag: true,
       isDismissible: true,
@@ -997,15 +821,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
             ),
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             border: Border.all(
-              color: themeManager.conditionalColor(
-                lightColor: themeManager.borderColor.withValues(alpha: 0.2),
-                darkColor: themeManager.borderSecondary.withValues(alpha: 0.3),
-              ),
+              color: themeManager.onPrimaryColor,
               width: 1.5,
             ),
-            boxShadow: [
-              ...themeManager.elevatedShadow,
-            ],
+            // boxShadow: [
+            //   ...themeManager.elevatedShadow,
+            // ],
           ),
           child: Column(
             children: [
@@ -1082,10 +903,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: themeManager.conditionalColor(
-                              lightColor: themeManager.borderColor
-                                  .withValues(alpha: 0.3),
-                              darkColor: themeManager.borderSecondary
-                                  .withValues(alpha: 0.4),
+                              lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                              darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                             ),
                             width: 1,
                           ),
@@ -1106,7 +925,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     SizedBox(width: 16.w),
                     Expanded(
                       child: Text(
-                        'Select Country',
+                        'auth.phoneLogin.countryPicker.title'.tr(),
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
@@ -1117,8 +936,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     ),
                     // Show selected country info with ThemeManager styling
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -1128,8 +946,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                         ),
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                          color:
-                              themeManager.primaryColor.withValues(alpha: 0.3),
+                          color: themeManager.primaryColor.withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -1190,7 +1007,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                   controller: _searchController,
                   autofocus: false,
                   decoration: InputDecoration(
-                    hintText: 'Search countries...',
+                    hintText: 'auth.phoneLogin.countryPicker.searchHint'.tr(),
                     hintStyle: TextStyle(
                       color: themeManager.textSecondary,
                       fontSize: 14.sp,
@@ -1214,28 +1031,22 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 gradient: themeManager.conditionalGradient(
                                   lightGradient: LinearGradient(
                                     colors: [
-                                      themeManager.errorColor
-                                          .withValues(alpha: 0.15),
-                                      themeManager.errorLight
-                                          .withValues(alpha: 0.1),
+                                      themeManager.errorColor.withValues(alpha: 0.15),
+                                      themeManager.errorLight.withValues(alpha: 0.1),
                                     ],
                                   ),
                                   darkGradient: LinearGradient(
                                     colors: [
-                                      themeManager.errorDark
-                                          .withValues(alpha: 0.2),
-                                      themeManager.errorColor
-                                          .withValues(alpha: 0.15),
+                                      themeManager.errorDark.withValues(alpha: 0.2),
+                                      themeManager.errorColor.withValues(alpha: 0.15),
                                     ],
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(6.r),
                                 border: Border.all(
                                   color: themeManager.conditionalColor(
-                                    lightColor: themeManager.errorColor
-                                        .withValues(alpha: 0.3),
-                                    darkColor: themeManager.errorDark
-                                        .withValues(alpha: 0.4),
+                                    lightColor: themeManager.errorColor.withValues(alpha: 0.3),
+                                    darkColor: themeManager.errorDark.withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
@@ -1275,12 +1086,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                   builder: (context) {
                     final filteredCountries = _countries.where((country) {
                       if (_searchQuery.isEmpty) return true;
-                      return country['name']!
-                              .toLowerCase()
-                              .contains(_searchQuery) ||
-                          country['code']!
-                              .toLowerCase()
-                              .contains(_searchQuery.replaceAll('+', ''));
+                      return country['name']!.toLowerCase().contains(_searchQuery) ||
+                          country['code']!.toLowerCase().contains(_searchQuery.replaceAll('+', ''));
                     }).toList();
 
                     if (filteredCountries.isEmpty) {
@@ -1298,7 +1105,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'No countries found',
+                              'auth.phoneLogin.countryPicker.noResults'.tr(),
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 color: themeManager.conditionalColor(
@@ -1310,7 +1117,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'Try searching with a different term',
+                              'auth.phoneLogin.countryPicker.searchTip'.tr(),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: themeManager.textSecondary,
@@ -1326,8 +1133,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       itemBuilder: (context, index) {
                         final country = filteredCountries[index];
-                        final isSelected =
-                            country['code'] == _selectedCountryCode;
+                        final isSelected = country['code'] == _selectedCountryCode;
 
                         return Container(
                           margin: EdgeInsets.symmetric(vertical: 2.h),
@@ -1335,25 +1141,21 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             gradient: isSelected
                                 ? LinearGradient(
                                     colors: [
-                                      themeManager.primaryColor
-                                          .withValues(alpha: 0.15),
-                                      themeManager.primaryLight
-                                          .withValues(alpha: 0.1),
+                                      themeManager.primaryColor.withValues(alpha: 0.15),
+                                      themeManager.primaryLight.withValues(alpha: 0.1),
                                     ],
                                   )
                                 : null,
                             borderRadius: BorderRadius.circular(8.r),
                             border: isSelected
                                 ? Border.all(
-                                    color: themeManager.primaryColor
-                                        .withValues(alpha: 0.3),
+                                    color: themeManager.primaryColor.withValues(alpha: 0.3),
                                     width: 1,
                                   )
                                 : null,
                           ),
                           child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 4.h),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
                             leading: Container(
                               width: 40.w,
                               height: 40.h,
@@ -1375,10 +1177,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 borderRadius: BorderRadius.circular(20.r),
                                 border: Border.all(
                                   color: themeManager.conditionalColor(
-                                    lightColor: themeManager.borderColor
-                                        .withValues(alpha: 0.3),
-                                    darkColor: themeManager.borderSecondary
-                                        .withValues(alpha: 0.4),
+                                    lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                                    darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
@@ -1405,8 +1205,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 4.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                                   decoration: BoxDecoration(
                                     gradient: themeManager.conditionalGradient(
                                       lightGradient: LinearGradient(
@@ -1425,10 +1224,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                     borderRadius: BorderRadius.circular(6.r),
                                     border: Border.all(
                                       color: themeManager.conditionalColor(
-                                        lightColor: themeManager.borderColor
-                                            .withValues(alpha: 0.3),
-                                        darkColor: themeManager.borderSecondary
-                                            .withValues(alpha: 0.4),
+                                        lightColor: themeManager.borderColor.withValues(alpha: 0.3),
+                                        darkColor: themeManager.borderSecondary.withValues(alpha: 0.4),
                                       ),
                                       width: 1,
                                     ),
@@ -1460,8 +1257,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: themeManager.primaryColor
-                                              .withValues(alpha: 0.3),
+                                          color: themeManager.primaryColor.withValues(alpha: 0.3),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -1486,8 +1282,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               });
 
                               Navigator.pop(context);
-                              debugPrint(
-                                  '📱 PhoneLoginBottomSheet: Country selected - ${country['name']} (${country['code']})');
                             },
                           ),
                         );
@@ -1532,11 +1326,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Bermuda', 'code': '+1', 'flag': '🇧🇲'},
     {'name': 'Bhutan', 'code': '+975', 'flag': '🇧🇹'},
     {'name': 'Bolivia', 'code': '+591', 'flag': '🇧🇴'},
-    {
-      'name': 'Bonaire, Sint Eustatius and Saba',
-      'code': '+599',
-      'flag': '🇧🇶'
-    },
+    {'name': 'Bonaire, Sint Eustatius and Saba', 'code': '+599', 'flag': '🇧🇶'},
     {'name': 'Bosnia and Herzegovina', 'code': '+387', 'flag': '🇧🇦'},
     {'name': 'Botswana', 'code': '+267', 'flag': '🇧🇼'},
     {'name': 'Bouvet Island', 'code': '+47', 'flag': '🇧🇻'},
@@ -1606,11 +1396,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Guinea-Bissau', 'code': '+245', 'flag': '🇬🇼'},
     {'name': 'Guyana', 'code': '+592', 'flag': '🇬🇾'},
     {'name': 'Haiti', 'code': '+509', 'flag': '🇭🇹'},
-    {
-      'name': 'Heard Island and McDonald Islands',
-      'code': '+672',
-      'flag': '🇭🇲'
-    },
+    {'name': 'Heard Island and McDonald Islands', 'code': '+672', 'flag': '🇭🇲'},
     {'name': 'Holy See', 'code': '+379', 'flag': '🇻🇦'},
     {'name': 'Honduras', 'code': '+504', 'flag': '🇭🇳'},
     {'name': 'Hong Kong', 'code': '+852', 'flag': '🇭🇰'},
@@ -1719,11 +1505,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'Solomon Islands', 'code': '+677', 'flag': '🇸🇧'},
     {'name': 'Somalia', 'code': '+252', 'flag': '🇸🇴'},
     {'name': 'South Africa', 'code': '+27', 'flag': '🇿🇦'},
-    {
-      'name': 'South Georgia and the South Sandwich Islands',
-      'code': '+500',
-      'flag': '🇬🇸'
-    },
+    {'name': 'South Georgia and the South Sandwich Islands', 'code': '+500', 'flag': '🇬🇸'},
     {'name': 'South Korea', 'code': '+82', 'flag': '🇰🇷'},
     {'name': 'South Sudan', 'code': '+211', 'flag': '🇸🇸'},
     {'name': 'Spain', 'code': '+34', 'flag': '🇪🇸'},
@@ -1753,11 +1535,7 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     {'name': 'United Arab Emirates', 'code': '+971', 'flag': '🇦🇪'},
     {'name': 'United Kingdom', 'code': '+44', 'flag': '🇬🇧'},
     {'name': 'United States', 'code': '+1', 'flag': '🇺🇸'},
-    {
-      'name': 'United States Minor Outlying Islands',
-      'code': '+1',
-      'flag': '🇺🇲'
-    },
+    {'name': 'United States Minor Outlying Islands', 'code': '+1', 'flag': '🇺🇲'},
     {'name': 'Uruguay', 'code': '+598', 'flag': '🇺🇾'},
     {'name': 'US Virgin Islands', 'code': '+1', 'flag': '🇻🇮'},
     {'name': 'Uzbekistan', 'code': '+998', 'flag': '🇺🇿'},

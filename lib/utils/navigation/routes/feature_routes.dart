@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:prbal/screens/admin/admin_activity_screen.dart';
-import 'package:prbal/screens/auth/health_dashboard.dart';
+import 'package:prbal/screens/admin/health_dashboard.dart';
 import 'package:prbal/utils/navigation/router_utils.dart';
 import 'package:prbal/screens/main/messages_screen.dart';
 import 'package:prbal/screens/main/payments_screen.dart';

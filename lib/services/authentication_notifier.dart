@@ -15,7 +15,7 @@ class AuthenticationState {
   final String? accessToken;
   final String? refreshToken;
   final Map<String, dynamic>? userData;
-  final String? userType;
+  final UserType userType;
   final DateTime? tokenExpiresAt;
   final bool isLoading;
   final String? error;
@@ -25,7 +25,7 @@ class AuthenticationState {
     this.accessToken,
     this.refreshToken,
     this.userData,
-    this.userType,
+    required this.userType,
     this.tokenExpiresAt,
     this.isLoading = false,
     this.error,
@@ -37,7 +37,7 @@ class AuthenticationState {
         accessToken = null,
         refreshToken = null,
         userData = null,
-        userType = null,
+        userType = UserType.customer,
         tokenExpiresAt = null,
         isLoading = false,
         error = null;
@@ -75,7 +75,7 @@ class AuthenticationState {
     required String accessToken,
     String? refreshToken,
     required Map<String, dynamic> userData,
-    required String userType,
+    required UserType userType,
     DateTime? tokenExpiresAt,
   }) {
     return AuthenticationState(
@@ -133,10 +133,8 @@ class AuthenticationState {
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   final UserService _userService;
 
-  AuthenticationNotifier(this._userService)
-      : super(const AuthenticationState.initial()) {
-    debugPrint(
-        '🔐 AuthenticationNotifier: Initializing authentication notifier');
+  AuthenticationNotifier(this._userService) : super(const AuthenticationState.initial()) {
+    debugPrint('🔐 AuthenticationNotifier: Initializing authentication notifier');
   }
 
   /// Initialize authentication state from local storage
@@ -157,7 +155,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
 
       // Get saved user data and tokens
       final userData = HiveService.getUserData();
-      final userType = HiveService.getUserType();
+      final UserType userType = HiveService.getUserType();
       final phoneNumber = HiveService.getPhoneNumber();
       final authToken = HiveService.getAuthToken();
       final refreshToken = HiveService.getRefreshToken();
@@ -167,8 +165,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         debugPrint('🔐 → User type: $userType');
         debugPrint('🔐 → Phone: $phoneNumber');
         debugPrint('🔐 → Auth token exists: ✅');
-        debugPrint(
-            '🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
+        debugPrint('🔐 → Refresh token exists: ${refreshToken != null ? '✅' : '❌'}');
 
         // Create authenticated state with actual tokens
         state = state.copyWithAuthentication(
@@ -178,13 +175,10 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
           userType: userType,
         );
 
-        debugPrint(
-            '🔐 AuthenticationNotifier: Authentication state restored successfully');
+        debugPrint('🔐 AuthenticationNotifier: Authentication state restored successfully');
       } else {
-        debugPrint(
-            '🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
-        debugPrint(
-            '🔐 → User data exists: ${userData != null && userData.isNotEmpty}');
+        debugPrint('🔐 AuthenticationNotifier: No valid user data or auth token found in Hive');
+        debugPrint('🔐 → User data exists: ${userData != null && userData.isNotEmpty}');
         debugPrint('🔐 → Auth token exists: ${authToken != null}');
         state = const AuthenticationState.initial();
       }
@@ -199,7 +193,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     required String accessToken,
     String? refreshToken,
     required Map<String, dynamic> userData,
-    required String userType,
+    required UserType userType,
     DateTime? tokenExpiresAt,
   }) async {
     debugPrint('🔐 AuthenticationNotifier: Setting authenticated state');
@@ -233,14 +227,11 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         await HiveService.setPhoneNumber(phoneNumber);
       }
 
-      debugPrint(
-          '🔐 AuthenticationNotifier: Authentication state set and persisted');
+      debugPrint('🔐 AuthenticationNotifier: Authentication state set and persisted');
       debugPrint('🔐 → Auth token saved to Hive: ✅');
-      debugPrint(
-          '🔐 → Refresh token saved to Hive: ${refreshToken != null ? '✅' : '❌'}');
+      debugPrint('🔐 → Refresh token saved to Hive: ${refreshToken != null ? '✅' : '❌'}');
     } catch (e) {
-      debugPrint(
-          '🔐 AuthenticationNotifier: Error setting authenticated state: $e');
+      debugPrint('🔐 AuthenticationNotifier: Error setting authenticated state: $e');
       state = state.copyWithError('Failed to set authentication: $e');
     }
   }
@@ -289,10 +280,8 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       final response = await _userService.refreshToken(state.refreshToken!);
 
       if (response.isSuccess && response.data != null) {
-        final newAccessToken =
-            response.data!['access_token'] ?? response.data!['accessToken'];
-        final newRefreshToken =
-            response.data!['refresh_token'] ?? response.data!['refreshToken'];
+        final newAccessToken = response.data!['access_token'] ?? response.data!['accessToken'];
+        final newRefreshToken = response.data!['refresh_token'] ?? response.data!['refreshToken'];
 
         if (newAccessToken != null) {
           // Update state with new tokens
@@ -300,7 +289,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             accessToken: newAccessToken,
             refreshToken: newRefreshToken ?? state.refreshToken,
             userData: state.userData!,
-            userType: state.userType!,
+            userType: state.userType,
           );
 
           // 🔑 CRITICAL FIX: Update tokens in Hive storage
@@ -309,17 +298,14 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             await HiveService.setRefreshToken(newRefreshToken);
           }
 
-          debugPrint(
-              '🔐 AuthenticationNotifier: Access token refreshed successfully');
+          debugPrint('🔐 AuthenticationNotifier: Access token refreshed successfully');
           debugPrint('🔐 → Updated auth token in Hive: ✅');
-          debugPrint(
-              '🔐 → Updated refresh token in Hive: ${newRefreshToken != null ? '✅' : '❌'}');
+          debugPrint('🔐 → Updated refresh token in Hive: ${newRefreshToken != null ? '✅' : '❌'}');
           return true;
         }
       }
 
-      debugPrint(
-          '🔐 AuthenticationNotifier: Token refresh failed: ${response.message}');
+      debugPrint('🔐 AuthenticationNotifier: Token refresh failed: ${response.message}');
       return false;
     } catch (e) {
       debugPrint('🔐 AuthenticationNotifier: Error refreshing token: $e');
@@ -334,8 +320,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
 
     try {
       if (!state.isAuthenticated) {
-        debugPrint(
-            '🔐 AuthenticationNotifier: Cannot update user data - not authenticated');
+        debugPrint('🔐 AuthenticationNotifier: Cannot update user data - not authenticated');
         return;
       }
 
@@ -350,7 +335,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         accessToken: state.accessToken!,
         refreshToken: state.refreshToken,
         userData: updatedUserData,
-        userType: state.userType!,
+        userType: state.userType,
         tokenExpiresAt: state.tokenExpiresAt,
       );
 
@@ -381,18 +366,18 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   }
 
   /// Check if user has specific role
-  bool hasRole(String role) {
-    return state.userType?.toLowerCase() == role.toLowerCase();
+  bool hasRole(UserType role) {
+    return state.userType == role;
   }
 
   /// Check if user is provider
-  bool get isProvider => hasRole('provider');
+  bool get isProvider => hasRole(UserType.provider);
 
   /// Check if user is customer
-  bool get isCustomer => hasRole('customer') || hasRole('taker');
+  bool get isCustomer => hasRole(UserType.customer);
 
   /// Check if user is admin
-  bool get isAdmin => hasRole('admin');
+  bool get isAdmin => hasRole(UserType.admin);
 
   /// 🐛 DEBUG: Get authentication debug info
   Map<String, dynamic> getAuthDebugInfo() {

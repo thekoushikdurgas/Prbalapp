@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:prbal/utils/theme/theme_manager.dart';
@@ -147,7 +148,7 @@ class BottomNavigation extends ConsumerStatefulWidget {
 class _BottomNavigationState extends ConsumerState<BottomNavigation>
     with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late int currentIndex;
-  late String _userType; // User type loaded from Hive storage
+  late UserType userType; // User type loaded from Hive storage
   bool _isInitialized = false; // Prevents building before user type is loaded
 
   // ========== ANIMATION CONTROLLER ==========
@@ -166,12 +167,10 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
     debugPrint('🧭 BottomNavigation: Initial tab index set to: $currentIndex');
 
     // Initialize user type once without setState to prevent rebuild loop
-    _userType = HiveService.getUserType();
-    debugPrint('🧭 BottomNavigation: Loaded user type from Hive: $_userType');
-    debugPrint(
-        '🧭 BottomNavigation: User type display name: ${HiveService.getUserTypeDisplayName()}');
-    debugPrint(
-        '🧭 BottomNavigation: User type color: #${HiveService.getUserTypeColor().toRadixString(16)}');
+    UserType userType = HiveService.getUserType();
+    debugPrint('🧭 BottomNavigation: Loaded user type from Hive: $userType');
+    debugPrint('🧭 BottomNavigation: User type display name: ${HiveService.getUserTypeDisplayName()}');
+    debugPrint('🧭 BottomNavigation: User type color: #${HiveService.getUserTypeColor().toRadixString(16)}');
 
     // Initialize animations for enhanced UX
     _animationController = AnimationController(
@@ -189,8 +188,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
 
     // Mark as initialized to allow building
     _isInitialized = true;
-    debugPrint(
-        '🧭 BottomNavigation: Initialization complete with enhanced animations');
+    debugPrint('🧭 BottomNavigation: Initialization complete with enhanced animations');
 
     // Start animations
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -201,21 +199,18 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
 
   @override
   void dispose() {
-    debugPrint(
-        '🧭 BottomNavigation: Disposing enhanced bottom navigation component');
+    debugPrint('🧭 BottomNavigation: Disposing enhanced bottom navigation component');
     _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🧭 BottomNavigation: Building ENHANCED navigation UI with comprehensive ThemeManager');
+    debugPrint('🧭 BottomNavigation: Building ENHANCED navigation UI with comprehensive ThemeManager');
 
     // Don't build until initialized to prevent memory leaks
     if (!_isInitialized) {
-      debugPrint(
-          '🧭 BottomNavigation: Not yet initialized, showing empty widget');
+      debugPrint('🧭 BottomNavigation: Not yet initialized, showing empty widget');
       return const SizedBox.shrink();
     }
 
@@ -224,46 +219,35 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
 
     // Comprehensive theme logging for debugging
 
-    debugPrint(
-        '🧭 BottomNavigation: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint('🧭 BottomNavigation: Building with COMPREHENSIVE ThemeManager integration');
     debugPrint('🧭 BottomNavigation: → Primary: ${themeManager.primaryColor}');
-    debugPrint(
-        '🧭 BottomNavigation: → Secondary: ${themeManager.secondaryColor}');
-    debugPrint(
-        '🧭 BottomNavigation: → Background: ${themeManager.backgroundColor}');
+    debugPrint('🧭 BottomNavigation: → Secondary: ${themeManager.secondaryColor}');
+    debugPrint('🧭 BottomNavigation: → Background: ${themeManager.backgroundColor}');
     debugPrint('🧭 BottomNavigation: → Surface: ${themeManager.surfaceColor}');
-    debugPrint(
-        '🧭 BottomNavigation: → Card Background: ${themeManager.cardBackground}');
-    debugPrint(
-        '🧭 BottomNavigation: → Surface Elevated: ${themeManager.surfaceElevated}');
+    debugPrint('🧭 BottomNavigation: → Card Background: ${themeManager.cardBackground}');
+    debugPrint('🧭 BottomNavigation: → Surface Elevated: ${themeManager.surfaceElevated}');
     debugPrint(
         '🧭 BottomNavigation: → Status Colors - Success: ${themeManager.successColor}, Warning: ${themeManager.warningColor}, Error: ${themeManager.errorColor}, Info: ${themeManager.infoColor}');
 
     // Get screen and theme information with comprehensive ThemeManager
     Size size = MediaQuery.of(context).size;
     final userTypeColor = Color(HiveService.getUserTypeColor());
-    debugPrint(
-        '🧭 BottomNavigation: Screen size: ${size.width}x${size.height}');
+    debugPrint('🧭 BottomNavigation: Screen size: ${size.width}x${size.height}');
     debugPrint('🧭 BottomNavigation: User type color: $userTypeColor');
-    debugPrint('🧭 BottomNavigation: Active user type: $_userType');
+    debugPrint('🧭 BottomNavigation: Active user type: $userType');
 
     // Get initial tab index for orders screen if provided
     final initialTabIndex = widget.extra?['initialTabIndex'] as int? ?? 0;
-    debugPrint(
-        '🧭 BottomNavigation: Orders screen initial tab index: $initialTabIndex');
+    debugPrint('🧭 BottomNavigation: Orders screen initial tab index: $initialTabIndex');
 
     // Define screens and navigation items based on user type from Hive
-    final List<Widget> screens =
-        _getScreensForUserType(_userType, initialTabIndex);
-    final List<IconData> icons = _getIconsForUserType(_userType);
-    final List<String> labels = _getLabelsForUserType(_userType);
+    final List<Widget> screens = _getScreensForUserType(userType, initialTabIndex);
+    final List<IconData> icons = _getIconsForUserType(userType);
+    final List<String> labels = _getLabelsForUserType(userType);
 
-    debugPrint(
-        '🧭 BottomNavigation: Generated ${screens.length} screens for user type: $_userType');
-    debugPrint(
-        '🧭 BottomNavigation: Generated ${icons.length} navigation icons');
-    debugPrint(
-        '🧭 BottomNavigation: Generated ${labels.length} navigation labels');
+    debugPrint('🧭 BottomNavigation: Generated ${screens.length} screens for user type: $userType');
+    debugPrint('🧭 BottomNavigation: Generated ${icons.length} navigation icons');
+    debugPrint('🧭 BottomNavigation: Generated ${labels.length} navigation labels');
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -295,8 +279,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
     List<IconData> icons,
     List<String> labels,
   ) {
-    debugPrint(
-        '🧭 BottomNavigation: Building enhanced navigation bar with comprehensive theming');
+    debugPrint('🧭 BottomNavigation: Building enhanced navigation bar with comprehensive theming');
 
     return Container(
       margin: EdgeInsets.all(20.r),
@@ -381,23 +364,20 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   ) {
     final bool isActive = currentIndex == index;
 
-    debugPrint(
-        '🧭 BottomNavigation: Building navigation item $index (${isActive ? 'active' : 'inactive'}): $label');
+    debugPrint('🧭 BottomNavigation: Building navigation item $index (${isActive ? 'active' : 'inactive'}): $label');
 
     return InkWell(
       onTap: () {
         debugPrint('🧭 BottomNavigation: Tab $index tapped ($label)');
 
         if (currentIndex != index) {
-          debugPrint(
-              '🧭 BottomNavigation: Switching from tab $currentIndex to tab $index');
+          debugPrint('🧭 BottomNavigation: Switching from tab $currentIndex to tab $index');
           setState(() {
             currentIndex = index;
           });
           // Add haptic feedback for better UX
           HapticFeedback.lightImpact();
-          debugPrint(
-              '🧭 BottomNavigation: Tab switch complete with haptic feedback');
+          debugPrint('🧭 BottomNavigation: Tab switch complete with haptic feedback');
         } else {
           debugPrint('🧭 BottomNavigation: Same tab tapped, no action needed');
         }
@@ -447,8 +427,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
                           offset: const Offset(0, 2),
                         ),
                         BoxShadow(
-                          color:
-                              themeManager.primaryColor.withValues(alpha: 0.2),
+                          color: themeManager.primaryColor.withValues(alpha: 0.2),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -507,8 +486,7 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
                 color: isActive
                     ? themeManager.conditionalColor(
                         lightColor: userTypeColor,
-                        darkColor: themeManager
-                            .getContrastingColor(themeManager.backgroundColor),
+                        darkColor: themeManager.getContrastingColor(themeManager.backgroundColor),
                       )
                     : themeManager.conditionalColor(
                         lightColor: themeManager.textSecondary,
@@ -550,24 +528,23 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   /// Get screens based on user type from Hive data
   /// **IMPORTANT**: These screens should NOT contain BottomNavigation widgets
   /// to prevent circular dependency and memory leaks
-  List<Widget> _getScreensForUserType(String userType, int initialTabIndex) {
+  List<Widget> _getScreensForUserType(UserType userType, int initialTabIndex) {
     switch (userType) {
-      case 'provider':
+      case UserType.provider:
         return [
           const ProviderDashboardContent(), // Use content-only version
           const ProviderExploreScreen(),
           ProviderOrdersScreen(initialTabIndex: initialTabIndex),
           const SettingsScreen(),
         ];
-      case 'admin':
+      case UserType.admin:
         return [
           const AdminDashboardContent(), // Use content-only version
           const AdminUsersScreen(),
           const AdminToolManagerScreen(), // Admin tool manager screen for CRUD operations
           const SettingsScreen(),
         ];
-      case 'customer':
-      default:
+      case UserType.customer:
         return [
           const TakerDashboardContent(), // Use content-only version
           const TakerExploreScreen(),
@@ -578,24 +555,23 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   }
 
   /// Get icons based on user type from Hive data
-  List<IconData> _getIconsForUserType(String userType) {
+  List<IconData> _getIconsForUserType(UserType userType) {
     switch (userType) {
-      case 'provider':
+      case UserType.provider:
         return [
           Prbal.home, // Dashboard
           Prbal.compass, // Explore
           Prbal.briefcase, // Orders
           Prbal.cog, // Settings
         ];
-      case 'admin':
+      case UserType.admin:
         return [
           Prbal.desktop, // Analytics
           Prbal.users, // Users
           Prbal.tools, // Moderation
           Prbal.cog, // Settings
         ];
-      case 'customer':
-      default:
+      case UserType.customer:
         return [
           Prbal.home, // Home
           Prbal.compass, // Explore
@@ -606,24 +582,23 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   }
 
   /// Get labels based on user type from Hive data
-  List<String> _getLabelsForUserType(String userType) {
+  List<String> _getLabelsForUserType(UserType userType) {
     switch (userType) {
-      case 'provider':
+      case UserType.provider:
         return [
           'Dashboard',
           'Explore',
           'Orders',
           'Settings',
         ];
-      case 'admin':
+      case UserType.admin:
         return [
           'Analytics',
           'Users',
           'Tools',
           'Settings',
         ];
-      case 'customer':
-      default:
+      case UserType.customer:
         return [
           'Home',
           'Explore',
@@ -636,12 +611,12 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   /// Method to refresh user type from Hive (useful when user type changes)
   void refreshUserType() {
     if (mounted) {
-      final newUserType = HiveService.getUserType();
-      if (newUserType != _userType) {
+      final UserType newUserType = HiveService.getUserType();
+      if (newUserType != userType) {
         setState(() {
-          _userType = newUserType;
+          userType = newUserType;
         });
-        debugPrint('🧭 BottomNavigation: Refreshed user type to: $_userType');
+        debugPrint('🧭 BottomNavigation: Refreshed user type to: $userType');
       }
     }
   }
@@ -649,15 +624,13 @@ class _BottomNavigationState extends ConsumerState<BottomNavigation>
   /// Static method to update user type in Hive and refresh navigation
   /// Useful for testing or when user role changes
   @pragma('vm:entry-point')
-  static Future<void> switchUserType(
-      String newUserType, BuildContext context) async {
+  static Future<void> switchUserType(UserType newUserType, BuildContext context) async {
     try {
       await HiveService.updateUserType(newUserType);
 
       // If there's a BottomNavigation in the widget tree, refresh it
       if (context.mounted) {
-        final bottomNav =
-            context.findAncestorStateOfType<_BottomNavigationState>();
+        final bottomNav = context.findAncestorStateOfType<_BottomNavigationState>();
         bottomNav?.refreshUserType();
 
         debugPrint('🧭 BottomNavigation: Switched to user type: $newUserType');

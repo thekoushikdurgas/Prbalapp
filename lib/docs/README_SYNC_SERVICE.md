@@ -57,7 +57,7 @@ class SyncUserProfile {
   final String? firstName;
   final String? lastName;
   final String email;
-  final String userType;
+  final UserType userType;
   // ... other profile fields
 }
 ```

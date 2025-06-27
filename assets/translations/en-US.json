@@ -4,13 +4,64 @@
     "version": "1.0.0",
     "description": "Connect with service providers in your area"
   },
+  "welcome": {
+    "title": "Welcome to Prbal",
+    "features": {
+      "verified": "Verified\nProviders",
+      "secure": "Secure\nPayments",
+      "support": "24/7\nSupport"
+    },
+    "getStarted": "Get Started",
+    "termsAgreement": "By continuing, you agree to our ",
+    "termsOfService": "Terms of Service",
+    "and": " and ",
+    "privacyPolicy": "Privacy Policy",
+    "period": "."
+  },
   "intro": {
     "introTitleFirst": "Welcome to Prbal",
     "introDescriptionFirst": "Connect with service providers in your area",
     "introTitleSecond": "Book Services",
     "introDescriptionSecond": "Easily book and manage your services",
     "introTitleThird": "Get Started",
-    "introDescriptionThird": "Start your journey with Prbal today"
+    "introDescriptionThird": "Start your journey with Prbal today",
+    "onboarding": {
+      "page1": {
+        "title": "Get Help Anytime, Anywhere!",
+        "subtitle": "From trusted services to skilled manpower — get exactly what you need, when you need it. 24/7 availability at your fingertips."
+      },
+      "page2": {
+        "title": "Vast Network of Professionals",
+        "subtitle": "Access our large network with thousands of verified professionals and businesses ready to serve your needs."
+      },
+      "page3": {
+        "title": "Be Your Boss & Boost Business",
+        "subtitle": "Discover opportunities and services tailored to your skills with total flexibility. Take control of your professional journey."
+      },
+      "page4": {
+        "title": "Earn Hourly with AI Assistance",
+        "subtitle": "Earn wages on an hourly basis with intelligent AI that helps optimize your work schedule and maximize your income."
+      },
+      "page5": {
+        "title": "Smart Bidding System",
+        "subtitle": "Make offers based on your skills, location, and experience. AI suggests fair wages based on market trends and job requirements."
+      },
+      "page6": {
+        "title": "Best Match & Swipe Features",
+        "subtitle": "Smart algorithm learns your preferences. Swipe right to like, left to pass. Get matched with perfect opportunities!"
+      },
+      "page7": {
+        "title": "Minimalistic Design",
+        "subtitle": "Clean, intuitive interface with large, clear images and seamless navigation. Built for the modern professional."
+      },
+      "page8": {
+        "title": "Trusted & Verified Experts",
+        "subtitle": "Complete background verification ensures you work with trusted professionals. Your safety and security is our priority."
+      }
+    },
+    "feature": "Feature",
+    "previous": "Previous",
+    "getStarted": "Started"
   },
   "button": {
     "skip": "Skip",
@@ -143,7 +194,36 @@
     "authRequired": "Authentication required",
     "loginRequired": "Please login to continue",
     "logoutConfirm": "Are you sure you want to logout?",
-    "sessionExpired": "Your session has expired"
+    "sessionExpired": "Your session has expired",
+    "phoneLogin": {
+      "title": "Enter your phone number to continue",
+      "phoneHint": "1234567890",
+      "continue": "Continue",
+      "or": "or",
+      "socialLogin": {
+        "google": "Google",
+        "apple": "Apple",
+        "comingSoon": "Social login coming soon!",
+        "failed": "Social login failed. Please try again."
+      },
+      "terms": {
+        "prefix": "By continuing, you agree to our ",
+        "termsOfService": "Terms of Service",
+        "and": " and ",
+        "privacyPolicy": "Privacy Policy",
+        "suffix": "."
+      },
+      "countryPicker": {
+        "title": "Select Country",
+        "searchHint": "Search countries...",
+        "noResults": "No countries found",
+        "searchTip": "Try searching with a different term"
+      },
+      "validation": {
+        "invalidPhone": "Please enter a valid phone number (10-15 digits)",
+        "networkError": "Unable to verify phone number. Please check your connection and try again."
+      }
+    }
   },
   "error": {
     "general": "Something went wrong",

@@ -183,7 +183,7 @@ class ProfilePictureHandler {
       accessToken: authState.accessToken!,
       refreshToken: authState.refreshToken,
       userData: updatedUserData,
-      userType: authState.userType!,
+      userType: authState.userType,
     );
 
     debugPrint('🔄 ProfilePictureHandler: Authentication state updated');

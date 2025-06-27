@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,8 +47,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   late AnimationController _lottieController;
   late AnimationController _fontAnimationController;
 
-  late Animation<double> _logoScale;
-  late Animation<double> _logoOpacity;
   late Animation<double> _textOpacity;
   late Animation<double> _progressValue;
   late Animation<double> _letterSpacing;
@@ -96,23 +93,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-
-    // Logo animations
-    _logoScale = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.elasticOut,
-    ));
-
-    _logoOpacity = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-    ));
 
     // Text animation
     _textOpacity = Tween<double>(
@@ -173,7 +153,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       // Verify Hive service initialization
       _updateLoadingText('loading.checkingStorage'.tr());
       if (!HiveService.isStorageHealthy()) {
-        debugPrint('⚠️ Storage health check failed - attempting recovery');
         _updateLoadingText('loading.recoveringStorage'.tr());
         // HiveService.init() should already be called in main.dart
         await Future.delayed(const Duration(milliseconds: 300));
@@ -217,8 +196,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
 
       // Check connectivity first
       _updateLoadingText('loading.checkingConnectivity'.tr());
-      final connectivityStatus = await healthService.checkConnectivity();
-      debugPrint('🌐 Splash Screen: Connectivity status: ${connectivityStatus.name}');
 
       // First try to get quick status from cache
       final quickStatus = healthService.getQuickHealthStatus();
@@ -228,14 +205,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         if (currentHealth != null) {
           healthStatusResult = currentHealth;
         }
-        debugPrint('🏥 Using cached health status: ${quickStatus.name}');
-        debugPrint('🏥 Skipping network health check - recent data available');
         await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
         // Perform health check with connectivity awareness
         if (healthService.isOffline) {
           _updateLoadingText('loading.offlineMode'.tr());
-          debugPrint('🏥 Device offline - using offline health status');
           final offlineHealth = await healthService.performHealthCheck();
           if (offlineHealth != null) {
             healthStatusResult = offlineHealth;
@@ -244,7 +218,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         } else {
           // Network available - perform full health check
           _updateLoadingText('loading.performingHealthCheck'.tr());
-          debugPrint('🏥 Network available - performing comprehensive health check');
           final healthCheckResult = await healthService.performHealthCheckWithWait(
             networkTimeout: const Duration(seconds: 3),
           );
@@ -264,18 +237,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
         _updateLoadingText('${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
       }
 
-      if (kDebugMode) {
-        final lastCheck = HiveService.getLastHealthCheck();
-        if (lastCheck != null) {
-          debugPrint('🏥 Last health check: ${lastCheck.toString().substring(0, 19)}');
-        }
-      }
-
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Load user preferences and cached data
       _updateLoadingText('loading.loadingPreferences'.tr());
-      await _loadUserPreferences();
+      // await _loadUserPreferences();
       await Future.delayed(const Duration(milliseconds: 300));
 
       // Final setup
@@ -285,52 +251,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       _updateLoadingText('loading.ready'.tr());
       _isInitializationComplete = true;
     } catch (e) {
-      debugPrint('Splash screen initialization error: $e');
       _updateLoadingText('loading.initializationWarnings'.tr());
       _isInitializationComplete = true;
-    }
-  }
-
-  /// Load user preferences and cached data from Hive
-  Future<void> _loadUserPreferences() async {
-    try {
-      // Load debug info for development (only in debug mode)
-      if (kDebugMode) {
-        final debugInfo = HiveService.getDebugInfo();
-        debugPrint('📊 Storage Debug Info: $debugInfo');
-      }
-
-      // Pre-check user state for faster navigation
-      final isLoggedIn = HiveService.isLoggedIn();
-      final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
-      final isLanguageSelected = HiveService.isLanguageSelected();
-
-      debugPrint('📱 User state pre-loaded:');
-      debugPrint('  - Language: ${isLanguageSelected ? "✅" : "❌"}');
-      debugPrint('  - Intro: ${hasIntroBeenWatched ? "✅" : "❌"}');
-      debugPrint('  - Auth: ${isLoggedIn ? "✅" : "❌"}');
-
-      // Load additional user data if logged in
-      if (isLoggedIn) {
-        final userData = HiveService.getUserData();
-        final phoneNumber = HiveService.getPhoneNumber();
-        final lastLogin = HiveService.getLastLogin();
-
-        if (userData != null) {
-          final userType = userData['userType'] as String;
-          final username = userData['username'] as String;
-          debugPrint('👤 User data loaded: $username (Type: $userType)');
-        }
-        if (phoneNumber != null) {
-          debugPrint('📞 Phone: ${phoneNumber.substring(0, 3)}***');
-        }
-        if (lastLogin != null) {
-          debugPrint('🕐 Last login: ${lastLogin.toString().substring(0, 16)}');
-        }
-      }
-    } catch (e) {
-      debugPrint('Error loading user preferences: $e');
-      // Don't throw - this is not critical for app startup
     }
   }
 
@@ -353,33 +275,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     if (!mounted) return;
 
     // Check connectivity before navigation
-    final healthService = HealthService();
-    final connectivityStatus = await healthService.checkConnectivity();
-    final isNetworkAvailable = await healthService.isNetworkAvailable();
-
-    debugPrint('🌐 Pre-navigation connectivity check:');
-    debugPrint('  - Connectivity status: ${connectivityStatus.name}');
-    debugPrint('  - Network available: $isNetworkAvailable');
 
     final isLoggedIn = HiveService.isLoggedIn();
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
     final isLanguageSelected = HiveService.isLanguageSelected();
 
-    debugPrint('🔍 Navigation state check:');
-    debugPrint('  - Language selected: $isLanguageSelected');
-    debugPrint('  - Intro watched: $hasIntroBeenWatched');
-    debugPrint('  - User logged in: $isLoggedIn');
-
     // Note: We could set a default language here for first-time users,
     // but explicit language selection provides better UX
     if (!isLanguageSelected) {
-      debugPrint('🌐 Navigating to language selection');
       context.go(RouteEnum.languageSelection.rawValue);
     } else if (!hasIntroBeenWatched) {
-      debugPrint('👋 Navigating to onboarding');
       context.go(RouteEnum.onboarding.rawValue);
     } else if (!isLoggedIn) {
-      debugPrint('🔑 Navigating to welcome screen');
       context.go(RouteEnum.welcome.rawValue);
     } else {
       // User is logged in - check user type and navigate to appropriate dashboard
@@ -387,26 +294,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
       final userData = HiveService.getUserData();
       final userType = userData != null ? userData['userType'] as String : 'customer';
 
-      debugPrint('👤 User type detected: $userType');
-
-      if (!isNetworkAvailable) {
-        debugPrint('🌐 Limited connectivity - dashboard may have reduced functionality');
-        // Still navigate but user will see offline indicators in the dashboard
-      }
-
       switch (userType.toLowerCase()) {
         case 'admin':
-          debugPrint('👑 Navigating to admin dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.adminDashboard.rawValue); // Will show admin dashboard through bottom navigation
           break;
         case 'provider':
-          debugPrint('🔧 Navigating to provider dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.providerDashboard.rawValue); // Will show provider dashboard through bottom navigation
           break;
         case 'customer':
-        case 'taker':
         default:
-          debugPrint('🏠 Navigating to taker dashboard${!isNetworkAvailable ? ' (offline mode)' : ''}');
           context.go(RouteEnum.takerDashboard.rawValue); // Will show taker dashboard through bottom navigation
           break;
       }
@@ -426,11 +322,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     final themeManager = ThemeManager.of(context);
-
-    // Enhanced debug logging with all ThemeManager features
-
-    debugPrint('🚀 SplashScreen: Building with enhanced ThemeManager features');
-    debugPrint('🚀 SplashScreen: Using ${themeManager.themeManager ? 'dark' : 'light'} theme');
 
     return Scaffold(
       body: Container(
@@ -500,12 +391,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
               enableMergePaths: true,
             ),
             onLoaded: (composition) {
-              debugPrint('🎬 Lottie animation loaded: ${composition.duration}');
               _lottieController.duration = composition.duration;
               _lottieController.repeat();
             },
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('❌ Lottie animation error: $error');
               return Container(
                 width: 80.w,
                 height: 80.h,

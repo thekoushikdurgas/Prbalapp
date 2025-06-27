@@ -5,7 +5,7 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/widgets/phone_login_bottom_sheet.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
-// import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
@@ -14,8 +14,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
-    with TickerProviderStateMixin {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProviderStateMixin {
   late AnimationController _slideController;
   late AnimationController _fadeController;
   late AnimationController _buttonController;
@@ -27,14 +26,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint('🎬 WelcomeScreen: Initializing welcome screen with animations');
     _initializeAnimations();
     _startAnimations();
   }
 
   void _initializeAnimations() {
-    debugPrint('🎬 WelcomeScreen: Setting up animation controllers');
-
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -76,19 +72,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   Future<void> _startAnimations() async {
-    debugPrint('🎬 WelcomeScreen: Starting welcome animations sequence');
     await Future.delayed(const Duration(milliseconds: 300));
     _fadeController.forward();
     await Future.delayed(const Duration(milliseconds: 200));
     _slideController.forward();
     await Future.delayed(const Duration(milliseconds: 400));
     _buttonController.forward();
-    debugPrint('🎬 WelcomeScreen: All animations started successfully');
   }
 
   @override
   void dispose() {
-    debugPrint('🎬 WelcomeScreen: Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
     _buttonController.dispose();
@@ -101,13 +94,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 700; // Detect smaller screens
 
-    debugPrint('🎬 WelcomeScreen: Building welcome screen');
-    debugPrint(
-        '🎨 WelcomeScreen: Theme mode: ${themeManager.themeManager ? 'Dark' : 'Light'}');
-    debugPrint(
-        '📱 WelcomeScreen: Screen height: $screenHeight (Small: $isSmallScreen)');
-
     return Scaffold(
+      backgroundColor: themeManager.backgroundColor,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -170,10 +158,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   },
                 ),
 
-                SizedBox(
-                    height: isSmallScreen
-                        ? 10.h
-                        : 20.h), // Further reduced for small screens
+                SizedBox(height: isSmallScreen ? 10.h : 20.h), // Further reduced for small screens
               ],
             ),
           ),
@@ -183,8 +168,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   Widget _buildIllustrationSection(ThemeManager themeManager) {
-    debugPrint('🎨 WelcomeScreen: Building illustration section');
-
     return Center(
       child: Stack(
         alignment: Alignment.center,
@@ -235,15 +218,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   Widget _buildContentSection(ThemeManager themeManager) {
-    debugPrint('🎨 WelcomeScreen: Building content section');
-
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         // Main heading
         Text(
-          'Welcome to Prbal',
+          'welcome.title'.tr(),
           style: TextStyle(
             fontSize: 28.sp,
             fontWeight: FontWeight.bold,
@@ -253,41 +233,27 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           textAlign: TextAlign.center,
         ),
 
-        SizedBox(height: 12.h),
-
-        // Subtitle
-        Text(
-          'Your trusted marketplace for connecting with skilled professionals and quality services.',
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            color: themeManager.textSecondary,
-            height: 1.4,
-          ),
-          textAlign: TextAlign.center,
-        ),
-
-        SizedBox(height: 24.h),
+        SizedBox(height: 40.h),
 
         // Feature highlights
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _buildFeatureHighlight(
-              'Verified\nProviders',
-              Prbal.checkCircle,
+              'welcome.features.verified'.tr(),
+              Prbal.group1,
               themeManager.successColor,
               themeManager,
             ),
             _buildFeatureHighlight(
-              'Secure\nPayments',
-              Prbal.lock,
+              'welcome.features.secure'.tr(),
+              Prbal.lock5,
               themeManager.primaryColor,
               themeManager,
             ),
             _buildFeatureHighlight(
-              '24/7\nSupport',
-              Prbal.headset,
+              'welcome.features.support'.tr(),
+              Prbal.headphones5,
               themeManager.infoColor,
               themeManager,
             ),
@@ -306,26 +272,18 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 48.w,
-          height: 48.h,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(24.r),
-          ),
-          child: Icon(
-            icon,
-            size: 24.sp,
-            color: color,
-          ),
+        Icon(
+          icon,
+          size: 24.sp,
+          color: color,
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 5.h),
         Text(
           label,
           style: TextStyle(
             fontSize: 11.sp,
             fontWeight: FontWeight.w600,
-            color: themeManager.textTertiary,
+            color: color,
           ),
           textAlign: TextAlign.center,
         ),
@@ -334,18 +292,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   Widget _buildActionButtons(ThemeManager themeManager) {
-    debugPrint('🎨 WelcomeScreen: Building action buttons');
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // Primary action button
         SizedBox(
-          width: double.infinity,
           height: 52.h,
           child: ElevatedButton(
             onPressed: () {
-              debugPrint('📱 WelcomeScreen: Get Started button pressed');
               _showPhoneLoginBottomSheet();
             },
             style: ElevatedButton.styleFrom(
@@ -358,56 +312,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               ),
             ),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Prbal.mobilePhone,
+                  Prbal.phoneCall,
                   size: 18.sp,
                 ),
                 SizedBox(width: 10.w),
                 Text(
-                  'Get Started',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        SizedBox(height: 12.h),
-
-        // Secondary action button
-        SizedBox(
-          width: double.infinity,
-          height: 52.h,
-          child: OutlinedButton(
-            onPressed: () {
-              debugPrint('🧭 WelcomeScreen: Explore Services button pressed');
-              // TODO: Navigate to explore as guest
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: themeManager.primaryColor,
-              side: BorderSide(
-                color: themeManager.borderColor,
-                width: 1.5,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Prbal.compass,
-                  size: 18.sp,
-                ),
-                SizedBox(width: 10.w),
-                Text(
-                  'Explore Services',
+                  'welcome.getStarted'.tr(),
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -425,7 +339,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           alignment: WrapAlignment.center,
           children: [
             Text(
-              'By continuing, you agree to our ',
+              'welcome.termsAgreement'.tr(),
               style: TextStyle(
                 fontSize: 11.sp,
                 color: themeManager.textTertiary,
@@ -433,11 +347,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             ),
             GestureDetector(
               onTap: () {
-                debugPrint('📄 WelcomeScreen: Terms of Service tapped');
                 // TODO: Show terms
               },
               child: Text(
-                'Terms of Service',
+                'welcome.termsOfService'.tr(),
                 style: TextStyle(
                   fontSize: 11.sp,
                   color: themeManager.primaryColor,
@@ -446,7 +359,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               ),
             ),
             Text(
-              ' and ',
+              'welcome.and'.tr(),
               style: TextStyle(
                 fontSize: 11.sp,
                 color: themeManager.textTertiary,
@@ -454,11 +367,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             ),
             GestureDetector(
               onTap: () {
-                debugPrint('🔒 WelcomeScreen: Privacy Policy tapped');
                 // TODO: Show privacy policy
               },
               child: Text(
-                'Privacy Policy',
+                'welcome.privacyPolicy'.tr(),
                 style: TextStyle(
                   fontSize: 11.sp,
                   color: themeManager.primaryColor,
@@ -467,7 +379,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               ),
             ),
             Text(
-              '.',
+              'welcome.period'.tr(),
               style: TextStyle(
                 fontSize: 11.sp,
                 color: themeManager.textTertiary,
@@ -480,7 +392,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   }
 
   void _showPhoneLoginBottomSheet() {
-    debugPrint('📱 WelcomeScreen: Showing phone login bottom sheet');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

@@ -130,7 +130,7 @@ bool isProvider = HiveService.isProvider();
 
 ```dart
 // User type detection
-String userType = HiveService.getUserType(); // 'provider', 'admin', 'customer'
+UserType userType = HiveService.getUserType(); // 'provider', 'admin', 'customer'
 bool isProvider = HiveService.isProvider();
 bool isAdmin = HiveService.isAdmin(); 
 bool isCustomer = HiveService.isCustomer();

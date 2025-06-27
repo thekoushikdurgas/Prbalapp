@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Services
-import 'package:prbal/services/service_providers.dart';
 
 // Utils
-import 'package:prbal/utils/settings/settings_utils.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 
 /// **THEMEMANAGER INTEGRATED** Reusable form field widget for settings screens
@@ -47,16 +45,6 @@ class SettingsFormFieldWidget extends ConsumerWidget with ThemeAwareMixin {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeManager = ThemeManager.of(context);
-    final authState = ref.watch(authenticationStateProvider);
-    final userTypeColor = SettingsUtils.getUserTypeColor(
-      context,
-      authState.userData?['user_type'] ?? 'customer',
-    );
-
-    // 📊 Debug logging
-    debugPrint(
-        '🎯 [SettingsFormField] Field: $label, Required: $required, Enabled: $isEnabled');
-    debugPrint('🎨 [SettingsFormField] User Type Color: $userTypeColor');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
