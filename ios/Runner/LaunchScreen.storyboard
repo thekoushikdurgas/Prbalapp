@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <!-- Background Gradient -->
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgd-lA-BhW">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" red="0.094" green="0.282" blue="0.565" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            
+                            <!-- Main Content Container -->
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ctn-mA-XhZ">
+                                <rect key="frame" x="0.0" y="88" width="414" height="720"/>
+                                <subviews>
+                                    <!-- Logo Container -->
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lgc-nA-ZyX">
+                                        <rect key="frame" x="107" y="210" width="200" height="200"/>
+                                        <subviews>
+                                            <!-- Logo Background Circle -->
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lgb-nF-XyZ">
+                                                <rect key="frame" x="25" y="25" width="150" height="150"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <real key="value" value="75"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                                        <real key="value" value="0.25"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                                        <size key="value" width="0.0" height="4"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                                        <real key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.shadowColor">
+                                                        <color key="value" red="0" green="0" blue="0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="150" id="lgb-wdh-cns"/>
+                                                    <constraint firstAttribute="height" constant="150" id="lgb-hgh-cns"/>
+                                                </constraints>
+                                            </view>
+                                            
+                                            <!-- Logo Text -->
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prbal" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lgt-nF-ZyX">
+                                                <rect key="frame" x="25" y="65" width="150" height="70"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="48"/>
+                                                <color key="textColor" red="0.094" green="0.282" blue="0.565" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="lgb-nF-XyZ" firstAttribute="centerX" secondItem="lgc-nA-ZyX" secondAttribute="centerX" id="lgb-cnx-cns"/>
+                                            <constraint firstItem="lgb-nF-XyZ" firstAttribute="centerY" secondItem="lgc-nA-ZyX" secondAttribute="centerY" id="lgb-cny-cns"/>
+                                            <constraint firstItem="lgt-nF-ZyX" firstAttribute="centerX" secondItem="lgc-nA-ZyX" secondAttribute="centerX" id="lgt-cnx-cns"/>
+                                            <constraint firstItem="lgt-nF-ZyX" firstAttribute="centerY" secondItem="lgc-nA-ZyX" secondAttribute="centerY" id="lgt-cny-cns"/>
+                                            <constraint firstAttribute="width" constant="200" id="lgc-wdh-cns"/>
+                                            <constraint firstAttribute="height" constant="200" id="lgc-hgh-cns"/>
+                                        </constraints>
+                                    </view>
+                                    
+                                    <!-- Tagline -->
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Service Marketplace" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tgl-nF-ZyX">
+                                        <rect key="frame" x="40" y="430" width="334" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                        <color key="textColor" systemColor="systemBackgroundColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    
+                                    <!-- Loading Indicator -->
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="ldi-nF-ZyX">
+                                        <rect key="frame" x="187" y="520" width="40" height="40"/>
+                                        <color key="color" systemColor="systemBackgroundColor"/>
+                                    </activityIndicatorView>
+                                    
+                                    <!-- Version Label -->
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="v1.0.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vrl-nF-ZyX">
+                                        <rect key="frame" x="40" y="640" width="334" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <color key="textColor" white="0.8" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    
+                                    <!-- Company Label -->
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Powered by Durgas Technologies" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpy-nF-ZyX">
+                                        <rect key="frame" x="40" y="670" width="334" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" white="0.7" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <!-- Logo Container Constraints -->
+                                    <constraint firstItem="lgc-nA-ZyX" firstAttribute="centerX" secondItem="ctn-mA-XhZ" secondAttribute="centerX" id="lgc-cnx-cns"/>
+                                    <constraint firstItem="lgc-nA-ZyX" firstAttribute="centerY" secondItem="ctn-mA-XhZ" secondAttribute="centerY" constant="-50" id="lgc-cny-cns"/>
+                                    
+                                    <!-- Tagline Constraints -->
+                                    <constraint firstItem="tgl-nF-ZyX" firstAttribute="top" secondItem="lgc-nA-ZyX" secondAttribute="bottom" constant="20" id="tgl-top-cns"/>
+                                    <constraint firstItem="tgl-nF-ZyX" firstAttribute="leading" secondItem="ctn-mA-XhZ" secondAttribute="leading" constant="40" id="tgl-ldg-cns"/>
+                                    <constraint firstAttribute="trailing" secondItem="tgl-nF-ZyX" secondAttribute="trailing" constant="40" id="tgl-trg-cns"/>
+                                    
+                                    <!-- Loading Indicator Constraints -->
+                                    <constraint firstItem="ldi-nF-ZyX" firstAttribute="top" secondItem="tgl-nF-ZyX" secondAttribute="bottom" constant="66" id="ldi-top-cns"/>
+                                    <constraint firstItem="ldi-nF-ZyX" firstAttribute="centerX" secondItem="ctn-mA-XhZ" secondAttribute="centerX" id="ldi-cnx-cns"/>
+                                    
+                                    <!-- Version Label Constraints -->
+                                    <constraint firstItem="vrl-nF-ZyX" firstAttribute="top" secondItem="ldi-nF-ZyX" secondAttribute="bottom" constant="80" id="vrl-top-cns"/>
+                                    <constraint firstItem="vrl-nF-ZyX" firstAttribute="leading" secondItem="ctn-mA-XhZ" secondAttribute="leading" constant="40" id="vrl-ldg-cns"/>
+                                    <constraint firstAttribute="trailing" secondItem="vrl-nF-ZyX" secondAttribute="trailing" constant="40" id="vrl-trg-cns"/>
+                                    
+                                    <!-- Company Label Constraints -->
+                                    <constraint firstItem="cpy-nF-ZyX" firstAttribute="top" secondItem="vrl-nF-ZyX" secondAttribute="bottom" constant="12" id="cpy-top-cns"/>
+                                    <constraint firstItem="cpy-nF-ZyX" firstAttribute="leading" secondItem="ctn-mA-XhZ" secondAttribute="leading" constant="40" id="cpy-ldg-cns"/>
+                                    <constraint firstAttribute="trailing" secondItem="cpy-nF-ZyX" secondAttribute="trailing" constant="40" id="cpy-trg-cns"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" red="0.094" green="0.282" blue="0.565" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <!-- Background Constraints -->
+                            <constraint firstItem="bgd-lA-BhW" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="bgd-ldg-cns"/>
+                            <constraint firstItem="bgd-lA-BhW" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="bgd-trg-cns"/>
+                            <constraint firstItem="bgd-lA-BhW" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="bgd-top-cns"/>
+                            <constraint firstItem="bgd-lA-BhW" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="bgd-btm-cns"/>
+                            
+                            <!-- Content Container Constraints -->
+                            <constraint firstItem="ctn-mA-XhZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ctn-ldg-cns"/>
+                            <constraint firstItem="ctn-mA-XhZ" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="ctn-trg-cns"/>
+                            <constraint firstItem="ctn-mA-XhZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ctn-top-cns"/>
+                            <constraint firstItem="ctn-mA-XhZ" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ctn-btm-cns"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document> 

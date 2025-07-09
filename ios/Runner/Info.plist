@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<!-- App Identity -->
+		<key>CFBundleDevelopmentRegion</key>
+		<string>$(DEVELOPMENT_LANGUAGE)</string>
+		<key>CFBundleDisplayName</key>
+		<string>Prbal - Service Marketplace</string>
+		<key>CFBundleExecutable</key>
+		<string>$(EXECUTABLE_NAME)</string>
+		<key>CFBundleIdentifier</key>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>prbal</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>$(FLUTTER_BUILD_NAME)</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>LSRequiresIPhoneOS</key>
+		<true/>
+
+		<!-- App Transport Security -->
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSAllowsLocalNetworking</key>
+			<true/>
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>api.durgas.com</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<false/>
+					<key>NSExceptionMinimumTLSVersion</key>
+					<string>TLSv1.2</string>
+					<key>NSExceptionRequiresForwardSecrecy</key>
+					<true/>
+				</dict>
+				<key>localhost</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+					<key>NSExceptionMinimumTLSVersion</key>
+					<string>TLSv1.0</string>
+				</dict>
+			</dict>
+		</dict>
+
+		<!-- Privacy Permissions -->
+		<key>NSCameraUsageDescription</key>
+		<string>Prbal needs camera access to take photos for service requests, profile pictures, and document uploads.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Prbal needs photo library access to select images for service requests, profile pictures, and sharing content.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Prbal can save photos and receipts to your photo library for your convenience.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Prbal uses your location to find nearby service providers and calculate accurate pricing.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Prbal uses your location to provide location-based services and track service provider availability.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Prbal uses your location to provide location-based services even when the app is in background.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Prbal needs microphone access for voice messages and video calls with service providers.</string>
+		<key>NSContactsUsageDescription</key>
+		<string>Prbal can access your contacts to easily invite friends and family to use our services.</string>
+		<key>NSCalendarsUsageDescription</key>
+		<string>Prbal can add your service appointments to your calendar for better scheduling.</string>
+		<key>NSRemindersUsageDescription</key>
+		<string>Prbal can create reminders for your upcoming service appointments.</string>
+		<key>NSUserTrackingUsageDescription</key>
+		<string>Prbal uses tracking to provide personalized service recommendations and improve your experience while respecting your privacy.</string>
+		<key>NSFaceIDUsageDescription</key>
+		<string>Prbal uses Face ID for secure and convenient authentication.</string>
+		<key>NSLocalNetworkUsageDescription</key>
+		<string>Prbal needs local network access to discover and connect to nearby devices for enhanced services.</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>Prbal can use speech recognition to help you search for services using voice commands.</string>
+		<key>NSAppleMusicUsageDescription</key>
+		<string>Prbal can access your music library to enhance your experience during service sessions.</string>
+		<key>NSMotionUsageDescription</key>
+		<string>Prbal uses motion data to detect your activity and provide contextual service suggestions.</string>
+
+		<!-- Background Modes -->
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>background-fetch</string>
+			<string>background-processing</string>
+			<string>remote-notification</string>
+			<string>location</string>
+			<string>voip</string>
+		</array>
+
+		<!-- Launch and UI Configuration -->
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIMainStoryboardFile</key>
+		<string>Main</string>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+		</array>
+		<key>UISupportedInterfaceOrientations~ipad</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationPortraitUpsideDown</string>
+			<string>UIInterfaceOrientationLandscapeLeft</string>
+			<string>UIInterfaceOrientationLandscapeRight</string>
+		</array>
+
+		<!-- Status Bar and UI -->
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<true/>
+		<key>UIStatusBarStyle</key>
+		<string>UIStatusBarStyleDarkContent</string>
+		<key>UIStatusBarHidden</key>
+		<false/>
+
+		<!-- Performance and Hardware -->
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true/>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
+
+		<!-- URL Schemes -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>prbal.deeplink</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>prbal</string>
+				</array>
+			</dict>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>prbal.universal</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>https</string>
+				</array>
+			</dict>
+		</array>
+
+		<!-- Associated Domains -->
+		<key>com.apple.developer.associated-domains</key>
+		<array>
+			<string>applinks:prbal.com</string>
+			<string>applinks:www.prbal.com</string>
+			<string>applinks:api.prbal.com</string>
+		</array>
+
+		<!-- Security -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<false/>
+
+		<!-- Localization -->
+		<key>CFBundleLocalizations</key>
+		<array>
+			<string>en</string>			<!-- English (Primary) -->
+			<string>hi</string>			<!-- Hindi (National) -->
+			<string>bn</string>			<!-- Bengali -->
+			<string>ta</string>			<!-- Tamil -->
+			<string>te</string>			<!-- Telugu -->
+			<string>pa</string>			<!-- Punjabi -->
+			<string>mr</string>			<!-- Marathi -->
+			<string>ml</string>			<!-- Malayalam -->
+			<string>kn</string>			<!-- Kannada -->
+			<string>gu</string>			<!-- Gujarati -->
+		</array>
+
+		<!-- App Icons and Launch Images -->
+		<key>CFBundleIcons</key>
+		<dict>
+			<key>CFBundlePrimaryIcon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>Icon-App-20x20@1x</string>
+					<string>Icon-App-20x20@2x</string>
+					<string>Icon-App-20x20@3x</string>
+					<string>Icon-App-29x29@1x</string>
+					<string>Icon-App-29x29@2x</string>
+					<string>Icon-App-29x29@3x</string>
+					<string>Icon-App-40x40@1x</string>
+					<string>Icon-App-40x40@2x</string>
+					<string>Icon-App-40x40@3x</string>
+					<string>Icon-App-60x60@2x</string>
+					<string>Icon-App-60x60@3x</string>
+					<string>Icon-App-76x76@1x</string>
+					<string>Icon-App-76x76@2x</string>
+					<string>Icon-App-83.5x83.5@2x</string>
+					<string>Icon-App-1024x1024@1x</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Query Schemes -->
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>tel</string>
+			<string>mailto</string>
+			<string>sms</string>
+			<string>whatsapp</string>
+			<string>instagram</string>
+			<string>facebook</string>
+			<string>twitter</string>
+			<string>maps</string>
+			<string>googlemaps</string>
+			<string>comgooglemaps</string>
+			<string>googlegmail</string>
+			<string>x-dispatch</string>
+			<string>readdle-spark</string>
+			<string>airmail</string>
+			<string>ms-outlook</string>
+			<string>ymail</string>
+			<string>fastmail</string>
+			<string>superhuman</string>
+			<string>protonmail</string>
+		</array>
+
+		<!-- App Store Configuration -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
+		<key>NSHumanReadableCopyright</key>
+		<string>© 2024 Durgas Technologies. All rights reserved.</string>
+
+		<!-- Accessibility -->
+		<key>UIAccessibilityEnabled</key>
+		<true/>
+
+		<!-- Device Capabilities -->
+		<key>UIRequiredDeviceCapabilities</key>
+		<array>
+			<string>arm64</string>
+		</array>
+
+		<!-- Scene Configuration -->
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneConfigurationName</key>
+						<string>Default Configuration</string>
+						<key>UISceneDelegateClassName</key>
+						<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Additional iOS 15+ Features -->
+		<key>NSSupportsLiveActivities</key>
+		<true/>
+		<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+		<true/>
+
+	</dict>
+</plist>
