@@ -46,7 +46,9 @@ class TokenCardWidget extends StatelessWidget {
                 width: 8.w,
                 height: 8.h,
                 decoration: BoxDecoration(
-                  color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+                  color: isActive
+                      ? const Color(0xFF48BB78)
+                      : const Color(0xFFE53E3E),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -56,7 +58,9 @@ class TokenCardWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+                  color: isActive
+                      ? const Color(0xFF48BB78)
+                      : const Color(0xFFE53E3E),
                 ),
               ),
               const Spacer(),

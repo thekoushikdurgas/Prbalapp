@@ -26,7 +26,8 @@ class SystemHealthWidget extends StatefulWidget {
   State<SystemHealthWidget> createState() => _SystemHealthWidgetState();
 }
 
-class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTickerProviderStateMixin {
+class _SystemHealthWidgetState extends State<SystemHealthWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
 
@@ -55,7 +56,8 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
     }
 
     debugPrint('🏥 SystemHealthWidget: Animation controller initialized');
-    debugPrint('🏥 SystemHealthWidget: Health status: ${widget.healthData.overallStatus}');
+    debugPrint(
+        '🏥 SystemHealthWidget: Health status: ${widget.healthData.overallStatus}');
   }
 
   @override
@@ -94,7 +96,9 @@ class _SystemHealthWidgetState extends State<SystemHealthWidget> with SingleTick
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: (isHealthy ? const Color(0xFF48BB78) : const Color(0xFFED8936)).withValues(alpha: 0.3),
+            color:
+                (isHealthy ? const Color(0xFF48BB78) : const Color(0xFFED8936))
+                    .withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,

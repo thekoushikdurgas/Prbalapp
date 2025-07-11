@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/models/auth/user_type.dart';
 
 import 'package:prbal/services/api_service.dart';
 
@@ -75,7 +76,8 @@ class UserTypeChangeHandler {
 
       // Get user service and fetch change info
       final userService = UserService(ApiService());
-      final changeInfoResponse = await userService.getUserTypeChangeInfo(authToken);
+      final changeInfoResponse =
+          await userService.getUserTypeChangeInfo(authToken);
 
       // Close loading dialog
       if (context.mounted && Navigator.of(context).canPop()) {
@@ -91,9 +93,11 @@ class UserTypeChangeHandler {
 
         // Try multiple paths to find available changes
         if (changeInfo['data']?['change_info']?['available_changes'] != null) {
-          availableChanges = changeInfo['data']['change_info']['available_changes'] as List<dynamic>;
+          availableChanges = changeInfo['data']['change_info']
+              ['available_changes'] as List<dynamic>;
         } else if (changeInfo['data']?['available_changes'] != null) {
-          availableChanges = changeInfo['data']['available_changes'] as List<dynamic>;
+          availableChanges =
+              changeInfo['data']['available_changes'] as List<dynamic>;
         } else if (changeInfo['available_changes'] != null) {
           availableChanges = changeInfo['available_changes'] as List<dynamic>;
         } else {
@@ -121,8 +125,10 @@ class UserTypeChangeHandler {
           isDark: isDark,
         );
       } else {
-        debugPrint('❌ Failed to get user type change info: ${changeInfoResponse.message}');
-        _showErrorSnackBar(context, 'Failed to load account type options: ${changeInfoResponse.message}');
+        debugPrint(
+            '❌ Failed to get user type change info: ${changeInfoResponse.message}');
+        _showErrorSnackBar(context,
+            'Failed to load account type options: ${changeInfoResponse.message}');
       }
     } catch (e) {
       debugPrint('❌ Error in user type change dialog: $e');
@@ -208,10 +214,14 @@ class UserTypeChangeHandler {
               margin: EdgeInsets.symmetric(horizontal: 24.w),
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: ThemeManager.of(context).getUserTypeColor(currentUserType).withValues(alpha: 0.1),
+                color: ThemeManager.of(context)
+                    .getUserTypeColor(currentUserType)
+                    .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: ThemeManager.of(context).getUserTypeColor(currentUserType).withValues(alpha: 0.3),
+                  color: ThemeManager.of(context)
+                      .getUserTypeColor(currentUserType)
+                      .withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -219,7 +229,8 @@ class UserTypeChangeHandler {
                 children: [
                   Icon(
                     getUserTypeIcon(currentUserType),
-                    color: ThemeManager.of(context).getUserTypeColor(currentUserType),
+                    color: ThemeManager.of(context)
+                        .getUserTypeColor(currentUserType),
                     size: 20.sp,
                   ),
                   SizedBox(width: 12.w),
@@ -269,12 +280,15 @@ class UserTypeChangeHandler {
                           Container(
                             padding: EdgeInsets.all(12.w),
                             decoration: BoxDecoration(
-                              color: ThemeManager.of(context).getUserTypeColor(targetType).withValues(alpha: 0.1),
+                              color: ThemeManager.of(context)
+                                  .getUserTypeColor(targetType)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
                             child: Icon(
                               getUserTypeIcon(targetType),
-                              color: ThemeManager.of(context).getUserTypeColor(targetType),
+                              color: ThemeManager.of(context)
+                                  .getUserTypeColor(targetType),
                               size: 20.sp,
                             ),
                           ),
@@ -285,13 +299,16 @@ class UserTypeChangeHandler {
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2D3748),
                               ),
                             ),
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: ThemeManager.of(context).getUserTypeColor(targetType),
+                            color: ThemeManager.of(context)
+                                .getUserTypeColor(targetType),
                             size: 14.sp,
                           ),
                         ],
@@ -316,7 +333,8 @@ class UserTypeChangeHandler {
     required String displayName,
     required bool isDark,
   }) async {
-    debugPrint('🔄 UserTypeChangeHandler: Showing confirmation dialog for $targetType');
+    debugPrint(
+        '🔄 UserTypeChangeHandler: Showing confirmation dialog for $targetType');
 
     // Close current bottom sheet
     Navigator.of(context).pop();
@@ -347,12 +365,15 @@ class UserTypeChangeHandler {
                     Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: ThemeManager.of(context).getUserTypeColor(targetType).withValues(alpha: 0.1),
+                        color: ThemeManager.of(context)
+                            .getUserTypeColor(targetType)
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Icon(
                         getUserTypeIcon(targetType),
-                        color: ThemeManager.of(context).getUserTypeColor(targetType),
+                        color: ThemeManager.of(context)
+                            .getUserTypeColor(targetType),
                         size: 24.sp,
                       ),
                     ),
@@ -363,7 +384,8 @@ class UserTypeChangeHandler {
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : const Color(0xFF2D3748),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF2D3748),
                         ),
                       ),
                     ),
@@ -384,7 +406,8 @@ class UserTypeChangeHandler {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : const Color(0xFF2D3748),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF2D3748),
                         ),
                       ),
                       SizedBox(height: 8.h),
@@ -392,9 +415,12 @@ class UserTypeChangeHandler {
                         controller: reasonController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'Tell us why you want to change your account type...',
+                          hintText:
+                              'Tell us why you want to change your account type...',
                           filled: true,
-                          fillColor: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+                          fillColor: isDark
+                              ? const Color(0xFF374151)
+                              : const Color(0xFFF9FAFB),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),
@@ -430,7 +456,8 @@ class UserTypeChangeHandler {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ThemeManager.of(context).getUserTypeColor(targetType),
+                          backgroundColor: ThemeManager.of(context)
+                              .getUserTypeColor(targetType),
                         ),
                         child: Text('Change Type'),
                       ),
@@ -456,7 +483,8 @@ class UserTypeChangeHandler {
     required UserType targetType,
     required String reason,
   }) async {
-    debugPrint('🔄 UserTypeChangeHandler: Executing user type change to $targetType');
+    debugPrint(
+        '🔄 UserTypeChangeHandler: Executing user type change to $targetType');
 
     try {
       final authToken = HiveService.getAuthToken();
@@ -508,7 +536,8 @@ class UserTypeChangeHandler {
           });
         }
       } else {
-        _showErrorSnackBar(context, 'Failed to change account type: ${response.message}');
+        _showErrorSnackBar(
+            context, 'Failed to change account type: ${response.message}');
       }
     } catch (e) {
       debugPrint('❌ Error executing user type change: $e');
@@ -520,14 +549,17 @@ class UserTypeChangeHandler {
   }
 
   // Helper methods
-  static List<dynamic> _generateFallbackUserTypeChanges(UserType currentUserType) {
+  static List<dynamic> _generateFallbackUserTypeChanges(
+      UserType currentUserType) {
     final allUserTypes = [
       {'type': 'customer', 'display': 'Customer'},
       {'type': 'provider', 'display': 'Service Provider'},
       {'type': 'admin', 'display': 'Administrator'},
     ];
 
-    return allUserTypes.where((type) => type['type'] != currentUserType.name).toList();
+    return allUserTypes
+        .where((type) => type['type'] != currentUserType.name)
+        .toList();
   }
 
   static Future<void> _refreshUserTypeState(WidgetRef ref) async {
@@ -535,7 +567,8 @@ class UserTypeChangeHandler {
     // This would update the authentication state and local storage
   }
 
-  static void _showInfoDialog(BuildContext context, String title, String message, bool isDark) {
+  static void _showInfoDialog(
+      BuildContext context, String title, String message, bool isDark) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

@@ -83,7 +83,8 @@ class ProfileFormFieldWidget extends ConsumerWidget {
               fontSize: 14.sp,
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+            fillColor:
+                isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:prbal/services/user_service.dart';
+import 'package:prbal/models/auth/user_type.dart';
+import 'package:prbal/utils/debug_logger.dart';
+// import 'package:prbal/services/user_service.dart';
 
-/// **ThemeManager** - Centralized theme management utility
+/// **ThemeManager** - Performance-optimized centralized theme management utility
 ///
 /// **Purpose**: Provides easy access to theme-aware colors, gradients, and design tokens
 ///
@@ -13,20 +15,71 @@ import 'package:prbal/services/user_service.dart';
 /// - Material Design 3.0 compliance
 /// - Debug logging for theme operations
 /// - Comprehensive SourGummy typography system
+/// - Performance caching for expensive operations
+/// - Lazy loading of theme data
+/// - Memory optimization and cache management
 class ThemeManager {
   final BuildContext context;
   final ThemeData theme;
   final ColorScheme colorScheme;
   final bool themeManager;
 
+  // Cache for expensive operations
+  static final Map<String, dynamic> _cache = {};
+  static bool _cacheEnabled = true;
+
+  // Lazy-loaded theme data
+  static ThemeData? _lightThemeInstance;
+  static ThemeData? _darkThemeInstance;
+
   ThemeManager._(this.context)
       : theme = Theme.of(context),
         colorScheme = Theme.of(context).colorScheme,
         themeManager = Theme.of(context).brightness == Brightness.dark;
 
-  /// Factory constructor to create ThemeManager instance
+  /// Factory constructor with instance caching
+  static ThemeManager? _instance;
+  static BuildContext? _lastContext;
+
   factory ThemeManager.of(BuildContext context) {
-    return ThemeManager._(context);
+    // Reuse instance if context hasn't changed significantly
+    if (_instance != null &&
+        _lastContext != null &&
+        Theme.of(_lastContext!) == Theme.of(context)) {
+      return _instance!;
+    }
+
+    _instance = ThemeManager._(context);
+    _lastContext = context;
+    return _instance!;
+  }
+
+  /// Clear cache when theme changes
+  static void clearCache() {
+    _cache.clear();
+    _instance = null;
+    _lastContext = null;
+  }
+
+  /// Enable/disable caching (useful for development)
+  static void setCacheEnabled(bool enabled) {
+    _cacheEnabled = enabled;
+    if (!enabled) clearCache();
+  }
+
+  // =================== CACHED PROPERTY GETTER ===================
+
+  T _getCached<T>(String key, T Function() factory) {
+    if (!_cacheEnabled) return factory();
+
+    final cacheKey = '${themeManager ? 'dark' : 'light'}_$key';
+    if (_cache.containsKey(cacheKey)) {
+      return _cache[cacheKey] as T;
+    }
+
+    final value = factory();
+    _cache[cacheKey] = value;
+    return value;
   }
 
   // =================== SOUR GUMMY FONT FAMILY CONSTANTS ===================
@@ -44,9 +97,12 @@ class ThemeManager {
 
   /// Get comprehensive typography theme using SourGummy fonts
   static TextTheme _getSourGummyTextTheme(bool isDark) {
-    final Color primaryTextColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
-    final Color secondaryTextColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF4B5563);
-    final Color tertiaryTextColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280);
+    final Color primaryTextColor =
+        isDark ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
+    final Color secondaryTextColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF4B5563);
+    final Color tertiaryTextColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280);
 
     return TextTheme(
       // Display styles - SourGummy Expanded for maximum impact
@@ -236,10 +292,20 @@ class ThemeManager {
         color: textSecondary,
       );
 
-  // =================== THEME DATA CREATION ===================
+  // =================== OPTIMIZED THEME DATA CREATION ===================
+
+  /// Lazy-loaded light theme
+  static ThemeData get lightTheme {
+    return _lightThemeInstance ??= _createLightTheme();
+  }
+
+  /// Lazy-loaded dark theme
+  static ThemeData get darkTheme {
+    return _darkThemeInstance ??= _createDarkTheme();
+  }
 
   /// Create light theme data compatible with ThemeManager system
-  static ThemeData get lightTheme => ThemeData(
+  static ThemeData _createLightTheme() => ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
         fontFamily: fontFamilyPrimary, // Set default font family
@@ -319,7 +385,7 @@ class ThemeManager {
       );
 
   /// Create dark theme data compatible with ThemeManager system
-  static ThemeData get darkTheme => ThemeData(
+  static ThemeData _createDarkTheme() => ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
         fontFamily: fontFamilyPrimary, // Set default font family
@@ -418,23 +484,27 @@ class ThemeManager {
             : [const Color(0xFFFFFFFF), const Color(0xFFF8FAFC)],
       );
 
-  /// Primary accent gradient
-  LinearGradient get primaryGradient => LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: themeManager
-            ? [const Color(0xFF8B5CF6), const Color(0xFF7C3AED)]
-            : [const Color(0xFF6366F1), const Color(0xFF4F46E5)],
-      );
+  /// Primary accent gradient (cached)
+  LinearGradient get primaryGradient => _getCached(
+      'primaryGradient',
+      () => LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: themeManager
+                ? [const Color(0xFF8B5CF6), const Color(0xFF7C3AED)]
+                : [const Color(0xFF6366F1), const Color(0xFF4F46E5)],
+          ));
 
-  /// Secondary accent gradient
-  LinearGradient get secondaryGradient => LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: themeManager
-            ? [const Color(0xFF06D6A0), const Color(0xFF048A81)]
-            : [const Color(0xFF10B981), const Color(0xFF059669)],
-      );
+  /// Secondary accent gradient (cached)
+  LinearGradient get secondaryGradient => _getCached(
+      'secondaryGradient',
+      () => LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: themeManager
+                ? [const Color(0xFF06D6A0), const Color(0xFF048A81)]
+                : [const Color(0xFF10B981), const Color(0xFF059669)],
+          ));
 
   /// Success gradient for positive actions
   LinearGradient get successGradient => LinearGradient(
@@ -563,270 +633,350 @@ class ThemeManager {
   /// Secondary brand color
   Color get secondaryColor => colorScheme.secondary;
 
-  /// Background color
-  Color get backgroundColor => themeManager ? const Color(0xFF0F0F23) : const Color(0xFFFAFAFA);
+  /// Background color (cached)
+  Color get backgroundColor => _getCached('backgroundColor',
+      () => themeManager ? const Color(0xFF0F0F23) : const Color(0xFFFAFAFA));
 
   /// Surface color
   Color get surfaceColor => colorScheme.surface;
 
   // =================== TEXT COLORS ===================
 
-  /// Primary text color - highest contrast
-  Color get textPrimary => themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
+  /// Primary text color - highest contrast (cached)
+  Color get textPrimary => _getCached('textPrimary',
+      () => themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827));
 
-  /// Secondary text color - medium contrast
-  Color get textSecondary => themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+  /// Secondary text color - medium contrast (cached)
+  Color get textSecondary => _getCached('textSecondary',
+      () => themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280));
 
-  /// Tertiary text color - low contrast
-  Color get textTertiary => themeManager ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF);
+  /// Tertiary text color - low contrast (cached)
+  Color get textTertiary => _getCached('textTertiary',
+      () => themeManager ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF));
 
   /// Quaternary text color - subtle hints
-  Color get textQuaternary => themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB);
+  Color get textQuaternary =>
+      themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB);
 
   /// Disabled text color
-  Color get textDisabled => themeManager ? const Color(0xFF475569) : const Color(0xFFE5E7EB);
+  Color get textDisabled =>
+      themeManager ? const Color(0xFF475569) : const Color(0xFFE5E7EB);
 
   /// Inverted text color - for use on primary/dark backgrounds
-  Color get textInverted => themeManager ? const Color(0xFF111827) : const Color(0xFFF1F5F9);
+  Color get textInverted =>
+      themeManager ? const Color(0xFF111827) : const Color(0xFFF1F5F9);
 
   // =================== BACKGROUND COLORS ===================
 
   /// Secondary background color
-  Color get backgroundSecondary => themeManager ? const Color(0xFF1A1A2E) : const Color(0xFFF8FAFC);
+  Color get backgroundSecondary =>
+      themeManager ? const Color(0xFF1A1A2E) : const Color(0xFFF8FAFC);
 
   /// Tertiary background color
-  Color get backgroundTertiary => themeManager ? const Color(0xFF16213E) : const Color(0xFFE2E8F0);
+  Color get backgroundTertiary =>
+      themeManager ? const Color(0xFF16213E) : const Color(0xFFE2E8F0);
 
   /// Card background color
-  Color get cardBackground => themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
+  Color get cardBackground =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
 
   /// Elevated surface color
-  Color get surfaceElevated => themeManager ? const Color(0xFF334155) : const Color(0xFFF9FAFB);
+  Color get surfaceElevated =>
+      themeManager ? const Color(0xFF334155) : const Color(0xFFF9FAFB);
 
   /// Modal background color
-  Color get modalBackground => themeManager ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF);
+  Color get modalBackground =>
+      themeManager ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF);
 
   /// Overlay background color
-  Color get overlayBackground =>
-      themeManager ? Colors.black.withValues(alpha: 0.7) : Colors.black.withValues(alpha: 0.5);
+  Color get overlayBackground => themeManager
+      ? Colors.black.withValues(alpha: 0.7)
+      : Colors.black.withValues(alpha: 0.5);
 
   // =================== BORDER COLORS ===================
 
   /// Primary border color
-  Color get borderColor => themeManager ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
+  Color get borderColor =>
+      themeManager ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
 
   /// Secondary border color - lighter
-  Color get borderSecondary => themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
+  Color get borderSecondary =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
 
   /// Focus border color
-  Color get borderFocus => themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF6366F1);
+  Color get borderFocus =>
+      themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF6366F1);
 
   /// Divider color
-  Color get dividerColor => themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
+  Color get dividerColor =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6);
 
   /// Success color - green
-  Color get transparent => themeManager ? const Color(0x00000000) : const Color(0x00000000);
+  Color get transparent =>
+      themeManager ? const Color(0x00000000) : const Color(0x00000000);
   // =================== STATUS COLORS ===================
 
-  /// Success color - green
-  Color get successColor => themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
+  /// Success color - green (cached)
+  Color get successColor => _getCached('successColor',
+      () => themeManager ? const Color(0xFF10B981) : const Color(0xFF059669));
 
-  /// Success light variant
-  Color get successLight => themeManager ? const Color(0xFF34D399) : const Color(0xFF10B981);
+  /// Success light variant (cached)
+  Color get successLight => _getCached('successLight',
+      () => themeManager ? const Color(0xFF34D399) : const Color(0xFF10B981));
 
-  /// Success dark variant
-  Color get successDark => themeManager ? const Color(0xFF047857) : const Color(0xFF065F46);
+  /// Success dark variant (cached)
+  Color get successDark => _getCached('successDark',
+      () => themeManager ? const Color(0xFF047857) : const Color(0xFF065F46));
 
-  /// Warning color - yellow/orange
-  Color get warningColor => themeManager ? const Color(0xFFEAB308) : const Color(0xFFD97706);
+  /// Warning color - yellow/orange (cached)
+  Color get warningColor => _getCached('warningColor',
+      () => themeManager ? const Color(0xFFEAB308) : const Color(0xFFD97706));
 
-  /// Warning light variant
-  Color get warningLight => themeManager ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B);
+  /// Warning light variant (cached)
+  Color get warningLight => _getCached('warningLight',
+      () => themeManager ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B));
 
-  /// Warning dark variant
-  Color get warningDark => themeManager ? const Color(0xFFA16207) : const Color(0xFF92400E);
+  /// Warning dark variant (cached)
+  Color get warningDark => _getCached('warningDark',
+      () => themeManager ? const Color(0xFFA16207) : const Color(0xFF92400E));
 
-  /// Error color - red
-  Color get errorColor => themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
+  /// Error color - red (cached)
+  Color get errorColor => _getCached('errorColor',
+      () => themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626));
 
-  /// Error light variant
-  Color get errorLight => themeManager ? const Color(0xFFF87171) : const Color(0xFFEF4444);
+  /// Error light variant (cached)
+  Color get errorLight => _getCached('errorLight',
+      () => themeManager ? const Color(0xFFF87171) : const Color(0xFFEF4444));
 
-  /// Error dark variant
-  Color get errorDark => themeManager ? const Color(0xFFB91C1C) : const Color(0xFF991B1B);
+  /// Error dark variant (cached)
+  Color get errorDark => _getCached('errorDark',
+      () => themeManager ? const Color(0xFFB91C1C) : const Color(0xFF991B1B));
 
-  /// Info color - blue
-  Color get infoColor => themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+  /// Info color - blue (cached)
+  Color get infoColor => _getCached('infoColor',
+      () => themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB));
 
-  /// Info light variant
-  Color get infoLight => themeManager ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
+  /// Info light variant (cached)
+  Color get infoLight => _getCached('infoLight',
+      () => themeManager ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6));
 
-  /// Info dark variant
-  Color get infoDark => themeManager ? const Color(0xFF1D4ED8) : const Color(0xFF1E40AF);
+  /// Info dark variant (cached)
+  Color get infoDark => _getCached('infoDark',
+      () => themeManager ? const Color(0xFF1D4ED8) : const Color(0xFF1E40AF));
 
   // =================== ACCENT COLORS ===================
 
   /// Accent color 1 - Purple
-  Color get accent1 => themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED);
+  Color get accent1 =>
+      themeManager ? const Color(0xFF8B5CF6) : const Color(0xFF7C3AED);
 
   /// Accent color 2 - Pink
-  Color get accent2 => themeManager ? const Color(0xFFEC4899) : const Color(0xFFDB2777);
+  Color get accent2 =>
+      themeManager ? const Color(0xFFEC4899) : const Color(0xFFDB2777);
 
   /// Accent color 3 - Teal
-  Color get accent3 => themeManager ? const Color(0xFF06D6A0) : const Color(0xFF0D9488);
+  Color get accent3 =>
+      themeManager ? const Color(0xFF06D6A0) : const Color(0xFF0D9488);
 
   /// Accent color 4 - Orange
-  Color get accent4 => themeManager ? const Color(0xFFFF6B35) : const Color(0xFFEA580C);
+  Color get accent4 =>
+      themeManager ? const Color(0xFFFF6B35) : const Color(0xFFEA580C);
 
   /// Accent color 5 - Indigo
-  Color get accent5 => themeManager ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
+  Color get accent5 =>
+      themeManager ? const Color(0xFF6366F1) : const Color(0xFF4F46E5);
 
   // =================== NEUTRAL COLORS ===================
 
   /// Neutral 50
-  Color get neutral50 => themeManager ? const Color(0xFF64748B) : const Color(0xFFFAFAFA);
+  Color get neutral50 =>
+      themeManager ? const Color(0xFF64748B) : const Color(0xFFFAFAFA);
 
   /// Neutral 100
-  Color get neutral100 => themeManager ? const Color(0xFF475569) : const Color(0xFFF5F5F5);
+  Color get neutral100 =>
+      themeManager ? const Color(0xFF475569) : const Color(0xFFF5F5F5);
 
   /// Neutral 200
-  Color get neutral200 => themeManager ? const Color(0xFF334155) : const Color(0xFFEEEEEE);
+  Color get neutral200 =>
+      themeManager ? const Color(0xFF334155) : const Color(0xFFEEEEEE);
 
   /// Neutral 300
-  Color get neutral300 => themeManager ? const Color(0xFF1E293B) : const Color(0xFFE0E0E0);
+  Color get neutral300 =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFFE0E0E0);
 
   /// Neutral 400
-  Color get neutral400 => themeManager ? const Color(0xFF0F172A) : const Color(0xFFBDBDBD);
+  Color get neutral400 =>
+      themeManager ? const Color(0xFF0F172A) : const Color(0xFFBDBDBD);
 
   /// Neutral 500
-  Color get neutral500 => themeManager ? const Color(0xFF0F172A) : const Color(0xFF9E9E9E);
+  Color get neutral500 =>
+      themeManager ? const Color(0xFF0F172A) : const Color(0xFF9E9E9E);
 
   /// Neutral 600
-  Color get neutral600 => themeManager ? const Color(0xFF475569) : const Color(0xFF757575);
+  Color get neutral600 =>
+      themeManager ? const Color(0xFF475569) : const Color(0xFF757575);
 
   /// Neutral 700
-  Color get neutral700 => themeManager ? const Color(0xFF64748B) : const Color(0xFF616161);
+  Color get neutral700 =>
+      themeManager ? const Color(0xFF64748B) : const Color(0xFF616161);
 
   /// Neutral 800
-  Color get neutral800 => themeManager ? const Color(0xFF94A3B8) : const Color(0xFF424242);
+  Color get neutral800 =>
+      themeManager ? const Color(0xFF94A3B8) : const Color(0xFF424242);
 
   /// Neutral 900
-  Color get neutral900 => themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF212121);
+  Color get neutral900 =>
+      themeManager ? const Color(0xFFCBD5E1) : const Color(0xFF212121);
 
   // =================== INTERACTIVE COLORS ===================
 
   /// Button background - default state
-  Color get buttonBackground => themeManager ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+  Color get buttonBackground =>
+      themeManager ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
 
   /// Button background - hover state
-  Color get buttonBackgroundHover => themeManager ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+  Color get buttonBackgroundHover =>
+      themeManager ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
 
   /// Button background - pressed state
-  Color get buttonBackgroundPressed => themeManager ? const Color(0xFF1E293B) : const Color(0xFF94A3B8);
+  Color get buttonBackgroundPressed =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFF94A3B8);
 
   /// Button background - disabled state
-  Color get buttonBackgroundDisabled => themeManager ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+  Color get buttonBackgroundDisabled =>
+      themeManager ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
 
   /// Input field background
-  Color get inputBackground => themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
+  Color get inputBackground =>
+      themeManager ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
 
   /// Input field background - focused
-  Color get inputBackgroundFocused => themeManager ? const Color(0xFF334155) : const Color(0xFFFAFAFA);
+  Color get inputBackgroundFocused =>
+      themeManager ? const Color(0xFF334155) : const Color(0xFFFAFAFA);
 
   /// Input field background - disabled
-  Color get inputBackgroundDisabled => themeManager ? const Color(0xFF0F172A) : const Color(0xFFF5F5F5);
+  Color get inputBackgroundDisabled =>
+      themeManager ? const Color(0xFF0F172A) : const Color(0xFFF5F5F5);
 
   // =================== BRAND COLORS ===================
 
   /// Primary brand color variants
-  Color get primaryLight => themeManager ? const Color(0xFFA78BFA) : const Color(0xFF8B5DFF);
-  Color get primaryDark => themeManager ? const Color(0xFF6D28D9) : const Color(0xFF5B21B6);
-  Color get onPrimaryColor => themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
+  Color get primaryLight =>
+      themeManager ? const Color(0xFFA78BFA) : const Color(0xFF8B5DFF);
+  Color get primaryDark =>
+      themeManager ? const Color(0xFF6D28D9) : const Color(0xFF5B21B6);
+  Color get onPrimaryColor =>
+      themeManager ? const Color(0xFFF1F5F9) : const Color(0xFF111827);
 
   /// Secondary brand color variants
-  Color get secondaryLight => themeManager ? const Color(0xFF34D399) : const Color(0xFF34D399);
-  Color get secondaryDark => themeManager ? const Color(0xFF047857) : const Color(0xFF047857);
+  Color get secondaryLight =>
+      themeManager ? const Color(0xFF34D399) : const Color(0xFF34D399);
+  Color get secondaryDark =>
+      themeManager ? const Color(0xFF047857) : const Color(0xFF047857);
 
   // =================== SEMANTIC COLORS ===================
 
   /// Online/Active status
-  Color get statusOnline => themeManager ? const Color(0xFF10B981) : const Color(0xFF22C55E);
+  Color get statusOnline =>
+      themeManager ? const Color(0xFF10B981) : const Color(0xFF22C55E);
 
   /// Offline/Inactive status
-  Color get statusOffline => themeManager ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
+  Color get statusOffline =>
+      themeManager ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
 
   /// Away status
-  Color get statusAway => themeManager ? const Color(0xFFF59E0B) : const Color(0xFFEAB308);
+  Color get statusAway =>
+      themeManager ? const Color(0xFFF59E0B) : const Color(0xFFEAB308);
 
   /// Busy/Do not disturb status
-  Color get statusBusy => themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
+  Color get statusBusy =>
+      themeManager ? const Color(0xFFEF4444) : const Color(0xFFDC2626);
 
   /// Favorite/Like color
-  Color get favoriteColor => themeManager ? const Color(0xFFFF6B9D) : const Color(0xFFE91E63);
+  Color get favoriteColor =>
+      themeManager ? const Color(0xFFFF6B9D) : const Color(0xFFE91E63);
 
   /// Rating/Star color
-  Color get ratingColor => themeManager ? const Color(0xFFFBBF24) : const Color(0xFFEAB308);
+  Color get ratingColor =>
+      themeManager ? const Color(0xFFFBBF24) : const Color(0xFFEAB308);
 
   /// New/Unread indicator
-  Color get newIndicator => themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
+  Color get newIndicator =>
+      themeManager ? const Color(0xFF3B82F6) : const Color(0xFF2563EB);
 
   /// Verified badge color
-  Color get verifiedColor => themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
+  Color get verifiedColor =>
+      themeManager ? const Color(0xFF10B981) : const Color(0xFF059669);
 
   // =================== SHADOW COLORS ===================
 
   /// Light shadow color
-  Color get shadowLight =>
-      themeManager ? Colors.black.withValues(alpha: 0.1) : Colors.grey.shade200.withValues(alpha: 0.5);
+  Color get shadowLight => themeManager
+      ? Colors.black.withValues(alpha: 0.1)
+      : Colors.grey.shade200.withValues(alpha: 0.5);
 
   /// Medium shadow color
-  Color get shadowMedium =>
-      themeManager ? Colors.black.withValues(alpha: 0.2) : Colors.grey.shade300.withValues(alpha: 0.7);
+  Color get shadowMedium => themeManager
+      ? Colors.black.withValues(alpha: 0.2)
+      : Colors.grey.shade300.withValues(alpha: 0.7);
 
   /// Dark shadow color
-  Color get shadowDark =>
-      themeManager ? Colors.black.withValues(alpha: 0.3) : Colors.grey.shade400.withValues(alpha: 0.9);
+  Color get shadowDark => themeManager
+      ? Colors.black.withValues(alpha: 0.3)
+      : Colors.grey.shade400.withValues(alpha: 0.9);
 
   // =================== SHADOWS AND EFFECTS ===================
 
-  /// Primary shadow
-  List<BoxShadow> get primaryShadow => [
-        BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade300).withValues(alpha: 0.1),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ];
+  /// Primary shadow (cached)
+  List<BoxShadow> get primaryShadow => _getCached(
+      'primaryShadow',
+      () => [
+            BoxShadow(
+              color: (themeManager ? Colors.black : Colors.grey.shade300)
+                  .withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ]);
 
-  /// Elevated shadow
-  List<BoxShadow> get elevatedShadow => [
-        BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade400).withValues(alpha: 0.15),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-      ];
+  /// Elevated shadow (cached)
+  List<BoxShadow> get elevatedShadow => _getCached(
+      'elevatedShadow',
+      () => [
+            BoxShadow(
+              color: (themeManager ? Colors.black : Colors.grey.shade400)
+                  .withValues(alpha: 0.15),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ]);
 
-  /// Subtle shadow for minimal elevation
-  List<BoxShadow> get subtleShadow => [
-        BoxShadow(
-          color: (themeManager ? Colors.black : Colors.grey.shade200).withValues(alpha: 0.08),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
-        ),
-      ];
+  /// Subtle shadow for minimal elevation (cached)
+  List<BoxShadow> get subtleShadow => _getCached(
+      'subtleShadow',
+      () => [
+            BoxShadow(
+              color: (themeManager ? Colors.black : Colors.grey.shade200)
+                  .withValues(alpha: 0.08),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ]);
 
   /// Glass morphism effect
   BoxDecoration get glassMorphism => BoxDecoration(
-        color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.05),
+        color: (themeManager ? Colors.white : Colors.black)
+            .withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.1),
+          color: (themeManager ? Colors.white : Colors.black)
+              .withValues(alpha: 0.1),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: (themeManager ? Colors.black : Colors.grey.shade300).withValues(alpha: 0.1),
+            color: (themeManager ? Colors.black : Colors.grey.shade300)
+                .withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -835,10 +985,12 @@ class ThemeManager {
 
   /// Enhanced glass morphism with stronger effects
   BoxDecoration get enhancedGlassMorphism => BoxDecoration(
-        color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.08),
+        color: (themeManager ? Colors.white : Colors.black)
+            .withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: (themeManager ? Colors.white : Colors.black).withValues(alpha: 0.15),
+          color: (themeManager ? Colors.white : Colors.black)
+              .withValues(alpha: 0.15),
           width: 1.5,
         ),
         boxShadow: elevatedShadow,
@@ -881,25 +1033,61 @@ class ThemeManager {
     return color.withValues(alpha: alpha);
   }
 
-  /// Get color for user type
+  /// Get color for user type (cached)
   Color getUserTypeColor(UserType userType) {
-    switch (userType) {
-      case UserType.provider:
-        return themeManager ? successColor : successLight;
-      case UserType.customer:
-        return themeManager ? infoColor : infoLight;
-      case UserType.admin:
-        return themeManager ? warningColor : warningLight;
-    }
+    return _getCached('userType_${userType.name}', () {
+      switch (userType) {
+        case UserType.provider:
+          return themeManager ? successColor : successLight;
+        case UserType.customer:
+          return themeManager ? infoColor : infoLight;
+        case UserType.admin:
+          return themeManager ? warningColor : warningLight;
+      }
+    });
   }
+
+  // =================== PERFORMANCE UTILITIES ===================
+
+  /// Get cache statistics
+  static Map<String, dynamic> getCacheStats() {
+    return {
+      'enabled': _cacheEnabled,
+      'entries': _cache.length,
+      'keys': _cache.keys.toList(),
+      'memory_estimate_kb': (_cache.length * 0.1).toStringAsFixed(2),
+    };
+  }
+
+  /// Preload commonly used theme properties
+  void preloadCommonProperties() {
+    final timer = PerformanceTimer('Theme Properties Preload');
+
+    // Preload colors
+    backgroundColor;
+    textPrimary;
+    textSecondary;
+    primaryColor;
+    successColor;
+
+    // Preload gradients
+    primaryGradient;
+    backgroundGradient;
+
+    // Preload shadows
+    primaryShadow;
+
+    timer.finish();
+    DebugLogger.performance('Theme properties preloaded');
+  }
+
   // =================== DEBUG UTILITIES ===================
 
   /// Log current theme information
   void logThemeInfo() {
-    debugPrint('🎨 ThemeManager: Current theme mode: ${themeManager ? 'dark' : 'light'}');
-    debugPrint('🎨 ThemeManager: Primary color: ${primaryColor.toString()}');
-    debugPrint('🎨 ThemeManager: Secondary color: ${secondaryColor.toString()}');
-    debugPrint('🎨 ThemeManager: Background color: ${backgroundColor.toString()}');
+    DebugLogger.ui('Theme mode: ${themeManager ? 'dark' : 'light'}');
+    DebugLogger.ui('Primary color: $primaryColor');
+    DebugLogger.ui('Cache stats: ${getCacheStats()}');
   }
 
   /// Log gradient information for debugging
@@ -964,8 +1152,10 @@ class ThemeManager {
     debugPrint('  - Divider: $dividerColor');
 
     debugPrint('  === STATUS COLORS ===');
-    debugPrint('  - Success: $successColor (Light: $successLight, Dark: $successDark)');
-    debugPrint('  - Warning: $warningColor (Light: $warningLight, Dark: $warningDark)');
+    debugPrint(
+        '  - Success: $successColor (Light: $successLight, Dark: $successDark)');
+    debugPrint(
+        '  - Warning: $warningColor (Light: $warningLight, Dark: $warningDark)');
     debugPrint('  - Error: $errorColor (Light: $errorLight, Dark: $errorDark)');
     debugPrint('  - Info: $infoColor (Light: $infoLight, Dark: $infoDark)');
 
@@ -1002,17 +1192,24 @@ class ThemeManager {
     debugPrint('🔤 Primary Font Family: $fontFamilyPrimary');
     debugPrint('🔤 Expanded Font Family: $fontFamilyExpanded');
     debugPrint('🔤 SemiExpanded Font Family: $fontFamilySemiExpanded');
-    debugPrint('🔤 Theme Default Font: ${theme.textTheme.bodyMedium?.fontFamily ?? 'System Default'}');
+    debugPrint(
+        '🔤 Theme Default Font: ${theme.textTheme.bodyMedium?.fontFamily ?? 'System Default'}');
     debugPrint(
         '🔤 Display Large: ${theme.textTheme.displayLarge?.fontFamily} - ${theme.textTheme.displayLarge?.fontSize}sp');
     debugPrint(
         '🔤 Headline Large: ${theme.textTheme.headlineLarge?.fontFamily} - ${theme.textTheme.headlineLarge?.fontSize}sp');
-    debugPrint('🔤 Title Large: ${theme.textTheme.titleLarge?.fontFamily} - ${theme.textTheme.titleLarge?.fontSize}sp');
-    debugPrint('🔤 Body Large: ${theme.textTheme.bodyLarge?.fontFamily} - ${theme.textTheme.bodyLarge?.fontSize}sp');
-    debugPrint('🔤 Label Large: ${theme.textTheme.labelLarge?.fontFamily} - ${theme.textTheme.labelLarge?.fontSize}sp');
-    debugPrint('🔤 Custom Heading XL: ${customHeadingXL.fontFamily} - ${customHeadingXL.fontSize}sp');
-    debugPrint('🔤 Custom Logo: ${customHeadingLogo.fontFamily} - ${customHeadingLogo.fontSize}sp');
-    debugPrint('🔤 Custom Button: ${customButtonText.fontFamily} - ${customButtonText.fontSize}sp');
+    debugPrint(
+        '🔤 Title Large: ${theme.textTheme.titleLarge?.fontFamily} - ${theme.textTheme.titleLarge?.fontSize}sp');
+    debugPrint(
+        '🔤 Body Large: ${theme.textTheme.bodyLarge?.fontFamily} - ${theme.textTheme.bodyLarge?.fontSize}sp');
+    debugPrint(
+        '🔤 Label Large: ${theme.textTheme.labelLarge?.fontFamily} - ${theme.textTheme.labelLarge?.fontSize}sp');
+    debugPrint(
+        '🔤 Custom Heading XL: ${customHeadingXL.fontFamily} - ${customHeadingXL.fontSize}sp');
+    debugPrint(
+        '🔤 Custom Logo: ${customHeadingLogo.fontFamily} - ${customHeadingLogo.fontSize}sp');
+    debugPrint(
+        '🔤 Custom Button: ${customButtonText.fontFamily} - ${customButtonText.fontSize}sp');
     debugPrint('🔤 =============================================');
   }
 
@@ -1084,6 +1281,19 @@ class ThemeManager {
   }
 }
 
+/// Performance timer utility for theme operations
+class PerformanceTimer {
+  final String _operation;
+  final DateTime _startTime;
+
+  PerformanceTimer(this._operation) : _startTime = DateTime.now();
+
+  void finish() {
+    final duration = DateTime.now().difference(_startTime);
+    DebugLogger.performance('$_operation took ${duration.inMilliseconds}ms');
+  }
+}
+
 /// **ThemeAwareMixin** - Mixin for easy theme access in StatefulWidgets
 ///
 /// **Usage**:
@@ -1098,10 +1308,11 @@ class ThemeManager {
 /// ```
 mixin ThemeAwareMixin {
   /// Get ThemeManager instance
-  ThemeManager getThemeManager(BuildContext context) => ThemeManager.of(context);
+  ThemeManager getTheme(BuildContext context) => ThemeManager.of(context);
 
   /// Quick access to theme-aware colors
-  Color themeColor(BuildContext context, {required Color light, required Color dark}) {
+  Color themeColor(BuildContext context,
+      {required Color light, required Color dark}) {
     return ThemeManager.of(context).conditionalColor(
       lightColor: light,
       darkColor: dark,
@@ -1109,7 +1320,8 @@ mixin ThemeAwareMixin {
   }
 
   /// Quick access to theme-aware gradients
-  LinearGradient themeGradient(BuildContext context, {required LinearGradient light, required LinearGradient dark}) {
+  LinearGradient themeGradient(BuildContext context,
+      {required LinearGradient light, required LinearGradient dark}) {
     return ThemeManager.of(context).conditionalGradient(
       lightGradient: light,
       darkGradient: dark,
@@ -1117,232 +1329,7 @@ mixin ThemeAwareMixin {
   }
 }
 
-// /// **ThemeManagerDemo** - Comprehensive demo widget showcasing all ThemeManager capabilities
-// ///
-// /// This widget demonstrates every feature of ThemeManager including:
-// /// - All gradient types (primary, secondary, background, surface, success, warning, error)
-// /// - Glass morphism effects (regular and enhanced)
-// /// - Shadow effects (primary, elevated, subtle)
-// /// - Conditional colors and theme-aware styling
-// /// - Text colors for different backgrounds
-// /// - Status colors and semantic styling
-// /// - Debug logging and theme state tracking
-// class ThemeManagerDemo extends StatelessWidget with ThemeAwareMixin {
-//   const ThemeManagerDemo({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final themeManager = ThemeManager.of(context);
-
-//     // Comprehensive debug logging
-
-//     themeManager.logGradientInfo();
-//     themeManager.logAllColors();
-
-//     return Scaffold(
-//       backgroundColor: themeManager.backgroundColor,
-//       appBar: AppBar(
-//         title: Text(
-//           'ThemeManager Demo',
-//           style: TextStyle(color: themeManager.textPrimary),
-//         ),
-//         backgroundColor: Colors.transparent,
-//         elevation: 0,
-//         flexibleSpace: Container(
-//           decoration: BoxDecoration(gradient: themeManager.primaryGradient),
-//         ),
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Gradient Showcase
-//             _buildSection( 'Gradients', [
-//               _buildGradientCard( 'Primary', themeManager.primaryGradient),
-//               _buildGradientCard( 'Secondary', themeManager.secondaryGradient),
-//               _buildGradientCard( 'Background', themeManager.backgroundGradient),
-//               _buildGradientCard( 'Surface', themeManager.surfaceGradient),
-//               _buildGradientCard( 'Success', themeManager.successGradient),
-//               _buildGradientCard( 'Warning', themeManager.warningGradient),
-//               _buildGradientCard( 'Error', themeManager.errorGradient),
-//               _buildGradientCard( 'Info', themeManager.infoGradient),
-//             ]),
-
-//             const SizedBox(height: 24),
-
-//             // Glass Morphism Showcase
-//             _buildSection( 'Glass Morphism', [
-//               Container(
-//                 height: 100,
-//                 decoration: themeManager.glassMorphism,
-//                 child: Center(
-//                   child: Text(
-//                     'Regular Glass Morphism',
-//                     style: TextStyle(color: themeManager.textPrimary, fontWeight: FontWeight.bold),
-//                   ),
-//                 ),
-//               ),
-//               const SizedBox(height: 16),
-//               Container(
-//                 height: 100,
-//                 decoration: themeManager.enhancedGlassMorphism,
-//                 child: Center(
-//                   child: Text(
-//                     'Enhanced Glass Morphism',
-//                     style: TextStyle(color: themeManager.textPrimary, fontWeight: FontWeight.bold),
-//                   ),
-//                 ),
-//               ),
-//             ]),
-
-//             const SizedBox(height: 24),
-
-//             // Shadow Effects Showcase
-//             _buildSection( 'Shadow Effects', [
-//               _buildShadowCard( 'Primary Shadow', themeManager.primaryShadow),
-//               _buildShadowCard( 'Elevated Shadow', themeManager.elevatedShadow),
-//               _buildShadowCard( 'Subtle Shadow', themeManager.subtleShadow),
-//             ]),
-
-//             const SizedBox(height: 24),
-
-//             // Color Showcase
-//             _buildSection( 'Colors', [
-//               _buildColorRow( [
-//                 ('Primary', themeManager.primaryColor),
-//                 ('Secondary', themeManager.secondaryColor),
-//                 ('Success', themeManager.successColor),
-//                 ('Warning', themeManager.warningColor),
-//               ]),
-//               _buildColorRow( [
-//                 ('Error', themeManager.errorColor),
-//                 ('Info', themeManager.infoColor),
-//                 ('Border', themeManager.borderColor),
-//                 ('Divider', themeManager.dividerColor),
-//               ]),
-//             ]),
-
-//             const SizedBox(height: 24),
-
-//             // Text Colors Showcase
-//             _buildSection( 'Text Colors', [
-//               Container(
-//                 padding: const EdgeInsets.all(16),
-//                 decoration: BoxDecoration(
-//                   color: themeManager.surfaceColor,
-//                   borderRadius: BorderRadius.circular(12),
-//                   border: Border.all(color: themeManager.borderColor),
-//                 ),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text('Primary Text',
-//                         style: TextStyle(color: themeManager.textPrimary, fontSize: 16, fontWeight: FontWeight.bold)),
-//                     Text('Secondary Text', style: TextStyle(color: themeManager.textSecondary, fontSize: 14)),
-//                     Text('Tertiary Text', style: TextStyle(color: themeManager.textTertiary, fontSize: 12)),
-//                   ],
-//                 ),
-//               ),
-//             ]),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildSection(ThemeManager  String title, List<Widget> children) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           title,
-//           style: TextStyle(
-//             color: themeManager.textPrimary,
-//             fontSize: 20,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//         const SizedBox(height: 16),
-//         ...children,
-//       ],
-//     );
-//   }
-
-//   Widget _buildGradientCard(ThemeManager  String name, LinearGradient gradient) {
-//     return Container(
-//       height: 80,
-//       margin: const EdgeInsets.only(bottom: 12),
-//       decoration: BoxDecoration(
-//         gradient: gradient,
-//         borderRadius: BorderRadius.circular(12),
-//         boxShadow: themeManager.primaryShadow,
-//       ),
-//       child: Center(
-//         child: Text(
-//           name,
-//           style: const TextStyle(
-//             color: Colors.white,
-//             fontSize: 16,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildShadowCard(ThemeManager  String name, List<BoxShadow> shadows) {
-//     return Container(
-//       height: 80,
-//       margin: const EdgeInsets.only(bottom: 12),
-//       decoration: BoxDecoration(
-//         color: themeManager.surfaceColor,
-//         borderRadius: BorderRadius.circular(12),
-//         boxShadow: shadows,
-//       ),
-//       child: Center(
-//         child: Text(
-//           name,
-//           style: TextStyle(
-//             color: themeManager.textPrimary,
-//             fontSize: 16,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildColorRow(ThemeManager  List<(String, Color)> colors) {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 12),
-//       child: Row(
-//         children: colors.map((colorData) {
-//           final (name, color) = colorData;
-//           return Expanded(
-//             child: Container(
-//               height: 60,
-//               margin: const EdgeInsets.symmetric(horizontal: 4),
-//               decoration: BoxDecoration(
-//                 color: color,
-//                 borderRadius: BorderRadius.circular(8),
-//                 boxShadow: themeManager.subtleShadow,
-//               ),
-//               child: Center(
-//                 child: Text(
-//                   name,
-//                   style: TextStyle(
-//                     color: themeManager.getContrastingColor(color),
-//                     fontSize: 12,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                   textAlign: TextAlign.center,
-//                 ),
-//               ),
-//             ),
-//           );
-//         }).toList(),
-//       ),
-//     );
-//   }
-// }
+/// Extension for easy theme access
+extension ThemeExtension on BuildContext {
+  ThemeManager get theme => ThemeManager.of(this);
+}

@@ -127,7 +127,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
@@ -151,14 +152,22 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
 
     // Comprehensive theme logging for debugging
 
-    debugPrint('🔍 CategorySearchHeader: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint('🔍 CategorySearchHeader: → Primary: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🔍 CategorySearchHeader: → Secondary: ${ThemeManager.of(context).secondaryColor}');
-    debugPrint('🔍 CategorySearchHeader: → Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🔍 CategorySearchHeader: → Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('🔍 CategorySearchHeader: → Card Background: ${ThemeManager.of(context).cardBackground}');
-    debugPrint('🔍 CategorySearchHeader: → Surface Elevated: ${ThemeManager.of(context).surfaceElevated}');
-    debugPrint('🔍 CategorySearchHeader: → Input Background: ${ThemeManager.of(context).inputBackground}');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Secondary: ${ThemeManager.of(context).secondaryColor}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Card Background: ${ThemeManager.of(context).cardBackground}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Surface Elevated: ${ThemeManager.of(context).surfaceElevated}');
+    debugPrint(
+        '🔍 CategorySearchHeader: → Input Background: ${ThemeManager.of(context).inputBackground}');
     debugPrint(
         '🔍 CategorySearchHeader: → Status Colors - Success: ${ThemeManager.of(context).successColor}, Warning: ${ThemeManager.of(context).warningColor}, Error: ${ThemeManager.of(context).errorColor}, Info: ${ThemeManager.of(context).infoColor}');
     debugPrint(
@@ -198,8 +207,10 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
             borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
               color: ThemeManager.of(context).conditionalColor(
-                lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
-                darkColor: ThemeManager.of(context).borderFocus.withValues(alpha: 0.3),
+                lightColor:
+                    ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
+                darkColor:
+                    ThemeManager.of(context).borderFocus.withValues(alpha: 0.3),
               ),
               width: 1.5,
             ),
@@ -211,7 +222,9 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
                 offset: const Offset(0, 5),
               ),
               BoxShadow(
-                color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.05),
+                color: ThemeManager.of(context)
+                    .primaryColor
+                    .withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -264,7 +277,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
 
   /// Build back navigation button with comprehensive ThemeManager integration
   Widget _buildBackButton() {
-    debugPrint('🔍 CategorySearchHeader: Building enhanced back button with comprehensive theming');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building enhanced back button with comprehensive theming');
 
     return Container(
       decoration: ThemeManager.of(context).enhancedGlassMorphism.copyWith(
@@ -291,8 +305,10 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
-            darkColor: ThemeManager.of(context).borderFocus.withValues(alpha: 0.4),
+            lightColor:
+                ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+            darkColor:
+                ThemeManager.of(context).borderFocus.withValues(alpha: 0.4),
           ),
           width: 1.5,
         ),
@@ -328,7 +344,8 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
 
   /// Build the main search field with comprehensive ThemeManager integration
   Widget _buildSearchField() {
-    debugPrint('🔍 CategorySearchHeader: Building enhanced search field with comprehensive theming');
+    debugPrint(
+        '🔍 CategorySearchHeader: Building enhanced search field with comprehensive theming');
 
     return Container(
       decoration: BoxDecoration(
@@ -355,8 +372,10 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-            darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+            lightColor:
+                ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
+            darkColor:
+                ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
           ),
           width: 1.5,
         ),
@@ -389,7 +408,9 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
               size: 18.sp,
             ),
           ),
-          suffixIcon: widget.searchController.text.isNotEmpty ? _buildClearSearchButton() : null,
+          suffixIcon: widget.searchController.text.isNotEmpty
+              ? _buildClearSearchButton()
+              : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 12.w,
@@ -426,8 +447,10 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
         borderRadius: BorderRadius.circular(6.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).errorColor.withValues(alpha: 0.3),
-            darkColor: ThemeManager.of(context).errorDark.withValues(alpha: 0.4),
+            lightColor:
+                ThemeManager.of(context).errorColor.withValues(alpha: 0.3),
+            darkColor:
+                ThemeManager.of(context).errorDark.withValues(alpha: 0.4),
           ),
           width: 1,
         ),
@@ -480,7 +503,9 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
                   colors: [
                     ThemeManager.of(context).accent2,
                     ThemeManager.of(context).accent2.withValues(alpha: 0.8),
-                    ThemeManager.of(context).primaryColor.withValues(alpha: 0.6),
+                    ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 0.6),
                   ],
                 ),
                 darkGradient: LinearGradient(
@@ -488,7 +513,9 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
                   end: Alignment.bottomRight,
                   colors: [
                     ThemeManager.of(context).accent2.withValues(alpha: 0.8),
-                    ThemeManager.of(context).primaryColor.withValues(alpha: 0.7),
+                    ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 0.7),
                     ThemeManager.of(context).accent1.withValues(alpha: 0.5),
                   ],
                 ),
@@ -513,19 +540,27 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
         border: Border.all(
           color: hasActiveFilter
               ? ThemeManager.of(context).conditionalColor(
-                  lightColor: ThemeManager.of(context).accent2.withValues(alpha: 0.6),
-                  darkColor: ThemeManager.of(context).borderFocus.withValues(alpha: 0.8),
+                  lightColor:
+                      ThemeManager.of(context).accent2.withValues(alpha: 0.6),
+                  darkColor: ThemeManager.of(context)
+                      .borderFocus
+                      .withValues(alpha: 0.8),
                 )
               : ThemeManager.of(context).conditionalColor(
-                  lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-                  darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+                  lightColor: ThemeManager.of(context)
+                      .borderColor
+                      .withValues(alpha: 0.3),
+                  darkColor: ThemeManager.of(context)
+                      .borderSecondary
+                      .withValues(alpha: 0.4),
                 ),
           width: hasActiveFilter ? 2 : 1.5,
         ),
         boxShadow: hasActiveFilter
             ? [
                 BoxShadow(
-                  color: ThemeManager.of(context).accent2.withValues(alpha: 0.3),
+                  color:
+                      ThemeManager.of(context).accent2.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -555,7 +590,9 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
             Icon(
               Prbal.filter,
               size: 18.sp,
-              color: hasActiveFilter ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).textSecondary,
+              color: hasActiveFilter
+                  ? ThemeManager.of(context).primaryColor
+                  : ThemeManager.of(context).textSecondary,
             ),
             if (hasActiveFilter)
               Positioned(
@@ -613,8 +650,10 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).successColor.withValues(alpha: 0.6),
-            darkColor: ThemeManager.of(context).successDark.withValues(alpha: 0.8),
+            lightColor:
+                ThemeManager.of(context).successColor.withValues(alpha: 0.6),
+            darkColor:
+                ThemeManager.of(context).successDark.withValues(alpha: 0.8),
           ),
           width: 1.5,
         ),
@@ -637,14 +676,16 @@ class _CategorySearchHeaderState extends State<CategorySearchHeader>
           Icon(
             Prbal.statsBars,
             size: 12.sp,
-            color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).successColor),
+            color: ThemeManager.of(context)
+                .getContrastingColor(ThemeManager.of(context).successColor),
           ),
           SizedBox(width: 4.w),
           Text(
             '${widget.filteredCount}',
             style: TextStyle(
               fontSize: 12.sp,
-              color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).successColor),
+              color: ThemeManager.of(context)
+                  .getContrastingColor(ThemeManager.of(context).successColor),
               fontWeight: FontWeight.bold,
               letterSpacing: 0.3,
             ),

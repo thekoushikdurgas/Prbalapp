@@ -32,7 +32,8 @@ class CategoryLoadingState extends StatefulWidget {
   State<CategoryLoadingState> createState() => _CategoryLoadingStateState();
 }
 
-class _CategoryLoadingStateState extends State<CategoryLoadingState> with TickerProviderStateMixin, ThemeAwareMixin {
+class _CategoryLoadingStateState extends State<CategoryLoadingState>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -76,8 +77,10 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
   Widget build(BuildContext context) {
     // ========== ENHANCED THEME INTEGRATION ==========
 
-    debugPrint('⏳ CategoryLoadingState: Building loading state with ThemeManager');
-    debugPrint('⏳ CategoryLoadingState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '⏳ CategoryLoadingState: Building loading state with ThemeManager');
+    debugPrint(
+        '⏳ CategoryLoadingState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: Container(
@@ -106,13 +109,19 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            ThemeManager.of(context).primaryColor.withValues(alpha: 51),
-                            ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                            ThemeManager.of(context)
+                                .primaryColor
+                                .withValues(alpha: 51),
+                            ThemeManager.of(context)
+                                .primaryColor
+                                .withValues(alpha: 26),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                          color: ThemeManager.of(context)
+                              .primaryColor
+                              .withValues(alpha: 77),
                           width: 2,
                         ),
                       ),
@@ -162,15 +171,19 @@ class _CategoryLoadingStateState extends State<CategoryLoadingState> with Ticker
                   animation: _pulseController,
                   builder: (context, child) {
                     final delay = index * 0.3;
-                    final animationValue = (_pulseController.value + delay) % 1.0;
-                    final opacity = (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
+                    final animationValue =
+                        (_pulseController.value + delay) % 1.0;
+                    final opacity =
+                        (1.0 - (animationValue * 2 - 1).abs()).clamp(0.3, 1.0);
 
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       width: 8.w,
                       height: 8.w,
                       decoration: BoxDecoration(
-                        color: ThemeManager.of(context).primaryColor.withValues(alpha: opacity),
+                        color: ThemeManager.of(context)
+                            .primaryColor
+                            .withValues(alpha: opacity),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                     );
@@ -208,14 +221,16 @@ class CategoryErrorState extends StatefulWidget {
   State<CategoryErrorState> createState() => _CategoryErrorStateState();
 }
 
-class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _CategoryErrorStateState extends State<CategoryErrorState>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
+    debugPrint(
+        '❌ CategoryErrorState: Initializing error state with message: "${widget.errorMessage}"');
 
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -239,7 +254,8 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
     // ========== ENHANCED THEME INTEGRATION ==========
 
     debugPrint('❌ CategoryErrorState: Building error state with ThemeManager');
-    debugPrint('❌ CategoryErrorState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '❌ CategoryErrorState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: AnimatedBuilder(
@@ -257,12 +273,15 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                 gradient: ThemeManager.of(context).surfaceGradient,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: ThemeManager.of(context).errorColor.withValues(alpha: 77),
+                  color:
+                      ThemeManager.of(context).errorColor.withValues(alpha: 77),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).errorColor.withValues(alpha: 26),
+                    color: ThemeManager.of(context)
+                        .errorColor
+                        .withValues(alpha: 26),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -280,13 +299,19 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          ThemeManager.of(context).errorColor.withValues(alpha: 51),
-                          ThemeManager.of(context).errorColor.withValues(alpha: 26),
+                          ThemeManager.of(context)
+                              .errorColor
+                              .withValues(alpha: 51),
+                          ThemeManager.of(context)
+                              .errorColor
+                              .withValues(alpha: 26),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: ThemeManager.of(context).errorColor.withValues(alpha: 77),
+                        color: ThemeManager.of(context)
+                            .errorColor
+                            .withValues(alpha: 77),
                         width: 2,
                       ),
                     ),
@@ -340,7 +365,9 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                             end: Alignment.bottomRight,
                             colors: [
                               ThemeManager.of(context).errorColor,
-                              ThemeManager.of(context).errorColor.withValues(alpha: 204),
+                              ThemeManager.of(context)
+                                  .errorColor
+                                  .withValues(alpha: 204),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(12.r),
@@ -349,7 +376,8 @@ class _CategoryErrorStateState extends State<CategoryErrorState> with SingleTick
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              debugPrint('🔄 CategoryErrorState: Retry button tapped');
+                              debugPrint(
+                                  '🔄 CategoryErrorState: Retry button tapped');
                               HapticFeedback.mediumImpact();
                               widget.onRetry?.call();
                             },
@@ -414,7 +442,8 @@ class CategoryEmptyState extends StatefulWidget {
   State<CategoryEmptyState> createState() => _CategoryEmptyStateState();
 }
 
-class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _CategoryEmptyStateState extends State<CategoryEmptyState>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _floatController;
   late Animation<double> _floatAnimation;
 
@@ -443,7 +472,8 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
     // ========== ENHANCED THEME INTEGRATION ==========
 
     debugPrint('📭 CategoryEmptyState: Building empty state with ThemeManager');
-    debugPrint('📭 CategoryEmptyState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '📭 CategoryEmptyState: Theme brightness: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
 
     return Center(
       child: Container(
@@ -471,13 +501,19 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          ThemeManager.of(context).primaryColor.withValues(alpha: 26),
-                          ThemeManager.of(context).primaryColor.withValues(alpha: 13),
+                          ThemeManager.of(context)
+                              .primaryColor
+                              .withValues(alpha: 26),
+                          ThemeManager.of(context)
+                              .primaryColor
+                              .withValues(alpha: 13),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(30.r),
                       border: Border.all(
-                        color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                        color: ThemeManager.of(context)
+                            .primaryColor
+                            .withValues(alpha: 51),
                         width: 2,
                       ),
                     ),
@@ -531,7 +567,9 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                     borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                        color: ThemeManager.of(context)
+                            .primaryColor
+                            .withValues(alpha: 51),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -541,7 +579,8 @@ class _CategoryEmptyStateState extends State<CategoryEmptyState> with SingleTick
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        debugPrint('➕ CategoryEmptyState: Create category button tapped');
+                        debugPrint(
+                            '➕ CategoryEmptyState: Create category button tapped');
                         HapticFeedback.lightImpact();
                         widget.onCreateCategory?.call();
                       },
@@ -608,7 +647,8 @@ class CategoryStatisticCards extends StatefulWidget {
   State<CategoryStatisticCards> createState() => _CategoryStatisticCardsState();
 }
 
-class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with TickerProviderStateMixin {
+class _CategoryStatisticCardsState extends State<CategoryStatisticCards>
+    with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
 
@@ -616,7 +656,8 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with Ti
   void initState() {
     super.initState();
     debugPrint('📊 CategoryStatisticCards: Initializing statistic cards');
-    debugPrint('📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
+    debugPrint(
+        '📊 Total: ${widget.totalCount}, Active: ${widget.activeCount}, Inactive: ${widget.inactiveCount}');
 
     _controllers = List.generate(3, (index) {
       return AnimationController(
@@ -650,10 +691,14 @@ class _CategoryStatisticCardsState extends State<CategoryStatisticCards> with Ti
   Widget build(BuildContext context) {
     // ========== ENHANCED THEME INTEGRATION ==========
 
-    debugPrint('📊 CategoryStatisticCards: Building statistic cards with comprehensive ThemeManager');
-    debugPrint('📊 CategoryStatisticCards: → Primary: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('📊 CategoryStatisticCards: → Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('📊 CategoryStatisticCards: → Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '📊 CategoryStatisticCards: Building statistic cards with comprehensive ThemeManager');
+    debugPrint(
+        '📊 CategoryStatisticCards: → Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '📊 CategoryStatisticCards: → Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '📊 CategoryStatisticCards: → Surface: ${ThemeManager.of(context).surfaceColor}');
 
     final statCards = [
       _StatCardData(

@@ -5,6 +5,12 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 // Components
 import 'package:prbal/widgets/settings/settings_section_widget.dart';
 
+// Bottom Sheets
+import 'package:prbal/widgets/settings/help_center_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/contact_us_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/terms_of_service_bottom_sheet.dart';
+import 'package:prbal/widgets/settings/privacy_policy_bottom_sheet.dart';
+
 /// SupportLegalSettingsWidget - Reusable support & legal settings section
 ///
 /// This widget provides support and legal related settings options including:
@@ -18,7 +24,8 @@ class SupportLegalSettingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ SupportLegalSettingsWidget: Building support & legal settings');
+    debugPrint(
+        '⚙️ SupportLegalSettingsWidget: Building support & legal settings');
 
     return SettingsSectionWidget(
       title: 'Support & Legal',
@@ -29,8 +36,8 @@ class SupportLegalSettingsWidget extends StatelessWidget {
           icon: Prbal.questionCircle,
           iconColor: const Color(0xFF4299E1),
           onTap: () {
-            debugPrint('⚙️ Help Center tapped');
-            // TODO: Navigate to help center
+            debugPrint('⚙️ Help Center tapped - showing help center modal');
+            HelpCenterBottomSheet.show(context);
           },
         ),
         SettingsItemWidget(
@@ -39,8 +46,8 @@ class SupportLegalSettingsWidget extends StatelessWidget {
           icon: Prbal.envelope,
           iconColor: const Color(0xFF48BB78),
           onTap: () {
-            debugPrint('⚙️ Contact Us tapped');
-            // TODO: Navigate to contact
+            debugPrint('⚙️ Contact Us tapped - showing contact us modal');
+            ContactUsBottomSheet.show(context);
           },
         ),
         SettingsItemWidget(
@@ -49,8 +56,8 @@ class SupportLegalSettingsWidget extends StatelessWidget {
           icon: Prbal.file,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
-            debugPrint('⚙️ Terms of Service tapped');
-            // TODO: Navigate to terms
+            debugPrint('⚙️ Terms of Service tapped - showing terms modal');
+            TermsOfServiceBottomSheet.show(context);
           },
         ),
         SettingsItemWidget(
@@ -59,8 +66,9 @@ class SupportLegalSettingsWidget extends StatelessWidget {
           icon: Prbal.shield,
           iconColor: const Color(0xFFED8936),
           onTap: () {
-            debugPrint('⚙️ Privacy Policy tapped');
-            // TODO: Navigate to privacy policy
+            debugPrint(
+                '⚙️ Privacy Policy tapped - showing privacy policy modal');
+            PrivacyPolicyBottomSheet.show(context);
           },
         ),
       ],

@@ -105,7 +105,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                   SizedBox(height: 12.h),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       color: ThemeManager.of(context).inputBackground,
                       borderRadius: BorderRadius.circular(12.r),
@@ -123,7 +124,13 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                           fontSize: 16.sp,
                         ),
                         dropdownColor: ThemeManager.of(context).surfaceColor,
-                        items: ['Home Services', 'Cleaning', 'Plumbing', 'Electrical', 'Others']
+                        items: [
+                          'Home Services',
+                          'Cleaning',
+                          'Plumbing',
+                          'Electrical',
+                          'Others'
+                        ]
                             .map((category) => DropdownMenuItem(
                                   value: category,
                                   child: Text(category),

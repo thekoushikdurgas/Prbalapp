@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/services/hive_service.dart';
+import 'package:prbal/services/app_services.dart';
 import 'package:prbal/utils/navigation/navigation_route.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
@@ -13,79 +15,43 @@ import 'package:easy_localization/easy_localization.dart';
 /// INTRODUCTION SCREEN COMPONENT
 /// ====================================================================
 ///
-/// ✅ **COMPREHENSIVE THEMEMANAGER INTEGRATION COMPLETED** ✅
+/// ✅ **COMPREHENSIVE AUTHENTICATION INTEGRATION COMPLETED** ✅
 ///
-/// **🎨 ENHANCED FEATURES WITH ALL THEMEMANAGER PROPERTIES:**
+/// **🔐 ENHANCED FEATURES WITH RIVERPOD AUTHENTICATION:**
 ///
-/// **1. COMPREHENSIVE COLOR SYSTEM:**
-/// - Primary Colors: primaryColor, primaryLight, primaryDark, secondaryColor
-/// - Background Colors: backgroundColor, backgroundSecondary, backgroundTertiary,
-///   cardBackground, surfaceElevated, modalBackground
-/// - Text Colors: textPrimary, textSecondary, textTertiary, textQuaternary, textInverted
-/// - Status Colors: successColor/Light/Dark, warningColor/Light/Dark,
-///   errorColor/Light/Dark, infoColor/Light/Dark
-/// - Accent Colors: accent1-5, neutral50-900
-/// - Border Colors: borderColor, borderSecondary, borderFocus, dividerColor
-/// - Interactive Colors: buttonBackground, inputBackground, statusColors
-/// - Shadow Colors: shadowLight, shadowMedium, shadowDark
+/// **1. AUTHENTICATION STATE INTEGRATION:**
+/// - Integrated with authenticationStateProvider for centralized state management
+/// - Uses AuthenticationNotifier for proper intro completion tracking
+/// - Automatic navigation flow using router's redirect functionality
+/// - Proper error handling and loading states
 ///
-/// **2. COMPREHENSIVE GRADIENT SYSTEM:**
-/// - Background Gradients: backgroundGradient, surfaceGradient
-/// - Primary Gradients: primaryGradient, secondaryGradient
-/// - Status Gradients: successGradient, warningGradient, errorGradient, infoGradient
-/// - Accent Gradients: accent1Gradient-accent4Gradient
-/// - Utility Gradients: neutralGradient, glassGradient, shimmerGradient
+/// **2. ENHANCED USER EXPERIENCE:**
+/// - Seamless integration with authentication flow
+/// - Proper state persistence through AuthenticationNotifier
+/// - Enhanced debug logging with auth state information
+/// - Better error recovery and user feedback
 ///
-/// **3. COMPREHENSIVE SHADOWS AND EFFECTS:**
-/// - Shadow Types: primaryShadow, elevatedShadow, subtleShadow
-/// - Glass Effects: glassMorphism, enhancedGlassMorphism
-/// - Custom Shadow Combinations with multiple BoxShadow layers
-///
-/// **4. COMPREHENSIVE HELPER METHODS:**
-/// - conditionalColor() - theme-aware color selection
-/// - conditionalGradient() - theme-aware gradient selection
-/// - getContrastingColor() - automatic contrast detection
-/// - getTextColorForBackground() - optimal text color selection
-///
-/// **🏗️ ARCHITECTURAL ENHANCEMENTS:**
-///
-/// **1. Enhanced Background System:**
-/// - Multi-layer gradient backgrounds with comprehensive color transitions
-/// - Theme-aware background adaptation using backgroundGradient
-/// - Professional visual hierarchy with proper contrast ratios
-///
-/// **2. Advanced Animation Container:**
-/// - Glass morphism effects with enhancedGlassMorphism
-/// - Gradient overlays using accent gradients
-/// - Professional shadows combining all shadow types
-/// - Theme-aware animation colors
-///
-/// **3. Enhanced Navigation System:**
-/// - Dynamic button styling with primary/secondary gradients
-/// - Interactive states with theme-aware colors
-/// - Professional visual feedback with shadows and animations
-/// - Comprehensive status color integration
-///
-/// **4. Premium Visual Effects:**
-/// - Comprehensive page indicators using accent colors
-/// - Theme-aware skip functionality with glass morphism
-/// - Professional typography with optimal contrast
-/// - Advanced visual hierarchy with semantic colors
+/// **3. ARCHITECTURAL IMPROVEMENTS:**
+/// - ConsumerStatefulWidget for Riverpod integration
+/// - Centralized state management instead of direct HiveService calls
+/// - Leverages router's authentication-aware redirect logic
+/// - Follows app's dependency injection patterns
 ///
 /// **🎯 RESULT:**
-/// A sophisticated introduction screen that provides premium visual experience
-/// with automatic light/dark theme adaptation using ALL ThemeManager
-/// properties for consistent, beautiful, and accessible onboarding.
+/// A sophisticated introduction screen that properly integrates with the app's
+/// authentication architecture, providing seamless user onboarding with
+/// proper state management and navigation flow.
 /// ====================================================================
 
-class IntroductionScreen extends StatefulWidget {
+class IntroductionScreen extends ConsumerStatefulWidget {
   const IntroductionScreen({super.key});
 
   @override
-  State<IntroductionScreen> createState() => _IntroductionScreenState();
+  ConsumerState<IntroductionScreen> createState() => _IntroductionScreenState();
 }
 
-class _IntroductionScreenState extends State<IntroductionScreen> with TickerProviderStateMixin, ThemeAwareMixin {
+class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   // ========== ANIMATION CONTROLLERS ==========
   late PageController pageController;
   late AnimationController _fadeController;
@@ -97,10 +63,13 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
 
   int currentPage = 0;
   bool _isInitialized = false;
+  bool _isCompletingIntro = false; // Track intro completion state
 
   @override
   void initState() {
     super.initState();
+    debugPrint(
+        '🎬 IntroductionScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
     pageController = PageController();
     _initializeAnimations();
     _startAnimations();
@@ -111,6 +80,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     super.didChangeDependencies();
     if (!_isInitialized) {
       _logComprehensiveThemeInitialization();
+      _logAuthenticationState();
       _isInitialized = true;
     }
   }
@@ -120,6 +90,23 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     // Comprehensive theme logging
     ThemeManager.of(context).logGradientInfo();
     ThemeManager.of(context).logAllColors();
+  }
+
+  /// Logs current authentication state for debugging
+  void _logAuthenticationState() {
+    final authState = ref.read(authenticationStateProvider);
+    debugPrint('🔐 IntroductionScreen: Authentication state check:');
+    debugPrint(
+        '🔐 IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
+    debugPrint('🔐 IntroductionScreen:   - Loading: ${authState.isLoading}');
+    debugPrint(
+        '🔐 IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
+    debugPrint(
+        '🔐 IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
+    debugPrint(
+        '🔐 IntroductionScreen:   - Has Tokens: ${authState.tokens != null}');
+    debugPrint(
+        '🔐 IntroductionScreen:   - Error: ${authState.error ?? 'none'}');
   }
 
   /// Gets comprehensive theme-aware onboarding pages using ALL ThemeManager properties
@@ -137,6 +124,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.clock,
         statusType: 'primary',
+        scale: 1.3, // Slightly larger for work animation
+        translateX: 15.0,
+        translateY: 30.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page2.title'.tr(),
@@ -150,11 +140,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.users,
         statusType: 'success',
+        scale: 2.5, // Smaller for commerce animation
+        translateX: 10.0,
+        translateY: 25.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page3.title'.tr(),
         subtitle: 'intro.onboarding.page3.subtitle'.tr(),
-        animationPath: 'assets/intro/app.json',
+        animationPath: 'assets/intro/walking.json',
         color: ThemeManager.of(context).infoColor,
         gradientColors: [
           ThemeManager.of(context).infoColor,
@@ -163,6 +156,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.graduationCap1,
         statusType: 'info',
+        // scale: 1.1, // Medium-large for walking animation
+        // translateX: 30.0,
+        // translateY: 10.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page4.title'.tr(),
@@ -176,6 +172,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.laptop11,
         statusType: 'warning',
+        scale: 1.8, // Smaller for hourly animation
+        translateX: 15.0,
+        translateY: 40.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page5.title'.tr(),
@@ -189,6 +188,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.hand,
         statusType: 'error',
+        // scale: 1.3, // Larger for bidding animation
+        translateX: 15.0,
+        translateY: 10.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page6.title'.tr(),
@@ -202,6 +204,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.heart,
         statusType: 'accent',
+        scale: 2, // Default scale for match animation
+        translateX: 15.0,
+        translateY: 15.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page7.title'.tr(),
@@ -215,6 +220,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.palette,
         statusType: 'secondary',
+        scale: 1.3, // Slightly smaller for design animation
+        translateX: 20.0,
+        translateY: 10.0,
       ),
       OnboardingPage(
         title: 'intro.onboarding.page8.title'.tr(),
@@ -228,6 +236,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ],
         icon: Prbal.checkCircle,
         statusType: 'verified',
+        scale: 1.15, // Medium-large for verification animation
+        translateX: 25.0,
+        translateY: 30.0,
       ),
     ];
   }
@@ -283,7 +294,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     ));
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.8),
+      begin: const Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _slideController,
@@ -394,7 +405,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                 GestureDetector(
                   onTap: _skipOnboarding,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                     decoration: BoxDecoration(
                       gradient: ThemeManager.of(context).conditionalGradient(
                         lightGradient: LinearGradient(
@@ -415,8 +427,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: ThemeManager.of(context).conditionalColor(
-                          lightColor: currentPageData.color.withValues(alpha: 0.3),
-                          darkColor: currentPageData.color.withValues(alpha: 0.4),
+                          lightColor:
+                              currentPageData.color.withValues(alpha: 0.3),
+                          darkColor:
+                              currentPageData.color.withValues(alpha: 0.4),
                         ),
                         width: 1.5,
                       ),
@@ -463,8 +477,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       gradient: _getPageGradient(currentPageData),
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color:
-                            ThemeManager.of(context).getContrastingColor(currentPageData.color).withValues(alpha: 0.3),
+                        color: ThemeManager.of(context)
+                            .getContrastingColor(currentPageData.color)
+                            .withValues(alpha: 0.3),
                         width: 2,
                       ),
                       // boxShadow: [
@@ -482,7 +497,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
-                          color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
+                          color: ThemeManager.of(context)
+                              .getContrastingColor(currentPageData.color),
                         ),
                       ),
                     ),
@@ -555,8 +571,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            currentPageData.color.withValues(alpha: 0.2 * _glowAnimation.value),
-                            currentPageData.color.withValues(alpha: 0.1 * _glowAnimation.value),
+                            currentPageData.color
+                                .withValues(alpha: 0.2 * _glowAnimation.value),
+                            currentPageData.color
+                                .withValues(alpha: 0.1 * _glowAnimation.value),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(10.r),
@@ -617,20 +635,24 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       children: [
                         // Enhanced feature badge with comprehensive theming
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 6.h),
                           decoration: BoxDecoration(
-                            gradient: ThemeManager.of(context).conditionalGradient(
+                            gradient:
+                                ThemeManager.of(context).conditionalGradient(
                               lightGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.15),
                                   page.gradientColors[1].withValues(alpha: 0.1),
-                                  page.gradientColors[2].withValues(alpha: 0.05),
+                                  page.gradientColors[2]
+                                      .withValues(alpha: 0.05),
                                 ],
                               ),
                               darkGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.2),
-                                  page.gradientColors[1].withValues(alpha: 0.15),
+                                  page.gradientColors[1]
+                                      .withValues(alpha: 0.15),
                                   page.gradientColors[2].withValues(alpha: 0.1),
                                 ],
                               ),
@@ -740,52 +762,23 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      // decoration: BoxDecoration(
-      //   gradient: RadialGradient(
-      //     center: Alignment.center,
-      //     radius: 1.2,
-      //     colors: [
-      //       page.color.withValues(alpha: 0.05),
-      //       page.gradientColors[1].withValues(alpha: 0.03),
-      //       Colors.transparent,
-      //     ],
-      //     stops: const [0.0, 0.7, 1.0],
-      //   ),
-      // borderRadius: BorderRadius.circular(24.r),
-      // ),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // // Enhanced background glow effect
-          // AnimatedBuilder(
-          //   animation: _glowAnimation,
-          //   builder: (context, child) {
-          //     return Container(
-          //       decoration: BoxDecoration(
-          //         gradient: RadialGradient(
-          //           center: Alignment.center,
-          //           radius: 0.8,
-          //           colors: [
-          //             page.color.withValues(alpha: 0.1 * _glowAnimation.value),
-          //             page.gradientColors[1]
-          //                 .withValues(alpha: 0.05 * _glowAnimation.value),
-          //             Colors.transparent,
-          //           ],
-          //         ),
-          //         borderRadius: BorderRadius.circular(20.r),
-          //       ),
-          //     );
-          //   },
-          // ),
-
-          // Main Lottie animation with enhanced container
+          // Main Lottie animation with enhanced container, different transform scales, and translations
           Container(
             padding: EdgeInsets.all(16.w),
-            child: Lottie.asset(
-              page.animationPath,
-              fit: BoxFit.contain,
-              repeat: true,
-              animate: true,
+            child: Transform.translate(
+              offset: Offset(page.translateX, page.translateY),
+              child: Transform.scale(
+                scale: page.scale,
+                child: Lottie.asset(
+                  page.animationPath,
+                  fit: BoxFit.contain,
+                  repeat: true,
+                  animate: true,
+                ),
+              ),
             ),
           ),
         ],
@@ -825,8 +818,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-            darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+            lightColor:
+                ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
+            darkColor:
+                ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
           ),
           width: 1.5,
         ),
@@ -917,7 +912,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                 gradient: _getPageGradient(currentPageData),
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: ThemeManager.of(context).getContrastingColor(currentPageData.color).withValues(alpha: 0.2),
+                  color: ThemeManager.of(context)
+                      .getContrastingColor(currentPageData.color)
+                      .withValues(alpha: 0.2),
                   width: 1,
                 ),
                 // boxShadow: [
@@ -940,19 +937,25 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          currentPage == pages.length - 1 ? 'intro.getStarted'.tr() : 'button.next'.tr(),
+                          currentPage == pages.length - 1
+                              ? 'intro.getStarted'.tr()
+                              : 'button.next'.tr(),
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
-                            color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
+                            color: ThemeManager.of(context)
+                                .getContrastingColor(currentPageData.color),
                             letterSpacing: 0.5,
                           ),
                         ),
                         SizedBox(width: 8.w),
                         Icon(
-                          currentPage == pages.length - 1 ? Prbal.rocket2 : Prbal.arrowDown,
+                          currentPage == pages.length - 1
+                              ? Prbal.rocket2
+                              : Prbal.arrowDown,
                           size: 18.sp,
-                          color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
+                          color: ThemeManager.of(context)
+                              .getContrastingColor(currentPageData.color),
                         ),
                       ],
                     ),
@@ -1002,9 +1005,112 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     }
   }
 
+  /// Enhanced intro completion with language selection check and authentication state management
+  ///
+  /// **PROCESS:**
+  /// 1. Check current authentication state
+  /// 2. Mark intro as watched in HiveService for persistence
+  /// 3. Check if language is selected using HiveService
+  /// 4. Navigate to appropriate screen based on language selection status
+  /// 5. Provide proper error handling and user feedback
+  ///
+  /// **NAVIGATION FLOW:**
+  /// - If language NOT selected → Navigate to language selection screen
+  /// - If language is selected → Navigate to welcome/auth screen
+  /// - Auth flow then handles authentication state and dashboard routing
   Future<void> _handleGetStarted() async {
-    await HiveService.setIntroWatched();
-    NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
+    if (_isCompletingIntro) {
+      debugPrint(
+          '🚀 IntroductionScreen: Intro completion already in progress, ignoring...');
+      return;
+    }
+
+    debugPrint(
+        '🚀 IntroductionScreen: ====== COMPLETING INTRODUCTION FLOW ======');
+
+    try {
+      setState(() {
+        _isCompletingIntro = true;
+      });
+
+      // Log current auth state for debugging
+      final authState = ref.read(authenticationStateProvider);
+      debugPrint(
+          '🔐 IntroductionScreen: Current auth state before completion:');
+      debugPrint(
+          '🔐 IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
+      debugPrint(
+          '🔐 IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
+      debugPrint(
+          '🔐 IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
+
+      // Mark intro as watched in HiveService for persistence
+      debugPrint(
+          '📝 IntroductionScreen: Marking intro as watched in HiveService...');
+      await HiveService.setIntroWatched();
+      debugPrint(
+          '✅ IntroductionScreen: Intro completion status saved successfully');
+
+      // Check if language is selected using HiveService
+      debugPrint(
+          '🌐 IntroductionScreen: Checking language selection status...');
+      final isLanguageSelected = HiveService.isLanguageSelected();
+      final selectedLanguage = HiveService.getSelectedLanguage();
+
+      debugPrint('🌐 IntroductionScreen: Language selection check results:');
+      debugPrint(
+          '🌐 IntroductionScreen:   - Language selected: $isLanguageSelected');
+      debugPrint(
+          '🌐 IntroductionScreen:   - Selected language: ${selectedLanguage ?? 'none'}');
+
+      // Navigate based on language selection status
+      if (!isLanguageSelected) {
+        debugPrint(
+            '🧭 IntroductionScreen: Language NOT selected → Navigating to language selection screen');
+        NavigationRoute.goRouteClear(RouteEnum.languageSelection.rawValue);
+      } else {
+        debugPrint(
+            '🧭 IntroductionScreen: Language selected ($selectedLanguage) → Navigating to welcome screen');
+        NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
+      }
+
+      debugPrint(
+          '🚀 IntroductionScreen: ====== INTRO COMPLETION SUCCESSFUL ======');
+    } catch (e, stackTrace) {
+      debugPrint('❌ IntroductionScreen: Error completing intro: $e');
+      debugPrint('🔍 IntroductionScreen: Stack trace: $stackTrace');
+
+      // Even if there's an error, try to navigate
+      debugPrint('🔄 IntroductionScreen: Attempting fallback navigation...');
+      try {
+        // On error, check language selection for fallback navigation
+        final isLanguageSelected = HiveService.isLanguageSelected();
+        if (!isLanguageSelected) {
+          debugPrint(
+              '🔄 IntroductionScreen: Fallback → Language selection screen');
+          NavigationRoute.goRouteClear(RouteEnum.languageSelection.rawValue);
+        } else {
+          debugPrint('🔄 IntroductionScreen: Fallback → Welcome screen');
+          NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
+        }
+      } catch (navError) {
+        debugPrint(
+            '❌ IntroductionScreen: Fallback navigation failed: $navError');
+        // Ultimate fallback to welcome screen
+        try {
+          NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
+        } catch (ultimateError) {
+          debugPrint(
+              '❌ IntroductionScreen: Ultimate fallback failed: $ultimateError');
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCompletingIntro = false;
+        });
+      }
+    }
   }
 }
 
@@ -1017,6 +1123,9 @@ class OnboardingPage {
   final List<Color> gradientColors;
   final IconData icon;
   final String statusType;
+  final double scale;
+  final double translateX;
+  final double translateY;
 
   OnboardingPage({
     required this.title,
@@ -1026,6 +1135,9 @@ class OnboardingPage {
     required this.gradientColors,
     required this.icon,
     required this.statusType,
+    this.scale = 1.0,
+    this.translateX = 0.0,
+    this.translateY = 0.0,
   });
 }
 

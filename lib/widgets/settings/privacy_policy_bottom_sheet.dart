@@ -25,7 +25,8 @@ class PrivacyPolicyBottomSheet extends StatefulWidget {
   const PrivacyPolicyBottomSheet({super.key});
 
   @override
-  State<PrivacyPolicyBottomSheet> createState() => _PrivacyPolicyBottomSheetState();
+  State<PrivacyPolicyBottomSheet> createState() =>
+      _PrivacyPolicyBottomSheetState();
 
   /// Show privacy policy modal bottom sheet
   static void show(BuildContext context) {
@@ -100,9 +101,12 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
   @override
   Widget build(BuildContext context) {
     debugPrint('🔒 [Privacy] Building privacy policy with theme colors:');
-    debugPrint('🔒 [Privacy] Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🔒 [Privacy] Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('🔒 [Privacy] Warning: ${ThemeManager.of(context).warningColor}');
+    debugPrint(
+        '🔒 [Privacy] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🔒 [Privacy] Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🔒 [Privacy] Warning: ${ThemeManager.of(context).warningColor}');
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -110,7 +114,8 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            offset: Offset(
+                0, _slideAnimation.value * MediaQuery.of(context).size.height),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.92,
               decoration: BoxDecoration(
@@ -120,7 +125,9 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).shadowDark.withValues(alpha: 102),
+                    color: ThemeManager.of(context)
+                        .shadowDark
+                        .withValues(alpha: 102),
                     blurRadius: 24.r,
                     offset: Offset(0, -6.h),
                   ),
@@ -195,7 +202,9 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).warningColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .warningColor
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -248,10 +257,14 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                   width: 40.w,
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceColor.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceColor
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 77),
                       width: 1,
                     ),
                   ),
@@ -386,7 +399,8 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
       sections = sections.where((section) {
         return section.title.toLowerCase().contains(_searchQuery) ||
             section.content.toLowerCase().contains(_searchQuery) ||
-            section.items.any((item) => item.toLowerCase().contains(_searchQuery));
+            section.items
+                .any((item) => item.toLowerCase().contains(_searchQuery));
       }).toList();
     }
 
@@ -427,7 +441,8 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
               setState(() {
                 _expandedIndex = isExpanded ? null : index;
               });
-              debugPrint('🔒 [Privacy] Section ${section.title} ${isExpanded ? 'collapsed' : 'expanded'}');
+              debugPrint(
+                  '🔒 [Privacy] Section ${section.title} ${isExpanded ? 'collapsed' : 'expanded'}');
             },
             borderRadius: BorderRadius.circular(16.r),
             child: Container(
@@ -514,9 +529,15 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                ThemeManager.of(context).borderColor.withValues(alpha: 0),
-                                ThemeManager.of(context).borderColor.withValues(alpha: 77),
-                                ThemeManager.of(context).borderColor.withValues(alpha: 0),
+                                ThemeManager.of(context)
+                                    .borderColor
+                                    .withValues(alpha: 0),
+                                ThemeManager.of(context)
+                                    .borderColor
+                                    .withValues(alpha: 77),
+                                ThemeManager.of(context)
+                                    .borderColor
+                                    .withValues(alpha: 0),
                               ],
                             ),
                           ),
@@ -543,7 +564,8 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                                     Container(
                                       width: 4.w,
                                       height: 4.w,
-                                      margin: EdgeInsets.only(top: 6.h, right: 8.w),
+                                      margin:
+                                          EdgeInsets.only(top: 6.h, right: 8.w),
                                       decoration: BoxDecoration(
                                         color: section.color,
                                         shape: BoxShape.circle,
@@ -554,7 +576,8 @@ class _PrivacyPolicyBottomSheetState extends State<PrivacyPolicyBottomSheet>
                                         item,
                                         style: TextStyle(
                                           fontSize: 12.sp,
-                                          color: ThemeManager.of(context).textSecondary,
+                                          color: ThemeManager.of(context)
+                                              .textSecondary,
                                           height: 1.4,
                                           letterSpacing: 0.1,
                                         ),

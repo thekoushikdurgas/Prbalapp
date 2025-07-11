@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/models/business/service_models.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
-import 'package:prbal/services/service_management_service.dart';
+// import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/utils/category/category_utils.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:prbal/widgets/admin/category/category_actions_bottom_sheet.dart';
@@ -71,7 +72,8 @@ class CategoryCard extends StatefulWidget {
   State<CategoryCard> createState() => _CategoryCardState();
 }
 
-class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMixin, ThemeAwareMixin {
+class _CategoryCardState extends State<CategoryCard>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _scaleController;
   late AnimationController _shimmerController;
   late Animation<double> _scaleAnimation;
@@ -80,7 +82,8 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    debugPrint('🎴 CategoryCard: Initializing card for category "${widget.category.name}"');
+    debugPrint(
+        '🎴 CategoryCard: Initializing card for category "${widget.category.name}"');
 
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 150),
@@ -133,12 +136,14 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
     // Comprehensive debug logging for theme operations
 
     debugPrint('🎴 CategoryCard: Building card for "${widget.category.name}"');
-    debugPrint('🎨 CategoryCard: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '🎨 CategoryCard: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
     debugPrint(
         '🌈 CategoryCard: Using gradients - Surface: ${ThemeManager.of(context).surfaceGradient.colors.length} colors, Primary: ${ThemeManager.of(context).primaryGradient.colors.length} colors');
 
     // Enhanced theme-aware colors using all ThemeManager properties
-    final iconColor = CategoryUtils.getCategoryIconColor(widget.category, ThemeManager.of(context));
+    final iconColor = CategoryUtils.getCategoryIconColor(
+        widget.category, ThemeManager.of(context));
 
     return AnimatedBuilder(
       animation: Listenable.merge([_scaleAnimation, _shimmerAnimation]),
@@ -284,7 +289,8 @@ class _CategoryCardState extends State<CategoryCard> with TickerProviderStateMix
 
   @override
   void dispose() {
-    debugPrint('🎴 CategoryCard: Disposing card for category "${widget.category.name}"');
+    debugPrint(
+        '🎴 CategoryCard: Disposing card for category "${widget.category.name}"');
     _scaleController.dispose();
     _shimmerController.dispose();
     super.dispose();
@@ -308,7 +314,8 @@ class EnhancedCategoryIcon extends StatefulWidget {
   State<EnhancedCategoryIcon> createState() => _EnhancedCategoryIconState();
 }
 
-class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with TickerProviderStateMixin {
+class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -380,11 +387,15 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
     final startTime = DateTime.now();
 
     debugPrint('🎨🤖 EnhancedCategoryIcon: =============================');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: ENHANCED ICON RESOLUTION WITH THEMEMANAGER');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: ENHANCED ICON RESOLUTION WITH THEMEMANAGER');
     debugPrint('🎨🤖 EnhancedCategoryIcon: =============================');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Category: "${widget.category.name}"');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Icon URL: "${widget.category.iconUrl ?? 'null'}"');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Icon field: "${widget.category.icon ?? 'null'}"');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Category: "${widget.category.name}"');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Icon URL: "${widget.category.iconUrl ?? 'null'}"');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Icon field: "${widget.category.icon ?? 'null'}"');
     // debugPrint(
     // '🎨🤖 EnhancedCategoryIcon: → Theme: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
     // debugPrint('🎨🤖 EnhancedCategoryIcon: → Primary Color: ${ThemeManager.of(context).primaryColor}');
@@ -392,33 +403,42 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
 
     // Step 1: Resolve icon identifier with enhanced priority system
     _resolvedIconIdentifier = _resolveIconIdentifier();
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Resolved identifier: "$_resolvedIconIdentifier"');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Resolved identifier: "$_resolvedIconIdentifier"');
 
     // Step 2: Validate the resolved icon using enhanced validation
     _iconValidation = CategoryUtils.validateIconName(_resolvedIconIdentifier!);
     _isIconValid = _iconValidation!['isValid'] as bool;
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Icon validation: ${_isIconValid ? '✅ VALID' : '❌ INVALID'}');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Icon validation: ${_isIconValid ? '✅ VALID' : '❌ INVALID'}');
 
     if (!_isIconValid) {
-      debugPrint('🎨🤖 EnhancedCategoryIcon: → Validation details: ${_iconValidation!['suggestions']}');
+      debugPrint(
+          '🎨🤖 EnhancedCategoryIcon: → Validation details: ${_iconValidation!['suggestions']}');
     }
 
     // Step 3: Get smart suggestions for context-aware recommendations
-    _smartSuggestions = CategoryUtils.getSmartIconSuggestions(widget.category.name, context: 'category_card_display');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Smart suggestions: ${_smartSuggestions!.keys.toList()}');
+    _smartSuggestions = CategoryUtils.getSmartIconSuggestions(
+        widget.category.name,
+        context: 'category_card_display');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Smart suggestions: ${_smartSuggestions!.keys.toList()}');
 
     // Step 4: Resolve final icon with fallback handling
     _resolvedIcon = _resolveFinalIcon();
     _isUsingFallback = !_isIconValid && _resolvedIconIdentifier != 'list';
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Using fallback: $_isUsingFallback');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Using fallback: $_isUsingFallback');
 
     // Step 5: Calculate performance score
     final endTime = DateTime.now();
     final resolutionTime = endTime.difference(startTime).inMilliseconds;
     _performanceScore = _calculatePerformanceScore(resolutionTime);
 
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Resolution time: ${resolutionTime}ms');
-    debugPrint('🎨🤖 EnhancedCategoryIcon: → Performance score: $_performanceScore/100');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Resolution time: ${resolutionTime}ms');
+    debugPrint(
+        '🎨🤖 EnhancedCategoryIcon: → Performance score: $_performanceScore/100');
     debugPrint('🎨🤖 EnhancedCategoryIcon: =============================');
 
     // Update UI
@@ -458,13 +478,18 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
     if (widget.category.iconUrl?.isNotEmpty == true) {
       final url = widget.category.iconUrl!;
       if (url.contains('/')) {
-        return url.split('/').last.replaceAll('.svg', '').replaceAll('.png', '');
+        return url
+            .split('/')
+            .last
+            .replaceAll('.svg', '')
+            .replaceAll('.png', '');
       }
       return url;
     }
 
     // Priority 3: Generate from category name using existing method
-    final inferredIcon = CategoryUtils.inferIconFromCategoryName(widget.category.name);
+    final inferredIcon =
+        CategoryUtils.inferIconFromCategoryName(widget.category.name);
     return inferredIcon ?? 'category';
   }
 
@@ -510,11 +535,13 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
                     : ThemeManager.of(context).accent1Gradient,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: widget.iconColor.withValues(alpha: widget.isSelected ? 153 : 77),
+                  color: widget.iconColor
+                      .withValues(alpha: widget.isSelected ? 153 : 77),
                   width: widget.isSelected ? 2.5 : 1.5,
                 ),
-                boxShadow:
-                    widget.isSelected ? ThemeManager.of(context).elevatedShadow : ThemeManager.of(context).subtleShadow,
+                boxShadow: widget.isSelected
+                    ? ThemeManager.of(context).elevatedShadow
+                    : ThemeManager.of(context).subtleShadow,
               ),
               child: Stack(
                 children: [
@@ -530,7 +557,9 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
                     child: Icon(
                       _resolvedIcon!,
                       size: widget.isSelected ? 32.sp : 28.sp,
-                      color: widget.isSelected ? ThemeManager.of(context).textInverted : widget.iconColor,
+                      color: widget.isSelected
+                          ? ThemeManager.of(context).textInverted
+                          : widget.iconColor,
                     ),
                   ),
 
@@ -571,7 +600,8 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
           height: 24.w,
           child: CircularProgressIndicator(
             strokeWidth: 2.5,
-            valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).primaryColor),
+            valueColor: AlwaysStoppedAnimation<Color>(
+                ThemeManager.of(context).primaryColor),
           ),
         ),
       ),
@@ -596,7 +626,8 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
               ? ThemeManager.of(context).warningGradient
               : ThemeManager.of(context).errorGradient,
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: ThemeManager.of(context).textInverted, width: 1.5),
+          border: Border.all(
+              color: ThemeManager.of(context).textInverted, width: 1.5),
           boxShadow: ThemeManager.of(context).subtleShadow,
         ),
         child: Center(
@@ -626,7 +657,8 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
         decoration: BoxDecoration(
           gradient: ThemeManager.of(context).warningGradient,
           borderRadius: BorderRadius.circular(7.r),
-          border: Border.all(color: ThemeManager.of(context).textInverted, width: 1.5),
+          border: Border.all(
+              color: ThemeManager.of(context).textInverted, width: 1.5),
           boxShadow: ThemeManager.of(context).subtleShadow,
         ),
         child: Icon(
@@ -653,7 +685,8 @@ class _EnhancedCategoryIconState extends State<EnhancedCategoryIcon> with Ticker
         decoration: BoxDecoration(
           gradient: ThemeManager.of(context).successGradient,
           borderRadius: BorderRadius.circular(7.r),
-          border: Border.all(color: ThemeManager.of(context).textInverted, width: 1.5),
+          border: Border.all(
+              color: ThemeManager.of(context).textInverted, width: 1.5),
           boxShadow: ThemeManager.of(context).subtleShadow,
         ),
         child: Icon(
@@ -687,7 +720,8 @@ class CategoryCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📋 CategoryCardContent: Building content for "${category.name}" with ThemeManager integration');
+    debugPrint(
+        '📋 CategoryCardContent: Building content for "${category.name}" with ThemeManager integration');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -701,7 +735,8 @@ class CategoryCardContent extends StatelessWidget {
                 : ThemeManager.of(context).glassMorphism.gradient,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
+              color:
+                  ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
             ),
             boxShadow: ThemeManager.of(context).subtleShadow,
           ),
@@ -710,7 +745,9 @@ class CategoryCardContent extends StatelessWidget {
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
-              color: isSelected ? ThemeManager.of(context).textInverted : ThemeManager.of(context).textPrimary,
+              color: isSelected
+                  ? ThemeManager.of(context).textInverted
+                  : ThemeManager.of(context).textPrimary,
               letterSpacing: 0.2,
             ),
             maxLines: 1,
@@ -763,7 +800,9 @@ class CategoryCardContent extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      category.isActive ? Icons.check_circle_rounded : Icons.pause_circle_rounded,
+                      category.isActive
+                          ? Icons.check_circle_rounded
+                          : Icons.pause_circle_rounded,
                       size: 14.sp,
                       color: ThemeManager.of(context).textInverted,
                     ),
@@ -793,7 +832,8 @@ class CategoryCardContent extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).accent3Gradient,
                     borderRadius: BorderRadius.circular(10.r),
@@ -884,7 +924,8 @@ class CategoryActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('⚙️ CategoryActionsMenu: Building enhanced actions menu button for category "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsMenu: Building enhanced actions menu button for category "${category.name}"');
 
     return Container(
       decoration: BoxDecoration(
@@ -896,7 +937,8 @@ class CategoryActionsMenu extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            debugPrint('⚙️ CategoryActionsMenu: Enhanced actions menu tapped for "${category.name}"');
+            debugPrint(
+                '⚙️ CategoryActionsMenu: Enhanced actions menu tapped for "${category.name}"');
             HapticFeedback.selectionClick();
             _showActionsBottomSheet(context);
           },
@@ -916,7 +958,8 @@ class CategoryActionsMenu extends StatelessWidget {
 
   /// Show enhanced category actions bottom sheet
   Future<void> _showActionsBottomSheet(BuildContext context) async {
-    debugPrint('⚙️ CategoryActionsMenu: Showing enhanced actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsMenu: Showing enhanced actions bottom sheet for "${category.name}"');
 
     await CategoryActionsBottomSheet.show(
       context: context,
@@ -947,7 +990,8 @@ class CategoryIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final themeManagerInstance = ThemeManager.of(context).of(context);
-    debugPrint('🔄 CategoryIcon: Using compatibility wrapper with ThemeManager integration');
+    debugPrint(
+        '🔄 CategoryIcon: Using compatibility wrapper with ThemeManager integration');
 
     return EnhancedCategoryIcon(
       category: category,

@@ -8,25 +8,33 @@ class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint('📢 NotificationsScreen: Building notifications interface');
-    debugPrint('📢 NotificationsScreen: Dark mode: ${ThemeManager.of(context).themeManager}');
+    debugPrint(
+        '📢 NotificationsScreen: Dark mode: ${ThemeManager.of(context).themeManager}');
 
     return Scaffold(
-      backgroundColor: ThemeManager.of(context).themeManager ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: ThemeManager.of(context).themeManager
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: ThemeManager.of(context).themeManager ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: ThemeManager.of(context).themeManager
+            ? const Color(0xFF1E293B)
+            : Colors.white,
         title: Text(
           'Notifications',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: ThemeManager.of(context).themeManager ? Colors.white : const Color(0xFF1F2937),
+            color: ThemeManager.of(context).themeManager
+                ? Colors.white
+                : const Color(0xFF1F2937),
           ),
         ),
         actions: [
@@ -37,7 +45,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             },
             icon: Icon(
               Prbal.check,
-              color: ThemeManager.of(context).themeManager ? Colors.white : const Color(0xFF1F2937),
+              color: ThemeManager.of(context).themeManager
+                  ? Colors.white
+                  : const Color(0xFF1F2937),
             ),
           ),
         ],
@@ -46,7 +56,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         padding: EdgeInsets.all(16.w),
         itemCount: 10,
         itemBuilder: (context, index) {
-          debugPrint('📢 NotificationsScreen: Building notification item $index');
+          debugPrint(
+              '📢 NotificationsScreen: Building notification item $index');
           return _buildNotificationItem(
             'Service Request Update',
             'Your house cleaning service has been confirmed for tomorrow at 10 AM.',
@@ -64,11 +75,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     String time,
     bool isRead,
   ) {
-    debugPrint('📢 NotificationsScreen: Building notification card for "$title"');
+    debugPrint(
+        '📢 NotificationsScreen: Building notification card for "$title"');
 
     return Card(
       margin: EdgeInsets.only(bottom: 12.h),
-      color: ThemeManager.of(context).themeManager ? const Color(0xFF1E293B) : Colors.white,
+      color: ThemeManager.of(context).themeManager
+          ? const Color(0xFF1E293B)
+          : Colors.white,
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: const Color(0xFF3B82F6),
@@ -83,7 +97,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
-            color: ThemeManager.of(context).themeManager ? Colors.white : const Color(0xFF1F2937),
+            color: ThemeManager.of(context).themeManager
+                ? Colors.white
+                : const Color(0xFF1F2937),
           ),
         ),
         subtitle: Column(
@@ -94,7 +110,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               subtitle,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: ThemeManager.of(context).themeManager ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                color: ThemeManager.of(context).themeManager
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF6B7280),
               ),
             ),
             SizedBox(height: 8.h),
@@ -102,7 +120,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               time,
               style: TextStyle(
                 fontSize: 12.sp,
-                color: ThemeManager.of(context).themeManager ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+                color: ThemeManager.of(context).themeManager
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFF9CA3AF),
               ),
             ),
           ],

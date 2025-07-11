@@ -77,7 +77,8 @@ Widget buildMetaInfo({
   required ThemeManager themeManager,
 }) {
   // ========== COMPREHENSIVE THEME INTEGRATION ==========
-  debugPrint('📊 MetaInfo: Building meta info widget with COMPREHENSIVE ThemeManager integration');
+  debugPrint(
+      '📊 MetaInfo: Building meta info widget with COMPREHENSIVE ThemeManager integration');
   debugPrint('📊 MetaInfo: → Label: "$label", Value: "$value"');
   debugPrint('📊 MetaInfo: → Icon: $icon');
   // debugPrint('📊 MetaInfo: → Primary Color: ${themeManager.primaryColor}');
@@ -85,7 +86,8 @@ Widget buildMetaInfo({
   // debugPrint('📊 MetaInfo: → Text Secondary: ${ThemeManager.of(context).textSecondary}');
   // debugPrint('📊 MetaInfo: → Background: ${ThemeManager.of(context).backgroundColor}');
   // debugPrint('📊 MetaInfo: → Surface: ${ThemeManager.of(context).surfaceColor}');
-  debugPrint('📊 MetaInfo: → Show Background: $showBackground, Border: $showBorder, Shadow: $showShadow');
+  debugPrint(
+      '📊 MetaInfo: → Show Background: $showBackground, Border: $showBorder, Shadow: $showShadow');
 
   // ========== DYNAMIC COLOR SELECTION ==========
   final iconColor = customIconColor ??
@@ -106,7 +108,8 @@ Widget buildMetaInfo({
         darkColor: themeManager.textPrimary,
       );
 
-  debugPrint('📊 MetaInfo: → Final Colors - Icon: $iconColor, Label: $labelColor, Value: $valueColor');
+  debugPrint(
+      '📊 MetaInfo: → Final Colors - Icon: $iconColor, Label: $labelColor, Value: $valueColor');
 
   // ========== MAIN CONTAINER WITH OPTIONAL STYLING ==========
   Widget content = Column(
@@ -154,8 +157,10 @@ Widget buildMetaInfo({
                     border: showBorder
                         ? Border.all(
                             color: themeManager.conditionalColor(
-                              lightColor: themeManager.borderColor.withValues(alpha: 51),
-                              darkColor: themeManager.borderSecondary.withValues(alpha: 77),
+                              lightColor: themeManager.borderColor
+                                  .withValues(alpha: 51),
+                              darkColor: themeManager.borderSecondary
+                                  .withValues(alpha: 77),
                             ),
                             width: 1,
                           )
@@ -168,7 +173,8 @@ Widget buildMetaInfo({
                               offset: const Offset(0, 1),
                             ),
                             BoxShadow(
-                              color: themeManager.primaryColor.withValues(alpha: 13),
+                              color: themeManager.primaryColor
+                                  .withValues(alpha: 13),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -257,7 +263,8 @@ Widget buildMetaInfo({
             ? Border.all(
                 color: themeManager.conditionalColor(
                   lightColor: themeManager.borderColor.withValues(alpha: 77),
-                  darkColor: themeManager.borderSecondary.withValues(alpha: 102),
+                  darkColor:
+                      themeManager.borderSecondary.withValues(alpha: 102),
                 ),
                 width: 1,
               )
@@ -277,7 +284,8 @@ Widget buildMetaInfo({
     );
   }
 
-  debugPrint('📊 MetaInfo: Meta info widget built successfully with comprehensive theming');
+  debugPrint(
+      '📊 MetaInfo: Meta info widget built successfully with comprehensive theming');
   return content;
 }
 
@@ -345,7 +353,8 @@ Widget buildStatusMetaInfo({
   required String status, // 'success', 'warning', 'error', 'info'
   required ThemeManager themeManager,
 }) {
-  debugPrint('📊 MetaInfo: Building status meta info variant for status: $status');
+  debugPrint(
+      '📊 MetaInfo: Building status meta info variant for status: $status');
 
   Color statusColor;
   switch (status.toLowerCase()) {

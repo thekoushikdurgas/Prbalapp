@@ -43,7 +43,8 @@ class HelpCenterBottomSheet extends StatefulWidget {
   }
 }
 
-class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with TickerProviderStateMixin, ThemeAwareMixin {
+class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String _searchQuery = '';
@@ -91,9 +92,12 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
   @override
   Widget build(BuildContext context) {
     debugPrint('🆘 [HelpCenter] Building help center with theme colors:');
-    debugPrint('🆘 [HelpCenter] Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🆘 [HelpCenter] Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('🆘 [HelpCenter] Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🆘 [HelpCenter] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🆘 [HelpCenter] Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🆘 [HelpCenter] Primary: ${ThemeManager.of(context).primaryColor}');
 
     return AnimatedBuilder(
       animation: _fadeAnimation,
@@ -109,7 +113,8 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
               ),
               boxShadow: [
                 BoxShadow(
-                  color: ThemeManager.of(context).shadowDark.withValues(alpha: 77),
+                  color:
+                      ThemeManager.of(context).shadowDark.withValues(alpha: 77),
                   blurRadius: 20.r,
                   offset: Offset(0, -4.h),
                 ),
@@ -170,7 +175,9 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).infoColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .infoColor
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -221,10 +228,14 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
                   width: 36.w,
                   height: 36.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceElevated.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceElevated
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 51),
                     ),
                   ),
                   child: Icon(
@@ -523,7 +534,8 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
               setState(() {
                 _expandedIndex = isExpanded ? null : index;
               });
-              debugPrint('🆘 [HelpCenter] FAQ item ${isExpanded ? "collapsed" : "expanded"}: ${item.question}');
+              debugPrint(
+                  '🆘 [HelpCenter] FAQ item ${isExpanded ? "collapsed" : "expanded"}: ${item.question}');
             },
             child: Container(
               padding: EdgeInsets.all(16.w),
@@ -719,7 +731,8 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
           ),
           FAQItem(
             question: 'Can I cancel my booking?',
-            answer: 'Yes, you can cancel bookings up to 24 hours before the scheduled time through the Orders section.',
+            answer:
+                'Yes, you can cancel bookings up to 24 hours before the scheduled time through the Orders section.',
           ),
           FAQItem(
             question: 'How do I become a service provider?',
@@ -735,7 +748,8 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
         items: [
           FAQItem(
             question: 'What payment methods are accepted?',
-            answer: 'We accept credit cards, debit cards, UPI, and wallet payments for secure transactions.',
+            answer:
+                'We accept credit cards, debit cards, UPI, and wallet payments for secure transactions.',
           ),
           FAQItem(
             question: 'How do I get a refund?',
@@ -761,7 +775,8 @@ class _HelpCenterBottomSheetState extends State<HelpCenterBottomSheet> with Tick
           ),
           FAQItem(
             question: 'I\'m not receiving notifications',
-            answer: 'Check your device notification settings and ensure Prbal has permission to send notifications.',
+            answer:
+                'Check your device notification settings and ensure Prbal has permission to send notifications.',
           ),
           FAQItem(
             question: 'How do I report a bug?',

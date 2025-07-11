@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prbal/services/user_service.dart';
+import 'package:prbal/models/auth/user_type.dart';
+// import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/services/hive_service.dart';
 
@@ -18,7 +19,9 @@ class RouterGuard {
       return null;
     }
 
-    return _handleAuthenticationFlow(state) ?? _handleOnboardingFlow(state) ?? _handleAuthenticatedUserFlow(state);
+    return _handleAuthenticationFlow(state) ??
+        _handleOnboardingFlow(state) ??
+        _handleAuthenticatedUserFlow(state);
   }
 
   /// Handle authentication-related redirects
@@ -33,18 +36,31 @@ class RouterGuard {
     return null;
   }
 
-  /// Handle onboarding flow redirects
+  /// Handle onboarding flow redirects with language selection check
   static String? _handleOnboardingFlow(GoRouterState state) {
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
+    final isLanguageSelected = HiveService.isLanguageSelected();
     final isLoggedIn = HiveService.isLoggedIn();
 
     // If intro hasn't been watched, redirect to onboarding
-    if (!hasIntroBeenWatched && state.matchedLocation != RouteEnum.onboarding.rawValue) {
+    if (!hasIntroBeenWatched &&
+        state.matchedLocation != RouteEnum.onboarding.rawValue) {
       return RouteEnum.onboarding.rawValue;
     }
 
-    // If intro has been watched but user is not logged in, redirect to welcome
-    if (hasIntroBeenWatched && !isLoggedIn && !_isAuthScreen(state.matchedLocation)) {
+    // If intro has been watched but language not selected, redirect to language selection
+    if (hasIntroBeenWatched &&
+        !isLanguageSelected &&
+        state.matchedLocation != RouteEnum.languageSelection.rawValue) {
+      return RouteEnum.languageSelection.rawValue;
+    }
+
+    // If intro has been watched and language selected but user is not logged in, redirect to welcome
+    if (hasIntroBeenWatched &&
+        isLanguageSelected &&
+        !isLoggedIn &&
+        !_isAuthScreen(state.matchedLocation) &&
+        state.matchedLocation != RouteEnum.languageSelection.rawValue) {
       return RouteEnum.welcome.rawValue;
     }
 
@@ -77,7 +93,8 @@ class RouterGuard {
 
     // Prevent wrong user types from accessing specific dashboards
     if (_isUserTypeSpecificRoute(state.matchedLocation)) {
-      final UserType expectedUserType = _getExpectedUserTypeForRoute(state.matchedLocation);
+      final UserType expectedUserType =
+          _getExpectedUserTypeForRoute(state.matchedLocation);
       if (expectedUserType != userType) {
         // Redirect to correct dashboard for their user type
         switch (userType) {
@@ -96,7 +113,8 @@ class RouterGuard {
 
   /// Check if the current location is an authentication screen
   static bool _isAuthScreen(String location) {
-    return location == RouteEnum.welcome.rawValue || location == RouteEnum.pinEntry.rawValue;
+    return location == RouteEnum.welcome.rawValue ||
+        location == RouteEnum.pinEntry.rawValue;
   }
 
   /// Check if the route is user-type specific
@@ -125,9 +143,26 @@ class RouterGuard {
     return !HiveService.hasIntroBeenWatched();
   }
 
+  /// Check if user needs language selection
+  static bool needsLanguageSelection() {
+    return HiveService.hasIntroBeenWatched() &&
+        !HiveService.isLanguageSelected();
+  }
+
+  /// Check if user has completed onboarding flow (intro + language selection)
+  static bool hasCompletedOnboarding() {
+    return HiveService.hasIntroBeenWatched() &&
+        HiveService.isLanguageSelected();
+  }
+
   /// Check if user is fully authenticated
   static bool isFullyAuthenticated() {
     return HiveService.isLoggedIn();
+  }
+
+  /// Check if user is ready for main app (completed onboarding + authenticated)
+  static bool isReadyForMainApp() {
+    return hasCompletedOnboarding() && isFullyAuthenticated();
   }
 
   /// Get appropriate dashboard route for user type

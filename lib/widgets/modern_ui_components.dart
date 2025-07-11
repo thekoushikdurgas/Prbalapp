@@ -128,7 +128,8 @@ class ModernUIComponents {
     required ThemeManager themeManager,
   }) {
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
-    debugPrint('🎨 ModernUIComponents: Creating ENHANCED glassmorphism card with comprehensive ThemeManager');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating ENHANCED glassmorphism card with comprehensive ThemeManager');
     debugPrint('🎨 ModernUIComponents: → Enhanced Effect: $useEnhancedEffect');
     debugPrint('🎨 ModernUIComponents: → Border Radius: $borderRadius');
     // debugPrint('🎨 ModernUIComponents: → Glass Gradient: ${themeManager.glassGradient}');
@@ -136,7 +137,9 @@ class ModernUIComponents {
     // debugPrint('🎨 ModernUIComponents: → Border Color: ${themeManager.borderColor}');
 
     // ========== DYNAMIC GLASS EFFECT SELECTION ==========
-    final glassDecoration = useEnhancedEffect ? themeManager.enhancedGlassMorphism : themeManager.glassMorphism;
+    final glassDecoration = useEnhancedEffect
+        ? themeManager.enhancedGlassMorphism
+        : themeManager.glassMorphism;
 
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
@@ -272,12 +275,15 @@ class ModernUIComponents {
     required ThemeManager themeManager,
   }) {
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
-    debugPrint('🎨 ModernUIComponents: Creating ENHANCED gradient card with comprehensive ThemeManager');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating ENHANCED gradient card with comprehensive ThemeManager');
     debugPrint('🎨 ModernUIComponents: → Gradient Type: $gradientType');
-    debugPrint('🎨 ModernUIComponents: → Custom Colors: ${customColors?.length ?? 0} colors');
+    debugPrint(
+        '🎨 ModernUIComponents: → Custom Colors: ${customColors?.length ?? 0} colors');
     debugPrint('🎨 ModernUIComponents: → Border Radius: $borderRadius');
     debugPrint('🎨 ModernUIComponents: → Show Border: $showBorder');
-    debugPrint('🎨 ModernUIComponents: → Primary Color: ${themeManager.primaryColor}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Primary Color: ${themeManager.primaryColor}');
 
     // ========== DYNAMIC GRADIENT SELECTION ==========
     Gradient selectedGradient;
@@ -430,13 +436,17 @@ class ModernUIComponents {
     required ThemeManager themeManager,
   }) {
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
-    debugPrint('🎨 ModernUIComponents: Creating ENHANCED elevated card with comprehensive ThemeManager');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating ENHANCED elevated card with comprehensive ThemeManager');
     debugPrint('🎨 ModernUIComponents: → Use Gradient: $useGradient');
     debugPrint('🎨 ModernUIComponents: → Show Border: $showBorder');
     debugPrint('🎨 ModernUIComponents: → Enhanced Shadow: $useEnhancedShadow');
-    debugPrint('🎨 ModernUIComponents: → Custom Background: ${customBackgroundColor != null}');
-    debugPrint('🎨 ModernUIComponents: → Card Background: ${themeManager.cardBackground}');
-    debugPrint('🎨 ModernUIComponents: → Surface Elevated: ${themeManager.surfaceElevated}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Custom Background: ${customBackgroundColor != null}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Card Background: ${themeManager.cardBackground}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Surface Elevated: ${themeManager.surfaceElevated}');
 
     return Container(
       margin: margin ?? EdgeInsets.all(8.w),
@@ -480,7 +490,8 @@ class ModernUIComponents {
             ? Border.all(
                 color: themeManager.conditionalColor(
                   lightColor: themeManager.borderColor.withValues(alpha: 77),
-                  darkColor: themeManager.borderSecondary.withValues(alpha: 102),
+                  darkColor:
+                      themeManager.borderSecondary.withValues(alpha: 102),
                 ),
                 width: 1,
               )
@@ -554,8 +565,10 @@ class ModernUIComponents {
     VoidCallback? onTap,
     required ThemeManager themeManager,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating metric card with ThemeManager integration');
-    debugPrint('🎨 ModernUIComponents: Metric - Title: "$title", Value: "$value"');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating metric card with ThemeManager integration');
+    debugPrint(
+        '🎨 ModernUIComponents: Metric - Title: "$title", Value: "$value"');
     debugPrint('🎨 ModernUIComponents: Icon color: $iconColor');
     debugPrint('🎨 ModernUIComponents: Tappable: ${onTap != null}');
     debugPrint('🎨 ModernUIComponents: Has subtitle: ${subtitle != null}');
@@ -567,7 +580,8 @@ class ModernUIComponents {
         child: InkWell(
           onTap: onTap != null
               ? () {
-                  debugPrint('🎨 ModernUIComponents: Metric card tapped - $title');
+                  debugPrint(
+                      '🎨 ModernUIComponents: Metric card tapped - $title');
                   onTap();
                 }
               : null,
@@ -597,8 +611,10 @@ class ModernUIComponents {
                     Icon(
                       Prbal.externalLink,
                       color: themeManager.conditionalColor(
-                        lightColor: themeManager.textSecondary.withValues(alpha: 128),
-                        darkColor: themeManager.textTertiary.withValues(alpha: 128),
+                        lightColor:
+                            themeManager.textSecondary.withValues(alpha: 128),
+                        darkColor:
+                            themeManager.textTertiary.withValues(alpha: 128),
                       ),
                       size: 16.sp,
                     ),
@@ -634,7 +650,8 @@ class ModernUIComponents {
                   subtitle,
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: const Color(0xFF10B981), // Green for positive metrics
+                    color:
+                        const Color(0xFF10B981), // Green for positive metrics
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -665,7 +682,8 @@ class ModernUIComponents {
     bool isOnline = true,
   }) {
     debugPrint('🎨 ModernUIComponents: Creating status indicator');
-    debugPrint('🎨 ModernUIComponents: Status - Label: "$label", Online: $isOnline');
+    debugPrint(
+        '🎨 ModernUIComponents: Status - Label: "$label", Online: $isOnline');
     debugPrint('🎨 ModernUIComponents: Status color: $color');
 
     return Container(
@@ -748,7 +766,9 @@ class ModernUIComponents {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: type == ModernButtonType.gradient ? Colors.transparent : buttonColors['background'],
+          backgroundColor: type == ModernButtonType.gradient
+              ? Colors.transparent
+              : buttonColors['background'],
           foregroundColor: buttonColors['foreground'],
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -850,7 +870,8 @@ class ModernUIComponents {
     bool readOnly = false,
     required ThemeManager themeManager,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating ENHANCED search bar with comprehensive ThemeManager');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating ENHANCED search bar with comprehensive ThemeManager');
     // debugPrint('🎨 ModernUIComponents: → Input Background: ${themeManager.inputBackground}');
     // debugPrint('🎨 ModernUIComponents: → Text Primary: ${themeManager.textPrimary}');
     debugPrint('🎨 ModernUIComponents: → Read Only: $readOnly');
@@ -907,11 +928,14 @@ class ModernUIComponents {
     VoidCallback? onTap,
     required ThemeManager themeManager,
   }) {
-    debugPrint('🎨 ModernUIComponents: Creating ENHANCED list tile with comprehensive ThemeManager');
+    debugPrint(
+        '🎨 ModernUIComponents: Creating ENHANCED list tile with comprehensive ThemeManager');
     debugPrint('🎨 ModernUIComponents: → Title: "$title"');
     debugPrint('🎨 ModernUIComponents: → Has Subtitle: ${subtitle != null}');
-    debugPrint('🎨 ModernUIComponents: → Has Leading Icon: ${leadingIcon != null}');
-    debugPrint('🎨 ModernUIComponents: → Text Primary: ${themeManager.textPrimary}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Has Leading Icon: ${leadingIcon != null}');
+    debugPrint(
+        '🎨 ModernUIComponents: → Text Primary: ${themeManager.textPrimary}');
 
     return elevatedCard(
       themeManager: themeManager,
@@ -930,7 +954,8 @@ class ModernUIComponents {
                     width: 40.w,
                     height: 40.h,
                     decoration: BoxDecoration(
-                      color: (leadingIconColor ?? const Color(0xFF3B82F6)).withValues(alpha: 0.1),
+                      color: (leadingIconColor ?? const Color(0xFF3B82F6))
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Icon(
@@ -1005,7 +1030,8 @@ class ModernUIComponents {
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
-                    color: themeManager ? Colors.white : const Color(0xFF1F2937),
+                    color:
+                        themeManager ? Colors.white : const Color(0xFF1F2937),
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -1014,7 +1040,9 @@ class ModernUIComponents {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: themeManager ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+                      color: themeManager
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -1028,7 +1056,8 @@ class ModernUIComponents {
   }
 
   /// Get button colors based on type and theme
-  static Map<String, Color> _getButtonColors(ModernButtonType type, bool themeManager) {
+  static Map<String, Color> _getButtonColors(
+      ModernButtonType type, bool themeManager) {
     switch (type) {
       case ModernButtonType.primary:
         return {
@@ -1039,7 +1068,8 @@ class ModernUIComponents {
         };
       case ModernButtonType.secondary:
         return {
-          'background': themeManager ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
+          'background':
+              themeManager ? const Color(0xFF374151) : const Color(0xFFF3F4F6),
           'foreground': themeManager ? Colors.white : const Color(0xFF1F2937),
           'shadow': Colors.black.withValues(alpha: 0.1),
           'border': Colors.transparent,
@@ -1049,7 +1079,8 @@ class ModernUIComponents {
           'background': Colors.transparent,
           'foreground': themeManager ? Colors.white : const Color(0xFF1F2937),
           'shadow': Colors.transparent,
-          'border': themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB),
+          'border':
+              themeManager ? const Color(0xFF64748B) : const Color(0xFFD1D5DB),
         };
       case ModernButtonType.danger:
         return {
@@ -1116,10 +1147,12 @@ class ModernAnimatedContainer extends StatefulWidget {
   });
 
   @override
-  State<ModernAnimatedContainer> createState() => _ModernAnimatedContainerState();
+  State<ModernAnimatedContainer> createState() =>
+      _ModernAnimatedContainerState();
 }
 
-class _ModernAnimatedContainerState extends State<ModernAnimatedContainer> with SingleTickerProviderStateMixin {
+class _ModernAnimatedContainerState extends State<ModernAnimatedContainer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 

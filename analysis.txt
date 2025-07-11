@@ -1,4 +1,2 @@
-Analyzing prbal...                                              
-
-   info - Statements in an if should be enclosed in a block - lib\widgets\admin\category\category_cards.dart:681:7 - curly_braces_in_flow_control_structures
-
+Analyzing prbalapp-main...                                      
+No issues found! (ran in 13.6s)

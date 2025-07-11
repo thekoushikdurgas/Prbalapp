@@ -13,7 +13,8 @@ class HealthDashboard extends ConsumerStatefulWidget {
   ConsumerState<HealthDashboard> createState() => _HealthDashboardState();
 }
 
-class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerProviderStateMixin {
+class _HealthDashboardState extends ConsumerState<HealthDashboard>
+    with TickerProviderStateMixin {
   final HealthService _healthService = HealthService();
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -59,9 +60,11 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
     try {
       await _healthService.initialize();
       await _refreshHealthData();
-      debugPrint('💊 HealthDashboard: Health monitoring initialized successfully');
+      debugPrint(
+          '💊 HealthDashboard: Health monitoring initialized successfully');
     } catch (e) {
-      debugPrint('❌ HealthDashboard: Health monitoring initialization failed: $e');
+      debugPrint(
+          '❌ HealthDashboard: Health monitoring initialization failed: $e');
     }
   }
 
@@ -209,19 +212,24 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
               // Auto refresh toggle
               GestureDetector(
                 onTap: () {
-                  debugPrint('💊 HealthDashboard: Auto refresh toggled: ${!_autoRefresh}');
+                  debugPrint(
+                      '💊 HealthDashboard: Auto refresh toggled: ${!_autoRefresh}');
                   setState(() {
                     _autoRefresh = !_autoRefresh;
                   });
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                   decoration: BoxDecoration(
-                    color: _autoRefresh ? ThemeManager.of(context).successColor : ThemeManager.of(context).surfaceColor,
+                    color: _autoRefresh
+                        ? ThemeManager.of(context).successColor
+                        : ThemeManager.of(context).surfaceColor,
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color:
-                          _autoRefresh ? ThemeManager.of(context).successColor : ThemeManager.of(context).borderColor,
+                      color: _autoRefresh
+                          ? ThemeManager.of(context).successColor
+                          : ThemeManager.of(context).borderColor,
                     ),
                   ),
                   child: Row(
@@ -230,7 +238,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
                       Icon(
                         Prbal.redo,
                         size: 16.sp,
-                        color: _autoRefresh ? Colors.white : ThemeManager.of(context).textSecondary,
+                        color: _autoRefresh
+                            ? Colors.white
+                            : ThemeManager.of(context).textSecondary,
                       ),
                       SizedBox(width: 6.w),
                       Text(
@@ -238,7 +248,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: _autoRefresh ? Colors.white : ThemeManager.of(context).textSecondary,
+                          color: _autoRefresh
+                              ? Colors.white
+                              : ThemeManager.of(context).textSecondary,
                         ),
                       ),
                     ],
@@ -265,13 +277,21 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isHealthy
-                ? [ThemeManager.of(context).successColor, ThemeManager.of(context).successColor.withValues(alpha: 204)]
-                : [ThemeManager.of(context).errorColor, ThemeManager.of(context).errorColor.withValues(alpha: 204)],
+                ? [
+                    ThemeManager.of(context).successColor,
+                    ThemeManager.of(context).successColor.withValues(alpha: 204)
+                  ]
+                : [
+                    ThemeManager.of(context).errorColor,
+                    ThemeManager.of(context).errorColor.withValues(alpha: 204)
+                  ],
           ),
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: (isHealthy ? ThemeManager.of(context).successColor : ThemeManager.of(context).errorColor)
+              color: (isHealthy
+                      ? ThemeManager.of(context).successColor
+                      : ThemeManager.of(context).errorColor)
                   .withValues(alpha: 77),
               blurRadius: 20,
               offset: const Offset(0, 8),
@@ -302,7 +322,11 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _isLoading ? 'Loading...' : (isHealthy ? 'All Systems Operational' : 'System Issues Detected'),
+                        _isLoading
+                            ? 'Loading...'
+                            : (isHealthy
+                                ? 'All Systems Operational'
+                                : 'System Issues Detected'),
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
@@ -333,11 +357,13 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
             SizedBox(height: 20.h),
             Row(
               children: [
-                _buildStatusMetric(isHealthy ? '99.9%' : '95.2%', 'Uptime', Colors.white),
+                _buildStatusMetric(
+                    isHealthy ? '99.9%' : '95.2%', 'Uptime', Colors.white),
                 SizedBox(width: 24.w),
                 _buildStatusMetric('< 50ms', 'Response Time', Colors.white),
                 SizedBox(width: 24.w),
-                _buildStatusMetric(_healthData?.system.version ?? '1.0.0', 'Version', Colors.white),
+                _buildStatusMetric(_healthData?.system.version ?? '1.0.0',
+                    'Version', Colors.white),
               ],
             ),
           ],
@@ -515,7 +541,8 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
     final services = [
       {
         'name': 'API Server',
-        'status': _healthData?.system.status == 'healthy' ? 'Healthy' : 'Warning',
+        'status':
+            _healthData?.system.status == 'healthy' ? 'Healthy' : 'Warning',
         'responseTime': '45ms',
         'color': _healthData?.system.status == 'healthy'
             ? ThemeManager.of(context).successColor
@@ -523,7 +550,9 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
       },
       {
         'name': 'Database',
-        'status': _healthData?.database.status == 'database_connected' ? 'Connected' : 'Disconnected',
+        'status': _healthData?.database.status == 'database_connected'
+            ? 'Connected'
+            : 'Disconnected',
         'responseTime': '12ms',
         'color': _healthData?.database.status == 'database_connected'
             ? ThemeManager.of(context).successColor
@@ -553,7 +582,8 @@ class _HealthDashboardState extends ConsumerState<HealthDashboard> with TickerPr
                   _refreshHealthData();
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     color: ThemeManager.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(12.r),

@@ -243,7 +243,8 @@ class SourGummyTypography {
   // =================== SPECIALIZED STYLES ===================
 
   /// Logo text style - SourGummy Expanded with branding
-  static TextStyle logo(BuildContext context, {Color? color, double? fontSize}) {
+  static TextStyle logo(BuildContext context,
+      {Color? color, double? fontSize}) {
     return TextStyle(
       fontFamily: expanded,
       fontSize: fontSize?.sp ?? 32.sp,

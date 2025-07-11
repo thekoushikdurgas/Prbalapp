@@ -12,7 +12,8 @@ class AdminActivityScreen extends StatefulWidget {
   State<AdminActivityScreen> createState() => _AdminActivityScreenState();
 }
 
-class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerProviderStateMixin {
+class _AdminActivityScreenState extends State<AdminActivityScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -62,7 +63,8 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
   void initState() {
     super.initState();
     _initializeAnimations();
-    debugPrint('🚀 AdminActivityScreen: Initializing with ${_activities.length} activities');
+    debugPrint(
+        '🚀 AdminActivityScreen: Initializing with ${_activities.length} activities');
   }
 
   void _initializeAnimations() {
@@ -82,7 +84,8 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic));
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic));
 
     _fadeController.forward();
     _slideController.forward();
@@ -180,7 +183,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                 children: [
                   Text(
                     'Admin Activity',
-                    style: ThemeManager.of(context).theme.textTheme.headlineSmall?.copyWith(
+                    style: ThemeManager.of(context)
+                        .theme
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(
                           color: ThemeManager.of(context).textPrimary,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
@@ -189,7 +196,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   SizedBox(height: 4.h),
                   Text(
                     'Real-time system monitoring',
-                    style: ThemeManager.of(context).theme.textTheme.bodyMedium?.copyWith(
+                    style: ThemeManager.of(context)
+                        .theme
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(
                           color: ThemeManager.of(context).textSecondary,
                         ),
                   ),
@@ -216,7 +227,9 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: ThemeManager.of(context).statusOnline.withValues(alpha: 0.5),
+                          color: ThemeManager.of(context)
+                              .statusOnline
+                              .withValues(alpha: 0.5),
                           blurRadius: 4,
                           spreadRadius: 1,
                         ),
@@ -226,7 +239,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   SizedBox(width: 6.w),
                   Text(
                     'Live',
-                    style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                    style: ThemeManager.of(context)
+                        .theme
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(
                           color: ThemeManager.of(context).textInverted,
                           fontWeight: FontWeight.w600,
                         ),
@@ -351,7 +368,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
           SizedBox(height: 12.h),
           Text(
             value,
-            style: ThemeManager.of(context).theme.textTheme.headlineSmall?.copyWith(
+            style: ThemeManager.of(context)
+                .theme
+                .textTheme
+                .headlineSmall
+                ?.copyWith(
                   color: ThemeManager.of(context).textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
@@ -398,7 +419,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
               SizedBox(width: 12.w),
               Text(
                 'Activity Filters',
-                style: ThemeManager.of(context).theme.textTheme.titleMedium?.copyWith(
+                style: ThemeManager.of(context)
+                    .theme
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(
                       color: ThemeManager.of(context).textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
@@ -427,11 +452,14 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        gradient: isSelected ? ThemeManager.of(context).secondaryGradient : null,
+        gradient:
+            isSelected ? ThemeManager.of(context).secondaryGradient : null,
         color: isSelected ? null : ThemeManager.of(context).cardBackground,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: isSelected ? ThemeManager.of(context).secondaryColor : ThemeManager.of(context).borderColor,
+          color: isSelected
+              ? ThemeManager.of(context).secondaryColor
+              : ThemeManager.of(context).borderColor,
           width: 1,
         ),
         boxShadow: isSelected ? ThemeManager.of(context).primaryShadow : null,
@@ -439,7 +467,9 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
       child: Text(
         label,
         style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
-              color: isSelected ? ThemeManager.of(context).textInverted : ThemeManager.of(context).textSecondary,
+              color: isSelected
+                  ? ThemeManager.of(context).textInverted
+                  : ThemeManager.of(context).textSecondary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             ),
       ),
@@ -468,10 +498,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
             SizedBox(width: 12.w),
             Text(
               'Recent Activities',
-              style: ThemeManager.of(context).theme.textTheme.titleLarge?.copyWith(
-                    color: ThemeManager.of(context).textPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
+              style:
+                  ThemeManager.of(context).theme.textTheme.titleLarge?.copyWith(
+                        color: ThemeManager.of(context).textPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
             ),
           ],
         ),
@@ -532,7 +563,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   children: [
                     Text(
                       activity.title,
-                      style: ThemeManager.of(context).theme.textTheme.titleMedium?.copyWith(
+                      style: ThemeManager.of(context)
+                          .theme
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(
                             color: ThemeManager.of(context).textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
@@ -542,7 +577,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                     SizedBox(height: 4.h),
                     Text(
                       activity.description,
-                      style: ThemeManager.of(context).theme.textTheme.bodySmall?.copyWith(
+                      style: ThemeManager.of(context)
+                          .theme
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
                             color: ThemeManager.of(context).textSecondary,
                           ),
                       maxLines: 2,
@@ -560,7 +599,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                 ),
                 child: Text(
                   activity.priority.name.toUpperCase(),
-                  style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(
                         color: ThemeManager.of(context).textInverted,
                         fontWeight: FontWeight.w600,
                         fontSize: 10.sp,
@@ -590,7 +633,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                 SizedBox(width: 6.w),
                 Text(
                   activity.category,
-                  style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(
                         color: ThemeManager.of(context).textTertiary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -604,14 +651,22 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                 SizedBox(width: 6.w),
                 Text(
                   _formatTimestamp(activity.timestamp),
-                  style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(
                         color: ThemeManager.of(context).textQuaternary,
                       ),
                 ),
                 SizedBox(width: 12.w),
                 Text(
                   '#${activity.id}',
-                  style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(
                         color: ThemeManager.of(context).textQuaternary,
                         fontFamily: ThemeManager.fontFamilySemiExpanded,
                       ),
@@ -759,7 +814,9 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).newIndicator.withValues(alpha: 0.3),
+                      color: ThemeManager.of(context)
+                          .newIndicator
+                          .withValues(alpha: 0.3),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -778,7 +835,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   children: [
                     Text(
                       'System Status Monitor',
-                      style: ThemeManager.of(context).theme.textTheme.titleLarge?.copyWith(
+                      style: ThemeManager.of(context)
+                          .theme
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(
                             color: ThemeManager.of(context).textPrimary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
@@ -787,7 +848,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                     SizedBox(height: 4.h),
                     Text(
                       'Real-time system health indicators',
-                      style: ThemeManager.of(context).theme.textTheme.bodyMedium?.copyWith(
+                      style: ThemeManager.of(context)
+                          .theme
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
                             color: ThemeManager.of(context).textSecondary,
                           ),
                     ),
@@ -812,7 +877,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                     SizedBox(width: 4.w),
                     Text(
                       'VERIFIED',
-                      style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                      style: ThemeManager.of(context)
+                          .theme
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(
                             color: ThemeManager.of(context).textInverted,
                             fontWeight: FontWeight.w700,
                             fontSize: 10.sp,
@@ -873,7 +942,8 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   decoration: BoxDecoration(
                     color: ThemeManager.of(context).modalBackground,
                     borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: ThemeManager.of(context).borderSecondary),
+                    border: Border.all(
+                        color: ThemeManager.of(context).borderSecondary),
                   ),
                   child: Row(
                     children: [
@@ -885,7 +955,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                       SizedBox(width: 8.w),
                       Text(
                         'Favorites: ${ThemeManager.of(context).favoriteColor.toARGB32().toRadixString(16).toUpperCase()}',
-                        style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
+                        style: ThemeManager.of(context)
+                            .theme
+                            .textTheme
+                            .labelMedium
+                            ?.copyWith(
                               color: ThemeManager.of(context).textTertiary,
                               fontFamily: ThemeManager.fontFamilySemiExpanded,
                             ),
@@ -901,7 +975,8 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                   decoration: BoxDecoration(
                     color: ThemeManager.of(context).surfaceElevated,
                     borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: ThemeManager.of(context).borderSecondary),
+                    border: Border.all(
+                        color: ThemeManager.of(context).borderSecondary),
                   ),
                   child: Row(
                     children: [
@@ -913,7 +988,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                       SizedBox(width: 8.w),
                       Text(
                         'Rating: 4.8/5',
-                        style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
+                        style: ThemeManager.of(context)
+                            .theme
+                            .textTheme
+                            .labelMedium
+                            ?.copyWith(
                               color: ThemeManager.of(context).textTertiary,
                               fontWeight: FontWeight.w600,
                             ),
@@ -979,7 +1058,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
               children: [
                 Text(
                   title,
-                  style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(
                         color: ThemeManager.of(context).textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -989,7 +1072,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
                 SizedBox(height: 2.h),
                 Text(
                   status,
-                  style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(
                         color: statusColor,
                         fontWeight: FontWeight.w500,
                       ),
@@ -1047,7 +1134,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
               Expanded(
                 child: Text(
                   'Accent Color Palette',
-                  style: ThemeManager.of(context).theme.textTheme.titleLarge?.copyWith(
+                  style: ThemeManager.of(context)
+                      .theme
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
                         color: ThemeManager.of(context).textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1112,14 +1203,22 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
             ),
             child: Row(
               children: [
-                _buildNeutralSegment(ThemeManager.of(context).neutral100, '100'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral200, '200'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral300, '300'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral400, '400'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral500, '500'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral600, '600'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral700, '700'),
-                _buildNeutralSegment(ThemeManager.of(context).neutral800, '800'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral100, '100'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral200, '200'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral300, '300'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral400, '400'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral500, '500'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral600, '600'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral700, '700'),
+                _buildNeutralSegment(
+                    ThemeManager.of(context).neutral800, '800'),
               ],
             ),
           ),
@@ -1189,18 +1288,22 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
         children: [
           Text(
             title,
-            style: ThemeManager.of(context).theme.textTheme.titleMedium?.copyWith(
-                  color: ThemeManager.of(context).textInverted,
-                  fontWeight: FontWeight.bold,
-                ),
+            style:
+                ThemeManager.of(context).theme.textTheme.titleMedium?.copyWith(
+                      color: ThemeManager.of(context).textInverted,
+                      fontWeight: FontWeight.bold,
+                    ),
           ),
           SizedBox(height: 4.h),
           Text(
             '#${accentColor.toARGB32().toRadixString(16).toUpperCase().padLeft(8, '0')}',
-            style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
-                  color: ThemeManager.of(context).textInverted.withValues(alpha: 0.8),
-                  fontFamily: ThemeManager.fontFamilySemiExpanded,
-                ),
+            style:
+                ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+                      color: ThemeManager.of(context)
+                          .textInverted
+                          .withValues(alpha: 0.8),
+                      fontFamily: ThemeManager.fontFamilySemiExpanded,
+                    ),
           ),
         ],
       ),
@@ -1214,9 +1317,13 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
         decoration: BoxDecoration(
           color: color,
           borderRadius: label == '100'
-              ? BorderRadius.only(topLeft: Radius.circular(12.r), bottomLeft: Radius.circular(12.r))
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(12.r),
+                  bottomLeft: Radius.circular(12.r))
               : label == '800'
-                  ? BorderRadius.only(topRight: Radius.circular(12.r), bottomRight: Radius.circular(12.r))
+                  ? BorderRadius.only(
+                      topRight: Radius.circular(12.r),
+                      bottomRight: Radius.circular(12.r))
                   : null,
         ),
         child: Column(
@@ -1224,7 +1331,11 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
           children: [
             Text(
               label,
-              style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
+              style: ThemeManager.of(context)
+                  .theme
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(
                     color: ThemeManager.of(context).getContrastingColor(color),
                     fontWeight: FontWeight.w600,
                     fontSize: 10.sp,
@@ -1249,7 +1360,8 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> with TickerPr
         child: Text(
           state,
           style: ThemeManager.of(context).theme.textTheme.labelSmall?.copyWith(
-                color: ThemeManager.of(context).getTextColorForBackground(backgroundColor),
+                color: ThemeManager.of(context)
+                    .getTextColorForBackground(backgroundColor),
                 fontWeight: FontWeight.w500,
                 fontSize: 10.sp,
               ),

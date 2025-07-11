@@ -31,7 +31,8 @@ class SettingsFormFieldWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     // final authState = ref.watch(authenticationStateProvider);
-    final userTypeColor = ThemeManager.of(context).getUserTypeColor(HiveService.getUserType());
+    final userTypeColor =
+        ThemeManager.of(context).getUserTypeColor(HiveService.getUserType());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +76,8 @@ class SettingsFormFieldWidget extends ConsumerWidget {
               fontSize: 14.sp,
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+            fillColor:
+                isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(

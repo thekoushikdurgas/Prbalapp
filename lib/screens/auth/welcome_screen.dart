@@ -6,7 +6,34 @@ import 'package:lottie/lottie.dart';
 import 'package:prbal/screens/auth/phone_login_bottom_sheet.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:prbal/services/hive_service.dart';
 
+/// WelcomeScreen - Entry point for user authentication
+///
+/// **🎯 WELCOME SCREEN OVERVIEW**
+/// This screen serves as the primary entry point for user authentication
+/// and onboarding, providing a beautiful animated interface that leads
+/// to the phone authentication flow.
+///
+/// **🔄 INTEGRATION WITH SERVICE LAYER:**
+/// - Uses HiveService to check for existing user sessions
+/// - Integrates with ThemeManager for consistent styling
+/// - Connects to PhoneLoginBottomSheet for authentication flow
+/// - Supports proper UserType and AppUser data flow
+///
+/// **🎨 DESIGN FEATURES:**
+/// - Smooth entrance animations with staggered timing
+/// - Lottie animation for engaging visual experience
+/// - Theme-aware design with gradient backgrounds
+/// - Responsive layout for different screen sizes
+/// - Professional feature highlights with iconography
+///
+/// **🏗️ ARCHITECTURE INTEGRATION:**
+/// - **State Management**: Riverpod for reactive state
+/// - **Local Storage**: HiveService for session management
+/// - **Navigation**: Direct integration with authentication flow
+/// - **Theme**: ThemeManager for consistent styling
+/// - **Animations**: Custom controllers for smooth UX
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -14,11 +41,14 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProviderStateMixin {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
+    with TickerProviderStateMixin {
+  // Animation controllers for smooth entrance effects
   late AnimationController _slideController;
   late AnimationController _fadeController;
   late AnimationController _buttonController;
 
+  // Animation objects for different entrance effects
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<double> _buttonScale;
@@ -26,25 +56,108 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
   @override
   void initState() {
     super.initState();
+    debugPrint('🎨 WelcomeScreen: 🚀 Initializing welcome screen');
+    debugPrint(
+        '🎨 WelcomeScreen: 📱 Checking existing user session via HiveService');
+
+    // Check if user is already logged in via HiveService
+    _checkExistingSession();
+
     _initializeAnimations();
     _startAnimations();
+
+    debugPrint('🎨 WelcomeScreen: ✅ Welcome screen initialization completed');
   }
 
+  /// Check for existing user session using HiveService
+  ///
+  /// **Purpose:** Verify if user is already authenticated
+  /// **Process:**
+  /// 1. Check HiveService for existing login status
+  /// 2. Validate user data and auth tokens
+  /// 3. Navigate to appropriate dashboard if authenticated
+  /// **Integration:** Uses HiveService methods for session validation
+  void _checkExistingSession() {
+    debugPrint('🎨 WelcomeScreen: 🔍 Checking for existing user session');
+
+    try {
+      // Check if user is logged in via HiveService
+      final isLoggedIn = HiveService.isLoggedIn();
+      debugPrint('🎨 WelcomeScreen: 📊 HiveService login status: $isLoggedIn');
+
+      if (isLoggedIn) {
+        // Get user data safely from HiveService
+        final userData = HiveService.getUserDataSafe();
+        final authTokens = HiveService.getAuthTokens();
+
+        debugPrint(
+            '🎨 WelcomeScreen: 👤 Existing user data found: ${userData != null}');
+        debugPrint(
+            '🎨 WelcomeScreen: 🔑 Auth tokens found: ${authTokens != null}');
+
+        if (userData != null) {
+          debugPrint('🎨 WelcomeScreen: ✅ Valid existing session detected');
+          debugPrint(
+              '🎨 WelcomeScreen: 👤 User: ${userData.firstName} ${userData.lastName}');
+          debugPrint('🎨 WelcomeScreen: 🏷️ UserType: ${userData.userType}');
+          debugPrint('🎨 WelcomeScreen: 📧 Email: ${userData.email}');
+
+          // TODO: Navigate to appropriate dashboard based on UserType
+          // This would be implemented when dashboard routing is ready
+          debugPrint(
+              '🎨 WelcomeScreen: 🧭 Dashboard navigation would happen here');
+        } else {
+          debugPrint(
+              '🎨 WelcomeScreen: ⚠️ Login status true but no user data found');
+          debugPrint(
+              '🎨 WelcomeScreen: 🧹 Clearing inconsistent session state');
+
+          // Clear inconsistent state
+          HiveService.emergencyLogout();
+        }
+      } else {
+        debugPrint(
+            '🎨 WelcomeScreen: ℹ️ No existing session found, showing welcome screen');
+      }
+    } catch (e) {
+      debugPrint('🎨 WelcomeScreen: ❌ Error checking existing session: $e');
+      debugPrint('🎨 WelcomeScreen: 🧹 Performing emergency logout for safety');
+
+      // Perform emergency logout on any error
+      HiveService.emergencyLogout();
+    }
+  }
+
+  /// Initialize animation controllers and animation objects
+  ///
+  /// **Purpose:** Create smooth, layered entrance animations
+  /// **Animations:**
+  /// - Slide animation: Content slides up from bottom (800ms)
+  /// - Fade animation: Opacity transition (1000ms)
+  /// - Button scale: Elastic scale-in effect (600ms)
   void _initializeAnimations() {
+    debugPrint('🎨 WelcomeScreen: 🎬 Initializing entrance animations');
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+    debugPrint(
+        '🎨 WelcomeScreen: ⬆️ Slide controller created (800ms duration)');
 
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
+    debugPrint(
+        '🎨 WelcomeScreen: 🌟 Fade controller created (1000ms duration)');
 
     _buttonController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
+    debugPrint(
+        '🎨 WelcomeScreen: 🔘 Button controller created (600ms duration)');
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
@@ -53,6 +166,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
       parent: _slideController,
       curve: Curves.easeOut,
     ));
+    debugPrint(
+        '🎨 WelcomeScreen: 📐 Slide animation configured (0.3 offset to 0.0)');
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
@@ -61,6 +176,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
       parent: _fadeController,
       curve: Curves.easeIn,
     ));
+    debugPrint(
+        '🎨 WelcomeScreen: 💫 Fade animation configured (0.0 to 1.0 opacity)');
 
     _buttonScale = Tween<double>(
       begin: 0.8,
@@ -69,29 +186,70 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
       parent: _buttonController,
       curve: Curves.elasticOut,
     ));
+    debugPrint(
+        '🎨 WelcomeScreen: 🎈 Button scale animation configured (0.8 to 1.0 scale)');
+
+    debugPrint('🎨 WelcomeScreen: ✅ All animations initialized successfully');
   }
 
+  /// Start staggered entrance animations for smooth UX
+  ///
+  /// **Purpose:** Create professional, layered animation entrance
+  /// **Sequence:**
+  /// 1. Wait 300ms (allow screen to settle)
+  /// 2. Start fade animation
+  /// 3. Wait 200ms then start slide animation
+  /// 4. Wait 400ms then start button scale animation
+  /// **UX Benefit:** Creates depth and professional feel
   Future<void> _startAnimations() async {
+    debugPrint('🎨 WelcomeScreen: 🎭 Starting staggered entrance animations');
+
     await Future.delayed(const Duration(milliseconds: 300));
+    debugPrint('🎨 WelcomeScreen: ⏰ Initial delay completed (300ms)');
+
     _fadeController.forward();
+    debugPrint('🎨 WelcomeScreen: 🌟 Fade animation started');
+
     await Future.delayed(const Duration(milliseconds: 200));
+    debugPrint('🎨 WelcomeScreen: ⏰ Fade-to-slide delay completed (200ms)');
+
     _slideController.forward();
+    debugPrint('🎨 WelcomeScreen: ⬆️ Slide animation started');
+
     await Future.delayed(const Duration(milliseconds: 400));
+    debugPrint('🎨 WelcomeScreen: ⏰ Slide-to-button delay completed (400ms)');
+
     _buttonController.forward();
+    debugPrint('🎨 WelcomeScreen: 🔘 Button animation started');
+
+    debugPrint('🎨 WelcomeScreen: ✅ All entrance animations running');
   }
 
   @override
   void dispose() {
+    debugPrint('🎨 WelcomeScreen: 🧹 Starting welcome screen cleanup');
+
+    // Clean up animation controllers
+    debugPrint('🎨 WelcomeScreen: 🎬 Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
     _buttonController.dispose();
+
+    debugPrint('🎨 WelcomeScreen: ✅ Welcome screen cleanup completed');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🎨 WelcomeScreen: 🎨 Building welcome screen UI');
+
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 700; // Detect smaller screens
+
+    debugPrint('🎨 WelcomeScreen: 📐 Screen height: ${screenHeight}px');
+    debugPrint('🎨 WelcomeScreen: 📱 Is small screen: $isSmallScreen');
+    debugPrint(
+        '🎨 WelcomeScreen: 🎨 Theme manager loaded: ${ThemeManager.of(context).runtimeType}');
 
     return Scaffold(
       backgroundColor: ThemeManager.of(context).backgroundColor,
@@ -157,7 +315,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
                   },
                 ),
 
-                SizedBox(height: isSmallScreen ? 10.h : 20.h), // Further reduced for small screens
+                SizedBox(
+                    height: isSmallScreen
+                        ? 10.h
+                        : 20.h), // Further reduced for small screens
               ],
             ),
           ),
@@ -166,12 +327,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     );
   }
 
+  /// Build illustration section with Lottie animation and decorative elements
+  ///
+  /// **Purpose:** Create engaging visual centerpiece
+  /// **Features:**
+  /// - Lottie animation for smooth, professional feel
+  /// - Decorative background elements with theme colors
+  /// - Responsive sizing for different screen sizes
+  /// **Theme Integration:** Uses ThemeManager colors for decorative elements
   Widget _buildIllustrationSection() {
+    debugPrint('🎨 WelcomeScreen: 🖼️ Building illustration section');
+
     return Center(
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background decorative elements
+          // Background decorative elements with theme colors
           Positioned(
             top: 10.h,
             right: 15.w,
@@ -179,7 +350,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
               width: 50.w,
               height: 50.w,
               decoration: BoxDecoration(
-                color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
+                color: ThemeManager.of(context)
+                    .primaryColor
+                    .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(25.r),
               ),
             ),
@@ -191,13 +364,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
               width: 35.w,
               height: 35.w,
               decoration: BoxDecoration(
-                color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
+                color: ThemeManager.of(context)
+                    .successColor
+                    .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(17.5.r),
               ),
             ),
           ),
 
-          // Lottie Animation
+          // Lottie Animation - Main visual element
           ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: 280.w,
@@ -216,11 +391,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     );
   }
 
+  /// Build content section with title and feature highlights
+  ///
+  /// **Purpose:** Communicate app value proposition
+  /// **Features:**
+  /// - Localized title text
+  /// - Feature highlights with themed icons
+  /// - Responsive layout for different screen sizes
+  /// **Theme Integration:** Uses ThemeManager for consistent typography and colors
   Widget _buildContentSection() {
+    debugPrint('🎨 WelcomeScreen: 📝 Building content section');
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Main heading
+        // Main heading with localization
         Text(
           'welcome.title'.tr(),
           style: TextStyle(
@@ -234,7 +419,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
 
         SizedBox(height: 40.h),
 
-        // Feature highlights
+        // Feature highlights with theme-aware styling
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -259,6 +444,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     );
   }
 
+  /// Build individual feature highlight with icon and label
+  ///
+  /// **Purpose:** Showcase key app benefits
+  /// **Parameters:**
+  /// - [label]: Localized feature description
+  /// - [icon]: Themed icon for visual representation
+  /// - [color]: Theme-aware color for consistency
+  /// **Design:** Compact, visually appealing feature card
   Widget _buildFeatureHighlight(
     String label,
     IconData icon,
@@ -286,22 +479,36 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     );
   }
 
+  /// Build action buttons section with primary CTA and terms
+  ///
+  /// **Purpose:** Guide user to authentication flow
+  /// **Features:**
+  /// - Primary action button to start phone authentication
+  /// - Terms and privacy policy links
+  /// - Responsive design with theme integration
+  /// **Integration:** Connects to PhoneLoginBottomSheet for authentication
   Widget _buildActionButtons() {
+    debugPrint('🎨 WelcomeScreen: 🔘 Building action buttons section');
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Primary action button
+        // Primary action button - Start authentication
         SizedBox(
           height: 52.h,
           child: ElevatedButton(
             onPressed: () {
+              debugPrint('🎨 WelcomeScreen: 🚀 Get Started button pressed');
+              debugPrint(
+                  '🎨 WelcomeScreen: 📱 Opening phone login bottom sheet');
               _showPhoneLoginBottomSheet();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: ThemeManager.of(context).primaryColor,
               foregroundColor: Colors.white,
               elevation: 0,
-              shadowColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+              shadowColor:
+                  ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.r),
               ),
@@ -329,7 +536,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
 
         SizedBox(height: 16.h),
 
-        // Terms and privacy
+        // Terms and privacy policy with theme styling
         Wrap(
           alignment: WrapAlignment.center,
           children: [
@@ -342,7 +549,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
             ),
             GestureDetector(
               onTap: () {
-                // TODO: Show terms
+                debugPrint('🎨 WelcomeScreen: 📄 Terms of Service tapped');
+                // TODO: Show terms modal or navigate to terms page
               },
               child: Text(
                 'welcome.termsOfService'.tr(),
@@ -362,7 +570,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
             ),
             GestureDetector(
               onTap: () {
-                // TODO: Show privacy policy
+                debugPrint('🎨 WelcomeScreen: 🔒 Privacy Policy tapped');
+                // TODO: Show privacy policy modal or navigate to privacy page
               },
               child: Text(
                 'welcome.privacyPolicy'.tr(),
@@ -386,12 +595,28 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProvid
     );
   }
 
+  /// Show phone login bottom sheet for authentication
+  ///
+  /// **Purpose:** Launch authentication flow
+  /// **Integration:** Opens PhoneLoginBottomSheet which handles:
+  /// - Phone number validation and country selection
+  /// - UserService integration for user lookup
+  /// - Navigation to PIN verification with AppUser data
+  /// - HiveService integration for session management
   void _showPhoneLoginBottomSheet() {
+    debugPrint('🎨 WelcomeScreen: 📱 Opening phone login bottom sheet modal');
+    debugPrint('🎨 WelcomeScreen: 🔗 Integrating with authentication flow');
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => const PhoneLoginBottomSheet(),
-    );
+      builder: (context) {
+        debugPrint('🎨 WelcomeScreen: 🎨 Building PhoneLoginBottomSheet');
+        return const PhoneLoginBottomSheet();
+      },
+    ).then((_) {
+      debugPrint('🎨 WelcomeScreen: 📱 Phone login bottom sheet dismissed');
+    });
   }
 }

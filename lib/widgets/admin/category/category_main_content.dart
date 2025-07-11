@@ -127,13 +127,20 @@ class CategoryMainContent extends StatelessWidget with ThemeAwareMixin {
 
     // Comprehensive theme logging for debugging
 
-    debugPrint('📱 CategoryMainContent: Building with COMPREHENSIVE ThemeManager integration');
-    debugPrint('📱 CategoryMainContent: → Primary: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('📱 CategoryMainContent: → Secondary: ${ThemeManager.of(context).secondaryColor}');
-    debugPrint('📱 CategoryMainContent: → Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('📱 CategoryMainContent: → Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('📱 CategoryMainContent: → Card Background: ${ThemeManager.of(context).cardBackground}');
-    debugPrint('📱 CategoryMainContent: → Surface Elevated: ${ThemeManager.of(context).surfaceElevated}');
+    debugPrint(
+        '📱 CategoryMainContent: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '📱 CategoryMainContent: → Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '📱 CategoryMainContent: → Secondary: ${ThemeManager.of(context).secondaryColor}');
+    debugPrint(
+        '📱 CategoryMainContent: → Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '📱 CategoryMainContent: → Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '📱 CategoryMainContent: → Card Background: ${ThemeManager.of(context).cardBackground}');
+    debugPrint(
+        '📱 CategoryMainContent: → Surface Elevated: ${ThemeManager.of(context).surfaceElevated}');
     debugPrint(
         '📱 CategoryMainContent: → Status Colors - Success: ${ThemeManager.of(context).successColor}, Warning: ${ThemeManager.of(context).warningColor}, Error: ${ThemeManager.of(context).errorColor}, Info: ${ThemeManager.of(context).infoColor}');
     debugPrint(
@@ -166,8 +173,10 @@ class CategoryMainContent extends StatelessWidget with ThemeAwareMixin {
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.1),
-            darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.2),
+            lightColor:
+                ThemeManager.of(context).borderColor.withValues(alpha: 0.1),
+            darkColor:
+                ThemeManager.of(context).borderSecondary.withValues(alpha: 0.2),
           ),
           width: 1,
         ),
@@ -193,24 +202,28 @@ class CategoryMainContent extends StatelessWidget with ThemeAwareMixin {
   ) {
     // ========== LOADING STATE WITH ENHANCED THEMING ==========
     if (isLoading && isInitialLoad) {
-      debugPrint('⏳ CategoryMainContent: Showing ENHANCED CategoryLoadingState component');
+      debugPrint(
+          '⏳ CategoryMainContent: Showing ENHANCED CategoryLoadingState component');
       return _buildEnhancedLoadingState(ThemeManager.of(context));
     }
 
     // ========== ERROR STATE WITH COMPREHENSIVE THEMING ==========
     if (errorMessage != null) {
-      debugPrint('❌ CategoryMainContent: Showing ENHANCED CategoryErrorState component with message: $errorMessage');
+      debugPrint(
+          '❌ CategoryMainContent: Showing ENHANCED CategoryErrorState component with message: $errorMessage');
       return _buildEnhancedErrorState(ThemeManager.of(context));
     }
 
     // ========== EMPTY STATE WITH SOPHISTICATED THEMING ==========
     if (!hasCategories) {
-      debugPrint('📭 CategoryMainContent: Showing ENHANCED CategoryEmptyState component');
+      debugPrint(
+          '📭 CategoryMainContent: Showing ENHANCED CategoryEmptyState component');
       return _buildEnhancedEmptyState(ThemeManager.of(context));
     }
 
     // ========== CONTENT STATE WITH ADVANCED THEMING ==========
-    debugPrint('📋 CategoryMainContent: Showing ENHANCED categories list with comprehensive theming');
+    debugPrint(
+        '📋 CategoryMainContent: Showing ENHANCED categories list with comprehensive theming');
     return _buildEnhancedContentState(ThemeManager.of(context));
   }
 

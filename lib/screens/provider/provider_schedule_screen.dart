@@ -9,10 +9,12 @@ class ProviderScheduleScreen extends ConsumerStatefulWidget {
   const ProviderScheduleScreen({super.key});
 
   @override
-  ConsumerState<ProviderScheduleScreen> createState() => _ProviderScheduleScreenState();
+  ConsumerState<ProviderScheduleScreen> createState() =>
+      _ProviderScheduleScreenState();
 }
 
-class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen> {
+class _ProviderScheduleScreenState
+    extends ConsumerState<ProviderScheduleScreen> {
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -180,7 +182,8 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
         return GestureDetector(
           onTap: () {
             setState(() {
-              selectedDate = DateTime(selectedDate.year, selectedDate.month, day);
+              selectedDate =
+                  DateTime(selectedDate.year, selectedDate.month, day);
             });
           },
           child: Container(
@@ -188,7 +191,9 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
             decoration: BoxDecoration(
               color: isToday
                   ? ThemeManager.of(context).primaryColor
-                  : (selectedDate.day == day ? ThemeManager.of(context).surfaceColor : Colors.transparent),
+                  : (selectedDate.day == day
+                      ? ThemeManager.of(context).surfaceColor
+                      : Colors.transparent),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Center(
@@ -197,7 +202,9 @@ class _ProviderScheduleScreenState extends ConsumerState<ProviderScheduleScreen>
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: isToday ? Colors.white : ThemeManager.of(context).textPrimary,
+                  color: isToday
+                      ? Colors.white
+                      : ThemeManager.of(context).textPrimary,
                 ),
               ),
             ),

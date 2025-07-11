@@ -121,13 +121,17 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       children: [
                         _buildFilterChip('All', _selectedCategory == 'All'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Home Services', _selectedCategory == 'Home Services'),
+                        _buildFilterChip('Home Services',
+                            _selectedCategory == 'Home Services'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Technical', _selectedCategory == 'Technical'),
+                        _buildFilterChip(
+                            'Technical', _selectedCategory == 'Technical'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Beauty & Care', _selectedCategory == 'Beauty & Care'),
+                        _buildFilterChip('Beauty & Care',
+                            _selectedCategory == 'Beauty & Care'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Available Now', _selectedCategory == 'Available Now'),
+                        _buildFilterChip('Available Now',
+                            _selectedCategory == 'Available Now'),
                       ],
                     ),
                   ),
@@ -155,12 +159,15 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? ThemeManager.of(context).primaryColor : Colors.transparent,
+          color: isSelected
+              ? ThemeManager.of(context).primaryColor
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Icon(
           icon,
-          color: isSelected ? Colors.white : ThemeManager.of(context).textTertiary,
+          color:
+              isSelected ? Colors.white : ThemeManager.of(context).textTertiary,
           size: 20.sp,
         ),
       ),
@@ -180,10 +187,14 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).surfaceColor,
+          color: isSelected
+              ? ThemeManager.of(context).primaryColor
+              : ThemeManager.of(context).surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).borderColor,
+            color: isSelected
+                ? ThemeManager.of(context).primaryColor
+                : ThemeManager.of(context).borderColor,
           ),
         ),
         child: Text(
@@ -191,7 +202,9 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : ThemeManager.of(context).textSecondary,
+            color: isSelected
+                ? Colors.white
+                : ThemeManager.of(context).textSecondary,
           ),
         ),
       ),
@@ -290,9 +303,27 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
     int index,
   ) {
     final services = [
-      {'name': 'Quick Home Cleaning', 'provider': 'Sarah J.', 'distance': '0.5 km', 'price': '\$45', 'rating': '4.8'},
-      {'name': 'Plumbing Emergency', 'provider': 'Mike W.', 'distance': '1.2 km', 'price': '\$80', 'rating': '4.9'},
-      {'name': 'AC Repair Service', 'provider': 'Lisa B.', 'distance': '2.1 km', 'price': '\$120', 'rating': '4.7'},
+      {
+        'name': 'Quick Home Cleaning',
+        'provider': 'Sarah J.',
+        'distance': '0.5 km',
+        'price': '\$45',
+        'rating': '4.8'
+      },
+      {
+        'name': 'Plumbing Emergency',
+        'provider': 'Mike W.',
+        'distance': '1.2 km',
+        'price': '\$80',
+        'rating': '4.9'
+      },
+      {
+        'name': 'AC Repair Service',
+        'provider': 'Lisa B.',
+        'distance': '2.1 km',
+        'price': '\$120',
+        'rating': '4.7'
+      },
     ];
 
     final service = services[index];
@@ -310,7 +341,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
+              color:
+                  ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -496,9 +528,12 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
+                        color: ThemeManager.of(context)
+                            .successColor
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Row(
@@ -598,7 +633,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ThemeManager.of(context).primaryColor,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 8.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.r),
                         ),
@@ -707,7 +743,9 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                 activeTrackColor: ThemeManager.of(context).primaryColor,
                 inactiveTrackColor: ThemeManager.of(context).borderColor,
                 thumbColor: ThemeManager.of(context).primaryColor,
-                overlayColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
+                overlayColor: ThemeManager.of(context)
+                    .primaryColor
+                    .withValues(alpha: 0.1),
               ),
               child: Slider(
                 value: _selectedRadius,
@@ -736,7 +774,8 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
             SizedBox(height: 12.h),
             Wrap(
               spacing: 8.w,
-              children: ['Distance', 'Price', 'Rating', 'Availability'].map((sort) {
+              children:
+                  ['Distance', 'Price', 'Rating', 'Availability'].map((sort) {
                 return ChoiceChip(
                   label: Text(sort),
                   selected: _sortBy == sort,
@@ -745,17 +784,21 @@ class _TakerExploreScreenState extends ConsumerState<TakerExploreScreen> {
                       _sortBy = sort;
                     });
                   },
-                  selectedColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.2),
+                  selectedColor: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 0.2),
                   backgroundColor: ThemeManager.of(context).inputBackground,
                   labelStyle: TextStyle(
                     color: _sortBy == sort
                         ? ThemeManager.of(context).primaryColor
                         : ThemeManager.of(context).textSecondary,
-                    fontWeight: _sortBy == sort ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight:
+                        _sortBy == sort ? FontWeight.w600 : FontWeight.normal,
                   ),
                   side: BorderSide(
-                    color:
-                        _sortBy == sort ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).borderColor,
+                    color: _sortBy == sort
+                        ? ThemeManager.of(context).primaryColor
+                        : ThemeManager.of(context).borderColor,
                   ),
                 );
               }).toList(),

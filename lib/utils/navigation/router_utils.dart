@@ -17,7 +17,8 @@ class RouterUtils {
     // Log theme information for debugging
 
     debugPrint('🚀 RouterUtils: Building page transition for ${state.uri}');
-    debugPrint('🎨 RouterUtils: Using ${ThemeManager.of(context).themeManager ? 'dark' : 'light'} theme');
+    debugPrint(
+        '🎨 RouterUtils: Using ${ThemeManager.of(context).themeManager ? 'dark' : 'light'} theme');
 
     return CustomTransitionPage<T>(
       key: state.pageKey,
@@ -27,7 +28,8 @@ class RouterUtils {
         const end = Offset.zero;
         const curve = Curves.easeInOutCubic;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -47,7 +49,8 @@ class RouterUtils {
     required Widget child,
   }) {
     debugPrint('🖼️ RouterUtils: Building fade transition for image viewing');
-    debugPrint('🎨 RouterUtils: Overlay background: ${ThemeManager.of(context).overlayBackground}');
+    debugPrint(
+        '🎨 RouterUtils: Overlay background: ${ThemeManager.of(context).overlayBackground}');
 
     return CustomTransitionPage<void>(
       key: state.pageKey,
@@ -87,10 +90,11 @@ class RouterUtils {
                 Container(
                   width: 120,
                   height: 120,
-                  decoration: ThemeManager.of(context).enhancedGlassMorphism.copyWith(
-                        borderRadius: BorderRadius.circular(60),
-                        boxShadow: ThemeManager.of(context).elevatedShadow,
-                      ),
+                  decoration:
+                      ThemeManager.of(context).enhancedGlassMorphism.copyWith(
+                            borderRadius: BorderRadius.circular(60),
+                            boxShadow: ThemeManager.of(context).elevatedShadow,
+                          ),
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: ThemeManager.of(context).errorGradient,
@@ -109,7 +113,8 @@ class RouterUtils {
 
                 // Main Error Title with Primary Gradient
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).primaryGradient,
                     borderRadius: BorderRadius.circular(16),
@@ -117,7 +122,11 @@ class RouterUtils {
                   ),
                   child: Text(
                     'Route Error',
-                    style: ThemeManager.of(context).theme.textTheme.headlineSmall?.copyWith(
+                    style: ThemeManager.of(context)
+                        .theme
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(
                           color: ThemeManager.of(context).textInverted,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
@@ -161,7 +170,11 @@ class RouterUtils {
                           const SizedBox(width: 12),
                           Text(
                             'Error Details',
-                            style: ThemeManager.of(context).theme.textTheme.titleMedium?.copyWith(
+                            style: ThemeManager.of(context)
+                                .theme
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
                                   color: ThemeManager.of(context).textPrimary,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -175,11 +188,16 @@ class RouterUtils {
                         decoration: BoxDecoration(
                           color: ThemeManager.of(context).cardBackground,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: ThemeManager.of(context).borderSecondary),
+                          border: Border.all(
+                              color: ThemeManager.of(context).borderSecondary),
                         ),
                         child: Text(
                           'Error: ${state.error}',
-                          style: ThemeManager.of(context).theme.textTheme.bodyMedium?.copyWith(
+                          style: ThemeManager.of(context)
+                              .theme
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
                                 color: ThemeManager.of(context).textSecondary,
                                 height: 1.5,
                               ),
@@ -213,7 +231,9 @@ class RouterUtils {
                       'Theme',
                       ThemeManager.of(context).themeManager ? 'Dark' : 'Light',
                       ThemeManager.of(context).infoColor,
-                      ThemeManager.of(context).themeManager ? Prbal.moonStroke : Prbal.sunStroke,
+                      ThemeManager.of(context).themeManager
+                          ? Prbal.moonStroke
+                          : Prbal.sunStroke,
                       ThemeManager.of(context),
                     ),
                   ],
@@ -234,7 +254,8 @@ class RouterUtils {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
-                          foregroundColor: ThemeManager.of(context).textInverted,
+                          foregroundColor:
+                              ThemeManager.of(context).textInverted,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -260,8 +281,13 @@ class RouterUtils {
                                 const SizedBox(width: 8),
                                 Text(
                                   'Go Back',
-                                  style: ThemeManager.of(context).theme.textTheme.labelLarge?.copyWith(
-                                        color: ThemeManager.of(context).textInverted,
+                                  style: ThemeManager.of(context)
+                                      .theme
+                                      .textTheme
+                                      .labelLarge
+                                      ?.copyWith(
+                                        color: ThemeManager.of(context)
+                                            .textInverted,
                                         fontWeight: FontWeight.w600,
                                       ),
                                 ),
@@ -279,7 +305,8 @@ class RouterUtils {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          debugPrint('🏠 RouterUtils: Go to home button pressed');
+                          debugPrint(
+                              '🏠 RouterUtils: Go to home button pressed');
                           context.go('/');
                         },
                         style: ElevatedButton.styleFrom(
@@ -311,8 +338,13 @@ class RouterUtils {
                               const SizedBox(width: 8),
                               Text(
                                 'Go to Home',
-                                style: ThemeManager.of(context).theme.textTheme.labelLarge?.copyWith(
-                                      color: ThemeManager.of(context).textSecondary,
+                                style: ThemeManager.of(context)
+                                    .theme
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                      color: ThemeManager.of(context)
+                                          .textSecondary,
                                       fontWeight: FontWeight.w500,
                                     ),
                               ),
@@ -333,7 +365,8 @@ class RouterUtils {
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).neutralGradient,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: ThemeManager.of(context).dividerColor),
+                    border: Border.all(
+                        color: ThemeManager.of(context).dividerColor),
                     boxShadow: ThemeManager.of(context).subtleShadow,
                   ),
                   child: Column(
@@ -356,7 +389,11 @@ class RouterUtils {
                           const SizedBox(width: 8),
                           Text(
                             'Debug Information',
-                            style: ThemeManager.of(context).theme.textTheme.labelMedium?.copyWith(
+                            style: ThemeManager.of(context)
+                                .theme
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(
                                   color: ThemeManager.of(context).textTertiary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -364,12 +401,21 @@ class RouterUtils {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      _buildDebugRow('Route:', state.uri.toString(), ThemeManager.of(context)),
-                      _buildDebugRow('Theme Mode:', ThemeManager.of(context).themeManager ? 'Dark' : 'Light',
+                      _buildDebugRow('Route:', state.uri.toString(),
                           ThemeManager.of(context)),
                       _buildDebugRow(
-                          'Primary Color:', ThemeManager.of(context).primaryColor.toString(), ThemeManager.of(context)),
-                      _buildDebugRow('Background Color:', ThemeManager.of(context).backgroundColor.toString(),
+                          'Theme Mode:',
+                          ThemeManager.of(context).themeManager
+                              ? 'Dark'
+                              : 'Light',
+                          ThemeManager.of(context)),
+                      _buildDebugRow(
+                          'Primary Color:',
+                          ThemeManager.of(context).primaryColor.toString(),
+                          ThemeManager.of(context)),
+                      _buildDebugRow(
+                          'Background Color:',
+                          ThemeManager.of(context).backgroundColor.toString(),
                           ThemeManager.of(context)),
                     ],
                   ),
@@ -436,7 +482,8 @@ class RouterUtils {
   }
 
   /// Build debug information row
-  static Widget _buildDebugRow(String key, String value, ThemeManager themeManager) {
+  static Widget _buildDebugRow(
+      String key, String value, ThemeManager themeManager) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -467,7 +514,8 @@ class RouterUtils {
   }
 
   /// Enhanced error page with animation showcase
-  static Widget buildAnimatedErrorPage(BuildContext context, GoRouterState state) {
+  static Widget buildAnimatedErrorPage(
+      BuildContext context, GoRouterState state) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -501,7 +549,8 @@ class RouterUtils {
     debugPrint('🛣️ RouterUtils Theme Info for route: $routeName');
 
     debugPrint('🎨 Primary Color: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🎨 Background Color: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🎨 Background Color: ${ThemeManager.of(context).backgroundColor}');
     debugPrint('🎨 Text Primary: ${ThemeManager.of(context).textPrimary}');
     debugPrint('🎨 Border Color: ${ThemeManager.of(context).borderColor}');
     debugPrint('🎨 Success Color: ${ThemeManager.of(context).successColor}');

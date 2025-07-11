@@ -119,7 +119,7 @@ This implementation provides a modern, animated bottom navigation system that su
 
 ### File Structure
 
-```
+```dart
 lib/
 ├── widgets/
 │   └── bottom_navigation.dart          # Main navigation widget
@@ -262,7 +262,6 @@ class MainAppScreen extends StatelessWidget {
 dependencies:
   flutter_riverpod: ^2.4.9
   flutter_screenutil: ^5.9.0
-  line_icons: ^2.0.3
   json_annotation: ^4.8.1
 
 dev_dependencies:

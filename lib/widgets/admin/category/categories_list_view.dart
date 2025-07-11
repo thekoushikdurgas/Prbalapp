@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:prbal/services/service_management_service.dart';
+import 'package:prbal/models/business/service_models.dart';
+// import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/widgets/admin/category/category_cards.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 
@@ -52,7 +53,8 @@ class CategoriesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Comprehensive debug logging for theme operations
-    debugPrint('📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
+    debugPrint(
+        '📋 CategoriesListView: Building with ${filteredCategories.length} CategoryCard components');
 
     debugPrint(
         '🎨 CategoriesListView: Using theme colors - Primary: ${ThemeManager.of(context).primaryColor}, Surface: ${ThemeManager.of(context).surfaceColor}');
@@ -128,9 +130,11 @@ class CategoriesListView extends StatelessWidget {
                           return Container(
                             margin: EdgeInsets.only(bottom: 12.h),
                             child: AnimatedContainer(
-                              duration: Duration(milliseconds: 300 + (index * 50)),
+                              duration:
+                                  Duration(milliseconds: 300 + (index * 50)),
                               curve: Curves.easeOutCubic,
-                              decoration: _buildItemDecoration(isSelected, index, ThemeManager.of(context)),
+                              decoration: _buildItemDecoration(
+                                  isSelected, index, ThemeManager.of(context)),
                               child: CategoryCard(
                                 category: category,
                                 isSelected: isSelected,
@@ -172,7 +176,8 @@ class CategoriesListView extends StatelessWidget {
 
   /// Builds comprehensive statistics section with all ThemeManager features
   Widget _buildStatisticsSection(ThemeManager themeManager) {
-    debugPrint('📊 CategoriesListView: Building statistics section with ThemeManager integration');
+    debugPrint(
+        '📊 CategoriesListView: Building statistics section with ThemeManager integration');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +359,8 @@ class CategoriesListView extends StatelessWidget {
   }
 
   /// Builds enhanced item decoration with comprehensive theming
-  BoxDecoration _buildItemDecoration(bool isSelected, int index, ThemeManager themeManager) {
+  BoxDecoration _buildItemDecoration(
+      bool isSelected, int index, ThemeManager themeManager) {
     if (isSelected) {
       // Selected state with primary gradient and enhanced effects
       return BoxDecoration(

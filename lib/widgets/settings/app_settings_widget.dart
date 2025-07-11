@@ -70,7 +70,8 @@ class AppSettingsWidget extends StatelessWidget {
     // Get current theme information for debugging
     final currentTheme = Theme.of(context);
     final isDark = currentTheme.brightness == Brightness.dark;
-    debugPrint('⚙️ AppSettingsWidget: Current theme brightness: ${currentTheme.brightness}');
+    debugPrint(
+        '⚙️ AppSettingsWidget: Current theme brightness: ${currentTheme.brightness}');
     debugPrint(
         '⚙️ AppSettingsWidget: Theme colors - Primary: ${currentTheme.colorScheme.primary}, Surface: ${currentTheme.colorScheme.surface}');
 
@@ -86,7 +87,8 @@ class AppSettingsWidget extends StatelessWidget {
           trailing: Switch.adaptive(
             value: notificationsEnabled,
             onChanged: (value) {
-              debugPrint('⚙️ AppSettingsWidget: Notifications changed - $notificationsEnabled → $value');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: Notifications changed - $notificationsEnabled → $value');
               onNotificationsChanged(value);
             },
             activeColor: const Color(0xFFED8936),
@@ -96,16 +98,20 @@ class AppSettingsWidget extends StatelessWidget {
         // ========== SECURITY SETTING ==========
         SettingsItemWidget(
           title: 'Security',
-          subtitle: biometricsEnabled ? 'Biometric authentication enabled' : 'Biometric authentication disabled',
+          subtitle: biometricsEnabled
+              ? 'Biometric authentication enabled'
+              : 'Biometric authentication disabled',
           icon: Prbal.fingerprint,
           iconColor: const Color(0xFF9F7AEA),
           onTap: () {
             debugPrint('⚙️ AppSettingsWidget: Security settings tapped');
             try {
               onSecurityTapped();
-              debugPrint('⚙️ AppSettingsWidget: ✅ Security settings opened successfully');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: ✅ Security settings opened successfully');
             } catch (error) {
-              debugPrint('⚙️ AppSettingsWidget: ❌ Error opening security settings: $error');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: ❌ Error opening security settings: $error');
             }
           },
         ),
@@ -113,11 +119,13 @@ class AppSettingsWidget extends StatelessWidget {
         // ========== ENHANCED THEME SETTING WITH REAL-TIME STATE ==========
         BlocBuilder<ThemeCubit, ThemeMode>(
           builder: (context, themeMode) {
-            debugPrint('🎨 AppSettingsWidget: Building theme setting with current mode: $themeMode');
+            debugPrint(
+                '🎨 AppSettingsWidget: Building theme setting with current mode: $themeMode');
 
             // Generate dynamic subtitle based on current theme state
             final themeSubtitle = _getEnhancedThemeSubtitle(themeMode, isDark);
-            debugPrint('🎨 AppSettingsWidget: Theme subtitle: "$themeSubtitle"');
+            debugPrint(
+                '🎨 AppSettingsWidget: Theme subtitle: "$themeSubtitle"');
 
             return SettingsItemWidget(
               title: LocaleKeys.themeTheme.tr(),
@@ -139,9 +147,11 @@ class AppSettingsWidget extends StatelessWidget {
             debugPrint('⚙️ AppSettingsWidget: Language settings tapped');
             try {
               SettingsBottomSheets.showLanguageBottomSheet(context);
-              debugPrint('⚙️ AppSettingsWidget: ✅ Language settings opened successfully');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: ✅ Language settings opened successfully');
             } catch (error) {
-              debugPrint('⚙️ AppSettingsWidget: ❌ Error opening language settings: $error');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: ❌ Error opening language settings: $error');
             }
           },
         ),
@@ -155,7 +165,8 @@ class AppSettingsWidget extends StatelessWidget {
           trailing: Switch.adaptive(
             value: analyticsEnabled,
             onChanged: (value) {
-              debugPrint('⚙️ AppSettingsWidget: Analytics changed - $analyticsEnabled → $value');
+              debugPrint(
+                  '⚙️ AppSettingsWidget: Analytics changed - $analyticsEnabled → $value');
               onAnalyticsChanged(value);
             },
             activeColor: const Color(0xFF4299E1),
@@ -178,7 +189,8 @@ class AppSettingsWidget extends StatelessWidget {
   /// - System theme detection
   /// - Accessibility-friendly text
   String _getEnhancedThemeSubtitle(ThemeMode themeMode, bool isDark) {
-    debugPrint('🎨 AppSettingsWidget: Generating theme subtitle for mode: $themeMode, isDark: $isDark');
+    debugPrint(
+        '🎨 AppSettingsWidget: Generating theme subtitle for mode: $themeMode, isDark: $isDark');
 
     String subtitle;
     switch (themeMode) {
@@ -210,21 +222,25 @@ class AppSettingsWidget extends StatelessWidget {
   /// - Error context and recovery suggestions
   /// - Success confirmation and user feedback
   /// - Integration with enhanced theme debugging
-  Future<void> _handleThemeSelection(BuildContext context, ThemeMode currentMode) async {
+  Future<void> _handleThemeSelection(
+      BuildContext context, ThemeMode currentMode) async {
     debugPrint('🎨 AppSettingsWidget: Theme selection initiated');
     debugPrint('🎨 AppSettingsWidget: Current theme mode: $currentMode');
 
     final stopwatch = Stopwatch()..start();
 
     try {
-      debugPrint('🎨 AppSettingsWidget: Opening theme selection bottom sheet...');
+      debugPrint(
+          '🎨 AppSettingsWidget: Opening theme selection bottom sheet...');
 
       // Open enhanced theme selection bottom sheet
       await SettingsBottomSheets.showThemeBottomSheet(context);
 
       stopwatch.stop();
-      debugPrint('🎨 AppSettingsWidget: ✅ Theme selection completed successfully');
-      debugPrint('🎨 AppSettingsWidget: ⏱️ Operation completed in ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🎨 AppSettingsWidget: ✅ Theme selection completed successfully');
+      debugPrint(
+          '🎨 AppSettingsWidget: ⏱️ Operation completed in ${stopwatch.elapsedMilliseconds}ms');
 
       // Log final theme state after selection
       if (context.mounted) {
@@ -232,7 +248,8 @@ class AppSettingsWidget extends StatelessWidget {
         debugPrint('🎨 AppSettingsWidget: Final theme state: $newThemeMode');
 
         if (newThemeMode != currentMode) {
-          debugPrint('🎨 AppSettingsWidget: 🔄 Theme changed: $currentMode → $newThemeMode');
+          debugPrint(
+              '🎨 AppSettingsWidget: 🔄 Theme changed: $currentMode → $newThemeMode');
         } else {
           debugPrint('🎨 AppSettingsWidget: 📍 Theme unchanged: $currentMode');
         }
@@ -240,7 +257,8 @@ class AppSettingsWidget extends StatelessWidget {
     } catch (error, stackTrace) {
       stopwatch.stop();
       debugPrint('🎨 AppSettingsWidget: ❌ Error in theme selection: $error');
-      debugPrint('🎨 AppSettingsWidget: 📍 Error occurred after ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🎨 AppSettingsWidget: 📍 Error occurred after ${stopwatch.elapsedMilliseconds}ms');
       debugPrint('🎨 AppSettingsWidget: 🔍 Stack trace: $stackTrace');
 
       // Show user-friendly error feedback

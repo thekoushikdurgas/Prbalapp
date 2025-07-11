@@ -42,7 +42,8 @@ class ExportDataBottomSheet extends StatefulWidget {
   }
 }
 
-class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with TickerProviderStateMixin, ThemeAwareMixin {
+class _ExportDataBottomSheetState extends State<ExportDataBottomSheet>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   final ScrollController _scrollController = ScrollController();
 
   late AnimationController _animationController;
@@ -95,8 +96,10 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
   @override
   Widget build(BuildContext context) {
     debugPrint('📤 [ExportData] Building export data with theme colors:');
-    debugPrint('📤 [ExportData] Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('📤 [ExportData] Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '📤 [ExportData] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '📤 [ExportData] Surface: ${ThemeManager.of(context).surfaceColor}');
     debugPrint('📤 [ExportData] Info: ${ThemeManager.of(context).infoColor}');
 
     return AnimatedBuilder(
@@ -105,7 +108,8 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            offset: Offset(
+                0, _slideAnimation.value * MediaQuery.of(context).size.height),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.92,
               decoration: BoxDecoration(
@@ -115,7 +119,9 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).shadowDark.withValues(alpha: 102),
+                    color: ThemeManager.of(context)
+                        .shadowDark
+                        .withValues(alpha: 102),
                     blurRadius: 24.r,
                     offset: Offset(0, -6.h),
                   ),
@@ -190,7 +196,9 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).infoColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .infoColor
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -243,10 +251,14 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                   width: 40.w,
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceColor.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceColor
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 77),
                       width: 1,
                     ),
                   ),
@@ -399,8 +411,12 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).primaryColor,
-                    side: BorderSide(color: ThemeManager.of(context).primaryColor.withValues(alpha: 128)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    side: BorderSide(
+                        color: ThemeManager.of(context)
+                            .primaryColor
+                            .withValues(alpha: 128)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r)),
                   ),
                   child: Text('Select All', style: TextStyle(fontSize: 12.sp)),
                 ),
@@ -415,8 +431,10 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).textSecondary,
-                    side: BorderSide(color: ThemeManager.of(context).borderColor),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).borderColor),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r)),
                   ),
                   child: Text('Select None', style: TextStyle(fontSize: 12.sp)),
                 ),
@@ -452,7 +470,9 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
         child: Container(
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color: isSelected ? dataType.color.withValues(alpha: 26) : ThemeManager.of(context).inputBackground,
+            color: isSelected
+                ? dataType.color.withValues(alpha: 26)
+                : ThemeManager.of(context).inputBackground,
             borderRadius: BorderRadius.circular(8.r),
             border: Border.all(
               color: isSelected
@@ -468,7 +488,9 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                 decoration: BoxDecoration(
                   color: isSelected ? dataType.color : Colors.transparent,
                   border: Border.all(
-                    color: isSelected ? dataType.color : ThemeManager.of(context).borderColor,
+                    color: isSelected
+                        ? dataType.color
+                        : ThemeManager.of(context).borderColor,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(4.r),
@@ -571,23 +593,30 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                     });
                   },
                   child: Container(
-                    margin: EdgeInsets.only(right: format != formats.last ? 8.w : 0),
+                    margin: EdgeInsets.only(
+                        right: format != formats.last ? 8.w : 0),
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? LinearGradient(
                               colors: [
                                 ThemeManager.of(context).accent2,
-                                ThemeManager.of(context).accent2.withValues(alpha: 179),
+                                ThemeManager.of(context)
+                                    .accent2
+                                    .withValues(alpha: 179),
                               ],
                             )
                           : null,
-                      color: isSelected ? null : ThemeManager.of(context).inputBackground,
+                      color: isSelected
+                          ? null
+                          : ThemeManager.of(context).inputBackground,
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
                         color: isSelected
                             ? ThemeManager.of(context).accent2
-                            : ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                            : ThemeManager.of(context)
+                                .borderColor
+                                .withValues(alpha: 77),
                       ),
                     ),
                     child: Text(
@@ -596,8 +625,9 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color:
-                            isSelected ? ThemeManager.of(context).textInverted : ThemeManager.of(context).textPrimary,
+                        color: isSelected
+                            ? ThemeManager.of(context).textInverted
+                            : ThemeManager.of(context).textPrimary,
                       ),
                     ),
                   ),
@@ -757,7 +787,8 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
               style: OutlinedButton.styleFrom(
                 foregroundColor: ThemeManager.of(context).textSecondary,
                 side: BorderSide(color: ThemeManager.of(context).borderColor),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r)),
                 padding: EdgeInsets.symmetric(vertical: 16.h),
               ),
               child: Text(
@@ -773,11 +804,14 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
           Expanded(
             flex: 2,
             child: ElevatedButton(
-              onPressed: _selectedDataTypes.isEmpty || _isExporting ? null : () => _startExport(),
+              onPressed: _selectedDataTypes.isEmpty || _isExporting
+                  ? null
+                  : () => _startExport(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: ThemeManager.of(context).infoColor,
                 foregroundColor: ThemeManager.of(context).textInverted,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r)),
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 elevation: 2,
               ),
@@ -790,7 +824,8 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
                           height: 16.h,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).textInverted),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                ThemeManager.of(context).textInverted),
                           ),
                         ),
                         SizedBox(width: 12.w),
@@ -848,7 +883,8 @@ class _ExportDataBottomSheetState extends State<ExportDataBottomSheet> with Tick
           content: Text('Export completed! Check your downloads.'),
           backgroundColor: ThemeManager.of(context).successColor,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
         ),
       );
 

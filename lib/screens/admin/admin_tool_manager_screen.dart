@@ -37,10 +37,12 @@ class AdminToolManagerScreen extends ConsumerStatefulWidget {
   const AdminToolManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminToolManagerScreen> createState() => _AdminToolManagerScreenState();
+  ConsumerState<AdminToolManagerScreen> createState() =>
+      _AdminToolManagerScreenState();
 }
 
-class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen> with TickerProviderStateMixin {
+class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
+    with TickerProviderStateMixin {
   // Services for admin features
   final HealthService _healthService = HealthService();
   final PerformanceService _performanceService = PerformanceService.instance;
@@ -72,7 +74,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint('🛠️ AdminToolManager: Initializing modern admin dashboard with enhanced features');
+    debugPrint(
+        '🛠️ AdminToolManager: Initializing modern admin dashboard with enhanced features');
 
     _initializeAnimations();
     _loadAllAdminData();
@@ -150,7 +153,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
         setState(() {
           _healthData = health!;
         });
-        debugPrint('🛠️ AdminToolManager: Health data loaded - Status: ${health?.overallStatus}');
+        debugPrint(
+            '🛠️ AdminToolManager: Health data loaded - Status: ${health?.overallStatus}');
       }
     } catch (e) {
       debugPrint('❌ AdminToolManager: Error loading health data: $e');
@@ -516,7 +520,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             height: 20.h,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).primaryColor),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  ThemeManager.of(context).primaryColor),
             ),
           ),
           SizedBox(width: 16.w),
@@ -540,9 +545,11 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
   Widget _buildPerformanceWidget() {
     debugPrint('🛠️ AdminToolManager: Building performance widget');
 
-    final performanceScore = _performanceMetrics['performance_score'] as double? ?? 95.0;
+    final performanceScore =
+        _performanceMetrics['performance_score'] as double? ?? 95.0;
     final frameDrops = _performanceMetrics['frame_drops'] as int? ?? 0;
-    final avgFrameTime = _performanceMetrics['average_frame_time'] as double? ?? 16.5;
+    final avgFrameTime =
+        _performanceMetrics['average_frame_time'] as double? ?? 16.5;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -580,7 +587,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: _getPerformanceColor(performanceScore).withValues(alpha: 26),
+                  color: _getPerformanceColor(performanceScore)
+                      .withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
@@ -600,7 +608,8 @@ class _AdminToolManagerScreenState extends ConsumerState<AdminToolManagerScreen>
             children: [
               _buildPerformanceMetric('Frame Drops', frameDrops.toString()),
               SizedBox(width: 16.w),
-              _buildPerformanceMetric('Avg Frame Time', '${avgFrameTime.toStringAsFixed(1)}ms'),
+              _buildPerformanceMetric(
+                  'Avg Frame Time', '${avgFrameTime.toStringAsFixed(1)}ms'),
               SizedBox(width: 16.w),
               _buildPerformanceMetric('Target', '16.7ms'),
             ],

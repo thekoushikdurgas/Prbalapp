@@ -46,7 +46,8 @@ class CategoryFabActions extends StatefulWidget with ThemeAwareMixin {
   State<CategoryFabActions> createState() => _CategoryFabActionsState();
 }
 
-class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProviderStateMixin {
+class _CategoryFabActionsState extends State<CategoryFabActions>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Animation<double> _pulseAnimation;
@@ -98,14 +99,18 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   Widget build(BuildContext context) {
     // Comprehensive debug logging for theme operations
 
-    debugPrint('🚀 CategoryFabActions: Building enhanced FAB with comprehensive ThemeManager integration');
-    debugPrint('🎨 CategoryFabActions: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
-    debugPrint('🚀 CategoryFabActions: hasSelection: ${widget.hasSelection}, selectedCount: ${widget.selectedCount}');
+    debugPrint(
+        '🚀 CategoryFabActions: Building enhanced FAB with comprehensive ThemeManager integration');
+    debugPrint(
+        '🎨 CategoryFabActions: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '🚀 CategoryFabActions: hasSelection: ${widget.hasSelection}, selectedCount: ${widget.selectedCount}');
     debugPrint(
         '🌈 CategoryFabActions: Using gradients - Primary: ${ThemeManager.of(context).primaryGradient.colors.length} colors, Surface: ${ThemeManager.of(context).surfaceGradient.colors.length} colors');
 
-    final fabWidget =
-        widget.hasSelection ? _buildEnhancedBulkActionsFAB(context) : _buildEnhancedAddCategoryFAB(context);
+    final fabWidget = widget.hasSelection
+        ? _buildEnhancedBulkActionsFAB(context)
+        : _buildEnhancedAddCategoryFAB(context);
 
     return AnimatedBuilder(
       animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),
@@ -156,7 +161,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
         backgroundColor: Colors.transparent,
         foregroundColor: ThemeManager.of(context).textInverted,
         elevation: 0,
-        splashColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.2),
+        splashColor:
+            ThemeManager.of(context).primaryColor.withValues(alpha: 0.2),
         icon: Container(
           padding: EdgeInsets.all(8.w),
           decoration: ThemeManager.of(context).enhancedGlassMorphism,
@@ -205,7 +211,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   Widget _buildEnhancedAddCategoryFAB(
     BuildContext context,
   ) {
-    debugPrint('➕ CategoryFabActions: Building enhanced add category FAB with comprehensive theming');
+    debugPrint(
+        '➕ CategoryFabActions: Building enhanced add category FAB with comprehensive theming');
 
     return Container(
       decoration: BoxDecoration(
@@ -226,7 +233,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
         backgroundColor: Colors.transparent,
         foregroundColor: ThemeManager.of(context).textInverted,
         elevation: 0,
-        splashColor: ThemeManager.of(context).secondaryColor.withValues(alpha: 0.2),
+        splashColor:
+            ThemeManager.of(context).secondaryColor.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.r),
         ),
@@ -265,7 +273,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
   void _showEnhancedBulkActionsBottomSheet(
     BuildContext context,
   ) {
-    debugPrint('⚡ CategoryFabActions: Showing enhanced bulk actions bottom sheet with comprehensive ThemeManager');
+    debugPrint(
+        '⚡ CategoryFabActions: Showing enhanced bulk actions bottom sheet with comprehensive ThemeManager');
 
     showModalBottomSheet(
       context: context,
@@ -381,7 +390,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).accent2Gradient,
                     borderRadius: BorderRadius.circular(12.r),
@@ -403,7 +413,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
                   decoration: BoxDecoration(
                     color: ThemeManager.of(context).surfaceElevated,
                     borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(color: ThemeManager.of(context).borderColor),
+                    border:
+                        Border.all(color: ThemeManager.of(context).borderColor),
                   ),
                   child: Row(
                     children: [
@@ -589,7 +600,8 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
         child: InkWell(
           onTap: onTap != null
               ? () {
-                  debugPrint('⚡ CategoryFabActions: Enhanced bulk action "$title" pressed');
+                  debugPrint(
+                      '⚡ CategoryFabActions: Enhanced bulk action "$title" pressed');
                   Navigator.of(context).pop();
                   HapticFeedback.lightImpact();
                   onTap();
@@ -629,16 +641,21 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
                       ),
                       SizedBox(height: 6.h),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
-                          color: ThemeManager.of(context).textInverted.withValues(alpha: 0.1),
+                          color: ThemeManager.of(context)
+                              .textInverted
+                              .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
                           subtitle,
                           style: TextStyle(
                             fontSize: 13.sp,
-                            color: ThemeManager.of(context).textInverted.withValues(alpha: 0.9),
+                            color: ThemeManager.of(context)
+                                .textInverted
+                                .withValues(alpha: 0.9),
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.1,
                           ),
@@ -652,7 +669,9 @@ class _CategoryFabActionsState extends State<CategoryFabActions> with TickerProv
                 Container(
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).textInverted.withValues(alpha: 0.1),
+                    color: ThemeManager.of(context)
+                        .textInverted
+                        .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Icon(

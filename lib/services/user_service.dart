@@ -1,580 +1,22 @@
-// import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:prbal/models/auth/user_type.dart';
+import 'package:prbal/models/auth/app_user.dart';
+// import 'package:prbal/models/auth/auth_tokens.dart';
+import 'package:prbal/models/auth/user_requests.dart';
+import 'package:prbal/models/auth/verification_models.dart';
+import 'package:prbal/models/core/api_models.dart';
+import 'package:prbal/models/core/paginated_response.dart';
+// import 'package:prbal/services/api_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
-import 'api_service.dart';
-
-// ================================
-// ENUMS AND CONSTANTS
-// ================================
-
-/// User types supported by the system
-enum UserType {
-  customer,
-  provider,
-  admin;
-
-  String get displayName {
-    switch (this) {
-      case UserType.customer:
-        return 'Customer';
-      case UserType.provider:
-        return 'Service Provider';
-      case UserType.admin:
-        return 'Administrator';
-    }
-  }
-
-  static UserType fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'customer':
-        return UserType.customer;
-      case 'provider':
-        return UserType.provider;
-      case 'admin':
-        return UserType.admin;
-      default:
-        return UserType.customer;
-    }
-  }
-}
-
-/// Verification types
-enum VerificationType {
-  identity,
-  address,
-  professional,
-  educational;
-
-  static VerificationType fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'identity':
-        return VerificationType.identity;
-      case 'address':
-        return VerificationType.address;
-      case 'professional':
-        return VerificationType.professional;
-      case 'educational':
-        return VerificationType.educational;
-      default:
-        return VerificationType.identity;
-    }
-  }
-}
-
-/// Verification status
-enum VerificationStatus {
-  pending,
-  inProgress,
-  verified,
-  rejected,
-  cancelled,
-  expired;
-
-  static VerificationStatus fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'pending':
-        return VerificationStatus.pending;
-      case 'in_progress':
-        return VerificationStatus.inProgress;
-      case 'verified':
-        return VerificationStatus.verified;
-      case 'rejected':
-        return VerificationStatus.rejected;
-      case 'cancelled':
-        return VerificationStatus.cancelled;
-      case 'expired':
-        return VerificationStatus.expired;
-      default:
-        return VerificationStatus.pending;
-    }
-  }
-}
+// Import centralized models
+import 'api_service.dart' as api_service;
 
 // ================================
 // DATA MODELS
 // ================================
-
-/// User model based on the API response structure
-class AppUser {
-  final String id;
-  final String username;
-  final String email;
-  final String? phoneNumber;
-  final String firstName;
-  final String lastName;
-  final UserType userType;
-  final String? profilePicture;
-  final String? bio;
-  final String? location;
-  final bool isVerified;
-  final bool isEmailVerified;
-  final bool isPhoneVerified;
-  final double rating;
-  final double balance;
-  final int totalBookings;
-  final Map<String, String>? skills;
-  final Map<String, dynamic>? availability;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final bool notificationsEnabled;
-  final bool biometricsEnabled;
-  final bool analyticsEnabled;
-
-  const AppUser({
-    required this.id,
-    required this.username,
-    required this.email,
-    this.phoneNumber,
-    required this.firstName,
-    required this.lastName,
-    this.userType = UserType.customer,
-    this.profilePicture,
-    this.bio,
-    this.location,
-    this.isVerified = false,
-    this.isEmailVerified = false,
-    this.isPhoneVerified = false,
-    this.rating = 0.0,
-    this.balance = 0.0,
-    this.totalBookings = 0,
-    this.skills,
-    this.availability,
-    required this.createdAt,
-    required this.updatedAt,
-    this.notificationsEnabled = false,
-    this.biometricsEnabled = false,
-    this.analyticsEnabled = false,
-  });
-
-  factory AppUser.fromJson(Map<String, dynamic> json) {
-    debugPrint('🔄 AppUser.fromJson: Parsing user data');
-    debugPrint('📊 Raw rating: ${json['rating']} (${json['rating'].runtimeType})');
-    debugPrint('💰 Raw balance: ${json['balance']} (${json['balance'].runtimeType})');
-
-    // Helper function to safely parse string or number to double
-    double parseDouble(dynamic value) {
-      if (value == null) return 0.0;
-      if (value is double) return value;
-      if (value is int) return value.toDouble();
-      if (value is String) {
-        return double.tryParse(value) ?? 0.0;
-      }
-      return 0.0;
-    }
-
-    final rating = parseDouble(json['rating']);
-    final balance = parseDouble(json['balance']);
-
-    debugPrint('📊 Parsed rating: $rating');
-    debugPrint('💰 Parsed balance: $balance');
-
-    return AppUser(
-      id: json['id'] ?? '',
-      username: json['username'] ?? '',
-      email: json['email'] ?? '${json['username'] ?? 'user'}@placeholder.com',
-      phoneNumber: json['phone_number'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      userType: UserType.fromString(json['user_type'] ?? 'customer'),
-      profilePicture: json['profile_picture'],
-      bio: json['bio'],
-      location: json['location'],
-      isVerified: json['is_verified'] ?? false,
-      isEmailVerified: json['is_email_verified'] ?? false,
-      isPhoneVerified: json['is_phone_verified'] ?? false,
-      rating: rating,
-      balance: balance,
-      totalBookings: json['total_bookings'] ?? 0,
-      skills: json['skills'] != null ? Map<String, String>.from(json['skills']) : null,
-      availability: json['availability'],
-      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updated_at'] ?? json['created_at'] ?? '') ?? DateTime.now(),
-      notificationsEnabled: json['notifications_enabled'] ?? false,
-      biometricsEnabled: json['biometrics_enabled'] ?? false,
-      analyticsEnabled: json['analytics_enabled'] ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'username': username,
-      'email': email,
-      'phone_number': phoneNumber,
-      'first_name': firstName,
-      'last_name': lastName,
-      'user_type': userType.name,
-      'profile_picture': profilePicture,
-      'bio': bio,
-      'location': location,
-      'is_verified': isVerified,
-      'is_email_verified': isEmailVerified,
-      'is_phone_verified': isPhoneVerified,
-      'rating': rating,
-      'balance': balance,
-      'total_bookings': totalBookings,
-      'skills': skills,
-      'availability': availability,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'notifications_enabled': notificationsEnabled,
-      'biometrics_enabled': biometricsEnabled,
-      'analytics_enabled': analyticsEnabled,
-    };
-  }
-
-  String get displayName {
-    if (firstName.isNotEmpty && lastName.isNotEmpty) {
-      return '$firstName $lastName';
-    }
-    return username;
-  }
-
-  AppUser copyWith({
-    String? id,
-    String? username,
-    String? email,
-    String? phoneNumber,
-    String? firstName,
-    String? lastName,
-    UserType? userType,
-    String? profilePicture,
-    String? bio,
-    String? location,
-    bool? isVerified,
-    bool? isEmailVerified,
-    bool? isPhoneVerified,
-    double? rating,
-    double? balance,
-    int? totalBookings,
-    Map<String, String>? skills,
-    Map<String, dynamic>? availability,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    bool? notificationsEnabled,
-    bool? biometricsEnabled,
-    bool? analyticsEnabled,
-  }) {
-    return AppUser(
-      id: id ?? this.id,
-      username: username ?? this.username,
-      email: email ?? this.email,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      userType: userType ?? this.userType,
-      profilePicture: profilePicture ?? this.profilePicture,
-      bio: bio ?? this.bio,
-      location: location ?? this.location,
-      isVerified: isVerified ?? this.isVerified,
-      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
-      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
-      rating: rating ?? this.rating,
-      balance: balance ?? this.balance,
-      totalBookings: totalBookings ?? this.totalBookings,
-      skills: skills ?? this.skills,
-      availability: availability ?? this.availability,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-      biometricsEnabled: biometricsEnabled ?? this.biometricsEnabled,
-      analyticsEnabled: analyticsEnabled ?? this.analyticsEnabled,
-    );
-  }
-}
-
-/// Authentication tokens
-class AuthTokens {
-  final String accessToken;
-  final String refreshToken;
-
-  const AuthTokens({
-    required this.accessToken,
-    required this.refreshToken,
-  });
-
-  factory AuthTokens.fromJson(Map<String, dynamic> json) {
-    return AuthTokens(
-      accessToken: json['access'] ?? '',
-      refreshToken: json['refresh'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'access': accessToken,
-      'refresh': refreshToken,
-    };
-  }
-}
-
-/// PIN registration request
-class PinRegistrationRequest {
-  final String username;
-  final String email;
-  final String phoneNumber;
-  final String pin;
-  final String confirmPin;
-  final String firstName;
-  final String lastName;
-  final String? deviceType;
-
-  const PinRegistrationRequest({
-    required this.username,
-    required this.email,
-    required this.phoneNumber,
-    required this.pin,
-    required this.confirmPin,
-    required this.firstName,
-    required this.lastName,
-    this.deviceType = 'mobile',
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'username': username,
-      'email': email,
-      'phone_number': phoneNumber,
-      'pin': pin,
-      'confirm_pin': confirmPin,
-      'first_name': firstName,
-      'last_name': lastName,
-      'device_type': deviceType,
-    };
-  }
-}
-
-/// PIN login request
-class PinLoginRequest {
-  final String phoneNumber;
-  final String pin;
-  final String? deviceType;
-
-  const PinLoginRequest({
-    required this.phoneNumber,
-    required this.pin,
-    this.deviceType = 'mobile',
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'phone_number': phoneNumber,
-      'pin': pin,
-      'device_type': deviceType,
-    };
-  }
-}
-
-/// Change PIN request
-class ChangePinRequest {
-  final String currentPin;
-  final String newPin;
-  final String confirmNewPin;
-
-  const ChangePinRequest({
-    required this.currentPin,
-    required this.newPin,
-    required this.confirmNewPin,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'current_pin': currentPin,
-      'new_pin': newPin,
-      'confirm_new_pin': confirmNewPin,
-    };
-  }
-}
-
-/// Reset PIN request
-class ResetPinRequest {
-  final String phoneNumber;
-  final String newPin;
-  final String confirmNewPin;
-
-  const ResetPinRequest({
-    required this.phoneNumber,
-    required this.newPin,
-    required this.confirmNewPin,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'phone_number': phoneNumber,
-      'new_pin': newPin,
-      'confirm_new_pin': confirmNewPin,
-    };
-  }
-}
-
-/// User profile update request
-class UpdateProfileRequest {
-  final String? username;
-  final String? firstName;
-  final String? lastName;
-  final String? bio;
-  final String? location;
-
-  const UpdateProfileRequest({
-    this.username,
-    this.firstName,
-    this.lastName,
-    this.bio,
-    this.location,
-  });
-
-  Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{};
-    if (username != null) json['username'] = username;
-    if (firstName != null) json['first_name'] = firstName;
-    if (lastName != null) json['last_name'] = lastName;
-    if (bio != null) json['bio'] = bio;
-    if (location != null) json['location'] = location;
-    return json;
-  }
-}
-
-/// User search request
-class UserSearchRequest {
-  final String? searchTerm;
-  final List<UserType>? userTypes;
-  final String? location;
-  final double? minRating;
-  final int? page;
-  final int? pageSize;
-
-  const UserSearchRequest({
-    this.searchTerm,
-    this.userTypes,
-    this.location,
-    this.minRating,
-    this.page = 1,
-    this.pageSize = 10,
-  });
-
-  Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{};
-    if (searchTerm != null) json['search_term'] = searchTerm;
-    if (userTypes != null) {
-      json['user_types'] = userTypes!.map((type) => type.name).toList();
-    }
-    if (location != null) json['location'] = location;
-    if (minRating != null) json['min_rating'] = minRating;
-    if (page != null) json['page'] = page;
-    if (pageSize != null) json['page_size'] = pageSize;
-    return json;
-  }
-}
-
-/// Verification model
-class Verification {
-  final int id;
-  final String userId;
-  final VerificationType verificationType;
-  final String documentType;
-  final String? documentNumber;
-  final VerificationStatus status;
-  final String? documentUrl;
-  final String? documentBackUrl;
-  final String? adminNotes;
-  final String? verifiedBy;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? verifiedAt;
-
-  const Verification({
-    required this.id,
-    required this.userId,
-    required this.verificationType,
-    required this.documentType,
-    this.documentNumber,
-    required this.status,
-    this.documentUrl,
-    this.documentBackUrl,
-    this.adminNotes,
-    this.verifiedBy,
-    required this.createdAt,
-    required this.updatedAt,
-    this.verifiedAt,
-  });
-
-  factory Verification.fromJson(Map<String, dynamic> json) {
-    return Verification(
-      id: json['id'] ?? 0,
-      userId: json['user'] ?? '',
-      verificationType: VerificationType.fromString(json['verification_type'] ?? 'identity'),
-      documentType: json['document_type'] ?? '',
-      documentNumber: json['document_number'],
-      status: VerificationStatus.fromString(json['status'] ?? 'pending'),
-      documentUrl: json['document_url'] ?? json['document_link'],
-      documentBackUrl: json['document_back_url'],
-      adminNotes: json['admin_notes'],
-      verifiedBy: json['verified_by'],
-      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-      verifiedAt: json['verified_at'] != null ? DateTime.tryParse(json['verified_at']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'user': userId,
-      'verification_type': verificationType.name,
-      'document_type': documentType,
-      'document_number': documentNumber,
-      'status': status.name,
-      'document_url': documentUrl,
-      'document_back_url': documentBackUrl,
-      'admin_notes': adminNotes,
-      'verified_by': verifiedBy,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'verified_at': verifiedAt?.toIso8601String(),
-    };
-  }
-}
-
-/// Create verification request
-class CreateVerificationRequest {
-  final VerificationType verificationType;
-  final String documentType;
-  final String? documentNumber;
-  final String? documentLink;
-  final String? documentBackLink;
-  final String? documentBase64;
-  final String? documentBackBase64;
-
-  const CreateVerificationRequest({
-    required this.verificationType,
-    required this.documentType,
-    this.documentNumber,
-    this.documentLink,
-    this.documentBackLink,
-    this.documentBase64,
-    this.documentBackBase64,
-  });
-
-  Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{
-      'verification_type': verificationType.name,
-      'document_type': documentType,
-    };
-
-    if (documentNumber != null) json['document_number'] = documentNumber;
-    if (documentLink != null) json['document_link'] = documentLink;
-    if (documentBackLink != null) json['document_back_link'] = documentBackLink;
-    if (documentBase64 != null) json['document_base64'] = documentBase64;
-    if (documentBackBase64 != null) {
-      json['document_back_base64'] = documentBackBase64;
-    }
-
-    return json;
-  }
-}
 
 // ================================
 // USER SERVICE
@@ -582,7 +24,7 @@ class CreateVerificationRequest {
 
 /// Comprehensive UserService implementing all Prbal User Management API endpoints
 class UserService {
-  final ApiService _apiService;
+  final api_service.ApiService _apiService;
 
   UserService(this._apiService);
 
@@ -592,7 +34,8 @@ class UserService {
 
   /// PIN-based login
   /// POST /users/auth/login/
-  Future<ApiResponse<Map<String, dynamic>>> pinLogin(PinLoginRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> pinLogin(
+      PinLoginRequest request) async {
     debugPrint('🔐 UserService: PIN Login Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
 
@@ -614,7 +57,8 @@ class UserService {
 
   /// PIN-based registration
   /// POST /users/auth/register/
-  Future<ApiResponse<Map<String, dynamic>>> pinRegister(PinRegistrationRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> pinRegister(
+      PinRegistrationRequest request) async {
     debugPrint('🔐 UserService: PIN Registration Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
     debugPrint('👤 Username: ${request.username}');
@@ -638,7 +82,8 @@ class UserService {
 
   /// Admin registration
   /// POST /users/auth/admin/register/
-  Future<ApiResponse<Map<String, dynamic>>> adminRegister(Map<String, dynamic> request) async {
+  Future<ApiResponse<Map<String, dynamic>>> adminRegister(
+      Map<String, dynamic> request) async {
     debugPrint('🔐 UserService: Admin Registration Request');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -650,7 +95,8 @@ class UserService {
 
   /// Change PIN
   /// POST /users/auth/pin/change/
-  Future<ApiResponse<Map<String, dynamic>>> changePin(ChangePinRequest request, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> changePin(
+      ChangePinRequest request, String token) async {
     debugPrint('🔐 UserService: Change PIN Request');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -663,7 +109,8 @@ class UserService {
 
   /// Reset PIN
   /// POST /users/auth/pin/reset/
-  Future<ApiResponse<Map<String, dynamic>>> resetPin(ResetPinRequest request) async {
+  Future<ApiResponse<Map<String, dynamic>>> resetPin(
+      ResetPinRequest request) async {
     debugPrint('🔐 UserService: Reset PIN Request');
     debugPrint('📱 Phone: ${request.phoneNumber}');
 
@@ -700,7 +147,8 @@ class UserService {
 
   /// Get user type change info
   /// GET /users/auth/user-type-change/
-  Future<ApiResponse<Map<String, dynamic>>> getUserTypeChangeInfo(String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> getUserTypeChangeInfo(
+      String token) async {
     debugPrint('🔐 UserService: Get User Type Change Info');
 
     final response = await _apiService.get<Map<String, dynamic>>(
@@ -716,7 +164,8 @@ class UserService {
       debugPrint('✅ UserService: User type change info retrieved successfully');
       debugPrint('🔄 Response data keys: ${response.data?.keys.toList()}');
     } else {
-      debugPrint('❌ UserService: Failed to get user type change info: ${response.message}');
+      debugPrint(
+          '❌ UserService: Failed to get user type change info: ${response.message}');
     }
 
     return response;
@@ -741,7 +190,8 @@ class UserService {
 
   /// Refresh token
   /// POST /users/auth/token/refresh/
-  Future<ApiResponse<Map<String, dynamic>>> refreshToken(String refreshToken) async {
+  Future<ApiResponse<Map<String, dynamic>>> refreshToken(
+      String refreshToken) async {
     debugPrint('🔐 UserService: Refresh Token');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -770,7 +220,8 @@ class UserService {
           // Handle nested data structure if response has 'data' wrapper
           // AppUser userData;
           if (json is Map<String, dynamic>) {
-            if (json.containsKey('data') && json['data'] is Map<String, dynamic>) {
+            if (json.containsKey('data') &&
+                json['data'] is Map<String, dynamic>) {
               // userData = json['data'] as Map<String, dynamic>;
               // debugPrint('📦 Extracted user data from wrapper: $userData');
               return AppUser.fromJson(json['data']);
@@ -780,7 +231,8 @@ class UserService {
               return AppUser.fromJson(json);
             }
           } else {
-            throw Exception('Invalid JSON format: expected Map<String, dynamic>, got ${json.runtimeType}');
+            throw Exception(
+                'Invalid JSON format: expected Map<String, dynamic>, got ${json.runtimeType}');
           }
         } catch (e) {
           debugPrint('❌ Profile parsing error: $e');
@@ -804,7 +256,8 @@ class UserService {
 
   /// Update user profile (full update)
   /// PUT /users/users/me/
-  Future<ApiResponse<AppUser>> updateProfile(UpdateProfileRequest request, String token) async {
+  Future<ApiResponse<AppUser>> updateProfile(
+      UpdateProfileRequest request, String token) async {
     debugPrint('👤 UserService: Update Profile (PUT)');
     debugPrint('📝 Fields: ${request.toJson().keys.join(', ')}');
 
@@ -818,7 +271,8 @@ class UserService {
 
   /// Update user profile (partial update)
   /// PATCH /users/users/me/
-  Future<ApiResponse<AppUser>> updateProfilePartial(UpdateProfileRequest request, String token) async {
+  Future<ApiResponse<AppUser>> updateProfilePartial(
+      UpdateProfileRequest request, String token) async {
     debugPrint('👤 UserService: Update Profile (PATCH)');
     debugPrint('📝 Fields: ${request.toJson().keys.join(', ')}');
 
@@ -832,7 +286,8 @@ class UserService {
 
   /// Upload profile image (file)
   /// POST /users/users/profile/image/
-  Future<ApiResponse<Map<String, dynamic>>> uploadProfileImage(File imageFile, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> uploadProfileImage(
+      File imageFile, String token) async {
     debugPrint('👤 UserService: Upload Profile Image');
     debugPrint('📄 File: ${imageFile.path}');
 
@@ -880,7 +335,8 @@ class UserService {
 
   /// Deactivate account
   /// POST /users/users/deactivate/
-  Future<ApiResponse<Map<String, dynamic>>> deactivateAccount(String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> deactivateAccount(
+      String token) async {
     debugPrint('👤 UserService: Deactivate Account');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -923,7 +379,8 @@ class UserService {
 
   /// Revoke specific token
   /// POST /users/users/me/tokens/{tokenId}/revoke/
-  Future<ApiResponse<Map<String, dynamic>>> revokeToken(String tokenId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> revokeToken(
+      String tokenId, String token) async {
     debugPrint('🔑 UserService: Revoke Token');
     debugPrint('🆔 Token ID: $tokenId');
 
@@ -936,7 +393,8 @@ class UserService {
 
   /// Revoke all tokens
   /// POST /users/users/me/tokens/revoke_all/
-  Future<ApiResponse<Map<String, dynamic>>> revokeAllTokens(String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> revokeAllTokens(
+      String token) async {
     debugPrint('🔑 UserService: Revoke All Tokens');
 
     return await _apiService.post<Map<String, dynamic>>(
@@ -952,7 +410,8 @@ class UserService {
 
   /// Like user profile
   /// POST /users/users/{userId}/like/
-  Future<ApiResponse<Map<String, dynamic>>> likeUser(String userId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> likeUser(
+      String userId, String token) async {
     debugPrint('❤️ UserService: Like User');
     debugPrint('🆔 User ID: $userId');
 
@@ -965,7 +424,8 @@ class UserService {
 
   /// Pass user profile
   /// POST /users/users/{userId}/pass/
-  Future<ApiResponse<Map<String, dynamic>>> passUser(String userId, String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> passUser(
+      String userId, String token) async {
     debugPrint('👋 UserService: Pass User');
     debugPrint('🆔 User ID: $userId');
 
@@ -1017,7 +477,8 @@ class UserService {
   ) async {
     debugPrint('🔍 UserService: Search Users (POST)');
     debugPrint('🔎 Search Term: ${request.searchTerm}');
-    debugPrint('👥 User Types: ${request.userTypes?.map((t) => t.name).join(', ')}');
+    debugPrint(
+        '👥 User Types: ${request.userTypes?.map((t) => t.name).join(', ')}');
 
     return await _apiService.post<PaginatedResponse<AppUser>>(
       '/users/search/',
@@ -1125,7 +586,8 @@ class UserService {
 
   /// Get verification details
   /// GET /users/verifications/{verificationId}/
-  Future<ApiResponse<Verification>> getVerification(int verificationId, String token) async {
+  Future<ApiResponse<Verification>> getVerification(
+      int verificationId, String token) async {
     debugPrint('📋 UserService: Get Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1174,7 +636,8 @@ class UserService {
 
   /// Delete verification
   /// DELETE /users/verifications/{verificationId}/
-  Future<ApiResponse<void>> deleteVerification(int verificationId, String token) async {
+  Future<ApiResponse<void>> deleteVerification(
+      int verificationId, String token) async {
     debugPrint('📋 UserService: Delete Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1186,7 +649,8 @@ class UserService {
 
   /// Cancel verification
   /// POST /users/verifications/{verificationId}/cancel/
-  Future<ApiResponse<Verification>> cancelVerification(int verificationId, String token) async {
+  Future<ApiResponse<Verification>> cancelVerification(
+      int verificationId, String token) async {
     debugPrint('📋 UserService: Cancel Verification');
     debugPrint('🆔 Verification ID: $verificationId');
 
@@ -1262,7 +726,8 @@ class UserService {
 
   /// Get verification status summary (Admin)
   /// GET /users/verifications/status_summary/
-  Future<ApiResponse<Map<String, dynamic>>> getVerificationStatusSummary(String token) async {
+  Future<ApiResponse<Map<String, dynamic>>> getVerificationStatusSummary(
+      String token) async {
     debugPrint('📋 UserService: Get Verification Status Summary');
 
     return await _apiService.get<Map<String, dynamic>>(
@@ -1676,7 +1141,11 @@ List<Map<String, String>> countries = [
   {'name': 'Solomon Islands', 'code': '+677', 'flag': '🇸🇧'},
   {'name': 'Somalia', 'code': '+252', 'flag': '🇸🇴'},
   {'name': 'South Africa', 'code': '+27', 'flag': '🇿🇦'},
-  {'name': 'South Georgia and the South Sandwich Islands', 'code': '+500', 'flag': '🇬🇸'},
+  {
+    'name': 'South Georgia and the South Sandwich Islands',
+    'code': '+500',
+    'flag': '🇬🇸'
+  },
   {'name': 'South Korea', 'code': '+82', 'flag': '🇰🇷'},
   {'name': 'South Sudan', 'code': '+211', 'flag': '🇸🇸'},
   {'name': 'Spain', 'code': '+34', 'flag': '🇪🇸'},
@@ -1706,7 +1175,11 @@ List<Map<String, String>> countries = [
   {'name': 'United Arab Emirates', 'code': '+971', 'flag': '🇦🇪'},
   {'name': 'United Kingdom', 'code': '+44', 'flag': '🇬🇧'},
   {'name': 'United States', 'code': '+1', 'flag': '🇺🇸'},
-  {'name': 'United States Minor Outlying Islands', 'code': '+1', 'flag': '🇺🇲'},
+  {
+    'name': 'United States Minor Outlying Islands',
+    'code': '+1',
+    'flag': '🇺🇲'
+  },
   {'name': 'Uruguay', 'code': '+598', 'flag': '🇺🇾'},
   {'name': 'US Virgin Islands', 'code': '+1', 'flag': '🇻🇮'},
   {'name': 'Uzbekistan', 'code': '+998', 'flag': '🇺🇿'},
@@ -1748,7 +1221,8 @@ List<Map<String, String>> countries = [
 ///
 /// @returns Map containing generated firstName, lastName, username, email
 Map<String, String> generateRandomUserData() {
-  debugPrint('🎲 PinVerificationScreen: Generating random user data for new registration');
+  debugPrint(
+      '🎲 PinVerificationScreen: Generating random user data for new registration');
 
   final random = Random();
 

@@ -57,14 +57,18 @@ class AdminServiceManagerScreen extends ConsumerStatefulWidget {
   const AdminServiceManagerScreen({super.key});
 
   @override
-  ConsumerState<AdminServiceManagerScreen> createState() => _AdminServiceManagerScreenState();
+  ConsumerState<AdminServiceManagerScreen> createState() =>
+      _AdminServiceManagerScreenState();
 }
 
-class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerScreen> with TickerProviderStateMixin {
+class _AdminServiceManagerScreenState
+    extends ConsumerState<AdminServiceManagerScreen>
+    with TickerProviderStateMixin {
   // ========== STATE VARIABLES ==========
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _statusFilter = 'all'; // 'all', 'pending', 'active', 'inactive', 'rejected'
+  String _statusFilter =
+      'all'; // 'all', 'pending', 'active', 'inactive', 'rejected'
 // 'all' or specific category ID
 // 'all' or specific provider ID
 
@@ -109,13 +113,15 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
         setState(() {
           _searchQuery = _searchController.text;
         });
-        debugPrint('🔍 AdminServiceManager: Search query updated: "$_searchQuery"');
+        debugPrint(
+            '🔍 AdminServiceManager: Search query updated: "$_searchQuery"');
       }
     });
 
     // Start entrance animation and load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint('🏢 AdminServiceManager: Post-frame callback - starting entrance animation');
+      debugPrint(
+          '🏢 AdminServiceManager: Post-frame callback - starting entrance animation');
       _slideAnimationController.forward();
       _loadInitialData();
     });
@@ -231,7 +237,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
           if (_selectedServiceIds.isNotEmpty)
             IconButton(
               onPressed: () {
-                debugPrint('🔧 AdminServiceManager: Bulk actions button pressed');
+                debugPrint(
+                    '🔧 AdminServiceManager: Bulk actions button pressed');
                 _showBulkActionsDialog();
               },
               icon: Icon(
@@ -359,7 +366,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
                     icon: Prbal.eye,
                     label: 'View All',
                     onPressed: () {
-                      debugPrint('👁️ AdminServiceManager: View all button pressed');
+                      debugPrint(
+                          '👁️ AdminServiceManager: View all button pressed');
                       setState(() {
                         _statusFilter = 'all';
                       });
@@ -370,7 +378,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
                     icon: Prbal.clock,
                     label: 'Pending',
                     onPressed: () {
-                      debugPrint('⏰ AdminServiceManager: Pending filter button pressed');
+                      debugPrint(
+                          '⏰ AdminServiceManager: Pending filter button pressed');
                       setState(() {
                         _statusFilter = 'pending';
                       });
@@ -401,7 +410,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        gradient: isHighlighted ? ThemeManager.of(context).primaryGradient : null,
+        gradient:
+            isHighlighted ? ThemeManager.of(context).primaryGradient : null,
         color: !isHighlighted
             ? ThemeManager.of(context).conditionalColor(
                 lightColor: Colors.grey.withValues(alpha: 0.1),
@@ -422,7 +432,9 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
                 Icon(
                   icon,
                   size: 16.sp,
-                  color: isHighlighted ? Colors.white : (ThemeManager.of(context).textSecondary),
+                  color: isHighlighted
+                      ? Colors.white
+                      : (ThemeManager.of(context).textSecondary),
                 ),
                 SizedBox(width: 6.w),
                 Text(
@@ -430,7 +442,9 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: isHighlighted ? Colors.white : (ThemeManager.of(context).textSecondary),
+                    color: isHighlighted
+                        ? Colors.white
+                        : (ThemeManager.of(context).textSecondary),
                   ),
                 ),
               ],
@@ -456,7 +470,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
         _buildStatCard('Inactive', _inactiveServices.toString(), Colors.grey),
         if (_selectedServiceIds.isNotEmpty) ...[
           SizedBox(width: 12.w),
-          _buildStatCard('Selected', _selectedServiceIds.length.toString(), Colors.purple),
+          _buildStatCard(
+              'Selected', _selectedServiceIds.length.toString(), Colors.purple),
         ],
       ],
     );
@@ -473,7 +488,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
-          color: color.withValues(alpha: ThemeManager.of(context).themeManager ? 0.2 : 0.1),
+          color: color.withValues(
+              alpha: ThemeManager.of(context).themeManager ? 0.2 : 0.1),
           border: Border.all(
             color: color.withValues(alpha: 77),
             width: 1,
@@ -513,20 +529,24 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
       filter: _statusFilter,
       selectedIds: _selectedServiceIds,
       onSelectionChanged: (serviceId) {
-        debugPrint('📋 AdminServiceManager: Service selection changed: $serviceId');
+        debugPrint(
+            '📋 AdminServiceManager: Service selection changed: $serviceId');
         setState(() {
           if (_selectedServiceIds.contains(serviceId)) {
             _selectedServiceIds.remove(serviceId);
-            debugPrint('📋 AdminServiceManager: Service deselected: $serviceId');
+            debugPrint(
+                '📋 AdminServiceManager: Service deselected: $serviceId');
           } else {
             _selectedServiceIds.add(serviceId);
             debugPrint('📋 AdminServiceManager: Service selected: $serviceId');
           }
         });
-        debugPrint('📋 AdminServiceManager: Total selected services: ${_selectedServiceIds.length}');
+        debugPrint(
+            '📋 AdminServiceManager: Total selected services: ${_selectedServiceIds.length}');
       },
       onDataChanged: () {
-        debugPrint('📋 AdminServiceManager: Services data changed - triggering UI update');
+        debugPrint(
+            '📋 AdminServiceManager: Services data changed - triggering UI update');
         setState(() {
           // Update statistics when data changes
           _updateStatistics();
@@ -582,7 +602,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                color:
+                    ThemeManager.of(context).primaryColor.withValues(alpha: 77),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -615,7 +636,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              debugPrint('🔍 AdminServiceManager: Search initiated with: "${_searchController.text}"');
+              debugPrint(
+                  '🔍 AdminServiceManager: Search initiated with: "${_searchController.text}"');
             },
             child: Text(
               'Search',
@@ -730,7 +752,9 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
       label: Text(
         label,
         style: TextStyle(
-          color: isSelected ? Colors.white : ThemeManager.of(context).textSecondary,
+          color: isSelected
+              ? Colors.white
+              : ThemeManager.of(context).textSecondary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -781,12 +805,17 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildStatisticRow('Total Services', _totalServices, Colors.blue),
-              _buildStatisticRow('Pending Approval', _pendingServices, Colors.orange),
-              _buildStatisticRow('Active Services', _activeServices, Colors.green),
-              _buildStatisticRow('Inactive Services', _inactiveServices, Colors.grey),
-              _buildStatisticRow('Rejected Services', _rejectedServices, Colors.red),
+              _buildStatisticRow(
+                  'Pending Approval', _pendingServices, Colors.orange),
+              _buildStatisticRow(
+                  'Active Services', _activeServices, Colors.green),
+              _buildStatisticRow(
+                  'Inactive Services', _inactiveServices, Colors.grey),
+              _buildStatisticRow(
+                  'Rejected Services', _rejectedServices, Colors.red),
               if (_selectedServiceIds.isNotEmpty)
-                _buildStatisticRow('Selected Services', _selectedServiceIds.length, Colors.purple),
+                _buildStatisticRow('Selected Services',
+                    _selectedServiceIds.length, Colors.purple),
             ],
           ),
         ),
@@ -890,10 +919,12 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
               ),
             ),
             SizedBox(height: 16.h),
-            _buildBulkActionTile('Approve All', Prbal.checkCircle, Colors.green),
+            _buildBulkActionTile(
+                'Approve All', Prbal.checkCircle, Colors.green),
             _buildBulkActionTile('Reject All', Prbal.closeOutline, Colors.red),
             _buildBulkActionTile('Activate All', Prbal.toggleOn, Colors.blue),
-            _buildBulkActionTile('Deactivate All', Prbal.toggleOff, Colors.orange),
+            _buildBulkActionTile(
+                'Deactivate All', Prbal.toggleOff, Colors.orange),
             _buildBulkActionTile('Delete All', Prbal.trash, Colors.red),
           ],
         ),
@@ -940,7 +971,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
   /// Perform bulk action
   void _performBulkAction(String action) {
     debugPrint('🔧 AdminServiceManager: Performing bulk action: $action');
-    debugPrint('🔧 AdminServiceManager: Selected services: ${_selectedServiceIds.length}');
+    debugPrint(
+        '🔧 AdminServiceManager: Selected services: ${_selectedServiceIds.length}');
 
     // TODO: Implement actual bulk actions with ServiceManagementService
     // This would involve calling the appropriate API endpoints for each action
@@ -972,7 +1004,8 @@ class _AdminServiceManagerScreenState extends ConsumerState<AdminServiceManagerS
   @override
   void dispose() {
     debugPrint('🏢 AdminServiceManager: Disposing service manager screen');
-    debugPrint('🏢 AdminServiceManager: Final selected services: ${_selectedServiceIds.length}');
+    debugPrint(
+        '🏢 AdminServiceManager: Final selected services: ${_selectedServiceIds.length}');
 
     _searchController.dispose();
     _slideAnimationController.dispose();

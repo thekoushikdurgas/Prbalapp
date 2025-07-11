@@ -49,7 +49,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
     debugPrint('🚪 LogoutButtonWidget: Is logging out: $_isLoggingOut');
 
     return Container(
-      margin: widget.margin ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+      margin: widget.margin ??
+          EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -67,20 +68,26 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.1),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.9),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.white.withValues(alpha: 0.9),
             blurRadius: 1,
             offset: const Offset(0, 1),
             spreadRadius: 0,
           ),
         ],
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -91,7 +98,9 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
           onTap: _isLoggingOut ? null : () => _showLogoutConfirmation(isDark),
           child: Padding(
             padding: EdgeInsets.all(20.w),
-            child: _isLoggingOut ? _buildLoadingState(isDark) : _buildLogoutButton(isDark),
+            child: _isLoggingOut
+                ? _buildLoadingState(isDark)
+                : _buildLogoutButton(isDark),
           ),
         ),
       ),
@@ -220,7 +229,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
 
   /// Builds the logout confirmation bottom sheet
   Widget _buildLogoutConfirmationBottomSheet(bool isDark) {
-    debugPrint('🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
+    debugPrint(
+        '🚪 LogoutButtonWidget: Building logout confirmation bottom sheet');
 
     return Container(
       decoration: BoxDecoration(
@@ -304,7 +314,8 @@ class _LogoutButtonWidgetState extends ConsumerState<LogoutButtonWidget> {
                         style: OutlinedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           side: BorderSide(
-                            color: isDark ? Colors.grey[600]! : Colors.grey[300]!,
+                            color:
+                                isDark ? Colors.grey[600]! : Colors.grey[300]!,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),

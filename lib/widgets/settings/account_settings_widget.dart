@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/models/auth/app_user.dart';
+import 'package:prbal/models/auth/user_type.dart';
 
 import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
@@ -63,9 +65,13 @@ class AccountSettingsWidget extends StatelessWidget {
         ),
         SettingsItemWidget(
           title: 'Verification',
-          subtitle: userData.isVerified ? 'Account verified' : 'Complete verification',
+          subtitle: userData.isVerified
+              ? 'Account verified'
+              : 'Complete verification',
           icon: Icons.security,
-          iconColor: userData.isVerified ? const Color(0xFF48BB78) : const Color(0xFFED8936),
+          iconColor: userData.isVerified
+              ? const Color(0xFF48BB78)
+              : const Color(0xFFED8936),
           onTap: () {
             debugPrint('⚙️ Verification tapped');
             // TODO: Navigate to verification
@@ -74,17 +80,22 @@ class AccountSettingsWidget extends StatelessWidget {
         // User Type Change - available for all user types
         SettingsItemWidget(
           title: 'Account Type',
-          subtitle: 'Currently: ${getUserTypeDisplayName(userType)} - Tap to change',
+          subtitle:
+              'Currently: ${getUserTypeDisplayName(userType)} - Tap to change',
           icon: Icons.swap_horiz,
           iconColor: const Color(0xFF667EEA),
           onTap: onUserTypeChange,
           trailing: Container(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             decoration: BoxDecoration(
-              color: ThemeManager.of(context).getUserTypeColor(userType).withValues(alpha: 0.1),
+              color: ThemeManager.of(context)
+                  .getUserTypeColor(userType)
+                  .withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
-                color: ThemeManager.of(context).getUserTypeColor(userType).withValues(alpha: 0.3),
+                color: ThemeManager.of(context)
+                    .getUserTypeColor(userType)
+                    .withValues(alpha: 0.3),
                 width: 1,
               ),
             ),

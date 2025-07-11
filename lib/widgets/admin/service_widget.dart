@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/models/business/service_models.dart';
+import 'package:prbal/models/core/api_models.dart';
 // import 'package:prbal/services/service_management_service.dart';
 //
 
@@ -113,9 +115,11 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
   void initState() {
     super.initState();
     debugPrint('🛠️ ServiceCrud: Initializing Services CRUD widget');
-    debugPrint('🛠️ ServiceCrud: Initial search query: "${widget.searchQuery}"');
+    debugPrint(
+        '🛠️ ServiceCrud: Initial search query: "${widget.searchQuery}"');
     debugPrint('🛠️ ServiceCrud: Initial filter: "${widget.filter}"');
-    debugPrint('🛠️ ServiceCrud: Selected IDs count: ${widget.selectedIds.length}');
+    debugPrint(
+        '🛠️ ServiceCrud: Selected IDs count: ${widget.selectedIds.length}');
 
     // Initialize service and load data
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -129,13 +133,18 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     super.didUpdateWidget(oldWidget);
 
     debugPrint('🛠️ ServiceCrud: Widget updated - checking for changes');
-    debugPrint('🛠️ ServiceCrud: Old search: "${oldWidget.searchQuery}" -> New: "${widget.searchQuery}"');
-    debugPrint('🛠️ ServiceCrud: Old filter: "${oldWidget.filter}" -> New: "${widget.filter}"');
-    debugPrint('🛠️ ServiceCrud: Old selected: ${oldWidget.selectedIds.length} -> New: ${widget.selectedIds.length}');
+    debugPrint(
+        '🛠️ ServiceCrud: Old search: "${oldWidget.searchQuery}" -> New: "${widget.searchQuery}"');
+    debugPrint(
+        '🛠️ ServiceCrud: Old filter: "${oldWidget.filter}" -> New: "${widget.filter}"');
+    debugPrint(
+        '🛠️ ServiceCrud: Old selected: ${oldWidget.selectedIds.length} -> New: ${widget.selectedIds.length}');
 
     // Check if search query or filter changed
-    if (oldWidget.searchQuery != widget.searchQuery || oldWidget.filter != widget.filter) {
-      debugPrint('🛠️ ServiceCrud: Search or filter changed - applying new filters');
+    if (oldWidget.searchQuery != widget.searchQuery ||
+        oldWidget.filter != widget.filter) {
+      debugPrint(
+          '🛠️ ServiceCrud: Search or filter changed - applying new filters');
       _applyFilters();
     }
   }
@@ -147,7 +156,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     try {
       // Get the service management service from providers
       // _serviceManagementService = ref.read(serviceManagementServiceProvider);
-      debugPrint('🛠️ ServiceCrud: Service management service obtained successfully');
+      debugPrint(
+          '🛠️ ServiceCrud: Service management service obtained successfully');
 
       // Load services
       await _loadServices();
@@ -173,7 +183,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     });
 
     try {
-      debugPrint('🔄 ServiceCrud: Calling getServices API - useCache: ${!_isInitialLoad}');
+      debugPrint(
+          '🔄 ServiceCrud: Calling getServices API - useCache: ${!_isInitialLoad}');
 
       // For now, we'll simulate the service loading since the actual API might not be implemented
       // TODO: Replace with actual API call when available
@@ -181,20 +192,22 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
       final duration = DateTime.now().difference(startTime);
 
-      debugPrint('📊 ServiceCrud: API call completed in ${duration.inMilliseconds}ms');
+      debugPrint(
+          '📊 ServiceCrud: API call completed in ${duration.inMilliseconds}ms');
       debugPrint('📊 ServiceCrud: Response success: ${response.isSuccess}');
       debugPrint('📊 ServiceCrud: Response message: ${response.message}');
 
-      if (response.isSuccess && response.data != null) {
+      if (response.success && response.data != null) {
         final services = response.data!;
         debugPrint('📊 ServiceCrud: Received ${services.length} services');
 
         // Calculate statistics
         _totalCount = services.length;
-        _activeCount = services.where((svc) => svc.isActive).length;
-        _inactiveCount = services.where((svc) => !svc.isActive).length;
+        _activeCount = services.where((svc) => svc.status == 'active').length;
+        _inactiveCount = services.where((svc) => svc.status != 'active').length;
         _pendingCount = services.where((svc) => svc.status == 'pending').length;
-        _rejectedCount = services.where((svc) => svc.status == 'rejected').length;
+        _rejectedCount =
+            services.where((svc) => svc.status == 'rejected').length;
 
         debugPrint('📊 ServiceCrud: Services breakdown:');
         debugPrint('📊 ServiceCrud: - Total: $_totalCount');
@@ -226,7 +239,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
       }
     } catch (e, stackTrace) {
       final duration = DateTime.now().difference(startTime);
-      debugPrint('❌ ServiceCrud: Exception loading services (${duration.inMilliseconds}ms) - $e');
+      debugPrint(
+          '❌ ServiceCrud: Exception loading services (${duration.inMilliseconds}ms) - $e');
       debugPrint('❌ ServiceCrud: Stack trace: $stackTrace');
 
       setState(() {
@@ -243,71 +257,109 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 800));
 
-    // Create mock service data
+    // Create mock service data using official Service model structure
     final mockServices = <Service>[
       Service(
         id: '1',
-        title: 'Home Cleaning Service',
+        provider: {
+          'id': 'provider_1',
+          'name': 'CleanPro Services',
+          'username': 'cleanpro',
+        },
+        name: 'Home Cleaning Service',
         description: 'Professional home cleaning with eco-friendly products',
-        price: 49.99,
+        category: {
+          'id': 'cat_1',
+          'name': 'Home Services',
+        },
+        subcategories: [
+          {
+            'id': 'subcat_1',
+            'name': 'Cleaning',
+          }
+        ],
+        tags: ['home', 'cleaning', 'eco-friendly'],
+        hourlyRate: 49.99,
         currency: 'USD',
-        providerId: 'provider_1',
-        providerName: 'CleanPro Services',
-        categoryId: 'cat_1',
-        categoryName: 'Home Services',
-        subcategoryId: 'subcat_1',
-        subcategoryName: 'Cleaning',
         location: 'New York, NY',
-        isActive: true,
-        status: 'approved',
+        requiredTools: ['vacuum', 'cleaning supplies'],
+        status: 'active',
+        isFeatured: false,
+        serviceImages: [],
         createdAt: DateTime.now().subtract(const Duration(days: 5)),
         updatedAt: DateTime.now(),
       ),
       Service(
         id: '2',
-        title: 'Plumbing Repair',
+        provider: {
+          'id': 'provider_2',
+          'name': 'FixIt Plumbing',
+          'username': 'fixit_plumbing',
+        },
+        name: 'Plumbing Repair',
         description: 'Emergency plumbing repairs and installations',
-        price: 89.99,
+        category: {
+          'id': 'cat_1',
+          'name': 'Home Services',
+        },
+        subcategories: [
+          {
+            'id': 'subcat_2',
+            'name': 'Plumbing',
+          }
+        ],
+        tags: ['plumbing', 'emergency', 'repair'],
+        hourlyRate: 89.99,
         currency: 'USD',
-        providerId: 'provider_2',
-        providerName: 'FixIt Plumbing',
-        categoryId: 'cat_1',
-        categoryName: 'Home Services',
-        subcategoryId: 'subcat_2',
-        subcategoryName: 'Plumbing',
         location: 'Los Angeles, CA',
-        isActive: true,
-        status: 'approved',
+        requiredTools: ['pipes', 'tools', 'fittings'],
+        status: 'active',
+        isFeatured: true,
+        serviceImages: [],
         createdAt: DateTime.now().subtract(const Duration(days: 3)),
         updatedAt: DateTime.now(),
       ),
       Service(
         id: '3',
-        title: 'Lawn Mowing Service',
+        provider: {
+          'id': 'provider_3',
+          'name': 'GreenThumb Landscaping',
+          'username': 'greenthumb',
+        },
+        name: 'Lawn Mowing Service',
         description: 'Weekly lawn maintenance and landscaping',
-        price: 35.00,
+        category: {
+          'id': 'cat_2',
+          'name': 'Outdoor Services',
+        },
+        subcategories: [
+          {
+            'id': 'subcat_3',
+            'name': 'Landscaping',
+          }
+        ],
+        tags: ['lawn', 'landscaping', 'maintenance'],
+        hourlyRate: 35.00,
         currency: 'USD',
-        providerId: 'provider_3',
-        providerName: 'GreenThumb Landscaping',
-        categoryId: 'cat_2',
-        categoryName: 'Outdoor Services',
-        subcategoryId: 'subcat_3',
-        subcategoryName: 'Landscaping',
         location: 'Chicago, IL',
-        isActive: false,
+        requiredTools: ['lawn mower', 'trimmer'],
         status: 'pending',
+        isFeatured: false,
+        serviceImages: [],
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         updatedAt: DateTime.now(),
       ),
     ];
 
-    debugPrint('🔄 ServiceCrud: Mock service data created with ${mockServices.length} services');
+    debugPrint(
+        '🔄 ServiceCrud: Mock service data created with ${mockServices.length} services');
 
     return ApiResponse<List<Service>>(
-      isSuccess: true,
+      success: true,
       message: 'Services loaded successfully',
       data: mockServices,
       statusCode: 200,
+      time: DateTime.now(),
     );
   }
 
@@ -316,24 +368,29 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     debugPrint('🔍 ServiceCrud: Applying filters');
     debugPrint('🔍 ServiceCrud: Search query: "${widget.searchQuery}"');
     debugPrint('🔍 ServiceCrud: Filter: "${widget.filter}"');
-    debugPrint('🔍 ServiceCrud: Total services to filter: ${_allServices.length}');
+    debugPrint(
+        '🔍 ServiceCrud: Total services to filter: ${_allServices.length}');
 
     List<Service> filtered = List.from(_allServices);
 
     // Step 1: Apply status filter
     debugPrint('🔍 ServiceCrud: Step 1 - Applying status filter');
     if (widget.filter == 'active') {
-      filtered = filtered.where((svc) => svc.isActive && svc.status == 'approved').toList();
-      debugPrint('🔍 ServiceCrud: After active filter: ${filtered.length} services');
+      filtered = filtered.where((svc) => svc.status == 'active').toList();
+      debugPrint(
+          '🔍 ServiceCrud: After active filter: ${filtered.length} services');
     } else if (widget.filter == 'inactive') {
-      filtered = filtered.where((svc) => !svc.isActive).toList();
-      debugPrint('🔍 ServiceCrud: After inactive filter: ${filtered.length} services');
+      filtered = filtered.where((svc) => svc.status != 'active').toList();
+      debugPrint(
+          '🔍 ServiceCrud: After inactive filter: ${filtered.length} services');
     } else if (widget.filter == 'pending') {
       filtered = filtered.where((svc) => svc.status == 'pending').toList();
-      debugPrint('🔍 ServiceCrud: After pending filter: ${filtered.length} services');
+      debugPrint(
+          '🔍 ServiceCrud: After pending filter: ${filtered.length} services');
     } else if (widget.filter == 'rejected') {
       filtered = filtered.where((svc) => svc.status == 'rejected').toList();
-      debugPrint('🔍 ServiceCrud: After rejected filter: ${filtered.length} services');
+      debugPrint(
+          '🔍 ServiceCrud: After rejected filter: ${filtered.length} services');
     } else {
       debugPrint('🔍 ServiceCrud: No status filter applied (showing all)');
     }
@@ -346,30 +403,35 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
       final beforeSearchCount = filtered.length;
       filtered = filtered.where((svc) {
-        final titleMatch = svc.title.toLowerCase().contains(searchLower);
+        final nameMatch = svc.name.toLowerCase().contains(searchLower);
         final descMatch = svc.description.toLowerCase().contains(searchLower);
-        final providerMatch = svc.providerName.toLowerCase().contains(searchLower);
+        final providerMatch =
+            svc.providerName.toLowerCase().contains(searchLower);
         final locationMatch = svc.location.toLowerCase().contains(searchLower);
-        final matches = titleMatch || descMatch || providerMatch || locationMatch;
+        final matches =
+            nameMatch || descMatch || providerMatch || locationMatch;
 
         if (matches) {
           debugPrint(
-              '🔍 ServiceCrud: Match found - "${svc.title}" (title: $titleMatch, desc: $descMatch, provider: $providerMatch, location: $locationMatch)');
+              '🔍 ServiceCrud: Match found - "${svc.name}" (name: $nameMatch, desc: $descMatch, provider: $providerMatch, location: $locationMatch)');
         }
 
         return matches;
       }).toList();
 
-      debugPrint('🔍 ServiceCrud: Search filtering: $beforeSearchCount -> ${filtered.length} services');
+      debugPrint(
+          '🔍 ServiceCrud: Search filtering: $beforeSearchCount -> ${filtered.length} services');
     } else {
-      debugPrint('🔍 ServiceCrud: Empty search query - showing all services matching status filter');
+      debugPrint(
+          '🔍 ServiceCrud: Empty search query - showing all services matching status filter');
     }
 
     // Step 3: Sort by creation date (newest first)
     debugPrint('🔍 ServiceCrud: Step 3 - Sorting by creation date');
     filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    debugPrint('🔍 ServiceCrud: Final filtered results: ${filtered.length} services');
+    debugPrint(
+        '🔍 ServiceCrud: Final filtered results: ${filtered.length} services');
 
     setState(() {
       _filteredServices = filtered;
@@ -388,14 +450,20 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
   Widget build(BuildContext context) {
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
 
-    debugPrint('🎨 ServiceCrud: Building widget with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🎨 ServiceCrud: Building widget with COMPREHENSIVE ThemeManager integration');
     debugPrint('🎨 ServiceCrud: Loading state: $_isLoading');
     debugPrint('🎨 ServiceCrud: Error state: ${_errorMessage != null}');
-    debugPrint('🎨 ServiceCrud: Filtered services count: ${_filteredServices.length}');
-    debugPrint('🎨 ServiceCrud: → Primary: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🎨 ServiceCrud: → Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🎨 ServiceCrud: → Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('🎨 ServiceCrud: → Text Primary: ${ThemeManager.of(context).textPrimary}');
+    debugPrint(
+        '🎨 ServiceCrud: Filtered services count: ${_filteredServices.length}');
+    debugPrint(
+        '🎨 ServiceCrud: → Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🎨 ServiceCrud: → Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🎨 ServiceCrud: → Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🎨 ServiceCrud: → Text Primary: ${ThemeManager.of(context).textPrimary}');
 
     // Show loading state
     if (_isLoading && _isInitialLoad) {
@@ -421,7 +489,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
   /// Build loading state widget with comprehensive ThemeManager integration
   Widget _buildLoadingState() {
-    debugPrint('⏳ ServiceCrud: Building loading state UI with comprehensive theming');
+    debugPrint(
+        '⏳ ServiceCrud: Building loading state UI with comprehensive theming');
 
     return Container(
       width: double.infinity,
@@ -453,7 +522,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                   boxShadow: [
                     ...ThemeManager.of(context).primaryShadow,
                     BoxShadow(
-                      color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                      color: ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 77),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -465,8 +536,11 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                     height: 40.w,
                     child: CircularProgressIndicator(
                       strokeWidth: 4.w,
-                      color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
-                      backgroundColor: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context).getContrastingColor(
+                          ThemeManager.of(context).primaryColor),
+                      backgroundColor: ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 51),
                     ),
                   ),
                 ),
@@ -501,7 +575,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                     width: 8.w,
                     height: 8.w,
                     decoration: BoxDecoration(
-                      color: ThemeManager.of(context).primaryColor.withValues(alpha: 128),
+                      color: ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 128),
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                   );
@@ -516,7 +592,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
   /// Build error state widget with comprehensive ThemeManager integration
   Widget _buildErrorState() {
-    debugPrint('❌ ServiceCrud: Building error state UI with comprehensive theming');
+    debugPrint(
+        '❌ ServiceCrud: Building error state UI with comprehensive theming');
 
     return Container(
       width: double.infinity,
@@ -538,7 +615,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
             boxShadow: [
               ...ThemeManager.of(context).elevatedShadow,
               BoxShadow(
-                color: ThemeManager.of(context).errorColor.withValues(alpha: 51),
+                color:
+                    ThemeManager.of(context).errorColor.withValues(alpha: 51),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -562,7 +640,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                   ),
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: ThemeManager.of(context).errorColor.withValues(alpha: 77),
+                    color: ThemeManager.of(context)
+                        .errorColor
+                        .withValues(alpha: 77),
                     width: 2,
                   ),
                 ),
@@ -608,20 +688,23 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                   icon: Icon(
                     Prbal.redo,
                     size: 20.sp,
-                    color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                    color: ThemeManager.of(context).getContrastingColor(
+                        ThemeManager.of(context).primaryColor),
                   ),
                   label: Text(
                     'Retry',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                      color: ThemeManager.of(context).getContrastingColor(
+                          ThemeManager.of(context).primaryColor),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     elevation: 0,
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -637,7 +720,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
   /// Build empty state widget with comprehensive ThemeManager integration
   Widget _buildEmptyState() {
-    debugPrint('📭 ServiceCrud: Building empty state UI with comprehensive theming');
+    debugPrint(
+        '📭 ServiceCrud: Building empty state UI with comprehensive theming');
 
     final bool isSearchResult = widget.searchQuery.isNotEmpty;
     final bool isFiltered = widget.filter != 'all';
@@ -648,17 +732,20 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     if (isSearchResult) {
       title = 'No Services Found';
       subtitle = 'Search: "${widget.searchQuery}"';
-      description = 'No services match your search criteria. Try adjusting your search terms.';
+      description =
+          'No services match your search criteria. Try adjusting your search terms.';
       icon = Prbal.search;
     } else if (isFiltered) {
       title = 'No ${widget.filter.toUpperCase()} Services';
       subtitle = 'Filter: ${widget.filter}';
-      description = 'No services match the selected filter. Try changing the filter.';
+      description =
+          'No services match the selected filter. Try changing the filter.';
       icon = Prbal.filter;
     } else {
       title = 'No Services Yet';
       subtitle = 'Services will appear here';
-      description = 'Service providers will create listings that appear here for admin review and management.';
+      description =
+          'Service providers will create listings that appear here for admin review and management.';
       icon = Prbal.layers5;
     }
 
@@ -693,13 +780,17 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                      ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 26),
                       ThemeManager.of(context).accent1.withValues(alpha: 13),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(24.r),
                   border: Border.all(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 51),
                     width: 2,
                   ),
                 ),
@@ -732,7 +823,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent2),
+                    color: ThemeManager.of(context)
+                        .getContrastingColor(ThemeManager.of(context).accent2),
                   ),
                 ),
               ),
@@ -872,7 +964,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
               SizedBox(width: 12.w),
               _buildStatItem('Active', _activeCount.toString(), Colors.green),
               SizedBox(width: 12.w),
-              _buildStatItem('Pending', _pendingCount.toString(), Colors.orange),
+              _buildStatItem(
+                  'Pending', _pendingCount.toString(), Colors.orange),
               SizedBox(width: 12.w),
               _buildStatItem('Rejected', _rejectedCount.toString(), Colors.red),
             ],
@@ -926,7 +1019,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
   /// Build individual service card with modern glassmorphism design and comprehensive ThemeManager integration
   Widget _buildServiceCard(Service service, bool isSelected, int index) {
-    debugPrint('🎨 ServiceCrud: Building service card for: ${service.title} with comprehensive theming');
+    debugPrint(
+        '🎨 ServiceCrud: Building service card for: ${service.name} with comprehensive theming');
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -964,7 +1058,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
             ? [
                 ...ThemeManager.of(context).primaryShadow,
                 BoxShadow(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 77),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -983,7 +1079,7 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
           onTap: () {
-            debugPrint('👆 ServiceCrud: Service card tapped: ${service.title}');
+            debugPrint('👆 ServiceCrud: Service card tapped: ${service.name}');
             widget.onSelectionChanged(service.id);
           },
           child: Padding(
@@ -1017,14 +1113,17 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                               ),
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                          color:
-                              isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).borderColor,
+                          color: isSelected
+                              ? ThemeManager.of(context).primaryColor
+                              : ThemeManager.of(context).borderColor,
                           width: 2,
                         ),
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                                  color: ThemeManager.of(context)
+                                      .primaryColor
+                                      .withValues(alpha: 51),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -1034,8 +1133,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                       child: isSelected
                           ? Icon(
                               Prbal.check,
-                              color:
-                                  ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                              color: ThemeManager.of(context)
+                                  .getContrastingColor(
+                                      ThemeManager.of(context).primaryColor),
                               size: 16.sp,
                             )
                           : null,
@@ -1049,7 +1149,7 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            service.title,
+                            service.name,
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -1061,16 +1161,20 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                           ),
                           SizedBox(height: 4.h),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
                             decoration: BoxDecoration(
-                              gradient: ThemeManager.of(context).accent1Gradient,
+                              gradient:
+                                  ThemeManager.of(context).accent1Gradient,
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               'by ${service.providerName}',
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent1),
+                                color: ThemeManager.of(context)
+                                    .getContrastingColor(
+                                        ThemeManager.of(context).accent1),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -1081,14 +1185,17 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
                     // Enhanced status badge with gradient
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            _getStatusColor(service.status).withValues(alpha: 77),
-                            _getStatusColor(service.status).withValues(alpha: 51),
+                            _getStatusColor(service.status)
+                                .withValues(alpha: 77),
+                            _getStatusColor(service.status)
+                                .withValues(alpha: 51),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(8.r),
@@ -1098,7 +1205,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: _getStatusColor(service.status).withValues(alpha: 26),
+                            color: _getStatusColor(service.status)
+                                .withValues(alpha: 26),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -1126,14 +1234,22 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                     gradient: ThemeManager.of(context).conditionalGradient(
                       lightGradient: LinearGradient(
                         colors: [
-                          ThemeManager.of(context).neutral100.withValues(alpha: 128),
-                          ThemeManager.of(context).surfaceElevated.withValues(alpha: 51),
+                          ThemeManager.of(context)
+                              .neutral100
+                              .withValues(alpha: 128),
+                          ThemeManager.of(context)
+                              .surfaceElevated
+                              .withValues(alpha: 51),
                         ],
                       ),
                       darkGradient: LinearGradient(
                         colors: [
-                          ThemeManager.of(context).neutral800.withValues(alpha: 128),
-                          ThemeManager.of(context).backgroundTertiary.withValues(alpha: 51),
+                          ThemeManager.of(context)
+                              .neutral800
+                              .withValues(alpha: 128),
+                          ThemeManager.of(context)
+                              .backgroundTertiary
+                              .withValues(alpha: 51),
                         ],
                       ),
                     ),
@@ -1163,7 +1279,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                   children: [
                     // Enhanced price badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: ThemeManager.of(context).successGradient,
                         borderRadius: BorderRadius.circular(10.r),
@@ -1173,7 +1290,9 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: ThemeManager.of(context).successColor.withValues(alpha: 51),
+                            color: ThemeManager.of(context)
+                                .successColor
+                                .withValues(alpha: 51),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -1185,16 +1304,18 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                           Icon(
                             Prbal.dollarSign,
                             size: 12.sp,
-                            color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).successColor),
+                            color: ThemeManager.of(context).getContrastingColor(
+                                ThemeManager.of(context).successColor),
                           ),
                           SizedBox(width: 4.w),
                           Text(
-                            service.price.toStringAsFixed(2),
+                            service.hourlyRate.toStringAsFixed(2),
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).successColor),
+                              color: ThemeManager.of(context)
+                                  .getContrastingColor(
+                                      ThemeManager.of(context).successColor),
                             ),
                           ),
                         ],
@@ -1205,25 +1326,36 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
                     // Enhanced location with icon
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         gradient: ThemeManager.of(context).conditionalGradient(
                           lightGradient: LinearGradient(
                             colors: [
-                              ThemeManager.of(context).infoColor.withValues(alpha: 26),
-                              ThemeManager.of(context).infoLight.withValues(alpha: 13),
+                              ThemeManager.of(context)
+                                  .infoColor
+                                  .withValues(alpha: 26),
+                              ThemeManager.of(context)
+                                  .infoLight
+                                  .withValues(alpha: 13),
                             ],
                           ),
                           darkGradient: LinearGradient(
                             colors: [
-                              ThemeManager.of(context).infoDark.withValues(alpha: 26),
-                              ThemeManager.of(context).infoColor.withValues(alpha: 13),
+                              ThemeManager.of(context)
+                                  .infoDark
+                                  .withValues(alpha: 26),
+                              ThemeManager.of(context)
+                                  .infoColor
+                                  .withValues(alpha: 13),
                             ],
                           ),
                         ),
                         borderRadius: BorderRadius.circular(6.r),
                         border: Border.all(
-                          color: ThemeManager.of(context).infoColor.withValues(alpha: 77),
+                          color: ThemeManager.of(context)
+                              .infoColor
+                              .withValues(alpha: 77),
                           width: 1,
                         ),
                       ),
@@ -1256,7 +1388,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
 
                     // Enhanced category badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         gradient: ThemeManager.of(context).accent3Gradient,
                         borderRadius: BorderRadius.circular(8.r),
@@ -1269,7 +1402,8 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
                         service.categoryName,
                         style: TextStyle(
                           fontSize: 10.sp,
-                          color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent3),
+                          color: ThemeManager.of(context).getContrastingColor(
+                              ThemeManager.of(context).accent3),
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.3,
                         ),
@@ -1304,62 +1438,4 @@ class _ServiceCrudWidgetState extends ConsumerState<ServiceCrudWidget> {
     debugPrint('🛠️ ServiceCrud: Disposing widget');
     super.dispose();
   }
-}
-
-// ========== SERVICE DATA MODEL ==========
-
-class Service {
-  final String id;
-  final String title;
-  final String description;
-  final double price;
-  final String currency;
-  final String providerId;
-  final String providerName;
-  final String categoryId;
-  final String categoryName;
-  final String subcategoryId;
-  final String subcategoryName;
-  final String location;
-  final bool isActive;
-  final String status; // 'pending', 'approved', 'rejected'
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  Service({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.currency,
-    required this.providerId,
-    required this.providerName,
-    required this.categoryId,
-    required this.categoryName,
-    required this.subcategoryId,
-    required this.subcategoryName,
-    required this.location,
-    required this.isActive,
-    required this.status,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-}
-
-// ========== API RESPONSE MODEL ==========
-
-class ApiResponse<T> {
-  final bool isSuccess;
-  final String message;
-  final T? data;
-  final int? statusCode;
-  final List<String>? errors;
-
-  ApiResponse({
-    required this.isSuccess,
-    required this.message,
-    this.data,
-    this.statusCode,
-    this.errors,
-  });
 }

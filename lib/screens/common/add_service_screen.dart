@@ -35,7 +35,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint('📝 AddServiceScreen: Building add service interface');
-    debugPrint('🎨 AddServiceScreen: Theme mode: ${ThemeManager.of(context).themeManager ? 'Dark' : 'Light'}');
+    debugPrint(
+        '🎨 AddServiceScreen: Theme mode: ${ThemeManager.of(context).themeManager ? 'Dark' : 'Light'}');
 
     return Scaffold(
       backgroundColor: ThemeManager.of(context).backgroundColor,
@@ -115,7 +116,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
             TextField(
               controller: _titleController,
               onChanged: (value) {
-                debugPrint('📝 AddServiceScreen: Service title changed: "$value"');
+                debugPrint(
+                    '📝 AddServiceScreen: Service title changed: "$value"');
               },
               decoration: InputDecoration(
                 hintText: 'e.g., Professional House Cleaning',
@@ -267,14 +269,19 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
                 ),
                 onChanged: (String? newValue) {
                   if (newValue != null) {
-                    debugPrint('📝 AddServiceScreen: Category changed to: $newValue');
+                    debugPrint(
+                        '📝 AddServiceScreen: Category changed to: $newValue');
                     setState(() {
                       selectedCategory = newValue;
                     });
                   }
                 },
-                items: <String>['Home Services', 'Repair Services', 'Beauty Services', 'Other']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: <String>[
+                  'Home Services',
+                  'Repair Services',
+                  'Beauty Services',
+                  'Other'
+                ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -320,7 +327,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
               controller: _priceController,
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                debugPrint('📝 AddServiceScreen: Service price changed: "$value"');
+                debugPrint(
+                    '📝 AddServiceScreen: Service price changed: "$value"');
               },
               decoration: InputDecoration(
                 hintText: 'Enter price in ₹',
@@ -372,7 +380,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
         onPressed: () {
           debugPrint('📝 AddServiceScreen: Add Service button pressed');
           debugPrint('📝 AddServiceScreen: Title: "${_titleController.text}"');
-          debugPrint('📝 AddServiceScreen: Description: "${_descriptionController.text}"');
+          debugPrint(
+              '📝 AddServiceScreen: Description: "${_descriptionController.text}"');
           debugPrint('📝 AddServiceScreen: Category: "$selectedCategory"');
           debugPrint('📝 AddServiceScreen: Price: "${_priceController.text}"');
 
@@ -387,7 +396,8 @@ class _AddServiceScreenState extends ConsumerState<AddServiceScreen> {
             borderRadius: BorderRadius.circular(16.r),
           ),
           elevation: 0,
-          shadowColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+          shadowColor:
+              ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
         ),
         child: Text(
           'Add Service',

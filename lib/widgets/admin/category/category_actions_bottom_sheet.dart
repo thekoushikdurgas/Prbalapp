@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/models/business/service_models.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
-import 'package:prbal/services/service_management_service.dart';
+// import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
 import 'package:prbal/widgets/admin/category/category_cards.dart';
 import 'package:prbal/utils/category/category_utils.dart';
@@ -46,7 +47,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
     Function(ServiceCategory)? onDelete,
     Function(ServiceCategory)? onToggleStatus,
   }) async {
-    debugPrint('⚙️ CategoryActionsBottomSheet: Showing actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '⚙️ CategoryActionsBottomSheet: Showing actions bottom sheet for "${category.name}"');
 
     await showModalBottomSheet(
       context: context,
@@ -68,12 +70,15 @@ class CategoryActionsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Comprehensive debug logging for theme operations
-    debugPrint('🎨 CategoryActionsBottomSheet: Building actions bottom sheet for "${category.name}"');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Building actions bottom sheet for "${category.name}"');
 
     debugPrint(
         '🎨 CategoryActionsBottomSheet: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
-    debugPrint('🎨 CategoryActionsBottomSheet: Screen height: ${MediaQuery.of(context).size.height}');
-    debugPrint('🎨 CategoryActionsBottomSheet: Max height constraint: ${MediaQuery.of(context).size.height * 0.6}');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Screen height: ${MediaQuery.of(context).size.height}');
+    debugPrint(
+        '🎨 CategoryActionsBottomSheet: Max height constraint: ${MediaQuery.of(context).size.height * 0.6}');
     debugPrint(
         '🌈 CategoryActionsBottomSheet: Using gradients - Background: ${ThemeManager.of(context).backgroundGradient.colors.length} colors, Surface: ${ThemeManager.of(context).surfaceGradient.colors.length} colors');
 
@@ -112,7 +117,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
 
   /// Build enhanced drag handle with comprehensive ThemeManager styling
   Widget _buildEnhancedDragHandle(ThemeManager themeManager) {
-    debugPrint('🎯 CategoryActionsBottomSheet: Building enhanced drag handle with ThemeManager');
+    debugPrint(
+        '🎯 CategoryActionsBottomSheet: Building enhanced drag handle with ThemeManager');
 
     return Container(
       margin: EdgeInsets.only(top: 16.h, bottom: 12.h),
@@ -150,10 +156,12 @@ class CategoryActionsBottomSheet extends StatelessWidget {
   Widget _buildThemedHeader(
     BuildContext context,
   ) {
-    debugPrint('📋 CategoryActionsBottomSheet: Building themed header with comprehensive ThemeManager integration');
+    debugPrint(
+        '📋 CategoryActionsBottomSheet: Building themed header with comprehensive ThemeManager integration');
 
     CategoryUtils.getStatusColor(category.isActive, ThemeManager.of(context));
-    final iconColor = CategoryUtils.getCategoryIconColor(category, ThemeManager.of(context));
+    final iconColor =
+        CategoryUtils.getCategoryIconColor(category, ThemeManager.of(context));
 
     return Container(
       padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 20.h),
@@ -216,7 +224,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                     SizedBox(width: 12.w),
                     // Enhanced status badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: category.isActive
                             ? ThemeManager.of(context).successGradient
@@ -228,7 +237,9 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            category.isActive ? Icons.check_circle_rounded : Icons.pause_circle_rounded,
+                            category.isActive
+                                ? Icons.check_circle_rounded
+                                : Icons.pause_circle_rounded,
                             size: 12.sp,
                             color: ThemeManager.of(context).textInverted,
                           ),
@@ -257,7 +268,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: ThemeManager.of(context).surfaceElevated,
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: ThemeManager.of(context).borderColor),
+                      border: Border.all(
+                          color: ThemeManager.of(context).borderColor),
                       boxShadow: ThemeManager.of(context).subtleShadow,
                     ),
                     child: Text(
@@ -363,7 +375,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
   Widget _buildThemedActionOptions(
     BuildContext context,
   ) {
-    debugPrint('🎯 CategoryActionsBottomSheet: Building themed action options with comprehensive ThemeManager');
+    debugPrint(
+        '🎯 CategoryActionsBottomSheet: Building themed action options with comprehensive ThemeManager');
 
     return Container(
       padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 32.h),
@@ -413,7 +426,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
             gradient: ThemeManager.of(context).infoGradient,
             iconColor: ThemeManager.of(context).infoColor,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Edit action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Edit action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.selectionClick();
               onEdit?.call(category);
@@ -425,15 +439,21 @@ class CategoryActionsBottomSheet extends StatelessWidget {
           // ========== TOGGLE STATUS ACTION WITH THEMEMANAGER ==========
           _buildThemedActionOption(
             context: context,
-            title: category.isActive ? 'Deactivate Category' : 'Activate Category',
-            subtitle: category.isActive ? 'Set category as inactive' : 'Set category as active',
+            title:
+                category.isActive ? 'Deactivate Category' : 'Activate Category',
+            subtitle: category.isActive
+                ? 'Set category as inactive'
+                : 'Set category as active',
             icon: category.isActive ? Prbal.pauseCircle : Prbal.playCircle,
-            gradient:
-                category.isActive ? ThemeManager.of(context).warningGradient : ThemeManager.of(context).successGradient,
-            iconColor:
-                category.isActive ? ThemeManager.of(context).warningColor : ThemeManager.of(context).successColor,
+            gradient: category.isActive
+                ? ThemeManager.of(context).warningGradient
+                : ThemeManager.of(context).successGradient,
+            iconColor: category.isActive
+                ? ThemeManager.of(context).warningColor
+                : ThemeManager.of(context).successColor,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Toggle status action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Toggle status action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.selectionClick();
               onToggleStatus?.call(category);
@@ -452,7 +472,8 @@ class CategoryActionsBottomSheet extends StatelessWidget {
             iconColor: ThemeManager.of(context).errorColor,
             isDestructive: true,
             onTap: () {
-              debugPrint('⚙️ CategoryActionsBottomSheet: Delete action selected for "${category.name}"');
+              debugPrint(
+                  '⚙️ CategoryActionsBottomSheet: Delete action selected for "${category.name}"');
               Navigator.of(context).pop();
               HapticFeedback.mediumImpact();
               onDelete?.call(category);
@@ -554,7 +575,9 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                         subtitle,
                         style: TextStyle(
                           fontSize: 13.sp,
-                          color: ThemeManager.of(context).textInverted.withValues(alpha: 0.8),
+                          color: ThemeManager.of(context)
+                              .textInverted
+                              .withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.1,
                         ),
@@ -567,7 +590,9 @@ class CategoryActionsBottomSheet extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).textInverted.withValues(alpha: 0.1),
+                    color: ThemeManager.of(context)
+                        .textInverted
+                        .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Icon(

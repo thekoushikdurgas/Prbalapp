@@ -8,7 +8,8 @@ class ProviderExploreScreen extends ConsumerStatefulWidget {
   const ProviderExploreScreen({super.key});
 
   @override
-  ConsumerState<ProviderExploreScreen> createState() => _ProviderExploreScreenState();
+  ConsumerState<ProviderExploreScreen> createState() =>
+      _ProviderExploreScreenState();
 }
 
 class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
@@ -127,13 +128,17 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                       children: [
                         _buildFilterChip('All', _selectedCategory == 'All'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Home Services', _selectedCategory == 'Home Services'),
+                        _buildFilterChip('Home Services',
+                            _selectedCategory == 'Home Services'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Technical', _selectedCategory == 'Technical'),
+                        _buildFilterChip(
+                            'Technical', _selectedCategory == 'Technical'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Beauty & Care', _selectedCategory == 'Beauty & Care'),
+                        _buildFilterChip('Beauty & Care',
+                            _selectedCategory == 'Beauty & Care'),
                         SizedBox(width: 8.w),
-                        _buildFilterChip('Urgent', _selectedCategory == 'Urgent'),
+                        _buildFilterChip(
+                            'Urgent', _selectedCategory == 'Urgent'),
                       ],
                     ),
                   ),
@@ -161,12 +166,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? ThemeManager.of(context).primaryColor : Colors.transparent,
+          color: isSelected
+              ? ThemeManager.of(context).primaryColor
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Icon(
           icon,
-          color: isSelected ? Colors.white : ThemeManager.of(context).textSecondary,
+          color: isSelected
+              ? Colors.white
+              : ThemeManager.of(context).textSecondary,
           size: 20.sp,
         ),
       ),
@@ -184,15 +193,20 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
         setState(() {
           _selectedCategory = label;
         });
-        debugPrint('🎯 ProviderExploreScreen: Filter category updated to: $_selectedCategory');
+        debugPrint(
+            '🎯 ProviderExploreScreen: Filter category updated to: $_selectedCategory');
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).surfaceColor,
+          color: isSelected
+              ? ThemeManager.of(context).primaryColor
+              : ThemeManager.of(context).surfaceColor,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-            color: isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).borderColor,
+            color: isSelected
+                ? ThemeManager.of(context).primaryColor
+                : ThemeManager.of(context).borderColor,
           ),
         ),
         child: Text(
@@ -200,7 +214,9 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : ThemeManager.of(context).textPrimary,
+            color: isSelected
+                ? Colors.white
+                : ThemeManager.of(context).textPrimary,
           ),
         ),
       ),
@@ -382,14 +398,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: accentColor,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -497,14 +515,16 @@ class _ProviderExploreScreenState extends ConsumerState<ProviderExploreScreen> {
                   backgroundColor: colors[index % colors.length],
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),
                 child: Text(
                   'Bid',
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

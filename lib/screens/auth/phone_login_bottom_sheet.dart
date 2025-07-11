@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prbal/models/auth/app_user.dart';
+import 'package:prbal/models/auth/user_type.dart';
 import 'package:prbal/services/api_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/services/user_service.dart';
@@ -21,43 +23,34 @@ import 'package:prbal/utils/theme/theme_manager.dart';
 /// - Smooth slide-up and fade-in animations with debug tracking
 /// - Phone number validation with extensive logging
 /// - Country code selection with search functionality
-/// - Integration with authentication service for user lookup
+/// - Integration with UserService for user lookup and AuthTokens for token management
 /// - Social login options (Google, Apple) - placeholder implementation
 /// - Responsive design with comprehensive ThemeManager integration
 /// - Error handling with visual feedback and debug traces
-/// - Proper authentication state management with Riverpod
+/// - Proper authentication state management using HiveService
 ///
 /// **🔄 AUTHENTICATION FLOW WITH DEBUG TRACKING:**
 /// 1. Widget initialization → Debug prints for state setup
 /// 2. User enters phone number → Input change logging
 /// 3. Country selection → Country picker interaction logging
 /// 4. Phone number validation → Detailed validation debug output
-/// 5. API call to search user → Complete request/response logging
-/// 6. Navigate to PIN entry → Navigation data logging
+/// 5. API call via UserService to search user → Complete request/response logging
+/// 6. Navigate to PIN entry with proper AppUser and UserType data → Navigation data logging
 /// 7. Error handling → Comprehensive error trace logging
 ///
 /// **🏗️ ARCHITECTURE COMPONENTS:**
-/// - **State Management**: Riverpod providers with debug logging
+/// - **State Management**: HiveService for local storage with debug logging
 /// - **Animations**: Custom controllers with animation progress tracking
 /// - **UI Components**: ThemeManager integration with theme debug info
 /// - **API Integration**: UserService with comprehensive request/response logging
-/// - **Local Storage**: HiveService integration with cache operation logging
+/// - **Data Models**: AppUser, UserType, AuthTokens for proper type safety
 /// - **Navigation**: GoRouter integration with route transition logging
-///
-/// **🐛 DEBUG FEATURES:**
-/// - Comprehensive debug prints throughout all methods
-/// - State change logging with before/after values
-/// - API request/response detailed logging
-/// - Error handling with stack trace information
-/// - Animation progress tracking
-/// - User interaction logging (taps, input changes, selections)
-/// - Theme and UI state logging
-/// - Performance timing for critical operations
 class PhoneLoginBottomSheet extends ConsumerStatefulWidget {
   const PhoneLoginBottomSheet({super.key});
 
   @override
-  ConsumerState<PhoneLoginBottomSheet> createState() => _PhoneLoginBottomSheetState();
+  ConsumerState<PhoneLoginBottomSheet> createState() =>
+      _PhoneLoginBottomSheetState();
 }
 
 class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
@@ -85,32 +78,38 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   @override
   void initState() {
     super.initState();
-    debugPrint(' PhoneLoginBottomSheet : 🚀 PhoneLoginBottomSheet: Initializing widget state');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Default country: $_selectedCountryCode $_selectedCountryFlag');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🚀 PhoneLoginBottomSheet: Initializing widget state');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📱 Default country: $_selectedCountryCode $_selectedCountryFlag');
 
     _initializeAnimations();
     _startAnimations();
     _loadCachedPhoneNumber();
 
-    debugPrint(' PhoneLoginBottomSheet : ✅ PhoneLoginBottomSheet: Widget initialization completed');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ✅ PhoneLoginBottomSheet: Widget initialization completed');
   }
 
-  /// Load cached phone number if available for better UX
+  /// Load cached phone number from HiveService if available for better UX
   ///
   /// **Purpose:** Restore previously entered phone number to improve user experience
   /// **Process:**
-  /// 1. Retrieve cached phone number from local storage
+  /// 1. Retrieve cached phone number from HiveService
   /// 2. Parse country code and phone number using regex
   /// 3. Find matching country from countries list
   /// 4. Update UI state with cached values
   void _loadCachedPhoneNumber() {
-    debugPrint(' PhoneLoginBottomSheet : 📞 PhoneLoginBottomSheet: Loading cached phone number');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📞 Loading cached phone number from HiveService');
 
     final cachedPhone = HiveService.getPhoneNumber();
-    debugPrint(' PhoneLoginBottomSheet : 💾 Cached phone from storage: $cachedPhone');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 💾 Cached phone from HiveService: $cachedPhone');
 
     if (cachedPhone != null && cachedPhone.isNotEmpty) {
-      debugPrint(' PhoneLoginBottomSheet : 🔍 Parsing cached phone number: $cachedPhone');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 🔍 Parsing cached phone number: $cachedPhone');
 
       // Extract country code and phone number using regex pattern
       final phoneRegex = RegExp(r'^(\+\d{1,2})(.*)$');
@@ -120,8 +119,10 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
         final countryCode = match.group(1)!;
         final phoneNumber = match.group(2)!;
 
-        debugPrint(' PhoneLoginBottomSheet : 🌍 Extracted country code: $countryCode');
-        debugPrint(' PhoneLoginBottomSheet : 📱 Extracted phone number: $phoneNumber');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🌍 Extracted country code: $countryCode');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 📱 Extracted phone number: $phoneNumber');
 
         // Find matching country from the countries list
         final country = countries.firstWhere(
@@ -129,7 +130,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           orElse: () => {'code': '+91', 'flag': '🇮🇳'},
         );
 
-        debugPrint(' PhoneLoginBottomSheet : 🏳️ Found country: ${country['name']} ${country['flag']}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🏳️ Found country: ${country['name']} ${country['flag']}');
 
         setState(() {
           _selectedCountryCode = countryCode;
@@ -138,13 +140,17 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
           _phoneController.text = phoneNumber;
         });
 
-        debugPrint(' PhoneLoginBottomSheet : ✅ Phone number state updated successfully');
-        debugPrint(' PhoneLoginBottomSheet : 📊 Current state - Country: $countryCode, Phone: $phoneNumber');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ✅ Phone number state updated successfully');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 📊 Current state - Country: $countryCode, Phone: $phoneNumber');
       } else {
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Failed to parse cached phone number format');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Failed to parse cached phone number format');
       }
     } else {
-      debugPrint(' PhoneLoginBottomSheet : ℹ️ No cached phone number found, using defaults');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ℹ️ No cached phone number found, using defaults');
     }
   }
 
@@ -156,21 +162,23 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// - Fade animation: Opacity transition (300ms, easeIn curve)
   /// **Performance:** Uses TickerProviderStateMixin for optimized animations
   void _initializeAnimations() {
-    debugPrint(' PhoneLoginBottomSheet : 🎬 PhoneLoginBottomSheet: Initializing animations');
+    debugPrint('📱 PhoneLoginBottomSheet: 🎬 Initializing animations');
 
     // Slide animation controller - controls the upward slide motion
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    debugPrint(' PhoneLoginBottomSheet : ⬆️ Slide controller created (400ms duration)');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ⬆️ Slide controller created (400ms duration)');
 
     // Fade animation controller - controls the opacity transition
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    debugPrint(' PhoneLoginBottomSheet : 🌟 Fade controller created (300ms duration)');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🌟 Fade controller created (300ms duration)');
 
     // Slide animation from bottom to center
     _slideAnimation = Tween<Offset>(
@@ -180,7 +188,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       parent: _slideController,
       curve: Curves.easeOut, // Smooth deceleration
     ));
-    debugPrint(' PhoneLoginBottomSheet : 📐 Slide animation configured: Offset(0,1) → Offset(0,0) with easeOut');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📐 Slide animation configured: Offset(0,1) → Offset(0,0) with easeOut');
 
     // Fade animation from transparent to opaque
     _fadeAnimation = Tween<double>(
@@ -190,8 +199,10 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
       parent: _fadeController,
       curve: Curves.easeIn, // Smooth acceleration
     ));
-    debugPrint(' PhoneLoginBottomSheet : 💫 Fade animation configured: 0.0 → 1.0 opacity with easeIn');
-    debugPrint(' PhoneLoginBottomSheet : ✅ All animations initialized successfully');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 💫 Fade animation configured: 0.0 → 1.0 opacity with easeIn');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ✅ All animations initialized successfully');
   }
 
   /// Starts the entry animations with staggered timing
@@ -203,39 +214,41 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// 3. Start fade animation if widget is still mounted
   /// **UX Benefit:** Provides professional, polished feel to the modal
   Future<void> _startAnimations() async {
-    debugPrint(' PhoneLoginBottomSheet : 🎭 PhoneLoginBottomSheet: Starting entrance animations');
+    debugPrint('📱 PhoneLoginBottomSheet: 🎭 Starting entrance animations');
 
     // Start slide animation immediately
     _slideController.forward();
-    debugPrint(' PhoneLoginBottomSheet : ⬆️ Slide animation started');
+    debugPrint('📱 PhoneLoginBottomSheet: ⬆️ Slide animation started');
 
     // Wait briefly then start fade animation for staggered effect
     await Future.delayed(const Duration(milliseconds: 100));
-    debugPrint(' PhoneLoginBottomSheet : ⏰ Stagger delay completed (100ms)');
+    debugPrint('📱 PhoneLoginBottomSheet: ⏰ Stagger delay completed (100ms)');
 
     if (mounted) {
       _fadeController.forward();
-      debugPrint(' PhoneLoginBottomSheet : 🌟 Fade animation started');
-      debugPrint(' PhoneLoginBottomSheet : ✅ All entrance animations running');
+      debugPrint('📱 PhoneLoginBottomSheet: 🌟 Fade animation started');
+      debugPrint('📱 PhoneLoginBottomSheet: ✅ All entrance animations running');
     } else {
-      debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, skipping fade animation');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ⚠️ Widget unmounted, skipping fade animation');
     }
   }
 
   @override
   void dispose() {
-    debugPrint(' PhoneLoginBottomSheet : 🧹 PhoneLoginBottomSheet: Starting cleanup process');
+    debugPrint('📱 PhoneLoginBottomSheet: 🧹 Starting cleanup process');
 
     // Clean up controllers to prevent memory leaks
-    debugPrint(' PhoneLoginBottomSheet : 📝 Disposing text controllers');
+    debugPrint('📱 PhoneLoginBottomSheet: 📝 Disposing text controllers');
     _phoneController.dispose();
     _searchController.dispose();
 
-    debugPrint(' PhoneLoginBottomSheet : 🎬 Disposing animation controllers');
+    debugPrint('📱 PhoneLoginBottomSheet: 🎬 Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
 
-    debugPrint(' PhoneLoginBottomSheet : ✅ PhoneLoginBottomSheet: All resources cleaned up successfully');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ✅ All resources cleaned up successfully');
     super.dispose();
   }
 
@@ -249,17 +262,20 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// - Must be maximum 15 digits (international standard)
   /// **Returns:** true if valid, false if invalid
   bool _isValidPhoneNumber(String phone) {
-    debugPrint(' PhoneLoginBottomSheet : 🔍 PhoneLoginBottomSheet: Validating phone number');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Phone to validate: "$phone" (length: ${phone.length})');
+    debugPrint('📱 PhoneLoginBottomSheet: 🔍 Validating phone number');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📱 Phone to validate: "$phone" (length: ${phone.length})');
 
     // Basic phone number validation - check length
     if (phone.isEmpty) {
-      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone number is empty');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ❌ Validation failed: Phone number is empty');
       return false;
     }
 
     if (phone.length < 10) {
-      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone number too short (${phone.length} < 10)');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ❌ Validation failed: Phone number too short (${phone.length} < 10)');
       return false;
     }
 
@@ -268,156 +284,198 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
     final isValidFormat = phoneRegex.hasMatch(phone);
 
     if (isValidFormat) {
-      debugPrint(' PhoneLoginBottomSheet : ✅ Phone number validation passed');
+      debugPrint('📱 PhoneLoginBottomSheet: ✅ Phone number validation passed');
     } else {
-      debugPrint(' PhoneLoginBottomSheet : ❌ Validation failed: Phone contains non-digits or invalid length');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ❌ Validation failed: Phone contains non-digits or invalid length');
     }
 
-    debugPrint(' PhoneLoginBottomSheet : 📊 Validation result: $isValidFormat');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📊 Validation result: $isValidFormat');
     return isValidFormat;
   }
 
-  /// Validates phone number and initiates authentication flow
+  /// Validates phone number and initiates authentication flow using UserService
   ///
   /// **Purpose:** Core authentication method that handles phone verification
   /// **Process:**
   /// 1. Validates phone number format and length
-  /// 2. Makes API call to check if user exists
-  /// 3. Prepares user data for PIN entry screen
-  /// 4. Navigates to PIN entry with appropriate data
-  /// 5. Caches phone number for future use
+  /// 2. Makes API call via UserService to check if user exists
+  /// 3. Prepares proper AppUser data for PIN entry screen
+  /// 4. Navigates to PIN entry with UserType and all required data
+  /// 5. Caches phone number using HiveService for future use
   /// **API Integration:** Uses UserService.searchUserByPhone()
-  /// **Navigation:** Transitions to PIN entry screen with user context
+  /// **Navigation:** Transitions to PIN entry screen with proper AppUser context
   Future<void> _verifyPhoneNumber() async {
-    debugPrint(' PhoneLoginBottomSheet : 🚀 PhoneLoginBottomSheet: Starting phone verification process');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Current phone number: "$_phoneNumber"');
-    debugPrint(' PhoneLoginBottomSheet : 🌍 Selected country: $_selectedCountryCode $_selectedCountryFlag');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🚀 Starting phone verification process');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📱 Current phone number: "$_phoneNumber"');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🌍 Selected country: $_selectedCountryCode $_selectedCountryFlag');
 
     // Step 1: Validate phone number format before API call
     if (!_isValidPhoneNumber(_phoneNumber)) {
-      debugPrint(' PhoneLoginBottomSheet : ❌ Phone verification failed: Invalid phone number format');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ❌ Phone verification failed: Invalid phone number format');
       setState(() {
         _errorMessage = 'auth.phoneLogin.validation.invalidPhone'.tr();
       });
-      debugPrint(' PhoneLoginBottomSheet : 🔄 UI updated with validation error message');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 🔄 UI updated with validation error message');
       return;
     }
 
     // Step 2: Provide haptic feedback for better UX
     HapticFeedback.lightImpact();
-    debugPrint(' PhoneLoginBottomSheet : 📳 Haptic feedback provided to user');
+    debugPrint('📱 PhoneLoginBottomSheet: 📳 Haptic feedback provided to user');
 
     // Step 3: Update UI to show loading state
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state activated, error message cleared');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ⏳ Loading state activated, error message cleared');
 
     try {
-      // Step 4: Get UserService instance from Riverpod provider
+      // Step 4: Get UserService instance for API calls
       final userService = UserService(ApiService());
       final fullPhoneNumber = _selectedCountryCode + _phoneNumber;
-      debugPrint(' PhoneLoginBottomSheet : 📞 Full phone number: $fullPhoneNumber');
-      debugPrint(' PhoneLoginBottomSheet : 🔍 Searching for existing user via API...');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 📞 Full phone number: $fullPhoneNumber');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 🔍 Searching for existing user via UserService...');
 
-      // Step 5: Check if user exists by phone number via API
-      final userSearchResponse = await userService.searchUserByPhone(fullPhoneNumber);
-      debugPrint(' PhoneLoginBottomSheet : 📡 API call completed');
-      // debugPrint(' PhoneLoginBottomSheet : 📊 API response success: ${userSearchResponse.success}');
-      // debugPrint(' PhoneLoginBottomSheet : 👤 User found: ${userSearchResponse.data != null}');
+      // Step 5: Check if user exists by phone number via UserService
+      AppUser? existingUser;
+      bool isNewUser = false;
 
-      // Step 6: Process API response and prepare user data
-      // final AppUser? existingUser;
-      AppUser? userData;
+      try {
+        existingUser = await userService.searchUserByPhone(fullPhoneNumber);
+        debugPrint('📱 PhoneLoginBottomSheet: 👤 Existing user found');
+        debugPrint('📱 PhoneLoginBottomSheet: 📋 User details:');
+        debugPrint('📱 PhoneLoginBottomSheet:   - ID: ${existingUser.id}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - Username: ${existingUser.username}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - Email: ${existingUser.email}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - UserType: ${existingUser.userType}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - Display Name: ${existingUser.firstName} ${existingUser.lastName}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - Verified: ${existingUser.isVerified}');
+        isNewUser = false;
+      } catch (e) {
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🆕 User not found, creating new user data');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🎲 Generating random user data...');
 
-      if (userSearchResponse.id == '') {
-        debugPrint(' PhoneLoginBottomSheet : 🆕 New user detected - generating random user data');
-        Map<String, String> randomData = generateRandomUserData();
-        debugPrint(' PhoneLoginBottomSheet : 🎲 Generated data: $randomData');
+        // Generate random user data for new user
+        final randomData = generateRandomUserData();
+        debugPrint('📱 PhoneLoginBottomSheet: 📊 Generated data: $randomData');
 
-        // User doesn't exist, prepare new user data with default provider type
-        userData = AppUser(
-          phoneNumber: fullPhoneNumber,
-          userType: UserType.provider,
-          id: '',
-          firstName: randomData['firstName']!,
-          lastName: randomData['lastName']!,
+        // Create new AppUser with proper UserType (default to provider)
+        existingUser = AppUser(
+          id: '', // Will be set after registration
           username: randomData['username']!,
           email: randomData['email']!,
+          firstName: randomData['firstName']!,
+          lastName: randomData['lastName']!,
+          phoneNumber: fullPhoneNumber,
+          userType: UserType.provider, // Default user type
+          isVerified: false,
+          isEmailVerified: false,
+          isPhoneVerified: false,
+          rating: 0.0,
+          balance: 0.0,
+          totalBookings: 0,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
-        debugPrint(' PhoneLoginBottomSheet : ✅ New user data prepared successfully');
+
         debugPrint(
-            ' PhoneLoginBottomSheet : 👤 New user: ${userData.firstName} ${userData.lastName} (${userData.username})');
-      } else {
-        debugPrint(' PhoneLoginBottomSheet : 👋 Existing user found in database');
-        // User exists, use their complete data from AppUser model
-        // existingUser = userSearchResponse.data;
-        userData = userSearchResponse;
-        debugPrint(' PhoneLoginBottomSheet : ✅ Existing user data loaded successfully');
-        debugPrint(' PhoneLoginBottomSheet : 👤 User: ${userData.firstName} ${userData.lastName}');
-        debugPrint(' PhoneLoginBottomSheet : 📧 Email: ${userData.email}');
-        debugPrint(' PhoneLoginBottomSheet : 🏷️ User Type: ${userData.userType}');
-        debugPrint(' PhoneLoginBottomSheet : ⭐ Verified: ${userData.isVerified}');
+            '📱 PhoneLoginBottomSheet: ✅ New AppUser created successfully');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 👤 New user: ${existingUser.firstName} ${existingUser.lastName}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🏷️ UserType: ${existingUser.userType}');
+        isNewUser = true;
       }
 
-      // Step 7: Cache phone number for future use
-      debugPrint(' PhoneLoginBottomSheet : 💾 Caching phone number for future sessions...');
+      // Step 6: Cache phone number using HiveService for future use
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 💾 Caching phone number via HiveService...');
       await HiveService.setPhoneNumber(fullPhoneNumber);
-      debugPrint(' PhoneLoginBottomSheet : ✅ Phone number cached successfully');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ✅ Phone number cached successfully');
 
-      // Step 8: Update UI to hide loading state and navigate
+      // Step 7: Update UI to hide loading state and navigate
       if (mounted) {
-        debugPrint(' PhoneLoginBottomSheet : 🔄 Widget still mounted, updating UI state');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🔄 Widget still mounted, updating UI state');
         setState(() {
           _isLoading = false;
         });
-        debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state deactivated');
+        debugPrint('📱 PhoneLoginBottomSheet: ⏳ Loading state deactivated');
 
-        // Navigate to PIN entry screen with user data
-        debugPrint(' PhoneLoginBottomSheet : 🚪 Closing current bottom sheet...');
+        // Navigate to PIN entry screen with proper AppUser data
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🚪 Closing current bottom sheet...');
         context.pop(); // Close current bottom sheet
 
-        debugPrint(' PhoneLoginBottomSheet : 🧭 Navigating to PIN entry screen...');
-        debugPrint(' PhoneLoginBottomSheet : 📦 Navigation data:');
-        debugPrint(' PhoneLoginBottomSheet :   - phoneNumber: $fullPhoneNumber');
-        // debugPrint(' PhoneLoginBottomSheet :   - isNewUser: ${userSearchResponse.data == null}');
-        debugPrint(' PhoneLoginBottomSheet :   - userData: ${userData.toString()}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🧭 Navigating to PIN entry screen...');
+        debugPrint('📱 PhoneLoginBottomSheet: 📦 Navigation data:');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - phoneNumber: $fullPhoneNumber');
+        debugPrint('📱 PhoneLoginBottomSheet:   - isNewUser: $isNewUser');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - userData: ${existingUser.toJson()}');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet:   - userType: ${existingUser.userType}');
 
-        // Navigate with proper data structure
+        // Navigate with proper AppUser data structure
         context.push(
           RouteEnum.pinEntry.rawValue,
           extra: {
             'phoneNumber': fullPhoneNumber,
-            'isNewUser': (userSearchResponse.id == ''),
-            'userData': userData,
+            'isNewUser': isNewUser,
+            'userData': existingUser, // Pass complete AppUser object
           },
         );
-        debugPrint(' PhoneLoginBottomSheet : ✅ Navigation completed successfully');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ✅ Navigation completed successfully');
       } else {
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted during API call, skipping UI update');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Widget unmounted during API call, skipping UI update');
       }
     } catch (e) {
-      debugPrint(' PhoneLoginBottomSheet : 💥 Error occurred during phone verification:');
-      debugPrint(' PhoneLoginBottomSheet : ❌ Error type: ${e.runtimeType}');
-      debugPrint(' PhoneLoginBottomSheet : ❌ Error message: $e');
-      debugPrint(' PhoneLoginBottomSheet : 📱 Stack trace: ${StackTrace.current}');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 💥 Error occurred during phone verification:');
+      debugPrint('📱 PhoneLoginBottomSheet: ❌ Error type: ${e.runtimeType}');
+      debugPrint('📱 PhoneLoginBottomSheet: ❌ Error message: $e');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 📱 Stack trace: ${StackTrace.current}');
 
       if (mounted) {
-        debugPrint(' PhoneLoginBottomSheet : 🔄 Updating UI with error state');
+        debugPrint('📱 PhoneLoginBottomSheet: 🔄 Updating UI with error state');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.validation.networkError'.tr();
         });
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Network error message displayed to user');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Network error message displayed to user');
       } else {
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, cannot update error state');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Widget unmounted, cannot update error state');
       }
     }
 
-    debugPrint(' PhoneLoginBottomSheet : 🏁 Phone verification process completed');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🏁 Phone verification process completed');
   }
 
   /// Handle social login with proper error handling
@@ -427,80 +485,98 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// **Current Status:** Simulated implementation with "Coming Soon" message
   /// **Future Implementation:** Will integrate OAuth flows for each provider
   Future<void> _handleSocialLogin(String provider) async {
-    debugPrint(' PhoneLoginBottomSheet : 🔐 PhoneLoginBottomSheet: Social login initiated');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Provider: $provider');
-    debugPrint(' PhoneLoginBottomSheet : ⚠️ Note: This is currently a placeholder implementation');
+    debugPrint('📱 PhoneLoginBottomSheet: 🔐 Social login initiated');
+    debugPrint('📱 PhoneLoginBottomSheet: 📱 Provider: $provider');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ⚠️ Note: This is currently a placeholder implementation');
 
     // Provide haptic feedback for user interaction
     HapticFeedback.lightImpact();
-    debugPrint(' PhoneLoginBottomSheet : 📳 Haptic feedback provided for social login tap');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📳 Haptic feedback provided for social login tap');
 
     // Show loading state to user
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    debugPrint(' PhoneLoginBottomSheet : ⏳ Loading state activated for social login');
-    debugPrint(' PhoneLoginBottomSheet : 🧹 Previous error messages cleared');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ⏳ Loading state activated for social login');
+    debugPrint('📱 PhoneLoginBottomSheet: 🧹 Previous error messages cleared');
 
     try {
-      debugPrint(' PhoneLoginBottomSheet : 🚀 Starting social login simulation...');
-      // TODO: Implement actual social login logic
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 🚀 Starting social login simulation...');
+      // TODO: Implement actual social login logic with UserService
       // This is a placeholder for future implementation
       //
       // FUTURE IMPLEMENTATION PLAN:
       // 1. Google Sign-In: Use google_sign_in package
       // 2. Apple Sign-In: Use sign_in_with_apple package
-      // 3. Handle OAuth token exchange
-      // 4. Create/update user profile with social data
-      // 5. Navigate to main app or PIN setup
+      // 3. Handle OAuth token exchange via UserService
+      // 4. Create/update AppUser profile with social data
+      // 5. Store AuthTokens via HiveService
+      // 6. Navigate to main app based on UserType
 
       await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-      debugPrint(' PhoneLoginBottomSheet : ⏰ Social login simulation completed (2 second delay)');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: ⏰ Social login simulation completed (2 second delay)');
 
       if (mounted) {
-        debugPrint(' PhoneLoginBottomSheet : 🔄 Widget mounted, updating UI with "Coming Soon" message');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🔄 Widget mounted, updating UI with "Coming Soon" message');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.socialLogin.comingSoon'.tr();
         });
-        debugPrint(' PhoneLoginBottomSheet : ℹ️ "Coming Soon" message displayed to user');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ℹ️ "Coming Soon" message displayed to user');
       } else {
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted during social login, skipping UI update');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Widget unmounted during social login, skipping UI update');
       }
     } catch (e) {
-      debugPrint(' PhoneLoginBottomSheet : 💥 Error occurred during social login simulation:');
-      debugPrint(' PhoneLoginBottomSheet : ❌ Error type: ${e.runtimeType}');
-      debugPrint(' PhoneLoginBottomSheet : ❌ Error message: $e');
+      debugPrint(
+          '📱 PhoneLoginBottomSheet: 💥 Error occurred during social login simulation:');
+      debugPrint('📱 PhoneLoginBottomSheet: ❌ Error type: ${e.runtimeType}');
+      debugPrint('📱 PhoneLoginBottomSheet: ❌ Error message: $e');
 
       if (mounted) {
-        debugPrint(' PhoneLoginBottomSheet : 🔄 Updating UI with social login error state');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: 🔄 Updating UI with social login error state');
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth.phoneLogin.socialLogin.failed'.tr();
         });
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Social login failure message displayed to user');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Social login failure message displayed to user');
       } else {
-        debugPrint(' PhoneLoginBottomSheet : ⚠️ Widget unmounted, cannot update error state');
+        debugPrint(
+            '📱 PhoneLoginBottomSheet: ⚠️ Widget unmounted, cannot update error state');
       }
     }
 
-    debugPrint(' PhoneLoginBottomSheet : 🏁 Social login process completed');
+    debugPrint('📱 PhoneLoginBottomSheet: 🏁 Social login process completed');
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(' PhoneLoginBottomSheet : 🎨 PhoneLoginBottomSheet: Building UI');
-    debugPrint(' PhoneLoginBottomSheet : 📊 Current state - Loading: $_isLoading, Error: ${_errorMessage != null}');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Current phone: "$_phoneNumber", Country: $_selectedCountryCode');
+    debugPrint('📱 PhoneLoginBottomSheet: 🎨 Building UI');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📊 Current state - Loading: $_isLoading, Error: ${_errorMessage != null}');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📱 Current phone: "$_phoneNumber", Country: $_selectedCountryCode');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
 
     final screenSize = MediaQuery.of(context).size;
 
-    debugPrint(' PhoneLoginBottomSheet : 🎨 Theme loaded: ${ThemeManager.of(context).runtimeType}');
-    debugPrint(' PhoneLoginBottomSheet : 📐 Screen size: ${screenSize.width} x ${screenSize.height}');
-    debugPrint(' PhoneLoginBottomSheet : 📱 Max height: ${screenSize.height * 0.9}');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🎨 Theme loaded: ${ThemeManager.of(context).runtimeType}');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📐 Screen size: ${screenSize.width} x ${screenSize.height}');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 📱 Max height: ${screenSize.height * 0.9}');
 
     return SlideTransition(
       position: _slideAnimation,
@@ -511,50 +587,17 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
         ),
         decoration: BoxDecoration(
           color: ThemeManager.of(context).backgroundColor,
-          // // Theme-aware background with gradient
-          // gradient: ThemeManager.of(context).conditionalGradient(
-          //   lightGradient: LinearGradient(
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //     colors: [
-          //       ThemeManager.of(context).backgroundColor,
-          //       ThemeManager.of(context).surfaceElevated,
-          //       ThemeManager.of(context).cardBackground,
-          //     ],
-          //     stops: const [0.0, 0.6, 1.0],
-          //   ),
-          //   darkGradient: LinearGradient(
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //     colors: [
-          //       ThemeManager.of(context).backgroundColor,
-          //       ThemeManager.of(context).backgroundSecondary,
-          //       ThemeManager.of(context).surfaceElevated,
-          //     ],
-          //     stops: const [0.0, 0.5, 1.0],
-          //   ),
-          // ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
           border: Border.all(
             color: ThemeManager.of(context).conditionalColor(
-              lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
-              darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.3),
+              lightColor:
+                  ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
+              darkColor: ThemeManager.of(context)
+                  .borderSecondary
+                  .withValues(alpha: 0.3),
             ),
             width: 1.5,
           ),
-          // boxShadow: [
-          //   ...ThemeManager.of(context).elevatedShadow,
-          //   BoxShadow(
-          //     color: ThemeManager.of(context).shadowDark,
-          //     blurRadius: 25,
-          //     offset: const Offset(0, -8),
-          //   ),
-          //   BoxShadow(
-          //     color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.05),
-          //     blurRadius: 30,
-          //     offset: const Offset(0, -12),
-          //   ),
-          // ],
         ),
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -571,9 +614,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Padding(
-                  //   padding: EdgeInsets.all(24.w),
-                  //   child:
                   SizedBox(height: 10.h),
                   Column(
                     children: [
@@ -589,19 +629,16 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  // ),
 
                   // Phone input section
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  //   child:
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Phone input field with comprehensive ThemeManager styling
                       Container(
                         decoration: BoxDecoration(
-                          gradient: ThemeManager.of(context).conditionalGradient(
+                          gradient:
+                              ThemeManager.of(context).conditionalGradient(
                             lightGradient: LinearGradient(
                               colors: [
                                 ThemeManager.of(context).inputBackground,
@@ -620,15 +657,19 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             color: _errorMessage != null
                                 ? ThemeManager.of(context).errorColor
                                 : ThemeManager.of(context).conditionalColor(
-                                    lightColor: ThemeManager.of(context).borderColor,
-                                    darkColor: ThemeManager.of(context).borderSecondary,
+                                    lightColor:
+                                        ThemeManager.of(context).borderColor,
+                                    darkColor: ThemeManager.of(context)
+                                        .borderSecondary,
                                   ),
                             width: 1.5,
                           ),
                           boxShadow: _errorMessage != null
                               ? [
                                   BoxShadow(
-                                    color: ThemeManager.of(context).errorColor.withValues(alpha: 0.2),
+                                    color: ThemeManager.of(context)
+                                        .errorColor
+                                        .withValues(alpha: 0.2),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -650,9 +691,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 decoration: BoxDecoration(
                                   border: Border(
                                     right: BorderSide(
-                                      color: ThemeManager.of(context).conditionalColor(
-                                        lightColor: ThemeManager.of(context).borderColor,
-                                        darkColor: ThemeManager.of(context).borderSecondary,
+                                      color: ThemeManager.of(context)
+                                          .conditionalColor(
+                                        lightColor: ThemeManager.of(context)
+                                            .borderColor,
+                                        darkColor: ThemeManager.of(context)
+                                            .borderSecondary,
                                       ),
                                       width: 1,
                                     ),
@@ -671,14 +715,16 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: ThemeManager.of(context).textPrimary,
+                                        color: ThemeManager.of(context)
+                                            .textPrimary,
                                       ),
                                     ),
                                     SizedBox(width: 4.w),
                                     Icon(
                                       Prbal.angleDown,
                                       size: 16.sp,
-                                      color: ThemeManager.of(context).onPrimaryColor,
+                                      color: ThemeManager.of(context)
+                                          .onPrimaryColor,
                                     ),
                                   ],
                                 ),
@@ -702,7 +748,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 decoration: InputDecoration(
                                   hintText: 'auth.phoneLogin.phoneHint'.tr(),
                                   hintStyle: TextStyle(
-                                    color: ThemeManager.of(context).textSecondary,
+                                    color:
+                                        ThemeManager.of(context).textSecondary,
                                   ),
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.symmetric(
@@ -712,20 +759,25 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 ),
                                 onChanged: (value) {
                                   debugPrint(
-                                      ' PhoneLoginBottomSheet : 📱 PhoneLoginBottomSheet: Phone number input changed');
-                                  debugPrint(' PhoneLoginBottomSheet : 📝 Old value: "$_phoneNumber"');
-                                  debugPrint(' PhoneLoginBottomSheet : 📝 New value: "$value"');
+                                      '📱 PhoneLoginBottomSheet: 📱 Phone number input changed');
+                                  debugPrint(
+                                      '📱 PhoneLoginBottomSheet: 📝 Old value: "$_phoneNumber"');
+                                  debugPrint(
+                                      '📱 PhoneLoginBottomSheet: 📝 New value: "$value"');
 
                                   _phoneNumber = value;
-                                  debugPrint(' PhoneLoginBottomSheet : ✅ Phone number state updated');
+                                  debugPrint(
+                                      '📱 PhoneLoginBottomSheet: ✅ Phone number state updated');
 
                                   // Clear error message when user starts typing
                                   if (_errorMessage != null) {
-                                    debugPrint(' PhoneLoginBottomSheet : 🧹 Clearing error message on input change');
+                                    debugPrint(
+                                        '📱 PhoneLoginBottomSheet: 🧹 Clearing error message on input change');
                                     setState(() {
                                       _errorMessage = null;
                                     });
-                                    debugPrint(' PhoneLoginBottomSheet : ✅ Error message cleared');
+                                    debugPrint(
+                                        '📱 PhoneLoginBottomSheet: ✅ Error message cleared');
                                   }
                                 },
                               ),
@@ -765,7 +817,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
 
                       // Continue button
                       SizedBox(
-                        // width: double.infinity,
                         height: 56.h,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _verifyPhoneNumber,
@@ -776,7 +827,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            disabledBackgroundColor: ThemeManager.of(context).conditionalColor(
+                            disabledBackgroundColor:
+                                ThemeManager.of(context).conditionalColor(
                               lightColor: ThemeManager.of(context).neutral300,
                               darkColor: ThemeManager.of(context).neutral700,
                             ),
@@ -787,7 +839,9 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                   height: 20.h,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).onPrimaryColor),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        ThemeManager.of(context)
+                                            .onPrimaryColor),
                                   ),
                                 )
                               : Row(
@@ -910,11 +964,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                         ),
                         textAlign: TextAlign.center,
                       ),
-
-                      // SizedBox(height: 40.h),
                     ],
                   ),
-                  // ),
                 ],
               ),
             ),
@@ -937,15 +988,14 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// - [icon]: Social platform icon (Google, Apple, etc.)
   /// - [iconColor]: Brand-specific icon color
   /// - [onPressed]: Callback function for button interaction
-  /// - [themeManager]: Theme manager for consistent styling
   Widget _buildSocialButton(
     String label,
     IconData icon,
     Color iconColor,
     VoidCallback onPressed,
   ) {
-    debugPrint(' PhoneLoginBottomSheet : 🔨 Building social button: $label');
-    debugPrint(' PhoneLoginBottomSheet : 🎨 Icon color: $iconColor');
+    debugPrint('📱 PhoneLoginBottomSheet: 🔨 Building social button: $label');
+    debugPrint('📱 PhoneLoginBottomSheet: 🎨 Icon color: $iconColor');
 
     return Container(
       width: 60.w,
@@ -1005,18 +1055,22 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
   /// - Smooth animations and professional UI
   /// **UX Benefits:** Easy country selection with visual feedback
   void _showCountryPicker() {
-    debugPrint(' PhoneLoginBottomSheet : 🌍 PhoneLoginBottomSheet: Opening country picker');
-    debugPrint(' PhoneLoginBottomSheet : 🎯 Current selection: $_selectedCountryFlag $_selectedCountryCode');
+    debugPrint('📱 PhoneLoginBottomSheet: 🌍 Opening country picker');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🎯 Current selection: $_selectedCountryFlag $_selectedCountryCode');
 
-    debugPrint(' PhoneLoginBottomSheet : 🎨 Theme loaded for country picker modal');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🎨 Theme loaded for country picker modal');
 
     // Clear search query when opening to show all countries
-    debugPrint(' PhoneLoginBottomSheet : 🧹 Clearing search controller and query');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: 🧹 Clearing search controller and query');
     _searchController.clear();
     setState(() {
       _searchQuery = '';
     });
-    debugPrint(' PhoneLoginBottomSheet : ✅ Search state reset, showing all countries');
+    debugPrint(
+        '📱 PhoneLoginBottomSheet: ✅ Search state reset, showing all countries');
 
     showModalBottomSheet(
       context: context,
@@ -1047,9 +1101,6 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
               color: ThemeManager.of(context).onPrimaryColor,
               width: 1.5,
             ),
-            // boxShadow: [
-            //   ...ThemeManager.of(context).elevatedShadow,
-            // ],
           ),
           child: Column(
             children: [
@@ -1109,7 +1160,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       child: Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          gradient: ThemeManager.of(context).conditionalGradient(
+                          gradient:
+                              ThemeManager.of(context).conditionalGradient(
                             lightGradient: LinearGradient(
                               colors: [
                                 ThemeManager.of(context).neutral100,
@@ -1126,8 +1178,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: ThemeManager.of(context).conditionalColor(
-                              lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-                              darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+                              lightColor: ThemeManager.of(context)
+                                  .borderColor
+                                  .withValues(alpha: 0.3),
+                              darkColor: ThemeManager.of(context)
+                                  .borderSecondary
+                                  .withValues(alpha: 0.4),
                             ),
                             width: 1,
                           ),
@@ -1159,17 +1215,24 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     ),
                     // Show selected country info with ThemeManager styling
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            ThemeManager.of(context).primaryColor.withValues(alpha: 0.15),
-                            ThemeManager.of(context).primaryLight.withValues(alpha: 0.1),
+                            ThemeManager.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.15),
+                            ThemeManager.of(context)
+                                .primaryLight
+                                .withValues(alpha: 0.1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                          color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+                          color: ThemeManager.of(context)
+                              .primaryColor
+                              .withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -1251,34 +1314,51 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                gradient: ThemeManager.of(context).conditionalGradient(
+                                gradient: ThemeManager.of(context)
+                                    .conditionalGradient(
                                   lightGradient: LinearGradient(
                                     colors: [
-                                      ThemeManager.of(context).errorColor.withValues(alpha: 0.15),
-                                      ThemeManager.of(context).errorLight.withValues(alpha: 0.1),
+                                      ThemeManager.of(context)
+                                          .errorColor
+                                          .withValues(alpha: 0.15),
+                                      ThemeManager.of(context)
+                                          .errorLight
+                                          .withValues(alpha: 0.1),
                                     ],
                                   ),
                                   darkGradient: LinearGradient(
                                     colors: [
-                                      ThemeManager.of(context).errorDark.withValues(alpha: 0.2),
-                                      ThemeManager.of(context).errorColor.withValues(alpha: 0.15),
+                                      ThemeManager.of(context)
+                                          .errorDark
+                                          .withValues(alpha: 0.2),
+                                      ThemeManager.of(context)
+                                          .errorColor
+                                          .withValues(alpha: 0.15),
                                     ],
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(6.r),
                                 border: Border.all(
-                                  color: ThemeManager.of(context).conditionalColor(
-                                    lightColor: ThemeManager.of(context).errorColor.withValues(alpha: 0.3),
-                                    darkColor: ThemeManager.of(context).errorDark.withValues(alpha: 0.4),
+                                  color:
+                                      ThemeManager.of(context).conditionalColor(
+                                    lightColor: ThemeManager.of(context)
+                                        .errorColor
+                                        .withValues(alpha: 0.3),
+                                    darkColor: ThemeManager.of(context)
+                                        .errorDark
+                                        .withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
                               ),
                               child: Icon(
                                 Prbal.cross,
-                                color: ThemeManager.of(context).conditionalColor(
-                                  lightColor: ThemeManager.of(context).errorColor,
-                                  darkColor: ThemeManager.of(context).errorLight,
+                                color:
+                                    ThemeManager.of(context).conditionalColor(
+                                  lightColor:
+                                      ThemeManager.of(context).errorColor,
+                                  darkColor:
+                                      ThemeManager.of(context).errorLight,
                                 ),
                                 size: 14.sp,
                               ),
@@ -1296,15 +1376,19 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                     fontSize: 15.sp,
                   ),
                   onChanged: (value) {
-                    debugPrint(' PhoneLoginBottomSheet : 🔍 Country picker: Search input changed');
-                    debugPrint(' PhoneLoginBottomSheet : 📝 Search value: "$value"');
+                    debugPrint(
+                        '📱 PhoneLoginBottomSheet: 🔍 Country picker: Search input changed');
+                    debugPrint(
+                        '📱 PhoneLoginBottomSheet: 📝 Search value: "$value"');
 
                     setModalState(() {
                       _searchQuery = value.toLowerCase();
                     });
 
-                    debugPrint(' PhoneLoginBottomSheet : 🔎 Search query updated: "$_searchQuery"');
-                    debugPrint(' PhoneLoginBottomSheet : 🌍 Filtering countries list...');
+                    debugPrint(
+                        '📱 PhoneLoginBottomSheet: 🔎 Search query updated: "$_searchQuery"');
+                    debugPrint(
+                        '📱 PhoneLoginBottomSheet: 🌍 Filtering countries list...');
                   },
                 ),
               ),
@@ -1315,8 +1399,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                   builder: (context) {
                     final filteredCountries = countries.where((country) {
                       if (_searchQuery.isEmpty) return true;
-                      return country['name']!.toLowerCase().contains(_searchQuery) ||
-                          country['code']!.toLowerCase().contains(_searchQuery.replaceAll('+', ''));
+                      return country['name']!
+                              .toLowerCase()
+                              .contains(_searchQuery) ||
+                          country['code']!
+                              .toLowerCase()
+                              .contains(_searchQuery.replaceAll('+', ''));
                     }).toList();
 
                     if (filteredCountries.isEmpty) {
@@ -1337,9 +1425,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               'auth.phoneLogin.countryPicker.noResults'.tr(),
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                color: ThemeManager.of(context).conditionalColor(
-                                  lightColor: ThemeManager.of(context).neutral600,
-                                  darkColor: ThemeManager.of(context).neutral400,
+                                color:
+                                    ThemeManager.of(context).conditionalColor(
+                                  lightColor:
+                                      ThemeManager.of(context).neutral600,
+                                  darkColor:
+                                      ThemeManager.of(context).neutral400,
                                 ),
                                 fontWeight: FontWeight.w500,
                               ),
@@ -1362,7 +1453,8 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       itemBuilder: (context, index) {
                         final country = filteredCountries[index];
-                        final isSelected = country['code'] == _selectedCountryCode;
+                        final isSelected =
+                            country['code'] == _selectedCountryCode;
 
                         return Container(
                           margin: EdgeInsets.symmetric(vertical: 2.h),
@@ -1370,26 +1462,34 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                             gradient: isSelected
                                 ? LinearGradient(
                                     colors: [
-                                      ThemeManager.of(context).primaryColor.withValues(alpha: 0.15),
-                                      ThemeManager.of(context).primaryLight.withValues(alpha: 0.1),
+                                      ThemeManager.of(context)
+                                          .primaryColor
+                                          .withValues(alpha: 0.15),
+                                      ThemeManager.of(context)
+                                          .primaryLight
+                                          .withValues(alpha: 0.1),
                                     ],
                                   )
                                 : null,
                             borderRadius: BorderRadius.circular(8.r),
                             border: isSelected
                                 ? Border.all(
-                                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+                                    color: ThemeManager.of(context)
+                                        .primaryColor
+                                        .withValues(alpha: 0.3),
                                     width: 1,
                                   )
                                 : null,
                           ),
                           child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 4.h),
                             leading: Container(
                               width: 40.w,
                               height: 40.h,
                               decoration: BoxDecoration(
-                                gradient: ThemeManager.of(context).conditionalGradient(
+                                gradient: ThemeManager.of(context)
+                                    .conditionalGradient(
                                   lightGradient: LinearGradient(
                                     colors: [
                                       ThemeManager.of(context).neutral100,
@@ -1405,9 +1505,14 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                 ),
                                 borderRadius: BorderRadius.circular(20.r),
                                 border: Border.all(
-                                  color: ThemeManager.of(context).conditionalColor(
-                                    lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-                                    darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+                                  color:
+                                      ThemeManager.of(context).conditionalColor(
+                                    lightColor: ThemeManager.of(context)
+                                        .borderColor
+                                        .withValues(alpha: 0.3),
+                                    darkColor: ThemeManager.of(context)
+                                        .borderSecondary
+                                        .withValues(alpha: 0.4),
                                   ),
                                   width: 1,
                                 ),
@@ -1434,9 +1539,11 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 4.h),
                                   decoration: BoxDecoration(
-                                    gradient: ThemeManager.of(context).conditionalGradient(
+                                    gradient: ThemeManager.of(context)
+                                        .conditionalGradient(
                                       lightGradient: LinearGradient(
                                         colors: [
                                           ThemeManager.of(context).neutral200,
@@ -1452,9 +1559,14 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                     ),
                                     borderRadius: BorderRadius.circular(6.r),
                                     border: Border.all(
-                                      color: ThemeManager.of(context).conditionalColor(
-                                        lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-                                        darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+                                      color: ThemeManager.of(context)
+                                          .conditionalColor(
+                                        lightColor: ThemeManager.of(context)
+                                            .borderColor
+                                            .withValues(alpha: 0.3),
+                                        darkColor: ThemeManager.of(context)
+                                            .borderSecondary
+                                            .withValues(alpha: 0.4),
                                       ),
                                       width: 1,
                                     ),
@@ -1464,9 +1576,12 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: ThemeManager.of(context).conditionalColor(
-                                        lightColor: ThemeManager.of(context).neutral700,
-                                        darkColor: ThemeManager.of(context).neutral300,
+                                      color: ThemeManager.of(context)
+                                          .conditionalColor(
+                                        lightColor:
+                                            ThemeManager.of(context).neutral700,
+                                        darkColor:
+                                            ThemeManager.of(context).neutral300,
                                       ),
                                     ),
                                   ),
@@ -1486,7 +1601,9 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+                                          color: ThemeManager.of(context)
+                                              .primaryColor
+                                              .withValues(alpha: 0.3),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -1502,27 +1619,36 @@ class _PhoneLoginBottomSheetState extends ConsumerState<PhoneLoginBottomSheet>
                               ],
                             ),
                             onTap: () {
-                              debugPrint(' PhoneLoginBottomSheet : 🌍 Country picker: Country selected');
-                              debugPrint(' PhoneLoginBottomSheet : 📍 Selected country: ${country['name']}');
-                              debugPrint(' PhoneLoginBottomSheet : 🏳️ Flag: ${country['flag']}');
-                              debugPrint(' PhoneLoginBottomSheet : 📞 Code: ${country['code']}');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 🌍 Country picker: Country selected');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 📍 Selected country: ${country['name']}');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 🏳️ Flag: ${country['flag']}');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 📞 Code: ${country['code']}');
 
                               // Provide haptic feedback for selection
                               HapticFeedback.selectionClick();
-                              debugPrint(' PhoneLoginBottomSheet : 📳 Selection haptic feedback provided');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 📳 Selection haptic feedback provided');
 
-                              debugPrint(' PhoneLoginBottomSheet : 🔄 Updating selected country state...');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 🔄 Updating selected country state...');
                               setState(() {
                                 _selectedCountryCode = country['code']!;
                                 _selectedCountryFlag = country['flag']!;
                               });
-                              debugPrint(' PhoneLoginBottomSheet : ✅ Country state updated successfully');
                               debugPrint(
-                                  ' PhoneLoginBottomSheet : 🎯 New selection: $_selectedCountryFlag $_selectedCountryCode');
+                                  '📱 PhoneLoginBottomSheet: ✅ Country state updated successfully');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 🎯 New selection: $_selectedCountryFlag $_selectedCountryCode');
 
-                              debugPrint(' PhoneLoginBottomSheet : 🚪 Closing country picker modal');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: 🚪 Closing country picker modal');
                               Navigator.pop(context);
-                              debugPrint(' PhoneLoginBottomSheet : ✅ Country selection process completed');
+                              debugPrint(
+                                  '📱 PhoneLoginBottomSheet: ✅ Country selection process completed');
                             },
                           ),
                         );

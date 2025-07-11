@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/models/auth/app_user.dart';
 
 // Services
 import 'package:prbal/services/hive_service.dart';
-import 'package:prbal/services/user_service.dart';
+// import 'package:prbal/services/user_service.dart';
 
 /// Utility class for managing user preferences and settings
 class PreferencesManager {
@@ -13,7 +14,8 @@ class PreferencesManager {
     required bool enabled,
     required BuildContext context,
   }) async {
-    debugPrint('⚙️ PreferencesManager: Saving notification preference: $enabled');
+    debugPrint(
+        '⚙️ PreferencesManager: Saving notification preference: $enabled');
 
     try {
       AppUser userData = HiveService.getUserData();
@@ -23,8 +25,10 @@ class PreferencesManager {
           HapticFeedback.lightImpact();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(enabled ? 'Notifications enabled' : 'Notifications disabled'),
-              backgroundColor: enabled ? const Color(0xFF48BB78) : const Color(0xFFED8936),
+              content: Text(
+                  enabled ? 'Notifications enabled' : 'Notifications disabled'),
+              backgroundColor:
+                  enabled ? const Color(0xFF48BB78) : const Color(0xFFED8936),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
@@ -35,7 +39,8 @@ class PreferencesManager {
         }
       });
     } catch (e) {
-      debugPrint('❌ PreferencesManager: Failed to save notification preference: $e');
+      debugPrint(
+          '❌ PreferencesManager: Failed to save notification preference: $e');
     }
   }
 
@@ -54,7 +59,8 @@ class PreferencesManager {
           HapticFeedback.lightImpact();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(enabled ? 'Analytics enabled' : 'Analytics disabled'),
+              content:
+                  Text(enabled ? 'Analytics enabled' : 'Analytics disabled'),
               backgroundColor: const Color(0xFF4299E1),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -66,7 +72,8 @@ class PreferencesManager {
         }
       });
     } catch (e) {
-      debugPrint('❌ PreferencesManager: Failed to save analytics preference: $e');
+      debugPrint(
+          '❌ PreferencesManager: Failed to save analytics preference: $e');
     }
   }
 
@@ -86,7 +93,9 @@ class PreferencesManager {
         HapticFeedback.lightImpact();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(enabled ? 'Biometric authentication enabled' : 'Biometric authentication disabled'),
+            content: Text(enabled
+                ? 'Biometric authentication enabled'
+                : 'Biometric authentication disabled'),
             backgroundColor: const Color(0xFF9F7AEA),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -97,7 +106,8 @@ class PreferencesManager {
         );
       }
     } catch (e) {
-      debugPrint('❌ PreferencesManager: Failed to save biometric preference: $e');
+      debugPrint(
+          '❌ PreferencesManager: Failed to save biometric preference: $e');
     }
   }
 

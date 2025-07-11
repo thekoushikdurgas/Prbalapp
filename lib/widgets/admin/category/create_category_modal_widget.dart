@@ -32,10 +32,12 @@ class CreateCategoryModalWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CreateCategoryModalWidget> createState() => _CreateCategoryModalWidgetState();
+  ConsumerState<CreateCategoryModalWidget> createState() =>
+      _CreateCategoryModalWidgetState();
 }
 
-class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalWidget>
+class _CreateCategoryModalWidgetState
+    extends ConsumerState<CreateCategoryModalWidget>
     with TickerProviderStateMixin, ThemeAwareMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -109,9 +111,12 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
     debugPrint('🎨 CreateCategoryModal: =============================');
     debugPrint('🎨 CreateCategoryModal: BUILDING WITH THEME MANAGER');
     debugPrint('🎨 CreateCategoryModal: =============================');
-    debugPrint('🎨 CreateCategoryModal: Primary color: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🎨 CreateCategoryModal: Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🎨 CreateCategoryModal: Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🎨 CreateCategoryModal: Primary color: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🎨 CreateCategoryModal: Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🎨 CreateCategoryModal: Surface: ${ThemeManager.of(context).surfaceColor}');
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -183,7 +188,9 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               boxShadow: [
                 ...ThemeManager.of(context).primaryShadow,
                 BoxShadow(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 51),
                   blurRadius: 8.r,
                   offset: Offset(0, 2.h),
                 ),
@@ -192,7 +199,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             child: Icon(
               Icons.add_rounded,
               size: 24.w,
-              color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+              color: ThemeManager.of(context)
+                  .getContrastingColor(ThemeManager.of(context).primaryColor),
             ),
           ),
 
@@ -205,7 +213,10 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               children: [
                 Text(
                   'Create Category',
-                  style: ThemeManager.of(context).textTheme.headlineSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(
                         color: ThemeManager.of(context).textPrimary,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -214,10 +225,11 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 SizedBox(height: 2.h),
                 Text(
                   'Add new service category',
-                  style: ThemeManager.of(context).textTheme.bodyMedium?.copyWith(
-                        color: ThemeManager.of(context).textSecondary,
-                        letterSpacing: 0.3,
-                      ),
+                  style:
+                      ThemeManager.of(context).textTheme.bodyMedium?.copyWith(
+                            color: ThemeManager.of(context).textSecondary,
+                            letterSpacing: 0.3,
+                          ),
                 ),
               ],
             ),
@@ -333,24 +345,29 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             controller: _nameController,
             decoration: InputDecoration(
               hintText: 'Enter category name',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).errorColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).errorColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -414,20 +431,24 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             maxLines: 3,
             decoration: InputDecoration(
               hintText: 'Enter category description (optional)',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -461,7 +482,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               child: Icon(
                 Icons.palette_rounded,
                 size: 16.sp,
-                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                color: ThemeManager.of(context)
+                    .getContrastingColor(ThemeManager.of(context).primaryColor),
               ),
             ),
             SizedBox(width: 8.w),
@@ -484,7 +506,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
-                  color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent1),
+                  color: ThemeManager.of(context)
+                      .getContrastingColor(ThemeManager.of(context).accent1),
                 ),
               ),
             ),
@@ -533,16 +556,21 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 boxShadow: [
                   ...ThemeManager.of(context).primaryShadow,
                   BoxShadow(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 51),
                     blurRadius: 8.r,
                     offset: Offset(0, 2.h),
                   ),
                 ],
               ),
               child: Icon(
-                _selectedIcon != null ? CategoryUtils.getIconFromString(_selectedIcon!) : Icons.category_rounded,
+                _selectedIcon != null
+                    ? CategoryUtils.getIconFromString(_selectedIcon!)
+                    : Icons.category_rounded,
                 size: 32.w,
-                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                color: ThemeManager.of(context)
+                    .getContrastingColor(ThemeManager.of(context).primaryColor),
               ),
             ),
 
@@ -555,11 +583,14 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _selectedIcon != null ? 'Selected Icon' : 'No Icon Selected',
-                    style: ThemeManager.of(context).textTheme.titleSmall?.copyWith(
-                          color: ThemeManager.of(context).textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    _selectedIcon != null
+                        ? 'Selected Icon'
+                        : 'No Icon Selected',
+                    style:
+                        ThemeManager.of(context).textTheme.titleSmall?.copyWith(
+                              color: ThemeManager.of(context).textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -567,7 +598,10 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                     SizedBox(height: 4.h),
                     Text(
                       _selectedIcon!,
-                      style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
+                      style: ThemeManager.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
                             color: ThemeManager.of(context).textSecondary,
                           ),
                       maxLines: 1,
@@ -577,10 +611,11 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                   SizedBox(height: 6.h),
                   Text(
                     'Tap to ${_selectedIcon != null ? 'change' : 'select'} icon',
-                    style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
-                          color: ThemeManager.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    style:
+                        ThemeManager.of(context).textTheme.bodySmall?.copyWith(
+                              color: ThemeManager.of(context).primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -597,20 +632,26 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 gradient: ThemeManager.of(context).conditionalGradient(
                   lightGradient: LinearGradient(
                     colors: [
-                      ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                      ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 26),
                       ThemeManager.of(context).accent1.withValues(alpha: 13),
                     ],
                   ),
                   darkGradient: LinearGradient(
                     colors: [
-                      ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                      ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 51),
                       ThemeManager.of(context).accent1.withValues(alpha: 26),
                     ],
                   ),
                 ),
                 borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 77),
                   width: 1,
                 ),
               ),
@@ -648,28 +689,42 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                   ? ThemeManager.of(context).successGradient
                   : ThemeManager.of(context).conditionalGradient(
                       lightGradient: LinearGradient(
-                        colors: [ThemeManager.of(context).neutral300, ThemeManager.of(context).neutral400],
+                        colors: [
+                          ThemeManager.of(context).neutral300,
+                          ThemeManager.of(context).neutral400
+                        ],
                       ),
                       darkGradient: LinearGradient(
-                        colors: [ThemeManager.of(context).neutral600, ThemeManager.of(context).neutral700],
+                        colors: [
+                          ThemeManager.of(context).neutral600,
+                          ThemeManager.of(context).neutral700
+                        ],
                       ),
                     ),
               borderRadius: BorderRadius.circular(8.r),
               boxShadow: [
                 BoxShadow(
                   color: _isActive
-                      ? ThemeManager.of(context).successColor.withValues(alpha: 51)
-                      : ThemeManager.of(context).neutral500.withValues(alpha: 26),
+                      ? ThemeManager.of(context)
+                          .successColor
+                          .withValues(alpha: 51)
+                      : ThemeManager.of(context)
+                          .neutral500
+                          .withValues(alpha: 26),
                   blurRadius: 4,
                   offset: const Offset(0, 1),
                 ),
               ],
             ),
             child: Icon(
-              _isActive ? Icons.check_circle_rounded : Icons.pause_circle_rounded,
+              _isActive
+                  ? Icons.check_circle_rounded
+                  : Icons.pause_circle_rounded,
               size: 20.w,
               color: ThemeManager.of(context).getContrastingColor(
-                _isActive ? ThemeManager.of(context).successColor : ThemeManager.of(context).neutral500,
+                _isActive
+                    ? ThemeManager.of(context).successColor
+                    : ThemeManager.of(context).neutral500,
               ),
             ),
           ),
@@ -680,13 +735,16 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
               children: [
                 Text(
                   'Category Status',
-                  style: ThemeManager.of(context).textTheme.titleSmall?.copyWith(
-                        color: ThemeManager.of(context).textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style:
+                      ThemeManager.of(context).textTheme.titleSmall?.copyWith(
+                            color: ThemeManager.of(context).textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                 ),
                 Text(
-                  _isActive ? 'Active - Visible to users' : 'Inactive - Hidden from users',
+                  _isActive
+                      ? 'Active - Visible to users'
+                      : 'Inactive - Hidden from users',
                   style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
                         color: ThemeManager.of(context).textSecondary,
                       ),
@@ -705,7 +763,9 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             activeColor: ThemeManager.of(context).primaryColor,
             trackColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
-                return ThemeManager.of(context).primaryColor.withValues(alpha: 128);
+                return ThemeManager.of(context)
+                    .primaryColor
+                    .withValues(alpha: 128);
               }
               return ThemeManager.of(context).borderSecondary;
             }),
@@ -753,20 +813,24 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               hintText: 'Display order (0-999)',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -865,7 +929,9 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                 boxShadow: [
                   ...ThemeManager.of(context).primaryShadow,
                   BoxShadow(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 77),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -880,19 +946,22 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                            ThemeManager.of(context).getContrastingColor(
+                                ThemeManager.of(context).primaryColor),
                           ),
                         ),
                       )
                     : Icon(
                         Icons.add_rounded,
                         size: 20.w,
-                        color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                        color: ThemeManager.of(context).getContrastingColor(
+                            ThemeManager.of(context).primaryColor),
                       ),
                 label: Text(
                   _isLoading ? 'Creating...' : 'Create Category',
                   style: TextStyle(
-                    color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                    color: ThemeManager.of(context).getContrastingColor(
+                        ThemeManager.of(context).primaryColor),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -917,7 +986,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
   Future<void> _showIconPicker() async {
     HapticFeedback.lightImpact();
 
-    debugPrint('🎨 CreateCategoryModal: Showing CategoryIconPicker with theme integration');
+    debugPrint(
+        '🎨 CreateCategoryModal: Showing CategoryIconPicker with theme integration');
 
     final selectedIcon = await CategoryIconPicker.showIconPickerBottomSheet(
       context: context,
@@ -976,7 +1046,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
             SnackBar(
               content: Text(
                 'Category "${_nameController.text}" created successfully!',
-                style: TextStyle(color: ThemeManager.of(context).colorScheme.onPrimary),
+                style: TextStyle(
+                    color: ThemeManager.of(context).colorScheme.onPrimary),
               ),
               backgroundColor: ThemeManager.of(context).colorScheme.primary,
               behavior: SnackBarBehavior.floating,
@@ -1002,7 +1073,8 @@ class _CreateCategoryModalWidgetState extends ConsumerState<CreateCategoryModalW
           SnackBar(
             content: Text(
               'Failed to create category: $e',
-              style: TextStyle(color: ThemeManager.of(context).colorScheme.onError),
+              style: TextStyle(
+                  color: ThemeManager.of(context).colorScheme.onError),
             ),
             backgroundColor: ThemeManager.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:prbal/models/business/service_models.dart';
 import 'package:prbal/services/service_management_service.dart';
 import 'package:prbal/services/api_service.dart';
 import 'package:prbal/widgets/admin/category/category_icon_picker.dart';
@@ -36,10 +37,12 @@ class EditCategoryModalWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<EditCategoryModalWidget> createState() => _EditCategoryModalWidgetState();
+  ConsumerState<EditCategoryModalWidget> createState() =>
+      _EditCategoryModalWidgetState();
 }
 
-class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidget>
+class _EditCategoryModalWidgetState
+    extends ConsumerState<EditCategoryModalWidget>
     with TickerProviderStateMixin, ThemeAwareMixin {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
@@ -72,13 +75,17 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
     debugPrint('✏️ EditCategoryModal: =============================');
     debugPrint('✏️ EditCategoryModal: ENHANCED THEME INTEGRATION V2.0');
     debugPrint('✏️ EditCategoryModal: =============================');
-    debugPrint('✏️ EditCategoryModal: Using ThemeManager for centralized theme management');
-    debugPrint('✏️ EditCategoryModal: Initializing for category: ${widget.category.name}');
+    debugPrint(
+        '✏️ EditCategoryModal: Using ThemeManager for centralized theme management');
+    debugPrint(
+        '✏️ EditCategoryModal: Initializing for category: ${widget.category.name}');
 
     // Pre-populate form with existing category data
     _nameController = TextEditingController(text: widget.category.name);
-    _descriptionController = TextEditingController(text: widget.category.description);
-    _sortOrderController = TextEditingController(text: widget.category.sortOrder.toString());
+    _descriptionController =
+        TextEditingController(text: widget.category.description);
+    _sortOrderController =
+        TextEditingController(text: widget.category.sortOrder.toString());
     _isActive = widget.category.isActive;
     _sortOrder = widget.category.sortOrder;
 
@@ -130,12 +137,18 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
     });
 
     debugPrint('✏️ EditCategoryModal: → Category: "${widget.category.name}"');
-    debugPrint('✏️ EditCategoryModal: → Description: "${widget.category.description}"');
-    debugPrint('✏️ EditCategoryModal: → Sort Order: ${widget.category.sortOrder}');
-    debugPrint('✏️ EditCategoryModal: → Is Active: ${widget.category.isActive}');
-    debugPrint('✏️ EditCategoryModal: → Original Icon: ${_originalIcon ?? 'none'}');
-    debugPrint('✏️ EditCategoryModal: → Selected Icon: ${_selectedIcon ?? 'none'}');
-    debugPrint('✏️ EditCategoryModal: → Enhanced features initialized successfully');
+    debugPrint(
+        '✏️ EditCategoryModal: → Description: "${widget.category.description}"');
+    debugPrint(
+        '✏️ EditCategoryModal: → Sort Order: ${widget.category.sortOrder}');
+    debugPrint(
+        '✏️ EditCategoryModal: → Is Active: ${widget.category.isActive}');
+    debugPrint(
+        '✏️ EditCategoryModal: → Original Icon: ${_originalIcon ?? 'none'}');
+    debugPrint(
+        '✏️ EditCategoryModal: → Selected Icon: ${_selectedIcon ?? 'none'}');
+    debugPrint(
+        '✏️ EditCategoryModal: → Enhanced features initialized successfully');
   }
 
   /// Initialize icon analytics and validation system
@@ -146,18 +159,23 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
 
     if (_selectedIcon != null) {
       _iconValidation = CategoryUtils.validateIconName(_selectedIcon!);
-      debugPrint('📊 EditCategoryModal: → Icon validation: ${_iconValidation!['isValid']}');
+      debugPrint(
+          '📊 EditCategoryModal: → Icon validation: ${_iconValidation!['isValid']}');
     }
 
     // Generate icon recommendations based on category name
     if (widget.category.name.isNotEmpty) {
-      CategoryUtils.generateIconRecommendations(widget.category.name).then((recommendations) {
-        debugPrint('🤖 EditCategoryModal: → Generated ${recommendations['smartSuggestionsCount']} recommendations');
-        debugPrint('🤖 EditCategoryModal: → Confidence: ${recommendations['confidence']}%');
+      CategoryUtils.generateIconRecommendations(widget.category.name)
+          .then((recommendations) {
+        debugPrint(
+            '🤖 EditCategoryModal: → Generated ${recommendations['smartSuggestionsCount']} recommendations');
+        debugPrint(
+            '🤖 EditCategoryModal: → Confidence: ${recommendations['confidence']}%');
       });
     }
 
-    debugPrint('📊 EditCategoryModal: → Analytics initialized with ${_iconAnalytics!['totalIcons']} total icons');
+    debugPrint(
+        '📊 EditCategoryModal: → Analytics initialized with ${_iconAnalytics!['totalIcons']} total icons');
   }
 
   @override
@@ -168,9 +186,12 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
     debugPrint('🎨 EditCategoryModal: BUILDING WITH THEME MANAGER');
     debugPrint('🎨 EditCategoryModal: =============================');
     // debugPrint('🎨 EditCategoryModal: Theme brightness: ${theme.brightness.name}');
-    debugPrint('🎨 EditCategoryModal: Primary color: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🎨 EditCategoryModal: Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🎨 EditCategoryModal: Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '🎨 EditCategoryModal: Primary color: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🎨 EditCategoryModal: Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🎨 EditCategoryModal: Surface: ${ThemeManager.of(context).surfaceColor}');
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -243,7 +264,9 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
               boxShadow: [
                 ...ThemeManager.of(context).primaryShadow,
                 BoxShadow(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 51),
                   blurRadius: 8.r,
                   offset: Offset(0, 2.h),
                 ),
@@ -252,7 +275,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             child: Icon(
               Icons.edit_rounded,
               size: 24.w,
-              color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+              color: ThemeManager.of(context)
+                  .getContrastingColor(ThemeManager.of(context).primaryColor),
             ),
           ),
 
@@ -265,7 +289,10 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
               children: [
                 Text(
                   'Edit Category',
-                  style: ThemeManager.of(context).textTheme.headlineSmall?.copyWith(
+                  style: ThemeManager.of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(
                         color: ThemeManager.of(context).textPrimary,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -274,10 +301,11 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 SizedBox(height: 2.h),
                 Text(
                   'Update category information',
-                  style: ThemeManager.of(context).textTheme.bodyMedium?.copyWith(
-                        color: ThemeManager.of(context).textSecondary,
-                        letterSpacing: 0.3,
-                      ),
+                  style:
+                      ThemeManager.of(context).textTheme.bodyMedium?.copyWith(
+                            color: ThemeManager.of(context).textSecondary,
+                            letterSpacing: 0.3,
+                          ),
                 ),
               ],
             ),
@@ -393,24 +421,29 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             controller: _nameController,
             decoration: InputDecoration(
               hintText: 'Enter category name',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).errorColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).errorColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -474,20 +507,24 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             maxLines: 3,
             decoration: InputDecoration(
               hintText: 'Enter category description (optional)',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -521,7 +558,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
               child: Icon(
                 Icons.palette_rounded,
                 size: 16.sp,
-                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                color: ThemeManager.of(context)
+                    .getContrastingColor(ThemeManager.of(context).primaryColor),
               ),
             ),
             SizedBox(width: 8.w),
@@ -544,7 +582,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
-                  color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent1),
+                  color: ThemeManager.of(context)
+                      .getContrastingColor(ThemeManager.of(context).accent1),
                 ),
               ),
             ),
@@ -593,16 +632,21 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 boxShadow: [
                   ...ThemeManager.of(context).primaryShadow,
                   BoxShadow(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 51),
                     blurRadius: 8.r,
                     offset: Offset(0, 2.h),
                   ),
                 ],
               ),
               child: Icon(
-                _selectedIcon != null ? CategoryUtils.getIconFromString(_selectedIcon!) : Icons.category_rounded,
+                _selectedIcon != null
+                    ? CategoryUtils.getIconFromString(_selectedIcon!)
+                    : Icons.category_rounded,
                 size: 32.w,
-                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                color: ThemeManager.of(context)
+                    .getContrastingColor(ThemeManager.of(context).primaryColor),
               ),
             ),
 
@@ -615,11 +659,14 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _selectedIcon != null ? 'Selected Icon' : 'No Icon Selected',
-                    style: ThemeManager.of(context).textTheme.titleSmall?.copyWith(
-                          color: ThemeManager.of(context).textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    _selectedIcon != null
+                        ? 'Selected Icon'
+                        : 'No Icon Selected',
+                    style:
+                        ThemeManager.of(context).textTheme.titleSmall?.copyWith(
+                              color: ThemeManager.of(context).textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -627,7 +674,10 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                     SizedBox(height: 4.h),
                     Text(
                       _selectedIcon!,
-                      style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
+                      style: ThemeManager.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
                             color: ThemeManager.of(context).textSecondary,
                           ),
                       maxLines: 1,
@@ -637,10 +687,11 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                   SizedBox(height: 6.h),
                   Text(
                     'Tap to ${_selectedIcon != null ? 'change' : 'select'} icon',
-                    style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
-                          color: ThemeManager.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    style:
+                        ThemeManager.of(context).textTheme.bodySmall?.copyWith(
+                              color: ThemeManager.of(context).primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -657,20 +708,26 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 gradient: ThemeManager.of(context).conditionalGradient(
                   lightGradient: LinearGradient(
                     colors: [
-                      ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                      ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 26),
                       ThemeManager.of(context).accent1.withValues(alpha: 13),
                     ],
                   ),
                   darkGradient: LinearGradient(
                     colors: [
-                      ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                      ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 51),
                       ThemeManager.of(context).accent1.withValues(alpha: 26),
                     ],
                   ),
                 ),
                 borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 77),
                   width: 1,
                 ),
               ),
@@ -708,28 +765,42 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                   ? ThemeManager.of(context).successGradient
                   : ThemeManager.of(context).conditionalGradient(
                       lightGradient: LinearGradient(
-                        colors: [ThemeManager.of(context).neutral300, ThemeManager.of(context).neutral400],
+                        colors: [
+                          ThemeManager.of(context).neutral300,
+                          ThemeManager.of(context).neutral400
+                        ],
                       ),
                       darkGradient: LinearGradient(
-                        colors: [ThemeManager.of(context).neutral600, ThemeManager.of(context).neutral700],
+                        colors: [
+                          ThemeManager.of(context).neutral600,
+                          ThemeManager.of(context).neutral700
+                        ],
                       ),
                     ),
               borderRadius: BorderRadius.circular(8.r),
               boxShadow: [
                 BoxShadow(
                   color: _isActive
-                      ? ThemeManager.of(context).successColor.withValues(alpha: 51)
-                      : ThemeManager.of(context).neutral500.withValues(alpha: 26),
+                      ? ThemeManager.of(context)
+                          .successColor
+                          .withValues(alpha: 51)
+                      : ThemeManager.of(context)
+                          .neutral500
+                          .withValues(alpha: 26),
                   blurRadius: 4,
                   offset: const Offset(0, 1),
                 ),
               ],
             ),
             child: Icon(
-              _isActive ? Icons.check_circle_rounded : Icons.pause_circle_rounded,
+              _isActive
+                  ? Icons.check_circle_rounded
+                  : Icons.pause_circle_rounded,
               size: 20.w,
               color: ThemeManager.of(context).getContrastingColor(
-                _isActive ? ThemeManager.of(context).successColor : ThemeManager.of(context).neutral500,
+                _isActive
+                    ? ThemeManager.of(context).successColor
+                    : ThemeManager.of(context).neutral500,
               ),
             ),
           ),
@@ -740,13 +811,16 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
               children: [
                 Text(
                   'Category Status',
-                  style: ThemeManager.of(context).textTheme.titleSmall?.copyWith(
-                        color: ThemeManager.of(context).textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style:
+                      ThemeManager.of(context).textTheme.titleSmall?.copyWith(
+                            color: ThemeManager.of(context).textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                 ),
                 Text(
-                  _isActive ? 'Active - Visible to users' : 'Inactive - Hidden from users',
+                  _isActive
+                      ? 'Active - Visible to users'
+                      : 'Inactive - Hidden from users',
                   style: ThemeManager.of(context).textTheme.bodySmall?.copyWith(
                         color: ThemeManager.of(context).textSecondary,
                       ),
@@ -765,7 +839,9 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             activeColor: ThemeManager.of(context).primaryColor,
             trackColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
-                return ThemeManager.of(context).primaryColor.withValues(alpha: 128);
+                return ThemeManager.of(context)
+                    .primaryColor
+                    .withValues(alpha: 128);
               }
               return ThemeManager.of(context).borderSecondary;
             }),
@@ -813,20 +889,24 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               hintText: 'Display order (0-999)',
-              hintStyle: TextStyle(color: ThemeManager.of(context).textSecondary),
+              hintStyle:
+                  TextStyle(color: ThemeManager.of(context).textSecondary),
               filled: true,
               fillColor: Colors.transparent,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).borderColor),
+                borderSide:
+                    BorderSide(color: ThemeManager.of(context).borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(color: ThemeManager.of(context).primaryColor, width: 2),
+                borderSide: BorderSide(
+                    color: ThemeManager.of(context).primaryColor, width: 2),
               ),
               prefixIcon: Container(
                 padding: EdgeInsets.all(12.w),
@@ -925,7 +1005,9 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                 boxShadow: [
                   ...ThemeManager.of(context).primaryShadow,
                   BoxShadow(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 77),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -940,19 +1022,22 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                            ThemeManager.of(context).getContrastingColor(
+                                ThemeManager.of(context).primaryColor),
                           ),
                         ),
                       )
                     : Icon(
                         Icons.save_rounded,
                         size: 20.w,
-                        color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                        color: ThemeManager.of(context).getContrastingColor(
+                            ThemeManager.of(context).primaryColor),
                       ),
                 label: Text(
                   _isLoading ? 'Updating...' : 'Update Category',
                   style: TextStyle(
-                    color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+                    color: ThemeManager.of(context).getContrastingColor(
+                        ThemeManager.of(context).primaryColor),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -977,7 +1062,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
   Future<void> _showIconPicker() async {
     HapticFeedback.lightImpact();
 
-    debugPrint('🎨 EditCategoryModal: Showing CategoryIconPicker with theme integration');
+    debugPrint(
+        '🎨 EditCategoryModal: Showing CategoryIconPicker with theme integration');
 
     final selectedIcon = await CategoryIconPicker.showIconPickerBottomSheet(
       context: context,
@@ -1015,7 +1101,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
 
       // final serviceManagementService = ref.read(serviceManagementServiceProvider);
 
-      debugPrint('✏️ EditCategoryModal: Updating category ${widget.category.id}');
+      debugPrint(
+          '✏️ EditCategoryModal: Updating category ${widget.category.id}');
       debugPrint(
           '✏️ EditCategoryModal: Updated data - name: ${_nameController.text.trim()}, description: ${_descriptionController.text.trim()}, icon: $_selectedIcon, active: $_isActive, sortOrder: $_sortOrder');
 
@@ -1038,7 +1125,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
             SnackBar(
               content: Text(
                 'Category "${_nameController.text}" updated successfully!',
-                style: TextStyle(color: ThemeManager.of(context).colorScheme.onPrimary),
+                style: TextStyle(
+                    color: ThemeManager.of(context).colorScheme.onPrimary),
               ),
               backgroundColor: ThemeManager.of(context).colorScheme.primary,
               behavior: SnackBarBehavior.floating,
@@ -1064,7 +1152,8 @@ class _EditCategoryModalWidgetState extends ConsumerState<EditCategoryModalWidge
           SnackBar(
             content: Text(
               'Failed to update category: $e',
-              style: TextStyle(color: ThemeManager.of(context).colorScheme.onError),
+              style: TextStyle(
+                  color: ThemeManager.of(context).colorScheme.onError),
             ),
             backgroundColor: ThemeManager.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,

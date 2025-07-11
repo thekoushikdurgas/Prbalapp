@@ -11,7 +11,8 @@ class TakerOrdersScreen extends ConsumerStatefulWidget {
   ConsumerState<TakerOrdersScreen> createState() => _TakerOrdersScreenState();
 }
 
-class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with TickerProviderStateMixin {
+class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -79,7 +80,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       labelColor: Colors.white,
-                      unselectedLabelColor: ThemeManager.of(context).textTertiary,
+                      unselectedLabelColor:
+                          ThemeManager.of(context).textTertiary,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -174,10 +176,30 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
     int index,
   ) {
     final services = [
-      {'title': 'House Cleaning', 'provider': 'John Doe', 'time': '10:00 AM', 'date': 'Today'},
-      {'title': 'Plumbing Repair', 'provider': 'Jane Smith', 'time': '2:00 PM', 'date': 'Tomorrow'},
-      {'title': 'Electrical Work', 'provider': 'Mike Johnson', 'time': '11:00 AM', 'date': 'Dec 15'},
-      {'title': 'Gardening', 'provider': 'Sarah Wilson', 'time': '9:00 AM', 'date': 'Dec 16'},
+      {
+        'title': 'House Cleaning',
+        'provider': 'John Doe',
+        'time': '10:00 AM',
+        'date': 'Today'
+      },
+      {
+        'title': 'Plumbing Repair',
+        'provider': 'Jane Smith',
+        'time': '2:00 PM',
+        'date': 'Tomorrow'
+      },
+      {
+        'title': 'Electrical Work',
+        'provider': 'Mike Johnson',
+        'time': '11:00 AM',
+        'date': 'Dec 15'
+      },
+      {
+        'title': 'Gardening',
+        'provider': 'Sarah Wilson',
+        'time': '9:00 AM',
+        'date': 'Dec 16'
+      },
     ];
 
     final service = services[index];
@@ -193,7 +215,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -229,7 +253,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).warningColor.withValues(alpha: 0.1),
+                  color: ThemeManager.of(context)
+                      .warningColor
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -293,7 +319,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeManager.of(context).surfaceColor,
                     foregroundColor: ThemeManager.of(context).textPrimary,
-                    side: BorderSide(color: ThemeManager.of(context).borderColor),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).borderColor),
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
@@ -331,8 +358,18 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
     int index,
   ) {
     final services = [
-      {'title': 'Carpet Cleaning', 'provider': 'Alex Brown', 'status': 'In Progress', 'progress': 0.6},
-      {'title': 'AC Repair', 'provider': 'Emma Davis', 'status': 'Starting Soon', 'progress': 0.2},
+      {
+        'title': 'Carpet Cleaning',
+        'provider': 'Alex Brown',
+        'status': 'In Progress',
+        'progress': 0.6
+      },
+      {
+        'title': 'AC Repair',
+        'provider': 'Emma Davis',
+        'status': 'Starting Soon',
+        'progress': 0.2
+      },
     ];
 
     final service = services[index];
@@ -348,7 +385,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
+                  color: ThemeManager.of(context)
+                      .successColor
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -384,7 +423,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
+                  color: ThemeManager.of(context)
+                      .successColor
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -416,7 +457,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               LinearProgressIndicator(
                 value: (service['progress'] as num).toDouble(),
                 backgroundColor: ThemeManager.of(context).borderColor,
-                valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).successColor),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    ThemeManager.of(context).successColor),
                 minHeight: 8.h,
               ),
               SizedBox(height: 4.h),
@@ -464,7 +506,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeManager.of(context).surfaceColor,
                     foregroundColor: ThemeManager.of(context).textPrimary,
-                    side: BorderSide(color: ThemeManager.of(context).borderColor),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).borderColor),
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
@@ -483,16 +526,76 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
     int index,
   ) {
     final services = [
-      {'title': 'Home Painting', 'provider': 'Lisa Johnson', 'date': 'Dec 10', 'rating': '4.8', 'amount': '\$180'},
-      {'title': 'Furniture Assembly', 'provider': 'Tom Wilson', 'date': 'Dec 8', 'rating': '4.9', 'amount': '\$120'},
-      {'title': 'Appliance Repair', 'provider': 'Maria Garcia', 'date': 'Dec 5', 'rating': '4.7', 'amount': '\$95'},
-      {'title': 'Deep Cleaning', 'provider': 'Chris Lee', 'date': 'Dec 3', 'rating': '5.0', 'amount': '\$150'},
-      {'title': 'Plumbing', 'provider': 'David Miller', 'date': 'Nov 28', 'rating': '4.6', 'amount': '\$85'},
-      {'title': 'Electrical Work', 'provider': 'Sarah Taylor', 'date': 'Nov 25', 'rating': '4.8', 'amount': '\$200'},
-      {'title': 'Gardening', 'provider': 'Jake Brown', 'date': 'Nov 20', 'rating': '4.9', 'amount': '\$70'},
-      {'title': 'Carpet Cleaning', 'provider': 'Emma Davis', 'date': 'Nov 15', 'rating': '4.7', 'amount': '\$110'},
-      {'title': 'AC Service', 'provider': 'Mark Johnson', 'date': 'Nov 10', 'rating': '4.5', 'amount': '\$130'},
-      {'title': 'House Cleaning', 'provider': 'Anna Wilson', 'date': 'Nov 5', 'rating': '5.0', 'amount': '\$90'},
+      {
+        'title': 'Home Painting',
+        'provider': 'Lisa Johnson',
+        'date': 'Dec 10',
+        'rating': '4.8',
+        'amount': '\$180'
+      },
+      {
+        'title': 'Furniture Assembly',
+        'provider': 'Tom Wilson',
+        'date': 'Dec 8',
+        'rating': '4.9',
+        'amount': '\$120'
+      },
+      {
+        'title': 'Appliance Repair',
+        'provider': 'Maria Garcia',
+        'date': 'Dec 5',
+        'rating': '4.7',
+        'amount': '\$95'
+      },
+      {
+        'title': 'Deep Cleaning',
+        'provider': 'Chris Lee',
+        'date': 'Dec 3',
+        'rating': '5.0',
+        'amount': '\$150'
+      },
+      {
+        'title': 'Plumbing',
+        'provider': 'David Miller',
+        'date': 'Nov 28',
+        'rating': '4.6',
+        'amount': '\$85'
+      },
+      {
+        'title': 'Electrical Work',
+        'provider': 'Sarah Taylor',
+        'date': 'Nov 25',
+        'rating': '4.8',
+        'amount': '\$200'
+      },
+      {
+        'title': 'Gardening',
+        'provider': 'Jake Brown',
+        'date': 'Nov 20',
+        'rating': '4.9',
+        'amount': '\$70'
+      },
+      {
+        'title': 'Carpet Cleaning',
+        'provider': 'Emma Davis',
+        'date': 'Nov 15',
+        'rating': '4.7',
+        'amount': '\$110'
+      },
+      {
+        'title': 'AC Service',
+        'provider': 'Mark Johnson',
+        'date': 'Nov 10',
+        'rating': '4.5',
+        'amount': '\$130'
+      },
+      {
+        'title': 'House Cleaning',
+        'provider': 'Anna Wilson',
+        'date': 'Nov 5',
+        'rating': '5.0',
+        'amount': '\$90'
+      },
     ];
 
     final service = services[index];
@@ -508,7 +611,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).infoColor.withValues(alpha: 0.1),
+                  color:
+                      ThemeManager.of(context).infoColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -587,7 +691,9 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
+                  color: ThemeManager.of(context)
+                      .successColor
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -636,7 +742,8 @@ class _TakerOrdersScreenState extends ConsumerState<TakerOrdersScreen> with Tick
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ThemeManager.of(context).surfaceColor,
                     foregroundColor: ThemeManager.of(context).textPrimary,
-                    side: BorderSide(color: ThemeManager.of(context).borderColor),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).borderColor),
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),

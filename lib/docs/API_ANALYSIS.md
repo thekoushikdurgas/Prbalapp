@@ -21,9 +21,10 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ```
 
 ### **🔐 Authentication & Permissions**
+
 - **JWT Bearer Token** authentication
 - **Role-based access control**: Admin, Provider, Customer
-- **Permission levels**: 
+- **Permission levels**:
   - Read operations: Public/Authenticated
   - Write operations: Role-specific restrictions
 
@@ -44,12 +45,14 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 | `GET` | `/categories/statistics/` | Admin Only | Category statistics |
 
 **🔍 Query Parameters:**
+
 - `active_only`: Filter active categories
 - `search`: Search in name, description
 - `ordering`: Sort by name, sort_order, created_at
 - `page`, `page_size`: Pagination
 
 **📊 Response Features:**
+
 - Pagination support
 - Impact analysis on deletion
 - Sort order management
@@ -67,6 +70,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 | `DELETE` | `/subcategories/{id}/` | Admin Only | Delete subcategory |
 
 **🔍 Query Parameters:**
+
 - `category`: Filter by parent category ID
 - `active_only`: Filter active subcategories
 - `search`: Search in name, description, category__name
@@ -95,6 +99,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 | `POST` | `/services/{id}/fulfill_request/` | Provider Only | Fulfill service request |
 
 **🔍 Advanced Query Parameters:**
+
 - **Location**: `latitude`, `longitude`, `radius`, `max_distance`
 - **Filtering**: `category`, `subcategories`, `status`, `is_featured`, `provider`
 - **Pricing**: `currency`, `budget_range`, `min_budget`
@@ -103,6 +108,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 - **Business**: `trending_timeframe`, `match_score_threshold`
 
 **📊 Service Features:**
+
 - **Geolocation**: Distance-based search with radius filtering
 - **Pricing**: Hourly rates, emergency rates, package deals
 - **Availability**: Schedule management, emergency availability
@@ -130,6 +136,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 | `POST` | `/requests/{id}/cancel/` | Owner/Admin | Cancel request |
 
 **🔍 Request Query Parameters:**
+
 - **Status**: `open`, `in_progress`, `fulfilled`, `cancelled`, `expired`
 - **Priority**: `low`, `medium`, `high`, `urgent`
 - **Budget**: `budget_min`, `budget_max`, `currency`
@@ -137,6 +144,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 - **Timing**: `requested_date_time`, `expires_at`
 
 **🤖 AI-Powered Features:**
+
 - **Provider Matching**: Algorithm-based provider recommendations
 - **Urgency Analysis**: Priority-based sorting and matching
 - **Budget Optimization**: Price-compatible service suggestions
@@ -147,6 +155,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ## 🏗️ **Data Models**
 
 ### **Category Model**
+
 ```json
 {
   "id": "uuid",
@@ -162,6 +171,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ```
 
 ### **Service Model**
+
 ```json
 {
   "id": "uuid",
@@ -196,6 +206,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ```
 
 ### **Service Request Model**
+
 ```json
 {
   "id": "uuid",
@@ -223,6 +234,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ## 🚀 **Implementation Recommendations**
 
 ### **Flutter Service Architecture**
+
 1. **ServiceManagementService**: Main service for all API operations
 2. **Caching Strategy**: Categories (cache), Services (selective), Requests (no cache)
 3. **Real-time Updates**: Stream controllers for live data synchronization
@@ -230,6 +242,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 5. **Performance**: Pagination, lazy loading, and efficient memory management
 
 ### **Key Implementation Features**
+
 - **Geolocation Integration**: Flutter location services with distance calculations
 - **AI-Powered Matching**: Implement recommendation algorithms
 - **Real-time Updates**: WebSocket or polling for live request updates
@@ -237,6 +250,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 - **Performance Monitoring**: Track API response times and user interactions
 
 ### **Security Considerations**
+
 - **Token Management**: Automatic JWT refresh with secure storage
 - **Role-based UI**: Dynamic interface based on user permissions
 - **Data Validation**: Client-side validation matching API requirements
@@ -247,6 +261,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 ## 📊 **Business Intelligence Features**
 
 ### **Analytics Capabilities**
+
 - **Service Performance**: Views, bookings, revenue tracking
 - **Provider Analytics**: Rating trends, request fulfillment rates
 - **Customer Insights**: Request patterns, budget analysis
@@ -254,6 +269,7 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 - **Geographic Analysis**: Service density, coverage maps
 
 ### **Admin Dashboard Metrics**
+
 - **Service Statistics**: Total services, status distribution
 - **Request Analytics**: Open requests, fulfillment rates
 - **Provider Performance**: Top providers, verification status
@@ -262,4 +278,4 @@ The Prbal Services API follows a standardized RESTful architecture with consiste
 
 ---
 
-*This analysis provides the foundation for implementing a comprehensive Flutter service layer that fully leverages the Prbal Services API capabilities.* 
+*This analysis provides the foundation for implementing a comprehensive Flutter service layer that fully leverages the Prbal Services API capabilities.*

@@ -3,37 +3,55 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prbal/services/api_service.dart';
+import 'package:prbal/models/auth/app_user.dart';
+import 'package:prbal/models/auth/user_type.dart';
+import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/services/app_services.dart';
 import 'package:prbal/services/hive_service.dart';
-//
-import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// PIN Verification Screen for handling user authentication
 ///
-/// This screen serves dual purposes:
-/// 1. For NEW USERS: PIN creation during registration process
-/// 2. For EXISTING USERS: PIN verification during login process
+/// **🔐 PIN VERIFICATION OVERVIEW**
+/// This screen serves dual purposes with complete service layer integration:
+/// 1. **NEW USERS:** PIN creation during registration process
+/// 2. **EXISTING USERS:** PIN verification during login process
 ///
-/// Features:
-/// - 4-digit PIN input with visual feedback
-/// - Real-time validation and error handling
-/// - Animated UI elements for better UX
-/// - Comprehensive debugging and error logging
-/// - Theme-aware design with gradients and shadows
-/// - Automatic navigation based on user type (Admin/Provider/Customer)
+/// **🎯 CORE FEATURES:**
+/// - 4-digit PIN input with real-time validation and visual feedback
+/// - Comprehensive error handling with user-friendly messages
+/// - Animated UI elements for professional UX (shake, pulse effects)
+/// - Complete integration with UserService for authentication
+/// - Proper AuthTokens handling via HiveService
+/// - UserType-based navigation routing
+/// - AppUser data management throughout the flow
 ///
-/// Data Flow:
-/// 1. User enters 4-digit PIN
-/// 2. App validates PIN format (4 digits)
-/// 3. For new users: Call pinRegister API
-/// 4. For existing users: Call pinLogin API
-/// 5. Extract authentication tokens from response
-/// 6. Fetch complete user profile
-/// 7. Save user data to local storage (Hive)
-/// 8. Navigate to appropriate dashboard
+/// **🔄 AUTHENTICATION FLOW:**
+/// 1. User enters 4-digit PIN → Real-time validation
+/// 2. App validates PIN format → Error handling if invalid
+/// 3. **For NEW USERS:** Call UserService.pinRegister() with AppUser data
+/// 4. **For EXISTING USERS:** Call UserService.pinLogin() with credentials
+/// 5. Extract AuthTokens from API response → Save via HiveService
+/// 6. Fetch complete user profile via UserService.getCurrentUserProfile()
+/// 7. Save AppUser data via HiveService.saveUserData()
+/// 8. Navigate to appropriate dashboard based on UserType
+///
+/// **🏗️ SERVICE LAYER INTEGRATION:**
+/// - **UserService:** All API calls (pinRegister, pinLogin, getCurrentUserProfile)
+/// - **HiveService:** Local storage (saveUserData, saveAuthTokens, setLoggedIn)
+/// - **AppUser:** Complete user data model throughout the flow
+/// - **AuthTokens:** Proper token management (access + refresh tokens)
+/// - **UserType:** Type-safe user role management and navigation
+/// - **ThemeManager:** Consistent UI theming and styling
+///
+/// **🐛 COMPREHENSIVE DEBUG SYSTEM:**
+/// - Detailed debug logging throughout all authentication steps
+/// - API request/response logging with complete data structures
+/// - Local storage operations tracking with before/after states
+/// - Error handling with complete stack traces and recovery steps
+/// - Animation state tracking and performance monitoring
 class PinVerificationScreen extends ConsumerStatefulWidget {
   /// Phone number for verification (required for API calls)
   final String phoneNumber;
@@ -41,16 +59,24 @@ class PinVerificationScreen extends ConsumerStatefulWidget {
   /// Flag to determine if this is a new user registration or existing user login
   final bool isNewUser;
 
-  /// User data object containing profile information
+  /// Complete user data object containing all profile information
+  /// Uses AppUser model for type safety and proper data structure
   final AppUser userData;
 
-  const PinVerificationScreen({super.key, required this.phoneNumber, required this.userData, required this.isNewUser});
+  const PinVerificationScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.userData,
+    required this.isNewUser,
+  });
 
   @override
-  ConsumerState<PinVerificationScreen> createState() => _PinVerificationScreenState();
+  ConsumerState<PinVerificationScreen> createState() =>
+      _PinVerificationScreenState();
 }
 
-class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> with TickerProviderStateMixin {
+class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen>
+    with TickerProviderStateMixin {
   // ================ STATE VARIABLES ================
 
   /// Text controllers for each PIN digit input field (4 controllers total)
@@ -87,24 +113,32 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     debugPrint('🔐 PinVerificationScreen: ====== SCREEN INITIALIZATION ======');
     debugPrint('🔐 PinVerificationScreen: Phone Number: ${widget.phoneNumber}');
     debugPrint('🔐 PinVerificationScreen: Is New User: ${widget.isNewUser}');
-    debugPrint('🔐 PinVerificationScreen: User Type: ${widget.userData.userType}');
+    debugPrint(
+        '🔐 PinVerificationScreen: UserType: ${widget.userData.userType}');
     debugPrint('🔐 PinVerificationScreen: User ID: ${widget.userData.id}');
-    debugPrint('🔐 PinVerificationScreen: Username: ${widget.userData.username}');
-    debugPrint('🔐 PinVerificationScreen: Display Name: ${widget.userData.firstName} ${widget.userData.lastName}');
+    debugPrint(
+        '🔐 PinVerificationScreen: Username: ${widget.userData.username}');
+    debugPrint(
+        '🔐 PinVerificationScreen: Display Name: ${widget.userData.firstName} ${widget.userData.lastName}');
     debugPrint('🔐 PinVerificationScreen: Email: ${widget.userData.email}');
+    debugPrint(
+        '🔐 PinVerificationScreen: Service Layer Integration: UserService + HiveService + AuthTokens');
 
     // Initialize controllers and animations
     _initializeControllers();
     _setupAnimations();
 
-    debugPrint('🔐 PinVerificationScreen: Initialization completed successfully');
+    debugPrint(
+        '🔐 PinVerificationScreen: Initialization completed successfully');
   }
 
   /// Initialize PIN input controllers and focus nodes
   /// Creates 4 text controllers and focus nodes for each PIN digit
   void _initializeControllers() {
-    debugPrint('🔐 PinVerificationScreen: ====== CONTROLLERS INITIALIZATION ======');
-    debugPrint('🔐 PinVerificationScreen: Creating 4 PIN input controllers and focus nodes');
+    debugPrint(
+        '🔐 PinVerificationScreen: ====== CONTROLLERS INITIALIZATION ======');
+    debugPrint(
+        '🔐 PinVerificationScreen: Creating 4 PIN input controllers and focus nodes');
 
     for (int i = 0; i < 4; i++) {
       _controllers.add(TextEditingController());
@@ -112,9 +146,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
       debugPrint('🔐 PinVerificationScreen: Created controller ${i + 1}/4');
     }
 
-    debugPrint('🔐 PinVerificationScreen: All controllers initialized successfully');
-    debugPrint('🔐 PinVerificationScreen: Total controllers: ${_controllers.length}');
-    debugPrint('🔐 PinVerificationScreen: Total focus nodes: ${_focusNodes.length}');
+    debugPrint(
+        '🔐 PinVerificationScreen: All controllers initialized successfully');
+    debugPrint(
+        '🔐 PinVerificationScreen: Total controllers: ${_controllers.length}');
+    debugPrint(
+        '🔐 PinVerificationScreen: Total focus nodes: ${_focusNodes.length}');
   }
 
   /// Setup animation controllers for visual feedback
@@ -124,47 +161,60 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     debugPrint('🔐 PinVerificationScreen: ====== ANIMATIONS SETUP ======');
 
     // ================ SHAKE ANIMATION SETUP ================
-    debugPrint('🔐 PinVerificationScreen: Setting up shake animation for error feedback');
-    _shakeController = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    debugPrint(
+        '🔐 PinVerificationScreen: Setting up shake animation for error feedback');
+    _shakeController = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
 
     _shakeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
+    ).animate(
+        CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
 
-    debugPrint('🔐 PinVerificationScreen: Shake animation configured (500ms duration, elastic curve)');
+    debugPrint(
+        '🔐 PinVerificationScreen: Shake animation configured (500ms duration, elastic curve)');
 
     // ================ PULSE ANIMATION SETUP ================
-    debugPrint('🔐 PinVerificationScreen: Setting up pulse animation for lock icon');
-    _pulseController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+    debugPrint(
+        '🔐 PinVerificationScreen: Setting up pulse animation for lock icon');
+    _pulseController = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
       end: 1.1,
-    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
+    ).animate(
+        CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
 
     // Start continuous pulse animation
     _pulseController.repeat(reverse: true);
-    debugPrint('🔐 PinVerificationScreen: Pulse animation started (1000ms duration, scale 1.0-1.1)');
+    debugPrint(
+        '🔐 PinVerificationScreen: Pulse animation started (1000ms duration, scale 1.0-1.1)');
 
-    debugPrint('🔐 PinVerificationScreen: All animations setup completed successfully');
+    debugPrint(
+        '🔐 PinVerificationScreen: All animations setup completed successfully');
   }
 
   @override
   void dispose() {
     // ================ CLEANUP AND DISPOSAL ================
-    debugPrint('🔐 PinVerificationScreen: ====== SCREEN DISPOSAL STARTED ======');
-    debugPrint('🔐 PinVerificationScreen: Cleaning up resources and controllers');
+    debugPrint(
+        '🔐 PinVerificationScreen: ====== SCREEN DISPOSAL STARTED ======');
+    debugPrint(
+        '🔐 PinVerificationScreen: Cleaning up resources and controllers');
 
     // Dispose text controllers
-    debugPrint('🔐 PinVerificationScreen: Disposing ${_controllers.length} text controllers');
+    debugPrint(
+        '🔐 PinVerificationScreen: Disposing ${_controllers.length} text controllers');
     for (int i = 0; i < _controllers.length; i++) {
       _controllers[i].dispose();
       debugPrint('🔐 PinVerificationScreen: Disposed text controller $i');
     }
 
     // Dispose focus nodes
-    debugPrint('🔐 PinVerificationScreen: Disposing ${_focusNodes.length} focus nodes');
+    debugPrint(
+        '🔐 PinVerificationScreen: Disposing ${_focusNodes.length} focus nodes');
     for (int i = 0; i < _focusNodes.length; i++) {
       _focusNodes[i].dispose();
       debugPrint('🔐 PinVerificationScreen: Disposed focus node $i');
@@ -178,7 +228,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     _pulseController.dispose();
     debugPrint('🔐 PinVerificationScreen: Pulse controller disposed');
 
-    debugPrint('🔐 PinVerificationScreen: All resources cleaned up successfully');
+    debugPrint(
+        '🔐 PinVerificationScreen: All resources cleaned up successfully');
     debugPrint('🔐 PinVerificationScreen: Calling super.dispose()');
     super.dispose();
     debugPrint('🔐 PinVerificationScreen: Screen disposal completed');
@@ -189,20 +240,23 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
   String get _pinCode {
     final pin = _controllers.map((controller) => controller.text).join();
     debugPrint('🔐 PinVerificationScreen: Current PIN length: ${pin.length}/4');
-    debugPrint('🔐 PinVerificationScreen: PIN pattern: ${'*' * pin.length}${'-' * (4 - pin.length)}');
+    debugPrint(
+        '🔐 PinVerificationScreen: PIN pattern: ${'*' * pin.length}${'-' * (4 - pin.length)}');
     return pin;
   }
 
   /// Show top-right alert dialog for PIN validation errors
   void _showPinValidationAlert(String title, String message) {
-    debugPrint('🚨 PinVerificationScreen: Showing PIN validation alert: $title - $message');
+    debugPrint(
+        '🚨 PinVerificationScreen: Showing PIN validation alert: $title - $message');
 
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: ThemeManager.of(context).surfaceColor,
           elevation: 8,
           title: Row(
@@ -241,7 +295,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 foregroundColor: ThemeManager.of(context).primaryColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r)),
               ),
               child: Text(
                 'Got it',
@@ -294,24 +349,39 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     return 'PIN validation failed. Please try again.';
   }
 
-  /// Main PIN verification method
+  /// Main PIN verification method with complete service layer integration
   /// Handles both new user registration and existing user login
   ///
-  /// Process Flow:
-  /// 1. Validate PIN format (4 digits)
-  /// 2. Call appropriate API (registration or login)
-  /// 3. Extract authentication tokens
-  /// 4. Fetch complete user profile
-  /// 5. Save data locally
-  /// 6. Navigate to dashboard
+  /// **🔄 AUTHENTICATION PROCESS FLOW:**
+  /// 1. Validate PIN format (4 digits) → Local validation
+  /// 2. Call appropriate UserService API (pinRegister or pinLogin)
+  /// 3. Extract AuthTokens from API response → Type-safe token handling
+  /// 4. Fetch complete user profile via UserService.getCurrentUserProfile()
+  /// 5. Save AppUser data via HiveService.saveUserData()
+  /// 6. Save AuthTokens via HiveService.saveAuthTokens()
+  /// 7. Set login status via HiveService.setLoggedIn()
+  /// 8. Navigate to appropriate dashboard based on UserType
+  ///
+  /// **🏗️ SERVICE LAYER INTEGRATION:**
+  /// - **UserService:** pinRegister(), pinLogin(), getCurrentUserProfile()
+  /// - **HiveService:** saveUserData(), saveAuthTokens(), setLoggedIn()
+  /// - **AuthTokens:** Proper access + refresh token management
+  /// - **AppUser:** Complete user data model with UserType
+  /// - **Error Handling:** Comprehensive API and local storage error management
   Future<void> _verifyPin() async {
-    debugPrint('🔐 PinVerificationScreen: ====== PIN VERIFICATION STARTED ======');
-    debugPrint('🔐 PinVerificationScreen: PIN length validation: ${_pinCode.length}/4 digits');
+    debugPrint(
+        '🔐 PinVerificationScreen: ====== PIN VERIFICATION STARTED ======');
+    debugPrint(
+        '🔐 PinVerificationScreen: PIN length validation: ${_pinCode.length}/4 digits');
+    debugPrint(
+        '🔐 PinVerificationScreen: Service Integration: UserService + HiveService + AuthTokens');
 
     // ================ PIN FORMAT VALIDATION ================
     if (_pinCode.length != 4) {
-      debugPrint('❌ PinVerificationScreen: PIN validation failed - incomplete PIN');
-      debugPrint('🔐 PinVerificationScreen: Expected: 4 digits, Got: ${_pinCode.length} digits');
+      debugPrint(
+          '❌ PinVerificationScreen: PIN validation failed - incomplete PIN');
+      debugPrint(
+          '🔐 PinVerificationScreen: Expected: 4 digits, Got: ${_pinCode.length} digits');
       setState(() {
         _errorMessage = 'Please enter a 4-digit PIN';
       });
@@ -319,7 +389,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     }
 
     debugPrint('✅ PinVerificationScreen: PIN format validation passed');
-    debugPrint('🔐 PinVerificationScreen: Starting API verification process...');
+    debugPrint(
+        '🔐 PinVerificationScreen: Starting API verification process via UserService...');
 
     // ================ SET LOADING STATE ================
     setState(() {
@@ -332,25 +403,38 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     try {
       // ================ SERVICE PROVIDERS SETUP ================
       debugPrint('🔐 PinVerificationScreen: Initializing service providers');
-      final userService = UserService(ApiService());
-      //
-      debugPrint('🔐 PinVerificationScreen: Service providers initialized successfully');
+      final ref = ProviderScope.containerOf(context);
+      final userService = ref.read(userServiceProvider);
+      final authNotifier = ref.read(authenticationStateProvider.notifier);
+      debugPrint(
+          '🔐 PinVerificationScreen: UserService and AuthNotifier initialized successfully');
 
       // ================ USER TYPE ROUTING ================
       if (widget.isNewUser) {
-        debugPrint('🔐 PinVerificationScreen: ====== NEW USER REGISTRATION FLOW ======');
-        debugPrint('🔐 PinVerificationScreen: Processing PIN registration for new user');
+        debugPrint(
+            '🔐 PinVerificationScreen: ====== NEW USER REGISTRATION FLOW ======');
+        debugPrint(
+            '🔐 PinVerificationScreen: Processing PIN registration for new user');
         debugPrint('🔐 PinVerificationScreen: Registration data:');
-        debugPrint('🔐 PinVerificationScreen: - Username: ${widget.userData.username}');
-        debugPrint('🔐 PinVerificationScreen: - Email: ${widget.userData.email}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Username: ${widget.userData.username}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Email: ${widget.userData.email}');
         debugPrint('🔐 PinVerificationScreen: - Phone: ${widget.phoneNumber}');
-        debugPrint('🔐 PinVerificationScreen: - First Name: ${widget.userData.firstName}');
-        debugPrint('🔐 PinVerificationScreen: - Last Name: ${widget.userData.lastName}');
-        debugPrint('🔐 PinVerificationScreen: - PIN Length: ${_pinCode.length} digits');
+        debugPrint(
+            '🔐 PinVerificationScreen: - First Name: ${widget.userData.firstName}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Last Name: ${widget.userData.lastName}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - UserType: ${widget.userData.userType}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - PIN Length: ${_pinCode.length} digits');
 
         // ================ PIN REGISTRATION API CALL ================
-        debugPrint('🔐 PinVerificationScreen: Calling pinRegister API...');
-        final setPinResponse = await userService.pinRegister(PinRegistrationRequest(
+        debugPrint(
+            '🔐 PinVerificationScreen: Calling UserService.pinRegister()...');
+        final registrationResponse =
+            await userService.pinRegister(PinRegistrationRequest(
           username: widget.userData.username,
           email: widget.userData.email,
           phoneNumber: widget.phoneNumber,
@@ -360,335 +444,363 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
           lastName: widget.userData.lastName,
         ));
 
-        debugPrint('🔐 PinVerificationScreen: PIN registration API call completed');
-        debugPrint('🔐 PinVerificationScreen: Response success: ${setPinResponse.success}');
-        debugPrint('🔐 PinVerificationScreen: Response message: ${setPinResponse.message}');
+        debugPrint(
+            '🔐 PinVerificationScreen: PIN registration API call completed');
+        debugPrint(
+            '🔐 PinVerificationScreen: Response success: ${registrationResponse.isSuccess}');
+        debugPrint(
+            '🔐 PinVerificationScreen: Response message: ${registrationResponse.message}');
 
         // ================ REGISTRATION ERROR HANDLING ================
-        if (!setPinResponse.success) {
+        if (!registrationResponse.isSuccess) {
           debugPrint('❌ PinVerificationScreen: PIN Registration Failed');
           debugPrint('🔐 PinVerificationScreen: Registration failure details:');
           debugPrint('🔐 PinVerificationScreen: - Status: FAILED');
-          debugPrint('🔐 PinVerificationScreen: - Message: ${setPinResponse.message}');
-          debugPrint('🔐 PinVerificationScreen: - Raw Errors: ${setPinResponse.errors}');
-          debugPrint('🔐 PinVerificationScreen: - Error Count: ${setPinResponse.errors?.keys.length ?? 0}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Message: ${registrationResponse.message}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Raw Errors: ${registrationResponse.errors}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Error Count: ${registrationResponse.errors?.keys.length ?? 0}');
 
           // Extract specific PIN validation error and show in alert dialog
-          final specificError = _extractPinValidationError(setPinResponse.errors);
-          debugPrint('🔐 PinVerificationScreen: Extracted specific error: $specificError');
+          final specificError =
+              _extractPinValidationError(registrationResponse.errors);
+          debugPrint(
+              '🔐 PinVerificationScreen: Extracted specific error: $specificError');
 
           // Show user-friendly error dialog
-          debugPrint('🔐 PinVerificationScreen: Displaying error dialog to user');
+          debugPrint(
+              '🔐 PinVerificationScreen: Displaying error dialog to user');
           _showPinValidationAlert('PIN Validation Error', specificError);
 
           // Update UI state
-          debugPrint('🔐 PinVerificationScreen: Updating UI state - removing loading, showing error');
+          debugPrint(
+              '🔐 PinVerificationScreen: Updating UI state - removing loading, showing error');
           setState(() {
-            _errorMessage = setPinResponse.message;
+            _errorMessage = registrationResponse.message;
             _isLoading = false;
           });
 
           // Trigger shake animation and clear PIN
-          debugPrint('🔐 PinVerificationScreen: Triggering error animations and PIN reset');
+          debugPrint(
+              '🔐 PinVerificationScreen: Triggering error animations and PIN reset');
           _shakeAndClearPin();
           return;
         }
 
         // ================ SUCCESSFUL REGISTRATION - TOKEN EXTRACTION ================
         debugPrint('✅ PinVerificationScreen: PIN Registration Successful!');
-        debugPrint('🔐 PinVerificationScreen: Extracting authentication tokens from response');
+        debugPrint(
+            '🔐 PinVerificationScreen: Extracting AuthTokens from response...');
 
-        final tokens = setPinResponse.data?['tokens'] as Map<String, dynamic>?;
-        if (tokens == null) {
-          debugPrint('❌ PinVerificationScreen: No tokens found in registration response');
+        final tokensData =
+            registrationResponse.data?['tokens'] as Map<String, dynamic>?;
+        if (tokensData == null) {
+          debugPrint(
+              '❌ PinVerificationScreen: No tokens found in registration response');
           throw Exception('Authentication tokens not received from server');
         }
 
-        debugPrint('🔐 PinVerificationScreen: Tokens object found: ${tokens.keys.toList()}');
-
-        String accessToken;
-        String refreshToken;
-
-        accessToken = tokens['access'] ?? '';
-        refreshToken = tokens['refresh'] ?? '';
-
-        debugPrint('🔐 PinVerificationScreen: Token extraction results:');
-        debugPrint('🔐 PinVerificationScreen: - Access Token Length: ${accessToken.length} chars');
-        debugPrint('🔐 PinVerificationScreen: - Refresh Token Length: ${refreshToken.length} chars');
         debugPrint(
-            '🔐 PinVerificationScreen: - Access Token Preview: ${accessToken.isNotEmpty ? '${accessToken.substring(0, 20)}...' : 'EMPTY'}');
+            '🔐 PinVerificationScreen: Tokens data found: ${tokensData.keys.toList()}');
+
+        // Create AuthTokens object for type-safe token management
+        final authTokens = AuthTokens(
+          accessToken: tokensData['access'] ?? '',
+          refreshToken: tokensData['refresh'] ?? '',
+        );
+
+        debugPrint('🔐 PinVerificationScreen: AuthTokens created successfully');
         debugPrint(
-            '🔐 PinVerificationScreen: - Refresh Token Preview: ${refreshToken.isNotEmpty ? '${refreshToken.substring(0, 20)}...' : 'EMPTY'}');
+            '🔐 PinVerificationScreen: - Access Token Length: ${authTokens.accessToken.length} chars');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Refresh Token Length: ${authTokens.refreshToken.length} chars');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Access Token Preview: ${authTokens.accessToken.isNotEmpty ? '${authTokens.accessToken.substring(0, 20)}...' : 'EMPTY'}');
 
         // ================ USER DATA EXTRACTION FROM REGISTRATION ================
-        debugPrint('🔐 PinVerificationScreen: Extracting user data from registration response');
-        final responseUserData = setPinResponse.data?['user'] as Map<String, dynamic>?;
+        debugPrint(
+            '🔐 PinVerificationScreen: Extracting user data from registration response');
+        final responseUserData =
+            registrationResponse.data?['user'] as Map<String, dynamic>?;
 
         if (responseUserData == null) {
-          debugPrint('❌ PinVerificationScreen: No user data found in registration response');
+          debugPrint(
+              '❌ PinVerificationScreen: No user data found in registration response');
           throw Exception('User data not received from server');
         }
 
-        debugPrint('🔐 PinVerificationScreen: User data keys received: ${responseUserData.keys.toList()}');
+        debugPrint(
+            '🔐 PinVerificationScreen: User data keys received: ${responseUserData.keys.toList()}');
 
-        final UserType userType = _parseUserType(responseUserData['user_type']) ?? widget.userData.userType;
-        debugPrint('🔐 PinVerificationScreen: User type determination:');
-        debugPrint('🔐 PinVerificationScreen: - Response user_type: ${responseUserData['user_type']}');
-        debugPrint('🔐 PinVerificationScreen: - Widget userData userType: ${widget.userData.userType}');
-        debugPrint('🔐 PinVerificationScreen: - Final determined userType: $userType');
-
-        // Build initial user data
-        final initialUserData = AppUser(
-          id: responseUserData['id'],
-          username: responseUserData['username'] ?? widget.userData.username,
-          email: responseUserData['email'] ?? widget.userData.email,
-          firstName: responseUserData['first_name'] ?? widget.userData.firstName,
-          lastName: responseUserData['last_name'] ?? widget.userData.lastName,
-          phoneNumber: widget.phoneNumber,
-          userType: userType,
-          isVerified: responseUserData['is_verified'] ?? false,
-          createdAt: responseUserData['created_at'] ?? DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+        // Build AppUser from registration response
+        final registeredUser = AppUser.fromJson(responseUserData);
+        debugPrint(
+            '🔐 PinVerificationScreen: AppUser created from registration response');
+        debugPrint('🔐 PinVerificationScreen: - User ID: ${registeredUser.id}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Username: ${registeredUser.username}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - UserType: ${registeredUser.userType}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Email: ${registeredUser.email}');
 
         // Fetch complete, up-to-date user profile from UserService
-        AppUser completeUserData = initialUserData;
+        AppUser completeUserData = registeredUser;
         try {
-          debugPrint('🔄 Fetching complete user profile for new user...');
-          final profileResponse = await userService.getCurrentUserProfile(accessToken);
+          debugPrint(
+              '🔄 PinVerificationScreen: Fetching complete user profile for new user...');
+          final profileResponse =
+              await userService.getCurrentUserProfile(authTokens.accessToken);
 
           if (profileResponse.isSuccess && profileResponse.data != null) {
-            final userProfile = profileResponse.data!;
-            debugPrint('✅ Complete profile fetched successfully');
-
-            // Convert AppUser to Map and merge with initial data
-            completeUserData = AppUser(
-              id: userProfile.id,
-              username: userProfile.username,
-              email: userProfile.email,
-              firstName: userProfile.firstName,
-              lastName: userProfile.lastName,
-              phoneNumber: userProfile.phoneNumber ?? widget.phoneNumber,
-              userType: userProfile.userType,
-              isVerified: userProfile.isVerified,
-              isEmailVerified: userProfile.isEmailVerified,
-              isPhoneVerified: userProfile.isPhoneVerified,
-              rating: userProfile.rating,
-              balance: userProfile.balance,
-              totalBookings: userProfile.totalBookings,
-              bio: userProfile.bio,
-              location: userProfile.location,
-              profilePicture: userProfile.profilePicture,
-              createdAt: userProfile.createdAt,
-              updatedAt: userProfile.updatedAt,
-              skills: userProfile.skills,
-              availability: userProfile.availability,
-            );
-            debugPrint('📊 Updated user data with complete profile information');
+            completeUserData = profileResponse.data!;
+            debugPrint(
+                '✅ PinVerificationScreen: Complete profile fetched successfully');
+            debugPrint(
+                '📊 PinVerificationScreen: Updated user data with complete profile information');
           } else {
-            debugPrint('⚠️ Failed to fetch complete profile, using initial data');
+            debugPrint(
+                '⚠️ PinVerificationScreen: Failed to fetch complete profile, using registration data');
           }
         } catch (e) {
-          debugPrint('❌ Error fetching complete profile: $e');
-          debugPrint('⚠️ Using initial user data from registration response');
+          debugPrint(
+              '❌ PinVerificationScreen: Error fetching complete profile: $e');
+          debugPrint(
+              '⚠️ PinVerificationScreen: Using user data from registration response');
         }
 
-        // // Use authentication provider to manage state
-        // await AuthenticationNotifier(userService).setAuthenticated(
-        //   accessToken: accessToken,
-        //   refreshToken: refreshToken,
-        //   userData: completeUserData,
-        //   userType: userType,
-        // );
-        debugPrint('✅ New user authentication state set successfully');
+        // ================ SAVE TO HIVE SERVICE ================
+        debugPrint(
+            '🔐 PinVerificationScreen: Saving authentication data via HiveService...');
 
-        // Also update HiveService with complete user data
+        // Save AuthTokens via HiveService
+        await HiveService.saveAuthTokens(authTokens);
+        debugPrint('✅ PinVerificationScreen: AuthTokens saved via HiveService');
+
+        // Save AppUser data via HiveService
         await HiveService.saveUserData(completeUserData);
-        await HiveService.saveUserProfile(completeUserData);
-        debugPrint('💾 Complete user data saved to HiveService');
+        debugPrint(
+            '✅ PinVerificationScreen: AppUser data saved via HiveService');
 
-        debugPrint('✅ New user data saved successfully with userType: $userType');
+        // Set login status via HiveService
+        await HiveService.setLoggedIn(true);
+        debugPrint(
+            '✅ PinVerificationScreen: Login status set to true via HiveService');
+
+        // Use authentication notifier for app state management
+        await authNotifier.setAuthenticated(
+          user: completeUserData,
+          tokens: authTokens,
+        );
+        debugPrint(
+            '✅ PinVerificationScreen: Authentication state set via AuthNotifier');
+
+        debugPrint('✅ NEW USER REGISTRATION COMPLETED SUCCESSFULLY');
+        debugPrint(
+            '🔐 PinVerificationScreen: UserType: ${completeUserData.userType}');
 
         if (mounted) {
-          // Navigate to appropriate dashboard based on user type
+          // Navigate to home/dashboard
           context.go('/home');
         }
       } else {
         // ================ EXISTING USER LOGIN FLOW ================
-        debugPrint('🔐 PinVerificationScreen: ====== EXISTING USER LOGIN FLOW ======');
-        debugPrint('🔐 PinVerificationScreen: Processing PIN login for existing user');
+        debugPrint(
+            '🔐 PinVerificationScreen: ====== EXISTING USER LOGIN FLOW ======');
+        debugPrint(
+            '🔐 PinVerificationScreen: Processing PIN login for existing user');
         debugPrint('🔐 PinVerificationScreen: Login data:');
-        debugPrint('🔐 PinVerificationScreen: - Phone Number: ${widget.phoneNumber}');
-        debugPrint('🔐 PinVerificationScreen: - PIN Length: ${_pinCode.length} digits');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Phone Number: ${widget.phoneNumber}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - UserType: ${widget.userData.userType}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - PIN Length: ${_pinCode.length} digits');
 
         // ================ PIN LOGIN API CALL ================
-        debugPrint('🔐 PinVerificationScreen: Calling pinLogin API...');
-        final response = await userService.pinLogin(PinLoginRequest(
+        debugPrint(
+            '🔐 PinVerificationScreen: Calling UserService.pinLogin()...');
+        final loginResponse = await userService.pinLogin(PinLoginRequest(
           phoneNumber: widget.phoneNumber,
           pin: _pinCode,
         ));
 
         debugPrint('🔐 PinVerificationScreen: PIN login API call completed');
-        debugPrint('🔐 PinVerificationScreen: Response success: ${response.success}');
-        debugPrint('🔐 PinVerificationScreen: Response message: ${response.message}');
+        debugPrint(
+            '🔐 PinVerificationScreen: Response success: ${loginResponse.isSuccess}');
+        debugPrint(
+            '🔐 PinVerificationScreen: Response message: ${loginResponse.message}');
 
         // ================ LOGIN ERROR HANDLING ================
-        if (!response.success) {
+        if (!loginResponse.isSuccess) {
           debugPrint('❌ PinVerificationScreen: PIN Login Failed');
           debugPrint('🔐 PinVerificationScreen: Login failure details:');
           debugPrint('🔐 PinVerificationScreen: - Status: FAILED');
-          debugPrint('🔐 PinVerificationScreen: - Message: ${response.message}');
-          debugPrint('🔐 PinVerificationScreen: - Raw Errors: ${response.errors}');
-          debugPrint('🔐 PinVerificationScreen: - Error Count: ${response.errors?.keys.length ?? 0}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Message: ${loginResponse.message}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Raw Errors: ${loginResponse.errors}');
+          debugPrint(
+              '🔐 PinVerificationScreen: - Error Count: ${loginResponse.errors?.keys.length ?? 0}');
 
           // Extract specific PIN validation error and show in alert dialog
-          final specificError = _extractPinValidationError(response.errors);
-          debugPrint('🔐 PinVerificationScreen: Extracted specific error: $specificError');
+          final specificError =
+              _extractPinValidationError(loginResponse.errors);
+          debugPrint(
+              '🔐 PinVerificationScreen: Extracted specific error: $specificError');
 
           // Show user-friendly error dialog
-          debugPrint('🔐 PinVerificationScreen: Displaying error dialog to user');
+          debugPrint(
+              '🔐 PinVerificationScreen: Displaying error dialog to user');
           _showPinValidationAlert('PIN Login Error', specificError);
 
           // Update UI state
-          debugPrint('🔐 PinVerificationScreen: Updating UI state - removing loading, showing error');
+          debugPrint(
+              '🔐 PinVerificationScreen: Updating UI state - removing loading, showing error');
           setState(() {
-            _errorMessage = response.message;
+            _errorMessage = loginResponse.message;
             _isLoading = false;
           });
 
           // Trigger shake animation and clear PIN
-          debugPrint('🔐 PinVerificationScreen: Triggering error animations and PIN reset');
+          debugPrint(
+              '🔐 PinVerificationScreen: Triggering error animations and PIN reset');
           _shakeAndClearPin();
           return;
         }
 
-        // CRITICAL FIX: Extract and save authentication tokens from login response
-        final tokens = response.data?['tokens'] as Map<String, dynamic>?;
-        String? accessToken;
-        // String? refreshToken;
+        // ================ SUCCESSFUL LOGIN - TOKEN EXTRACTION ================
+        debugPrint('✅ PinVerificationScreen: PIN Login Successful!');
+        debugPrint(
+            '🔐 PinVerificationScreen: Extracting AuthTokens from login response...');
 
-        if (tokens != null) {
-          accessToken = tokens['access'] as String?;
-          // refreshToken = tokens['refresh'] as String?;
+        final tokensData =
+            loginResponse.data?['tokens'] as Map<String, dynamic>?;
+        AuthTokens? authTokens;
+
+        if (tokensData != null) {
+          authTokens = AuthTokens(
+            accessToken: tokensData['access'] ?? '',
+            refreshToken: tokensData['refresh'] ?? '',
+          );
+          debugPrint(
+              '🔐 PinVerificationScreen: AuthTokens extracted from tokens field');
         } else {
-          debugPrint('⚠️ No tokens found in login response - checking alternative locations');
           // Alternative token locations in response
-          accessToken = response.data?['access_token'] as String? ?? response.data?['access'] as String?;
-          // refreshToken = response.data?['refresh_token'] as String? ?? response.data?['refresh'] as String?;
-        }
+          final accessToken = loginResponse.data?['access_token'] as String? ??
+              loginResponse.data?['access'] as String?;
+          final refreshToken =
+              loginResponse.data?['refresh_token'] as String? ??
+                  loginResponse.data?['refresh'] as String?;
 
-        // Get initial user data from login response
-        debugPrint('🔍 Processing login response for existing user...');
-        final AppUser userData = AppUser.fromJson(response.data?['user']);
-        final userType = userData.userType;
-
-        debugPrint('✅ Successfully retrieved initial user data with type: $userType');
-
-        // Build initial user data from login response
-        final initialUserData = AppUser(
-          id: userData.id,
-          username: userData.username,
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          phoneNumber: widget.phoneNumber,
-          userType: userType,
-          isVerified: userData.isVerified,
-          isEmailVerified: userData.isEmailVerified,
-          isPhoneVerified: userData.isPhoneVerified,
-          rating: userData.rating,
-          balance: userData.balance,
-          totalBookings: userData.totalBookings,
-          bio: userData.bio,
-          location: userData.location,
-          profilePicture: userData.profilePicture,
-          createdAt: userData.createdAt,
-          updatedAt: userData.updatedAt,
-        );
-
-        // Fetch complete, up-to-date user profile from UserService
-        AppUser completeUserData = initialUserData;
-        if (accessToken != null) {
-          try {
-            debugPrint('🔄 Fetching complete user profile for existing user...');
-            final profileResponse = await userService.getCurrentUserProfile(accessToken);
-
-            if (profileResponse.isSuccess && profileResponse.data != null) {
-              final userProfile = profileResponse.data!;
-              debugPrint('✅ Complete profile fetched successfully');
-
-              // Convert AppUser to Map with all up-to-date information
-              completeUserData = AppUser(
-                id: userProfile.id,
-                username: userProfile.username,
-                email: userProfile.email,
-                firstName: userProfile.firstName,
-                lastName: userProfile.lastName,
-                phoneNumber: userProfile.phoneNumber ?? widget.phoneNumber,
-                userType: userProfile.userType,
-                isVerified: userProfile.isVerified,
-                isEmailVerified: userProfile.isEmailVerified,
-                isPhoneVerified: userProfile.isPhoneVerified,
-                rating: userProfile.rating,
-                balance: userProfile.balance,
-                totalBookings: userProfile.totalBookings,
-                bio: userProfile.bio,
-                location: userProfile.location,
-                profilePicture: userProfile.profilePicture,
-                createdAt: userProfile.createdAt,
-                updatedAt: userProfile.updatedAt,
-                skills: userProfile.skills,
-                availability: userProfile.availability,
-              );
-              debugPrint('📊 Updated user data with complete, up-to-date profile information');
-            } else {
-              debugPrint('⚠️ Failed to fetch complete profile, using login response data');
-            }
-          } catch (e) {
-            debugPrint('❌ Error fetching complete profile: $e');
-            debugPrint('⚠️ Using user data from login response');
+          if (accessToken != null) {
+            authTokens = AuthTokens(
+              accessToken: accessToken,
+              refreshToken: refreshToken ?? '',
+            );
+            debugPrint(
+                '🔐 PinVerificationScreen: AuthTokens extracted from alternative locations');
           }
         }
 
-        // Use authentication provider to manage state
-        if (accessToken != null) {
-          // await AuthenticationNotifier(userService).setAuthenticated(
-          //   accessToken: accessToken,
-          //   refreshToken: refreshToken,
-          //   userData: completeUserData,
-          //   userType: userType,
-          // );
-          debugPrint('✅ Existing user authentication state set successfully');
-
-          // Also update HiveService with complete, up-to-date user data
-          await HiveService.saveUserData(completeUserData);
-          await HiveService.saveUserProfile(completeUserData);
-          debugPrint('💾 Complete user data saved to HiveService');
-        } else {
-          // Fallback to manual HiveService if no tokens
-          debugPrint('⚠️ No tokens found, using manual state management');
-          await HiveService.setLoggedIn(true);
-          await HiveService.setPhoneNumber(widget.phoneNumber);
-          await HiveService.saveUserData(completeUserData);
+        if (authTokens == null || authTokens.accessToken.isEmpty) {
+          debugPrint(
+              '❌ PinVerificationScreen: No valid tokens found in login response');
+          throw Exception('Authentication tokens not received from server');
         }
 
-        debugPrint('✅ User data saved successfully with userType: $userType');
+        debugPrint('🔐 PinVerificationScreen: AuthTokens created successfully');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Access Token Length: ${authTokens.accessToken.length} chars');
+        debugPrint(
+            '🔐 PinVerificationScreen: - Refresh Token Length: ${authTokens.refreshToken.length} chars');
+
+        // ================ USER DATA EXTRACTION FROM LOGIN ================
+        debugPrint(
+            '🔐 PinVerificationScreen: Extracting user data from login response...');
+        final loginUserData = AppUser.fromJson(loginResponse.data?['user']);
+        debugPrint(
+            '🔐 PinVerificationScreen: AppUser created from login response');
+        debugPrint('🔐 PinVerificationScreen: - User ID: ${loginUserData.id}');
+        debugPrint(
+            '🔐 PinVerificationScreen: - UserType: ${loginUserData.userType}');
+
+        // Fetch complete, up-to-date user profile from UserService
+        AppUser completeUserData = loginUserData;
+        try {
+          debugPrint(
+              '🔄 PinVerificationScreen: Fetching complete user profile for existing user...');
+          final profileResponse =
+              await userService.getCurrentUserProfile(authTokens.accessToken);
+
+          if (profileResponse.isSuccess && profileResponse.data != null) {
+            completeUserData = profileResponse.data!;
+            debugPrint(
+                '✅ PinVerificationScreen: Complete profile fetched successfully');
+            debugPrint(
+                '📊 PinVerificationScreen: Updated user data with complete, up-to-date profile information');
+          } else {
+            debugPrint(
+                '⚠️ PinVerificationScreen: Failed to fetch complete profile, using login response data');
+          }
+        } catch (e) {
+          debugPrint(
+              '❌ PinVerificationScreen: Error fetching complete profile: $e');
+          debugPrint(
+              '⚠️ PinVerificationScreen: Using user data from login response');
+        }
+
+        // ================ SAVE TO HIVE SERVICE ================
+        debugPrint(
+            '🔐 PinVerificationScreen: Saving authentication data via HiveService...');
+
+        // Save AuthTokens via HiveService
+        await HiveService.saveAuthTokens(authTokens);
+        debugPrint('✅ PinVerificationScreen: AuthTokens saved via HiveService');
+
+        // Save AppUser data via HiveService
+        await HiveService.saveUserData(completeUserData);
+        debugPrint(
+            '✅ PinVerificationScreen: AppUser data saved via HiveService');
+
+        // Set login status via HiveService
+        await HiveService.setLoggedIn(true);
+        debugPrint(
+            '✅ PinVerificationScreen: Login status set to true via HiveService');
+
+        // Use authentication notifier for app state management
+        await authNotifier.setAuthenticated(
+          user: completeUserData,
+          tokens: authTokens,
+        );
+        debugPrint(
+            '✅ PinVerificationScreen: Authentication state set via AuthNotifier');
+
+        debugPrint('✅ EXISTING USER LOGIN COMPLETED SUCCESSFULLY');
+        debugPrint(
+            '🔐 PinVerificationScreen: UserType: ${completeUserData.userType}');
 
         if (mounted) {
-          // Navigate based on user type
-          debugPrint('🧭 Navigating user based on type: $userType');
+          // Navigate based on UserType
+          debugPrint(
+              '🧭 PinVerificationScreen: Navigating user based on UserType: ${completeUserData.userType}');
 
-          switch (userType) {
+          switch (completeUserData.userType) {
             case UserType.admin:
-              debugPrint('🧭 Navigating to admin dashboard');
+              debugPrint(
+                  '🧭 PinVerificationScreen: Navigating to admin dashboard');
               context.go(RouteEnum.adminDashboard.rawValue);
               break;
             case UserType.provider:
-              debugPrint('🧭 Navigating to provider dashboard');
+              debugPrint(
+                  '🧭 PinVerificationScreen: Navigating to provider dashboard');
               context.go(RouteEnum.providerDashboard.rawValue);
               break;
             case UserType.customer:
-              debugPrint('🧭 Navigating to taker/customer dashboard');
+              debugPrint(
+                  '🧭 PinVerificationScreen: Navigating to customer dashboard');
               context.go(RouteEnum.takerDashboard.rawValue);
               break;
           }
@@ -696,25 +808,31 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
       }
     } catch (e, stackTrace) {
       // ================ CRITICAL ERROR HANDLING ================
-      debugPrint('❌ PinVerificationScreen: ====== CRITICAL ERROR OCCURRED ======');
+      debugPrint(
+          '❌ PinVerificationScreen: ====== CRITICAL ERROR OCCURRED ======');
       debugPrint('🔐 PinVerificationScreen: Critical error details:');
       debugPrint('🔐 PinVerificationScreen: - Error Type: ${e.runtimeType}');
       debugPrint('🔐 PinVerificationScreen: - Error Message: $e');
       debugPrint(
           '🔐 PinVerificationScreen: - Stack Trace Preview: ${stackTrace.toString().split('\n').take(3).join('\n')}');
-      debugPrint('🔐 PinVerificationScreen: - User Type: ${widget.userData.userType}');
-      debugPrint('🔐 PinVerificationScreen: - Is New User: ${widget.isNewUser}');
-      debugPrint('🔐 PinVerificationScreen: - Phone Number: ${widget.phoneNumber}');
+      debugPrint(
+          '🔐 PinVerificationScreen: - UserType: ${widget.userData.userType}');
+      debugPrint(
+          '🔐 PinVerificationScreen: - Is New User: ${widget.isNewUser}');
+      debugPrint(
+          '🔐 PinVerificationScreen: - Phone Number: ${widget.phoneNumber}');
 
       // Update UI with generic error message
-      debugPrint('🔐 PinVerificationScreen: Setting generic error message and removing loading state');
+      debugPrint(
+          '🔐 PinVerificationScreen: Setting generic error message and removing loading state');
       setState(() {
         _errorMessage = 'Verification failed. Please try again.';
         _isLoading = false;
       });
 
       // Trigger error animations
-      debugPrint('🔐 PinVerificationScreen: Triggering error recovery animations');
+      debugPrint(
+          '🔐 PinVerificationScreen: Triggering error recovery animations');
       _shakeAndClearPin();
 
       debugPrint('🔐 PinVerificationScreen: Error handling completed');
@@ -724,11 +842,13 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
   /// Trigger shake animation and clear PIN on error
   /// Provides visual feedback when PIN verification fails
   void _shakeAndClearPin() {
-    debugPrint('🔐 PinVerificationScreen: ====== ERROR ANIMATION SEQUENCE ======');
+    debugPrint(
+        '🔐 PinVerificationScreen: ====== ERROR ANIMATION SEQUENCE ======');
     debugPrint('🔐 PinVerificationScreen: Starting shake animation...');
 
     _shakeController.forward().then((_) {
-      debugPrint('🔐 PinVerificationScreen: Shake animation completed, resetting controller');
+      debugPrint(
+          '🔐 PinVerificationScreen: Shake animation completed, resetting controller');
       _shakeController.reset();
       debugPrint('🔐 PinVerificationScreen: Clearing PIN input fields');
       _clearPin();
@@ -743,15 +863,17 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     for (int i = 0; i < _controllers.length; i++) {
       final previousText = _controllers[i].text;
       _controllers[i].clear();
-      debugPrint('🔐 PinVerificationScreen: Cleared controller $i (was: "${previousText.isNotEmpty ? '*' : 'empty'}")');
+      debugPrint(
+          '🔐 PinVerificationScreen: Cleared controller $i (was: "${previousText.isNotEmpty ? '*' : 'empty'}")');
     }
 
-    debugPrint('🔐 PinVerificationScreen: Setting focus to first PIN input field');
+    debugPrint(
+        '🔐 PinVerificationScreen: Setting focus to first PIN input field');
     _focusNodes[0].requestFocus();
     debugPrint('🔐 PinVerificationScreen: PIN reset completed');
   }
 
-  /// Get user type display name
+  /// Get user type display name for UI
   String getUserTypeDisplayName(UserType userType) {
     switch (userType) {
       case UserType.admin:
@@ -763,7 +885,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     }
   }
 
-  /// Get display name from user data
+  /// Get display name from AppUser data
   String getDisplayName() {
     final firstName = widget.userData.firstName;
     final lastName = widget.userData.lastName;
@@ -777,49 +899,14 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     return 'User';
   }
 
-  /// Get username from user data
+  /// Get username from AppUser data
   String? _getUsername() {
     return widget.userData.username;
   }
 
-  /// Get user type from user data
+  /// Get UserType from AppUser data
   UserType _getUserType() {
     return widget.userData.userType;
-  }
-
-  /// Parse user type string from API response to UserType enum
-  /// Handles various string formats and provides fallback
-  UserType? _parseUserType(dynamic userTypeValue) {
-    debugPrint('🔐 PinVerificationScreen: Parsing user type: $userTypeValue (${userTypeValue.runtimeType})');
-
-    if (userTypeValue == null) {
-      debugPrint('🔐 PinVerificationScreen: User type is null, returning null');
-      return null;
-    }
-
-    final userTypeString = userTypeValue.toString().toLowerCase().trim();
-    debugPrint('🔐 PinVerificationScreen: Normalized user type string: "$userTypeString"');
-
-    switch (userTypeString) {
-      case 'admin':
-      case 'administrator':
-        debugPrint('🔐 PinVerificationScreen: Parsed as ADMIN');
-        return UserType.admin;
-      case 'provider':
-      case 'service_provider':
-      case 'serviceprovider':
-        debugPrint('🔐 PinVerificationScreen: Parsed as PROVIDER');
-        return UserType.provider;
-      case 'customer':
-      case 'taker':
-      case 'user':
-      case 'client':
-        debugPrint('🔐 PinVerificationScreen: Parsed as CUSTOMER');
-        return UserType.customer;
-      default:
-        debugPrint('❌ PinVerificationScreen: Unknown user type "$userTypeString", returning null');
-        return null;
-    }
   }
 
   @override
@@ -827,21 +914,27 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
     // ================ UI BUILD PROCESS ================
     debugPrint('🔐 PinVerificationScreen: ====== UI BUILD STARTED ======');
 
-    debugPrint('🔐 PinVerificationScreen: Theme manager initialized successfully');
+    debugPrint(
+        '🔐 PinVerificationScreen: Theme manager initialized successfully');
 
     // Log current screen state for debugging
     debugPrint('🔐 PinVerificationScreen: Current UI state:');
     debugPrint('🔐 PinVerificationScreen: - Loading: $_isLoading');
-    debugPrint('🔐 PinVerificationScreen: - Error Message: ${_errorMessage ?? 'none'}');
+    debugPrint(
+        '🔐 PinVerificationScreen: - Error Message: ${_errorMessage ?? 'none'}');
     debugPrint('🔐 PinVerificationScreen: - PIN Length: ${_pinCode.length}/4');
-    debugPrint('🔐 PinVerificationScreen: - User Type: ${widget.userData.userType}');
+    debugPrint(
+        '🔐 PinVerificationScreen: - UserType: ${widget.userData.userType}');
     debugPrint('🔐 PinVerificationScreen: - Display Name: ${getDisplayName()}');
 
     // Log theme properties being used
     debugPrint('🔐 PinVerificationScreen: Theme properties:');
-    debugPrint('🔐 PinVerificationScreen: - Background Color: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🔐 PinVerificationScreen: - Primary Color: ${ThemeManager.of(context).primaryColor}');
-    debugPrint('🔐 PinVerificationScreen: - Text Primary: ${ThemeManager.of(context).textPrimary}');
+    debugPrint(
+        '🔐 PinVerificationScreen: - Background Color: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🔐 PinVerificationScreen: - Primary Color: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🔐 PinVerificationScreen: - Text Primary: ${ThemeManager.of(context).textPrimary}');
     debugPrint(
         '🔐 PinVerificationScreen: - User Type Color: ${ThemeManager.of(context).getUserTypeColor(_getUserType())}');
 
@@ -862,10 +955,7 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(),
-            child:
-                // IntrinsicHeight(
-                //   child:
-                Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -875,7 +965,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                 // Header Card
                 Card(
                   elevation: 4,
-                  shadowColor: ThemeManager.of(context).textTertiary.withValues(alpha: 77),
+                  shadowColor: ThemeManager.of(context)
+                      .textTertiary
+                      .withValues(alpha: 77),
                   child: Container(
                     padding: EdgeInsets.all(32.w),
                     decoration: BoxDecoration(
@@ -886,75 +978,21 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                       children: [
                         // User Info Section (only show if userData is available)
                         if (!widget.isNewUser) ...[
-                          // // User Avatar and Name
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     // User Avatar
-                          //     Container(
-                          //       width: 50.w,
-                          //       height: 50.h,
-                          //       decoration: BoxDecoration(
-                          //         gradient: LinearGradient(
-                          //           colors: [
-                          //             ThemeManager.of(context).getUserTypeColor(
-                          //               _getUserType(),
-                          //             ),
-                          //             ThemeManager.of(context).getUserTypeColor(_getUserType()).withValues(alpha: 179),
-                          //           ],
-                          //         ),
-                          //         shape: BoxShape.circle,
-                          //       ),
-                          //       child: Icon(
-                          //         Prbal.user,
-                          //         size: 24.sp,
-                          //         color: Colors.white,
-                          //       ),
-                          //     ),
-                          //     SizedBox(width: 16.w),
-                          //     // User Name and Type
-                          //     Expanded(
-                          //       child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.start,
-                          //         children: [
-                          //           Text(
-                          //             getDisplayName(),
-                          //             style: TextStyle(
-                          //               fontSize: 18.sp,
-                          //               fontWeight: FontWeight.w600,
-                          //               color: ThemeManager.of(context).textPrimary,
-                          //             ),
-                          //             maxLines: 1,
-                          //             overflow: TextOverflow.ellipsis,
-                          //           ),
-                          //           if (_getUsername() != null) ...[
-                          //             SizedBox(height: 2.h),
-                          //             Text(
-                          //               '@${_getUsername()}',
-                          //               style: TextStyle(
-                          //                 fontSize: 14.sp,
-                          //                 color: ThemeManager.of(context).textSecondary,
-                          //               ),
-                          //               maxLines: 1,
-                          //               overflow: TextOverflow.ellipsis,
-                          //             ),
-                          //           ],
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-
                           SizedBox(height: 16.h),
 
                           // User Type Badge
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 8.h),
                             decoration: BoxDecoration(
-                              color: ThemeManager.of(context).getUserTypeColor(_getUserType()).withValues(alpha: 26),
+                              color: ThemeManager.of(context)
+                                  .getUserTypeColor(_getUserType())
+                                  .withValues(alpha: 26),
                               borderRadius: BorderRadius.circular(20.r),
                               border: Border.all(
-                                color: ThemeManager.of(context).getUserTypeColor(_getUserType()).withValues(alpha: 77),
+                                color: ThemeManager.of(context)
+                                    .getUserTypeColor(_getUserType())
+                                    .withValues(alpha: 77),
                                 width: 1,
                               ),
                             ),
@@ -964,7 +1002,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                 Icon(
                                   getUserTypeIcon(_getUserType()),
                                   size: 16.sp,
-                                  color: ThemeManager.of(context).getUserTypeColor(_getUserType()),
+                                  color: ThemeManager.of(context)
+                                      .getUserTypeColor(_getUserType()),
                                 ),
                                 SizedBox(width: 8.w),
                                 Text(
@@ -972,7 +1011,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: ThemeManager.of(context).getUserTypeColor(_getUserType()),
+                                    color: ThemeManager.of(context)
+                                        .getUserTypeColor(_getUserType()),
                                   ),
                                 ),
                               ],
@@ -988,10 +1028,14 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                           Container(
                             padding: EdgeInsets.all(16.w),
                             decoration: BoxDecoration(
-                              color: ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                              color: ThemeManager.of(context)
+                                  .primaryColor
+                                  .withValues(alpha: 26),
                               borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
-                                color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                                color: ThemeManager.of(context)
+                                    .primaryColor
+                                    .withValues(alpha: 77),
                                 width: 1,
                               ),
                             ),
@@ -1003,7 +1047,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                     Icon(
                                       Prbal.stars,
                                       size: 20.sp,
-                                      color: ThemeManager.of(context).primaryColor,
+                                      color:
+                                          ThemeManager.of(context).primaryColor,
                                     ),
                                     SizedBox(width: 8.w),
                                     Text(
@@ -1011,7 +1056,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w600,
-                                        color: ThemeManager.of(context).primaryColor,
+                                        color: ThemeManager.of(context)
+                                            .primaryColor,
                                       ),
                                     ),
                                   ],
@@ -1031,7 +1077,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                     'Username: @${_getUsername()}',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: ThemeManager.of(context).textSecondary,
+                                      color: ThemeManager.of(context)
+                                          .textSecondary,
                                     ),
                                   ),
                                 ],
@@ -1043,7 +1090,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                       Icon(
                                         getUserTypeIcon(_getUserType()),
                                         size: 14.sp,
-                                        color: ThemeManager.of(context).getUserTypeColor(_getUserType()),
+                                        color: ThemeManager.of(context)
+                                            .getUserTypeColor(_getUserType()),
                                       ),
                                       SizedBox(width: 6.w),
                                       Text(
@@ -1051,7 +1099,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
-                                          color: ThemeManager.of(context).getUserTypeColor(_getUserType()),
+                                          color: ThemeManager.of(context)
+                                              .getUserTypeColor(_getUserType()),
                                         ),
                                       ),
                                     ],
@@ -1074,11 +1123,14 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                 width: 80.w,
                                 height: 80.h,
                                 decoration: BoxDecoration(
-                                  gradient: ThemeManager.of(context).primaryGradient,
+                                  gradient:
+                                      ThemeManager.of(context).primaryGradient,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  widget.isNewUser ? Prbal.lockOpen2 : Prbal.lockStripes1,
+                                  widget.isNewUser
+                                      ? Prbal.lockOpen2
+                                      : Prbal.lockStripes1,
                                   size: 40.sp,
                                   color: Colors.white,
                                 ),
@@ -1090,7 +1142,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                         SizedBox(height: 24.h),
 
                         Text(
-                          widget.isNewUser ? 'Create Your PIN' : 'Enter Your PIN',
+                          widget.isNewUser
+                              ? 'Create Your PIN'
+                              : 'Enter Your PIN',
                           style: TextStyle(
                             fontSize: 28.sp,
                             fontWeight: FontWeight.w700,
@@ -1116,12 +1170,17 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
 
                         // Phone Number Display
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 8.h),
                           decoration: BoxDecoration(
-                            color: ThemeManager.of(context).primaryColor.withValues(alpha: 26),
+                            color: ThemeManager.of(context)
+                                .primaryColor
+                                .withValues(alpha: 26),
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
-                              color: ThemeManager.of(context).primaryColor.withValues(alpha: 77),
+                              color: ThemeManager.of(context)
+                                  .primaryColor
+                                  .withValues(alpha: 77),
                               width: 1,
                             ),
                           ),
@@ -1157,7 +1216,11 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                   animation: _shakeAnimation,
                   builder: (context, child) {
                     return Transform.translate(
-                      offset: Offset(_shakeAnimation.value * 10 * (1 - 2 * _shakeAnimation.value).abs(), 0),
+                      offset: Offset(
+                          _shakeAnimation.value *
+                              10 *
+                              (1 - 2 * _shakeAnimation.value).abs(),
+                          0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(4, (index) {
@@ -1166,8 +1229,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                             width: 65.w,
                             height: 65.h,
                             decoration: BoxDecoration(
-                              gradient: isActive ? ThemeManager.of(context).primaryGradient : null,
-                              color: isActive ? null : ThemeManager.of(context).surfaceColor,
+                              gradient: isActive
+                                  ? ThemeManager.of(context).primaryGradient
+                                  : null,
+                              color: isActive
+                                  ? null
+                                  : ThemeManager.of(context).surfaceColor,
                               border: Border.all(
                                 color: isActive
                                     ? ThemeManager.of(context).primaryColor
@@ -1175,7 +1242,6 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                 width: isActive ? 2 : 1,
                               ),
                               borderRadius: BorderRadius.circular(10.r),
-                              // boxShadow: isActive ? ThemeManager.of(context).primaryShadow : null,
                             ),
                             child: TextField(
                               controller: _controllers[index],
@@ -1206,7 +1272,9 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                                 }
                                 setState(() {});
                               },
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                             ),
                           );
                         }),
@@ -1220,12 +1288,17 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                 // Error message
                 if (_errorMessage != null)
                   Container(
-                    // width: double.infinity,
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: ThemeManager.of(context).errorColor.withValues(alpha: 26),
+                      color: ThemeManager.of(context)
+                          .errorColor
+                          .withValues(alpha: 26),
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: ThemeManager.of(context).errorColor.withValues(alpha: 77), width: 1),
+                      border: Border.all(
+                          color: ThemeManager.of(context)
+                              .errorColor
+                              .withValues(alpha: 77),
+                          width: 1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1254,20 +1327,19 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
 
                 // Verify/Set PIN Button
                 Container(
-                  // width: double.infinity,
                   margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 2.h),
                   height: 56.h,
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).primaryGradient,
                     borderRadius: BorderRadius.circular(10.r),
-                    // boxShadow: ThemeManager.of(context).primaryShadow,
                   ),
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _verifyPin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
                     ),
                     child: _isLoading
                         ? SizedBox(
@@ -1300,21 +1372,12 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                   ),
                 ),
 
-                // const Spacer(),
-
                 // Security note
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 40.w, vertical: 2.h),
                   padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                      // color: ThemeManager.of(context).surfaceColor.withValues(alpha: 128),
-                      // borderRadius: BorderRadius.circular(12.r),
-                      // border: Border.all(color: ThemeManager.of(context).borderColor.withValues(alpha: 51), width: 1),
-                      ),
+                  decoration: BoxDecoration(),
                   child: Row(
-                    // mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Prbal.shield4,
@@ -1340,10 +1403,8 @@ class _PinVerificationScreenState extends ConsumerState<PinVerificationScreen> w
                 SizedBox(height: 24.h),
               ],
             ),
-            // ),
           ),
         ),
-        // ),
       ),
     );
   }

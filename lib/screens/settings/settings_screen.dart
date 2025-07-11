@@ -5,6 +5,9 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
+import 'package:prbal/models/auth/app_user.dart';
+import 'package:prbal/models/auth/user_requests.dart';
+import 'package:prbal/models/auth/user_type.dart';
 import 'package:prbal/services/api_service.dart';
 //
 import 'dart:io'; // Added for File operations in profile picture upload
@@ -64,7 +67,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProviderStateMixin {
+class _SettingsScreenState extends ConsumerState<SettingsScreen>
+    with TickerProviderStateMixin {
   // State variables
   bool _notificationsEnabled = true;
   bool _biometricsEnabled = false;
@@ -188,7 +192,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     // _logEnhancedThemeState(context, isDark);
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF8F9FA),
+      backgroundColor:
+          isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF8F9FA),
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -207,14 +212,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       SizedBox(height: 20.h),
 
                       // Loading Indicator
-                      if (_isLoadingData) const SettingsLoadingIndicatorWidget(),
+                      if (_isLoadingData)
+                        const SettingsLoadingIndicatorWidget(),
 
                       // Profile Section
                       ProfileSectionWidget(
                         onEditProfile: () => _showEditProfileBottomSheet(),
                         onViewProfile: () => _navigateToViewProfile(),
                         onProfilePictureEdit: (ImageSource source) async {
-                          debugPrint('🖼️ ProfileSectionWidget: Profile picture edit requested');
+                          debugPrint(
+                              '🖼️ ProfileSectionWidget: Profile picture edit requested');
                           debugPrint('🖼️ Image source: ${source.name}');
                           await _handleProfilePictureUpdate(source);
                         },
@@ -224,7 +231,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       AccountSettingsWidget(
                         userType: userType,
                         userData: userData,
-                        onUserTypeChange: () => UserTypeChangeHandler.showUserTypeChangeDialog(
+                        onUserTypeChange: () =>
+                            UserTypeChangeHandler.showUserTypeChangeDialog(
                           context: context,
                           ref: ref,
                           currentUserType: userType,
@@ -252,7 +260,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       ),
 
                       // Admin Controls
-                      if (userType == UserType.admin) const AdminControlsWidget(),
+                      if (userType == UserType.admin)
+                        const AdminControlsWidget(),
 
                       // Data & Storage
                       DataStorageSettingsWidget(
@@ -264,9 +273,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
                       // Tokens Management
                       TokensSettingsWidget(
-                        onActiveSessionsTapped: () => _showActiveSessionsBottomSheet(),
+                        onActiveSessionsTapped: () =>
+                            _showActiveSessionsBottomSheet(),
                         // onAccessTokensTapped: () => _showAccessTokensBottomSheet(),
-                        onRefreshTokenTapped: () => _showRefreshTokenBottomSheet(),
+                        onRefreshTokenTapped: () =>
+                            _showRefreshTokenBottomSheet(),
                         // onRevokeAllSessionsTapped: () => _showRevokeAllSessionsDialog(),
                       ),
 
@@ -351,7 +362,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   Future<void> _showClearCacheDialog() async {
     debugPrint('⚙️ SettingsScreen: Showing clear cache dialog');
 
-    final confirmed = await SettingsBottomSheets.showClearCacheBottomSheet(context);
+    final confirmed =
+        await SettingsBottomSheets.showClearCacheBottomSheet(context);
 
     if (confirmed == true && mounted) {
       // TODO: Implement cache clearing logic
@@ -436,7 +448,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   /// @param source ImageSource.camera for camera capture, ImageSource.gallery for gallery selection
   Future<void> _handleProfilePictureUpdate(ImageSource source) async {
     debugPrint('🖼️ SettingsScreen: Starting profile picture update');
-    debugPrint('🖼️ Image source: ${source == ImageSource.camera ? 'Camera' : 'Gallery'}');
+    debugPrint(
+        '🖼️ Image source: ${source == ImageSource.camera ? 'Camera' : 'Gallery'}');
 
     // Get current authentication state and services
     // final authState = ;
@@ -490,7 +503,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
               child: Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2D2D2D) : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF2D2D2D)
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Column(
@@ -507,7 +522,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF2D3748),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : const Color(0xFF2D3748),
                       ),
                     ),
                   ],
@@ -531,7 +548,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
         maxHeight: 1024, // Limit maximum height to 1024 pixels
       );
 
-      debugPrint('🖼️ Image picker result: ${pickedFile != null ? 'Image selected' : 'No image selected'}');
+      debugPrint(
+          '🖼️ Image picker result: ${pickedFile != null ? 'Image selected' : 'No image selected'}');
 
       // Check if user cancelled image selection
       if (pickedFile == null) {
@@ -562,7 +580,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       // Optional: Check file size limit (e.g., 5MB)
       const int maxFileSizeBytes = 5 * 1024 * 1024; // 5MB
       if (fileSize > maxFileSizeBytes) {
-        throw Exception('Image file too large. Please select an image smaller than 5MB.');
+        throw Exception(
+            'Image file too large. Please select an image smaller than 5MB.');
       }
 
       // Step 5: Upload profile image via API
@@ -597,11 +616,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
           debugPrint('🖼️ Response data keys: ${data.keys.toList()}');
 
           // Try different possible paths for the profile picture URL
-          newProfilePictureUrl = data['data']?['user']?['profile_picture'] as String? ??
-              data['user']?['profile_picture'] as String? ??
-              data['profile_picture'] as String? ??
-              data['profilePicture'] as String? ??
-              data['url'] as String?;
+          newProfilePictureUrl =
+              data['data']?['user']?['profile_picture'] as String? ??
+                  data['user']?['profile_picture'] as String? ??
+                  data['profile_picture'] as String? ??
+                  data['profilePicture'] as String? ??
+                  data['url'] as String?;
         } else if (uploadResponse.data is String) {
           newProfilePictureUrl = uploadResponse.data as String;
         }
@@ -610,10 +630,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
         if (newProfilePictureUrl != null && newProfilePictureUrl.isNotEmpty) {
           // Step 7: Update authentication state with new profile picture
-          debugPrint('🖼️ Updating authentication state with new profile picture');
+          debugPrint(
+              '🖼️ Updating authentication state with new profile picture');
 
           // final authNotifier = AuthenticationNotifier(UserService(ApiService()));
-          final updatedUserData = userData.copyWith(profilePicture: newProfilePictureUrl);
+          final updatedUserData =
+              userData.copyWith(profilePicture: newProfilePictureUrl);
 
           // debugPrint('🖼️ Updated user data keys: ${updatedUserData.keys.toList()}');
 
@@ -660,7 +682,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
           debugPrint('✅ Profile picture update completed successfully');
           debugPrint('🖼️ New profile picture URL: $newProfilePictureUrl');
         } else {
-          throw Exception('No profile picture URL received from server response');
+          throw Exception(
+              'No profile picture URL received from server response');
         }
       } else {
         throw Exception(uploadResponse.message);
@@ -729,7 +752,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   // ============================================================================
 
   /// Shows error snackbar
-  void _showErrorSnackBar(String message) => FeedbackUtils.showError(context: context, message: message);
+  void _showErrorSnackBar(String message) =>
+      FeedbackUtils.showError(context: context, message: message);
 
   // ============================================================================
   // ENHANCED USER TYPE CHANGE SERVICE METHODS
@@ -811,7 +835,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     required String context,
   }) {
     if (controller == null) {
-      debugPrint('🎮 SettingsScreen: No controller to dispose for $controllerName in $context');
+      debugPrint(
+          '🎮 SettingsScreen: No controller to dispose for $controllerName in $context');
       return;
     }
 
@@ -822,23 +847,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
           // Check if controller is still valid before disposing
           if (controller.text.isEmpty || controller.text.isNotEmpty) {
             // This is a safe way to check if controller is still valid
-            debugPrint('🎮 SettingsScreen: Disposing $controllerName in $context');
-            debugPrint('   📝 Controller text length: ${controller.text.length} characters');
+            debugPrint(
+                '🎮 SettingsScreen: Disposing $controllerName in $context');
+            debugPrint(
+                '   📝 Controller text length: ${controller.text.length} characters');
 
             // Dispose the controller
             controller.dispose();
 
-            debugPrint('✅ SettingsScreen: Successfully disposed $controllerName in $context');
+            debugPrint(
+                '✅ SettingsScreen: Successfully disposed $controllerName in $context');
           } else {
-            debugPrint('⚠️ SettingsScreen: Controller $controllerName already disposed in $context');
+            debugPrint(
+                '⚠️ SettingsScreen: Controller $controllerName already disposed in $context');
           }
         } catch (disposeError) {
-          debugPrint('❌ SettingsScreen: Error disposing $controllerName in $context: $disposeError');
+          debugPrint(
+              '❌ SettingsScreen: Error disposing $controllerName in $context: $disposeError');
           // Continue execution even if disposal fails to prevent app crashes
         }
       });
     } catch (e) {
-      debugPrint('❌ SettingsScreen: Failed to schedule disposal for $controllerName in $context: $e');
+      debugPrint(
+          '❌ SettingsScreen: Failed to schedule disposal for $controllerName in $context: $e');
     }
   }
 
@@ -856,7 +887,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     required Map<String, TextEditingController?> controllers,
     required String context,
   }) {
-    debugPrint('🎮 SettingsScreen: Disposing ${controllers.length} controllers in $context');
+    debugPrint(
+        '🎮 SettingsScreen: Disposing ${controllers.length} controllers in $context');
 
     int successCount = 0;
     int errorCount = 0;
@@ -874,7 +906,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
           );
           successCount++;
         } catch (e) {
-          debugPrint('❌ SettingsScreen: Failed to dispose $controllerName in $context: $e');
+          debugPrint(
+              '❌ SettingsScreen: Failed to dispose $controllerName in $context: $e');
           errorCount++;
         }
       }
@@ -882,9 +915,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       debugPrint('✅ SettingsScreen: Disposal summary for $context:');
       debugPrint('   ✅ Successful: $successCount');
       debugPrint('   ❌ Failed: $errorCount');
-      debugPrint('   📊 Success rate: ${((successCount / controllers.length) * 100).toStringAsFixed(1)}%');
+      debugPrint(
+          '   📊 Success rate: ${((successCount / controllers.length) * 100).toStringAsFixed(1)}%');
     } catch (e) {
-      debugPrint('❌ SettingsScreen: Critical error in batch disposal for $context: $e');
+      debugPrint(
+          '❌ SettingsScreen: Critical error in batch disposal for $context: $e');
     }
   }
 
@@ -947,9 +982,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
     try {
       _showEditProfileForm();
-      debugPrint('⚙️ SettingsScreen: Successfully opened edit profile bottom sheet');
+      debugPrint(
+          '⚙️ SettingsScreen: Successfully opened edit profile bottom sheet');
     } catch (e) {
-      debugPrint('❌ SettingsScreen: Failed to show edit profile bottom sheet: $e');
+      debugPrint(
+          '❌ SettingsScreen: Failed to show edit profile bottom sheet: $e');
 
       // Show error message to user
       if (mounted) {
@@ -985,7 +1022,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
@@ -1036,7 +1074,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : const Color(0xFF2D3748),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF2D3748),
                             ),
                           ),
                         ),
@@ -1068,11 +1108,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             ),
                           ),
                           child: ClipOval(
-                            child: profilePicture != null && profilePicture.isNotEmpty
+                            child: profilePicture != null &&
+                                    profilePicture.isNotEmpty
                                 ? Image.network(
                                     profilePicture,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Icon(
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
                                       getUserTypeIcon(userType),
                                       color: userTypeColor,
                                       size: 36.sp,
@@ -1102,7 +1144,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                                       style: TextStyle(
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.bold,
-                                        color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                        color: isDark
+                                            ? Colors.white
+                                            : const Color(0xFF2D3748),
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -1121,7 +1165,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
                               // User type badge
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w, vertical: 6.h),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -1231,7 +1276,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
     // Form key for validation
     final formKey = GlobalKey<FormState>();
-    final userTypeColor = ThemeManager.of(context).getUserTypeColor(userData.userType);
+    final userTypeColor =
+        ThemeManager.of(context).getUserTypeColor(userData.userType);
 
     // State management
     bool isLoading = false;
@@ -1242,7 +1288,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) => StatefulBuilder(
         builder: (context, setModalState) => Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             height: MediaQuery.of(context).size.height * 0.85,
             decoration: BoxDecoration(
@@ -1267,7 +1314,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
                 // Header
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                   child: Row(
                     children: [
                       Container(
@@ -1289,7 +1337,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : const Color(0xFF2D3748),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2D3748),
                           ),
                         ),
                       ),
@@ -1402,13 +1451,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       // Cancel button
                       Expanded(
                         child: TextButton(
-                          onPressed: isLoading ? null : () => Navigator.pop(context),
+                          onPressed:
+                              isLoading ? null : () => Navigator.pop(context),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 16.h),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.r),
                               side: BorderSide(
-                                color: isDark ? Colors.grey[600]! : Colors.grey[300]!,
+                                color: isDark
+                                    ? Colors.grey[600]!
+                                    : Colors.grey[300]!,
                               ),
                             ),
                           ),
@@ -1417,7 +1469,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
                             ),
                           ),
                         ),
@@ -1465,7 +1518,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                                   height: 20.h,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor:
+                                        const AlwaysStoppedAnimation<Color>(
+                                            Colors.white),
                                   ),
                                 )
                               : Text(
@@ -1554,7 +1609,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
               fontSize: 14.sp,
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
+            fillColor:
+                isDark ? const Color(0xFF374151) : const Color(0xFFF9FAFB),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
@@ -1631,8 +1687,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
         username: usernameController.text.trim(),
-        bio: bioController.text.trim().isEmpty ? null : bioController.text.trim(),
-        location: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
+        bio: bioController.text.trim().isEmpty
+            ? null
+            : bioController.text.trim(),
+        location: locationController.text.trim().isEmpty
+            ? null
+            : locationController.text.trim(),
       );
 
       debugPrint('⚙️ SettingsScreen: Sending profile update request');
@@ -1642,7 +1702,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
       final userService = UserService(ApiService());
 
       // Call API to update profile
-      final response = await userService.updateProfilePartial(updateRequest, authToken);
+      final response =
+          await userService.updateProfilePartial(updateRequest, authToken);
 
       // Close loading dialog
       if (mounted && Navigator.of(context).canPop()) {
@@ -1733,7 +1794,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   }
 
   /// Builds a stat item widget for the profile bottom sheet
-  Widget _buildStatItem(String label, String value, IconData icon, Color color, bool isDark) {
+  Widget _buildStatItem(
+      String label, String value, IconData icon, Color color, bool isDark) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -1809,9 +1871,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
       if (response.isSuccess && mounted) {
         final tokens = response.data ?? [];
-        _showTokensBottomSheet('Active Sessions', tokens, showRevokeOption: true);
+        _showTokensBottomSheet('Active Sessions', tokens,
+            showRevokeOption: true);
       } else {
-        _showErrorSnackBar('Failed to load active sessions: ${response.message}');
+        _showErrorSnackBar(
+            'Failed to load active sessions: ${response.message}');
       }
     } catch (e) {
       // Hide loading dialog
@@ -1879,7 +1943,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF7FAFC),
+                color:
+                    isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF7FAFC),
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                   color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
@@ -1903,7 +1968,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                         width: 8.w,
                         height: 8.h,
                         decoration: BoxDecoration(
-                          color: refreshToken != null ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+                          color: refreshToken != null
+                              ? const Color(0xFF48BB78)
+                              : const Color(0xFFE53E3E),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -1930,11 +1997,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                   Container(
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF000000) : Colors.grey[100],
+                      color:
+                          isDark ? const Color(0xFF000000) : Colors.grey[100],
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      refreshToken != null ? '${refreshToken.substring(0, 20)}...' : 'No refresh token available',
+                      refreshToken != null
+                          ? '${refreshToken.substring(0, 20)}...'
+                          : 'No refresh token available',
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontFamily: 'monospace',
@@ -1975,7 +2045,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   }
 
   /// Shows tokens bottom sheet with modern design
-  void _showTokensBottomSheet(String title, List<Map<String, dynamic>> tokens, {bool showRevokeOption = false}) {
+  void _showTokensBottomSheet(String title, List<Map<String, dynamic>> tokens,
+      {bool showRevokeOption = false}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -1993,7 +2064,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
             borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
             boxShadow: [
               BoxShadow(
-                color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : Colors.grey.withValues(alpha: 0.2),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -2061,7 +2134,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             style: TextStyle(
                               fontSize: 22.sp,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : const Color(0xFF2D3748),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF2D3748),
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -2070,7 +2145,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             '${tokens.length} ${tokens.length == 1 ? 'session' : 'sessions'} found',
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2110,10 +2186,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                         controller: scrollController,
                         padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                         itemCount: tokens.length,
-                        separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 16.h),
                         itemBuilder: (context, index) {
                           final token = tokens[index];
-                          return _buildModernTokenCard(token, isDark, showRevokeOption, index);
+                          return _buildModernTokenCard(
+                              token, isDark, showRevokeOption, index);
                         },
                         physics: const BouncingScrollPhysics(),
                       ),
@@ -2141,7 +2219,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
               width: 120.w,
               height: 120.h,
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
+                color:
+                    isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF7FAFC),
                 borderRadius: BorderRadius.circular(60.r),
                 border: Border.all(
                   color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
@@ -2182,15 +2261,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   }
 
   /// Builds modern individual token card with enhanced design
-  Widget _buildModernTokenCard(Map<String, dynamic> token, bool isDark, bool showRevokeOption, int index) {
+  Widget _buildModernTokenCard(Map<String, dynamic> token, bool isDark,
+      bool showRevokeOption, int index) {
     // Extract token data
-    final tokenId = token['id'] as String? ?? token['jti'] as String? ?? 'Unknown';
+    final tokenId =
+        token['id'] as String? ?? token['jti'] as String? ?? 'Unknown';
     final isActive = token['is_active'] as bool? ?? false;
     final createdAt = token['created_at'] as String?;
-    final lastUsed = token['last_used_at'] as String? ?? token['last_used'] as String?;
+    final lastUsed =
+        token['last_used_at'] as String? ?? token['last_used'] as String?;
     final deviceType = token['device_type'] as String? ?? 'unknown';
     final deviceName = token['device_name'] as String? ?? 'Unknown Device';
-    final deviceTypeDisplay = token['device_type_display'] as String? ?? 'Unknown';
+    final deviceTypeDisplay =
+        token['device_type_display'] as String? ?? 'Unknown';
     final ipAddress = token['ip_address'] as String?;
 
     // Device info (handle both nested and flat structures)
@@ -2198,7 +2281,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     // Safe token preview
     String getSafeTokenPreview(String tokenStr) {
       if (tokenStr.isEmpty || tokenStr == 'Unknown') return tokenStr;
-      return tokenStr.length > 12 ? '${tokenStr.substring(0, 12)}...' : tokenStr;
+      return tokenStr.length > 12
+          ? '${tokenStr.substring(0, 12)}...'
+          : tokenStr;
     }
 
     // Get device icon and color
@@ -2263,7 +2348,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
             ),
           ],
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.08),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -2312,7 +2399,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2D3748),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -2321,16 +2410,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
 
                             // Status badge
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 color: isActive
-                                    ? const Color(0xFF48BB78).withValues(alpha: 0.15)
-                                    : const Color(0xFFE53E3E).withValues(alpha: 0.15),
+                                    ? const Color(0xFF48BB78)
+                                        .withValues(alpha: 0.15)
+                                    : const Color(0xFFE53E3E)
+                                        .withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
                                   color: isActive
-                                      ? const Color(0xFF48BB78).withValues(alpha: 0.3)
-                                      : const Color(0xFFE53E3E).withValues(alpha: 0.3),
+                                      ? const Color(0xFF48BB78)
+                                          .withValues(alpha: 0.3)
+                                      : const Color(0xFFE53E3E)
+                                          .withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                               ),
@@ -2341,7 +2435,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                                     width: 6.w,
                                     height: 6.h,
                                     decoration: BoxDecoration(
-                                      color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+                                      color: isActive
+                                          ? const Color(0xFF48BB78)
+                                          : const Color(0xFFE53E3E),
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -2351,7 +2447,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w600,
-                                      color: isActive ? const Color(0xFF48BB78) : const Color(0xFFE53E3E),
+                                      color: isActive
+                                          ? const Color(0xFF48BB78)
+                                          : const Color(0xFFE53E3E),
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -2366,15 +2464,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       if (showRevokeOption && isActive)
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
+                            color:
+                                const Color(0xFFE53E3E).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
+                              color: const Color(0xFFE53E3E)
+                                  .withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
                           child: IconButton(
-                            onPressed: () => _showRevokeTokenDialog(tokenId, deviceTypeDisplay),
+                            onPressed: () => _showRevokeTokenDialog(
+                                tokenId, deviceTypeDisplay),
                             icon: Icon(
                               Prbal.trash,
                               color: const Color(0xFFE53E3E),
@@ -2397,7 +2498,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                   Container(
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF8F9FA),
+                      color: isDark
+                          ? const Color(0xFF1A1A1A)
+                          : const Color(0xFFF8F9FA),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
@@ -2412,7 +2515,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                             Icon(
                               Prbal.key,
                               size: 16.sp,
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
                             ),
                             SizedBox(width: 8.w),
                             Text(
@@ -2420,7 +2524,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[600],
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -2428,12 +2534,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                         ),
                         SizedBox(height: 8.h),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 8.h),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF000000) : Colors.grey[50],
+                            color: isDark
+                                ? const Color(0xFF000000)
+                                : Colors.grey[50],
                             borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+                              color: isDark
+                                  ? Colors.grey[800]!
+                                  : Colors.grey[200]!,
                               width: 1,
                             ),
                           ),
@@ -2445,13 +2556,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     fontFamily: 'monospace',
-                                    color: isDark ? Colors.white70 : Colors.grey[700],
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.grey[700],
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => _copyToClipboard(tokenId, 'Session ID copied'),
+                                onTap: () => _copyToClipboard(
+                                    tokenId, 'Session ID copied'),
                                 child: Container(
                                   padding: EdgeInsets.all(6.w),
                                   decoration: BoxDecoration(
@@ -2482,7 +2596,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                         child: _buildInfoCard(
                           icon: Prbal.laptop,
                           title: 'Device',
-                          value: deviceName.replaceAll('Dart/3.8 (dart:io)', 'Mobile App'),
+                          value: deviceName.replaceAll(
+                              'Dart/3.8 (dart:io)', 'Mobile App'),
                           isDark: isDark,
                         ),
                       ),
@@ -2515,7 +2630,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                               isDark: isDark,
                             ),
                           ),
-                        if (createdAt != null && lastUsed != null) SizedBox(width: 12.w),
+                        if (createdAt != null && lastUsed != null)
+                          SizedBox(width: 12.w),
 
                         // Last used
                         if (lastUsed != null)
@@ -2657,7 +2773,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
                       color: isDark ? Colors.white : const Color(0xFF2D3748),
                     ),
                   ),
-                  const TextSpan(text: ' and invalidate the session. This action cannot be undone.'),
+                  const TextSpan(
+                      text:
+                          ' and invalidate the session. This action cannot be undone.'),
                 ],
               ),
             ),
@@ -2812,7 +2930,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
     final userService = UserService(ApiService());
 
     try {
-      final response = await userService.revokeToken(tokenId, HiveService.getAuthToken());
+      final response =
+          await userService.revokeToken(tokenId, HiveService.getAuthToken());
 
       if (mounted) {
         if (response.isSuccess) {
@@ -2830,10 +2949,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with TickerProv
   }
 
   /// Shows authentication required snackbar
-  void _showAuthenticationRequiredSnackBar() => FeedbackUtils.showAuthenticationRequired(context: context);
+  void _showAuthenticationRequiredSnackBar() =>
+      FeedbackUtils.showAuthenticationRequired(context: context);
 
   /// Shows success snackbar
-  void _showSuccessSnackBar(String message) => FeedbackUtils.showSuccess(context: context, message: message);
+  void _showSuccessSnackBar(String message) =>
+      FeedbackUtils.showSuccess(context: context, message: message);
 
   /// Formats datetime string
   // String _formatDateTime(String dateTimeStr) => SettingsUtils.formatDateTime(dateTimeStr);

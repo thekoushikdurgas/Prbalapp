@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:prbal/services/user_service.dart';
+import 'package:prbal/models/auth/app_user.dart';
+import 'package:prbal/models/auth/user_type.dart';
+import 'package:prbal/utils/debug_logger.dart';
 
 /// Service class for managing Hive database operations
 /// Enhanced with comprehensive debug logging for better development experience
@@ -39,68 +40,73 @@ class HiveService {
   /// Note: This implementation uses JSON storage for AppUser objects to avoid
   /// the need for Hive adapters, which simplifies the storage approach
   static Future<void> init() async {
-    debugPrint('📦 HiveService: Initializing Hive database and opening boxes');
-    debugPrint('📦 HiveService: Using JSON storage approach - no custom adapters needed');
+    DebugLogger.storage('Initializing Hive database and opening boxes');
+    DebugLogger.storage(
+        'Using JSON storage approach - no custom adapters needed');
 
     try {
       await Hive.initFlutter();
-      debugPrint('📦 HiveService: Hive Flutter initialized successfully');
+      DebugLogger.storage('Hive Flutter initialized successfully');
 
       _introBox = await Hive.openBox(_introBoxName);
-      debugPrint('📦 HiveService: Intro box opened successfully (${_introBox.keys.length} keys)');
+      DebugLogger.storage(
+          'Intro box opened successfully (${_introBox.keys.length} keys)');
 
       _authBox = await Hive.openBox(_authBoxName);
-      debugPrint('📦 HiveService: Auth box opened successfully (${_authBox.keys.length} keys)');
+      DebugLogger.storage(
+          'Auth box opened successfully (${_authBox.keys.length} keys)');
 
       _userBox = await Hive.openBox(_userBoxName);
-      debugPrint('📦 HiveService: User box opened successfully (${_userBox.keys.length} keys)');
+      DebugLogger.storage(
+          'User box opened successfully (${_userBox.keys.length} keys)');
 
-      debugPrint('📦 HiveService: All Hive boxes initialized successfully');
-      debugPrint('📦 HiveService: Storage approach: JSON-based (AppUser ↔ Map<String, dynamic>)');
+      DebugLogger.success('All Hive boxes initialized successfully');
+      DebugLogger.storage(
+          'Storage approach: JSON-based (AppUser ↔ Map<String, dynamic>)');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to initialize Hive - $e');
+      DebugLogger.error('Failed to initialize Hive - $e');
       throw Exception('Failed to initialize Hive: $e');
     }
   }
 
   /// Close all boxes (call this when app is closing)
   static Future<void> close() async {
-    debugPrint('📦 HiveService: Closing all Hive boxes');
+    DebugLogger.storage('Closing all Hive boxes');
 
     try {
       await _introBox.close();
-      debugPrint('📦 HiveService: Intro box closed');
+      DebugLogger.storage('Intro box closed');
 
       await _authBox.close();
-      debugPrint('📦 HiveService: Auth box closed');
+      DebugLogger.storage('Auth box closed');
 
       await _userBox.close();
-      debugPrint('📦 HiveService: User box closed');
+      DebugLogger.storage('User box closed');
 
-      debugPrint('📦 HiveService: All Hive boxes closed successfully');
+      DebugLogger.success('All Hive boxes closed successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to close Hive boxes - $e');
+      DebugLogger.error('Failed to close Hive boxes - $e');
       throw Exception('Failed to close Hive boxes: $e');
     }
   }
 
   /// Clear all data (useful for logout or reset)
   static Future<void> clearAll() async {
-    debugPrint('📦 HiveService: Clearing all Hive data');
+    DebugLogger.storage('Clearing all Hive data');
 
     try {
       await _introBox.clear();
-      debugPrint('📦 HiveService: Intro box cleared');
+      DebugLogger.storage('Intro box cleared');
 
       await _authBox.clear();
-      debugPrint('📦 HiveService: Auth box cleared');
+      DebugLogger.storage('Auth box cleared');
 
       await _userBox.clear();
-      debugPrint('📦 HiveService: User box cleared');
+      DebugLogger.storage('User box cleared');
 
-      debugPrint('📦 HiveService: All Hive data cleared successfully');
+      DebugLogger.success('All Hive data cleared successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to clear Hive data - $e');
+      DebugLogger.error('Failed to clear Hive data - $e');
       throw Exception('Failed to clear Hive data: $e');
     }
   }
@@ -109,40 +115,41 @@ class HiveService {
 
   /// Check if user has watched the intro/onboarding
   static bool hasIntroBeenWatched() {
-    debugPrint('📦 HiveService: Checking if intro has been watched');
+    DebugLogger.info('Checking if intro has been watched');
 
     try {
-      final result = _introBox.get(_introWatchedKey, defaultValue: false) as bool;
-      debugPrint('📦 HiveService: Intro watched status: $result');
+      final result =
+          _introBox.get(_introWatchedKey, defaultValue: false) as bool;
+      DebugLogger.info('Intro watched status: $result');
       return result;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to check intro watched status - $e');
+      DebugLogger.error('Failed to check intro watched status - $e');
       return false;
     }
   }
 
   /// Mark intro as watched
   static Future<void> setIntroWatched() async {
-    debugPrint('📦 HiveService: Setting intro as watched');
+    DebugLogger.info('Setting intro as watched');
 
     try {
       await _introBox.put(_introWatchedKey, true);
-      debugPrint('📦 HiveService: Intro marked as watched successfully');
+      DebugLogger.info('Intro marked as watched successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set intro watched - $e');
+      DebugLogger.error('Failed to set intro watched - $e');
       throw Exception('Failed to set intro watched: $e');
     }
   }
 
   /// Reset intro watched status (for testing or reset functionality)
   static Future<void> resetIntroWatched() async {
-    debugPrint('📦 HiveService: Resetting intro watched status');
+    DebugLogger.intro('Resetting intro watched status');
 
     try {
       await _introBox.put(_introWatchedKey, false);
-      debugPrint('📦 HiveService: Intro watched status reset successfully');
+      DebugLogger.intro('Intro watched status reset successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to reset intro watched - $e');
+      DebugLogger.error('Failed to reset intro watched - $e');
       throw Exception('Failed to reset intro watched: $e');
     }
   }
@@ -151,69 +158,70 @@ class HiveService {
 
   /// Check if user has selected a language
   static bool isLanguageSelected() {
-    debugPrint('📦 HiveService: Checking if language has been selected');
+    DebugLogger.intro('Checking if language has been selected');
 
     try {
-      final result = _introBox.get(_languageSelectedKey, defaultValue: false) as bool;
-      debugPrint('📦 HiveService: Language selected status: $result');
+      final result =
+          _introBox.get(_languageSelectedKey, defaultValue: false) as bool;
+      DebugLogger.intro('Language selected status: $result');
       return result;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to check language selected status - $e');
+      DebugLogger.error('Failed to check language selected status - $e');
       return false;
     }
   }
 
   /// Mark language as selected
   static Future<void> setLanguageSelected() async {
-    debugPrint('📦 HiveService: Setting language as selected');
+    DebugLogger.intro('Setting language as selected');
 
     try {
       await _introBox.put(_languageSelectedKey, true);
-      debugPrint('📦 HiveService: Language marked as selected successfully');
+      DebugLogger.intro('Language marked as selected successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set language selected - $e');
+      DebugLogger.error('Failed to set language selected - $e');
       throw Exception('Failed to set language selected: $e');
     }
   }
 
   /// Get selected language code
   static String? getSelectedLanguage() {
-    debugPrint('📦 HiveService: Getting selected language code');
+    DebugLogger.intro('Getting selected language code');
 
     try {
       final language = _introBox.get(_selectedLanguageKey) as String?;
-      debugPrint('📦 HiveService: Selected language: ${language ?? 'none'}');
+      DebugLogger.intro('Selected language: ${language ?? 'none'}');
       return language;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get selected language - $e');
+      DebugLogger.error('Failed to get selected language - $e');
       return null;
     }
   }
 
   /// Set selected language
   static Future<void> setSelectedLanguage(String languageCode) async {
-    debugPrint('📦 HiveService: Setting selected language: $languageCode');
+    DebugLogger.intro('Setting selected language: $languageCode');
 
     try {
       await _introBox.put(_selectedLanguageKey, languageCode);
       await setLanguageSelected();
-      debugPrint('📦 HiveService: Language set successfully: $languageCode');
+      DebugLogger.intro('Language set successfully: $languageCode');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set selected language - $e');
+      DebugLogger.error('Failed to set selected language - $e');
       throw Exception('Failed to set selected language: $e');
     }
   }
 
   /// Reset language selection (for testing or reset functionality)
   static Future<void> resetLanguageSelection() async {
-    debugPrint('📦 HiveService: Resetting language selection');
+    DebugLogger.intro('Resetting language selection');
 
     try {
       await _introBox.put(_languageSelectedKey, false);
       await _introBox.delete(_selectedLanguageKey);
-      debugPrint('📦 HiveService: Language selection reset successfully');
+      DebugLogger.intro('Language selection reset successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to reset language selection - $e');
+      DebugLogger.error('Failed to reset language selection - $e');
       throw Exception('Failed to reset language selection: $e');
     }
   }
@@ -224,25 +232,26 @@ class HiveService {
   /// This method checks the login flag AND validates that user data actually exists
   /// A user is only considered logged in if both conditions are met
   static bool isLoggedIn() {
-    debugPrint('📦 HiveService: ====== COMPREHENSIVE LOGIN STATUS CHECK ======');
+    DebugLogger.auth('====== COMPREHENSIVE LOGIN STATUS CHECK ======');
 
     try {
       // Check the basic login flag
-      final loginFlag = _authBox.get(_isLoggedInKey, defaultValue: false) as bool;
-      debugPrint('📦 HiveService: Basic login flag: $loginFlag');
+      final loginFlag =
+          _authBox.get(_isLoggedInKey, defaultValue: false) as bool;
+      DebugLogger.auth('Basic login flag: $loginFlag');
 
       if (!loginFlag) {
-        debugPrint('📦 HiveService: ❌ User not logged in (login flag is false)');
+        DebugLogger.auth('❌ User not logged in (login flag is false)');
         return false;
       }
 
       // Check if user data actually exists
       final hasUserData = _hasUserData();
-      debugPrint('📦 HiveService: User data exists: $hasUserData');
+      DebugLogger.auth('User data exists: $hasUserData');
 
       // Check if auth token exists
       final hasAuthToken = _hasAuthToken();
-      debugPrint('📦 HiveService: Auth token exists: $hasAuthToken');
+      DebugLogger.auth('Auth token exists: $hasAuthToken');
 
       // For a user to be truly logged in, they need:
       // 1. Login flag = true
@@ -250,46 +259,49 @@ class HiveService {
       // Auth token is optional (can be refreshed)
       final isActuallyLoggedIn = loginFlag && hasUserData;
 
-      debugPrint('📦 HiveService: ====== LOGIN STATUS SUMMARY ======');
-      debugPrint('📦 HiveService: Login flag: $loginFlag');
-      debugPrint('📦 HiveService: Has user data: $hasUserData');
-      debugPrint('📦 HiveService: Has auth token: $hasAuthToken');
-      debugPrint('📦 HiveService: Final login status: $isActuallyLoggedIn');
+      DebugLogger.auth('====== LOGIN STATUS SUMMARY ======');
+      DebugLogger.auth('Login flag: $loginFlag');
+      DebugLogger.auth('Has user data: $hasUserData');
+      DebugLogger.auth('Has auth token: $hasAuthToken');
+      DebugLogger.auth('Final login status: $isActuallyLoggedIn');
 
       if (loginFlag && !hasUserData) {
-        debugPrint('📦 HiveService: ⚠️ INCONSISTENT STATE: Login flag is true but no user data exists');
-        debugPrint('📦 HiveService: This suggests a previous login session was not properly cleaned up');
-        debugPrint('📦 HiveService: User will be directed to welcome screen to re-authenticate');
+        DebugLogger.auth(
+            '⚠️ INCONSISTENT STATE: Login flag is true but no user data exists');
+        DebugLogger.auth(
+            'This suggests a previous login session was not properly cleaned up');
+        DebugLogger.auth(
+            'User will be directed to welcome screen to re-authenticate');
       }
 
       return isActuallyLoggedIn;
     } catch (e) {
-      debugPrint('📦 HiveService: ❌ Failed to check login status - $e');
-      debugPrint('📦 HiveService: Defaulting to not logged in for safety');
+      DebugLogger.error('Failed to check login status - $e');
+      DebugLogger.error('Defaulting to not logged in for safety');
       return false;
     }
   }
 
   /// Set user login status
   static Future<void> setLoggedIn(bool isLoggedIn) async {
-    debugPrint('📦 HiveService: Setting user login status: $isLoggedIn');
+    DebugLogger.auth('Setting user login status: $isLoggedIn');
 
     try {
       await _authBox.put(_isLoggedInKey, isLoggedIn);
       if (isLoggedIn) {
         await _authBox.put(_lastLoginKey, DateTime.now().toIso8601String());
-        debugPrint('📦 HiveService: Last login timestamp updated');
+        DebugLogger.auth('Last login timestamp updated');
       }
-      debugPrint('📦 HiveService: Login status set successfully: $isLoggedIn');
+      DebugLogger.auth('Login status set successfully: $isLoggedIn');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set login status - $e');
+      DebugLogger.error('Failed to set login status - $e');
       throw Exception('Failed to set login status: $e');
     }
   }
 
   /// Get auth token
   static String getAuthToken() {
-    debugPrint('📦 HiveService: Getting auth token');
+    DebugLogger.auth('Getting auth token');
 
     try {
       String? token = _authBox.get(_authTokenKey);
@@ -298,115 +310,212 @@ class HiveService {
       }
       return token;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get auth token - $e');
+      DebugLogger.error('Failed to get auth token - $e');
       throw Exception('Auth token not found');
+    }
+  }
+
+  /// Get AuthTokens object from Hive
+  /// Returns AuthTokens object containing both access and refresh tokens
+  static AuthTokens? getAuthTokens() {
+    DebugLogger.auth('Getting AuthTokens object');
+
+    try {
+      final accessToken = _authBox.get(_authTokenKey) as String?;
+      final refreshToken = _authBox.get(_refreshTokenKey) as String?;
+
+      if (accessToken == null || accessToken.isEmpty) {
+        DebugLogger.auth('No access token found');
+        return null;
+      }
+
+      final tokens = AuthTokens(
+        accessToken: accessToken,
+        refreshToken: refreshToken ?? '',
+      );
+
+      DebugLogger.auth('AuthTokens retrieved successfully');
+      DebugLogger.auth('Access token length: ${accessToken.length}');
+      DebugLogger.auth(
+          'Has refresh token: ${refreshToken?.isNotEmpty ?? false}');
+
+      return tokens;
+    } catch (e) {
+      DebugLogger.error('Failed to get AuthTokens - $e');
+      return null;
+    }
+  }
+
+  /// Save AuthTokens object to Hive
+  /// Saves both access and refresh tokens from AuthTokens object
+  static Future<void> saveAuthTokens(AuthTokens tokens) async {
+    DebugLogger.auth('Saving AuthTokens object');
+    DebugLogger.auth('Access token length: ${tokens.accessToken.length}');
+    DebugLogger.auth('Has refresh token: ${tokens.refreshToken.isNotEmpty}');
+
+    try {
+      if (tokens.accessToken.isNotEmpty) {
+        await _authBox.put(_authTokenKey, tokens.accessToken);
+        DebugLogger.auth('Access token saved successfully');
+      }
+
+      if (tokens.refreshToken.isNotEmpty) {
+        await _authBox.put(_refreshTokenKey, tokens.refreshToken);
+        DebugLogger.auth('Refresh token saved successfully');
+      }
+
+      DebugLogger.auth('AuthTokens saved successfully');
+    } catch (e) {
+      DebugLogger.error('Failed to save AuthTokens - $e');
+      throw Exception('Failed to save AuthTokens: $e');
     }
   }
 
   /// Set auth token
   static Future<void> setAuthToken(String token) async {
-    debugPrint('📦 HiveService: Setting auth token (length: ${token.length})');
+    DebugLogger.auth('Setting auth token (length: ${token.length})');
 
     try {
       await _authBox.put(_authTokenKey, token);
-      debugPrint('📦 HiveService: Auth token set successfully');
+      DebugLogger.auth('Auth token set successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set auth token - $e');
+      DebugLogger.error('Failed to set auth token - $e');
       throw Exception('Failed to set auth token: $e');
     }
   }
 
   /// Remove auth token
   static Future<void> removeAuthToken() async {
-    debugPrint('📦 HiveService: Removing auth token');
+    DebugLogger.auth('Removing auth token');
 
     try {
       await _authBox.delete(_authTokenKey);
-      debugPrint('📦 HiveService: Auth token removed successfully');
+      DebugLogger.auth('Auth token removed successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to remove auth token - $e');
+      DebugLogger.error('Failed to remove auth token - $e');
       throw Exception('Failed to remove auth token: $e');
     }
   }
 
   /// Get refresh token
   static String? getRefreshToken() {
-    debugPrint('📦 HiveService: Getting refresh token');
+    DebugLogger.auth('Getting refresh token');
 
     try {
       final token = _authBox.get(_refreshTokenKey) as String?;
-      debugPrint('📦 HiveService: Refresh token exists: ${token != null}');
+      DebugLogger.auth('Refresh token exists: ${token != null}');
       return token;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get refresh token - $e');
+      DebugLogger.error('Failed to get refresh token - $e');
       return null;
     }
   }
 
   /// Set refresh token
   static Future<void> setRefreshToken(String token) async {
-    debugPrint('📦 HiveService: Setting refresh token (length: ${token.length})');
+    DebugLogger.auth('Setting refresh token (length: ${token.length})');
 
     try {
       await _authBox.put(_refreshTokenKey, token);
-      debugPrint('📦 HiveService: Refresh token set successfully');
+      DebugLogger.auth('Refresh token set successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set refresh token - $e');
+      DebugLogger.error('Failed to set refresh token - $e');
       throw Exception('Failed to set refresh token: $e');
     }
   }
 
   /// Remove refresh token
   static Future<void> removeRefreshToken() async {
-    debugPrint('📦 HiveService: Removing refresh token');
+    DebugLogger.auth('Removing refresh token');
 
     try {
       await _authBox.delete(_refreshTokenKey);
-      debugPrint('📦 HiveService: Refresh token removed successfully');
+      DebugLogger.auth('Refresh token removed successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to remove refresh token - $e');
+      DebugLogger.error('Failed to remove refresh token - $e');
       throw Exception('Failed to remove refresh token: $e');
+    }
+  }
+
+  /// Remove all authentication tokens
+  /// Clears both access and refresh tokens from storage
+  static Future<void> removeAllTokens() async {
+    DebugLogger.auth('Removing all authentication tokens');
+
+    try {
+      await _authBox.delete(_authTokenKey);
+      await _authBox.delete(_refreshTokenKey);
+      DebugLogger.auth('All authentication tokens removed successfully');
+    } catch (e) {
+      DebugLogger.error('Failed to remove all tokens - $e');
+      throw Exception('Failed to remove all tokens: $e');
+    }
+  }
+
+  /// Check if we have valid authentication tokens
+  /// Returns true if both access token exists, refresh token is optional
+  static bool hasValidTokens() {
+    DebugLogger.auth('Checking for valid authentication tokens');
+
+    try {
+      final accessToken = _authBox.get(_authTokenKey) as String?;
+      final hasAccessToken = accessToken != null && accessToken.isNotEmpty;
+
+      DebugLogger.auth('Has access token: $hasAccessToken');
+
+      if (hasAccessToken) {
+        final refreshToken = _authBox.get(_refreshTokenKey) as String?;
+        DebugLogger.auth(
+            'Has refresh token: ${refreshToken?.isNotEmpty ?? false}');
+      }
+
+      return hasAccessToken;
+    } catch (e) {
+      DebugLogger.error('Error checking tokens: $e');
+      return false;
     }
   }
 
   /// Get stored phone number
   static String? getPhoneNumber() {
-    debugPrint('📦 HiveService: Getting stored phone number');
+    DebugLogger.auth('Getting stored phone number');
 
     try {
       final phoneNumber = _authBox.get(_phoneNumberKey) as String?;
-      debugPrint('📦 HiveService: Phone number exists: ${phoneNumber != null}');
+      DebugLogger.auth('Phone number exists: ${phoneNumber != null}');
       return phoneNumber;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get phone number - $e');
+      DebugLogger.error('Failed to get phone number - $e');
       return null;
     }
   }
 
   /// Set phone number
   static Future<void> setPhoneNumber(String phoneNumber) async {
-    debugPrint('📦 HiveService: Setting phone number: ${phoneNumber.substring(0, 3)}***');
+    DebugLogger.auth('Setting phone number: ${phoneNumber.substring(0, 3)}***');
 
     try {
       await _authBox.put(_phoneNumberKey, phoneNumber);
-      debugPrint('📦 HiveService: Phone number set successfully');
+      DebugLogger.auth('Phone number set successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to set phone number - $e');
+      DebugLogger.error('Failed to set phone number - $e');
       throw Exception('Failed to set phone number: $e');
     }
   }
 
   /// Get last login date
   static DateTime? getLastLogin() {
-    debugPrint('📦 HiveService: Getting last login date');
+    DebugLogger.auth('Getting last login date');
 
     try {
       final lastLoginStr = _authBox.get(_lastLoginKey) as String?;
-      final lastLogin = lastLoginStr != null ? DateTime.parse(lastLoginStr) : null;
-      debugPrint('📦 HiveService: Last login: ${lastLogin?.toString().substring(0, 19) ?? 'never'}');
+      final lastLogin =
+          lastLoginStr != null ? DateTime.parse(lastLoginStr) : null;
+      DebugLogger.auth(
+          'Last login: ${lastLogin?.toString().substring(0, 19) ?? 'never'}');
       return lastLogin;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get last login - $e');
+      DebugLogger.error('Failed to get last login - $e');
       return null;
     }
   }
@@ -416,19 +525,20 @@ class HiveService {
   /// Save user data
   /// Stores AppUser data as JSON Map to avoid Hive adapter requirements
   static Future<void> saveUserData(AppUser userData) async {
-    debugPrint('📦 HiveService: Saving user data with ${userData.toJson().keys.length} fields');
-    debugPrint('📦 HiveService: Converting AppUser to JSON for Hive storage');
+    DebugLogger.user(
+        'Saving user data with ${userData.toJson().keys.length} fields');
+    DebugLogger.user('Converting AppUser to JSON for Hive storage');
 
     try {
       // Convert AppUser to JSON Map for Hive storage
       final userDataJson = userData.toJson();
-      debugPrint('📦 HiveService: User data JSON keys: ${userDataJson.keys.toList()}');
-      debugPrint('📦 HiveService: User type in JSON: ${userDataJson['user_type']}');
+      DebugLogger.user('User data JSON keys: ${userDataJson.keys.toList()}');
+      DebugLogger.user('User type in JSON: ${userDataJson['user_type']}');
 
       await _userBox.put(_userDataKey, userDataJson);
-      debugPrint('📦 HiveService: User data saved successfully as JSON');
+      DebugLogger.user('User data saved successfully as JSON');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to save user data - $e');
+      DebugLogger.error('Failed to save user data - $e');
       throw Exception('Failed to save user data: $e');
     }
   }
@@ -438,14 +548,14 @@ class HiveService {
   /// WARNING: This method throws an exception if no user data is found
   /// Use getUserDataSafe() for safer access that returns null instead
   static AppUser getUserData() {
-    debugPrint('📦 HiveService: Getting user data (UNSAFE - throws exception)');
+    DebugLogger.user('Getting user data (UNSAFE - throws exception)');
 
     try {
       final userData = _userBox.get(_userDataKey);
-      debugPrint('📦 HiveService: Raw user data type: ${userData.runtimeType}');
+      DebugLogger.user('Raw user data type: ${userData.runtimeType}');
 
       if (userData == null) {
-        debugPrint('📦 HiveService: No user data found in Hive');
+        DebugLogger.user('No user data found in Hive');
         throw Exception("No user data found");
       }
 
@@ -456,26 +566,27 @@ class HiveService {
       } else if (userData is Map) {
         userDataMap = Map<String, dynamic>.from(userData);
       } else {
-        debugPrint('📦 HiveService: Unexpected user data format: ${userData.runtimeType}');
+        DebugLogger.user(
+            'Unexpected user data format: ${userData.runtimeType}');
         throw Exception("Invalid user data format");
       }
 
-      debugPrint('📦 HiveService: User data map keys: ${userDataMap.keys.toList()}');
-      debugPrint('📦 HiveService: User type from storage: ${userDataMap['user_type']}');
+      DebugLogger.user('User data map keys: ${userDataMap.keys.toList()}');
+      DebugLogger.user('User type from storage: ${userDataMap['user_type']}');
 
       if (userDataMap.isEmpty) {
-        debugPrint('📦 HiveService: User data map is empty');
+        DebugLogger.user('User data map is empty');
         throw Exception("User data is empty");
       }
 
       final appUser = AppUser.fromJson(userDataMap);
-      debugPrint('📦 HiveService: Successfully converted JSON to AppUser');
-      debugPrint('📦 HiveService: User ID: ${appUser.id}');
-      debugPrint('📦 HiveService: User type: ${appUser.userType}');
+      DebugLogger.user('Successfully converted JSON to AppUser');
+      DebugLogger.user('User ID: ${appUser.id}');
+      DebugLogger.user('User type: ${appUser.userType}');
 
       return appUser;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get user data - $e');
+      DebugLogger.error('Failed to get user data - $e');
       throw Exception("Failed to get user data: $e");
     }
   }
@@ -484,16 +595,16 @@ class HiveService {
   /// Returns null if no user data is found or if there's an error
   /// This is the preferred method for checking user data existence
   static AppUser? getUserDataSafe() {
-    debugPrint('📦 HiveService: ====== SAFELY GETTING USER DATA ======');
-    debugPrint('📦 HiveService: This method returns null instead of throwing exceptions');
+    DebugLogger.user('====== SAFELY GETTING USER DATA ======');
+    DebugLogger.user('This method returns null instead of throwing exceptions');
 
     try {
       final userData = _userBox.get(_userDataKey);
-      debugPrint('📦 HiveService: Raw user data type: ${userData.runtimeType}');
-      debugPrint('📦 HiveService: User data exists: ${userData != null}');
+      DebugLogger.user('Raw user data type: ${userData.runtimeType}');
+      DebugLogger.user('User data exists: ${userData != null}');
 
       if (userData == null) {
-        debugPrint('📦 HiveService: No user data found in Hive - returning null');
+        DebugLogger.user('No user data found in Hive - returning null');
         return null;
       }
 
@@ -501,57 +612,61 @@ class HiveService {
       Map<String, dynamic> userDataMap;
       if (userData is Map<String, dynamic>) {
         userDataMap = userData;
-        debugPrint('📦 HiveService: Data is already Map<String, dynamic>');
+        DebugLogger.user('Data is already Map<String, dynamic>');
       } else if (userData is Map) {
         userDataMap = Map<String, dynamic>.from(userData);
-        debugPrint('📦 HiveService: Converted Map to Map<String, dynamic>');
+        DebugLogger.user('Converted Map to Map<String, dynamic>');
       } else {
-        debugPrint('📦 HiveService: ❌ Unexpected user data format: ${userData.runtimeType}');
-        debugPrint('📦 HiveService: Expected Map but got ${userData.runtimeType} - returning null');
+        DebugLogger.user(
+            '❌ Unexpected user data format: ${userData.runtimeType}');
+        DebugLogger.user(
+            'Expected Map but got ${userData.runtimeType} - returning null');
         return null;
       }
 
-      debugPrint('📦 HiveService: User data map keys: ${userDataMap.keys.toList()}');
-      debugPrint('📦 HiveService: User type from storage: ${userDataMap['user_type']}');
-      debugPrint('📦 HiveService: User data map size: ${userDataMap.length} fields');
+      DebugLogger.user('User data map keys: ${userDataMap.keys.toList()}');
+      DebugLogger.user('User type from storage: ${userDataMap['user_type']}');
+      DebugLogger.user('User data map size: ${userDataMap.length} fields');
 
       if (userDataMap.isEmpty) {
-        debugPrint('📦 HiveService: ❌ User data map is empty - returning null');
+        DebugLogger.user('❌ User data map is empty - returning null');
         return null;
       }
 
       // Attempt to convert to AppUser
-      debugPrint('📦 HiveService: Converting JSON map to AppUser object...');
+      DebugLogger.user('Converting JSON map to AppUser object...');
       final appUser = AppUser.fromJson(userDataMap);
 
-      debugPrint('📦 HiveService: ✅ Successfully converted JSON to AppUser');
-      debugPrint('📦 HiveService: User ID: ${appUser.id}');
-      debugPrint('📦 HiveService: Username: ${appUser.username}');
-      debugPrint('📦 HiveService: User type: ${appUser.userType}');
-      debugPrint('📦 HiveService: Display name: ${appUser.firstName} ${appUser.lastName}');
-      debugPrint('📦 HiveService: Phone: ${appUser.phoneNumber}');
-      debugPrint('📦 HiveService: Email: ${appUser.email}');
-      debugPrint('📦 HiveService: Is verified: ${appUser.isVerified}');
+      DebugLogger.success('Successfully converted JSON to AppUser');
+      DebugLogger.user('User ID: ${appUser.id}');
+      DebugLogger.user('Username: ${appUser.username}');
+      DebugLogger.user('User type: ${appUser.userType}');
+      DebugLogger.user(
+          'Display name: ${appUser.firstName} ${appUser.lastName}');
+      DebugLogger.user('Phone: ${appUser.phoneNumber}');
+      DebugLogger.user('Email: ${appUser.email}');
+      DebugLogger.user('Is verified: ${appUser.isVerified}');
 
       return appUser;
     } catch (e, stackTrace) {
-      debugPrint('📦 HiveService: ❌ Error getting user data safely - $e');
-      debugPrint('📦 HiveService: Error type: ${e.runtimeType}');
-      debugPrint('📦 HiveService: Stack trace preview: ${stackTrace.toString().split('\n').take(2).join('\n')}');
-      debugPrint('📦 HiveService: Returning null due to error');
+      DebugLogger.error('Error getting user data safely - $e');
+      DebugLogger.error('Error type: ${e.runtimeType}');
+      DebugLogger.error(
+          'Stack trace preview: ${stackTrace.toString().split('\n').take(2).join('\n')}');
+      DebugLogger.error('Returning null due to error');
       return null;
     }
   }
 
   /// Clear user data
   static Future<void> clearUserData() async {
-    debugPrint('📦 HiveService: Clearing user data');
+    DebugLogger.user('Clearing user data');
 
     try {
       await _userBox.delete(_userDataKey);
-      debugPrint('📦 HiveService: User data cleared successfully');
+      DebugLogger.user('User data cleared successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to clear user data - $e');
+      DebugLogger.error('Failed to clear user data - $e');
       throw Exception('Failed to clear user data: $e');
     }
   }
@@ -559,32 +674,87 @@ class HiveService {
   // === UTILITY METHODS ===
 
   /// Logout user (clear all auth-related data)
+  /// Enhanced logout with comprehensive cleanup
   static Future<void> logout() async {
-    debugPrint('📦 HiveService: Performing user logout');
+    DebugLogger.auth('====== PERFORMING COMPREHENSIVE LOGOUT ======');
+
+    try {
+      // Set logged in status to false first
+      await setLoggedIn(false);
+      DebugLogger.auth('Login status set to false');
+
+      // Remove all authentication tokens
+      await removeAllTokens();
+      DebugLogger.auth('All authentication tokens removed');
+
+      // Clear user data and profile
+      await clearUserData();
+      DebugLogger.user('User data cleared');
+
+      // Clear phone number for security
+      await clearPhoneNumber();
+      DebugLogger.auth('Phone number cleared');
+
+      // Clear health check data (optional)
+      try {
+        await clearHealthCheckData();
+        DebugLogger.user('Health check data cleared');
+      } catch (e) {
+        DebugLogger.error('Failed to clear health check data: $e');
+        // Non-critical, continue
+      }
+
+      DebugLogger.auth('====== USER LOGOUT COMPLETED SUCCESSFULLY ======');
+      // Note: We don't reset intro watched on logout - this preserves onboarding state
+    } catch (e) {
+      DebugLogger.error('Failed to logout - $e');
+      throw Exception('Failed to logout: $e');
+    }
+  }
+
+  /// Emergency logout - clears all data without throwing exceptions
+  /// Use this when normal logout fails and you need to force clear everything
+  static Future<void> emergencyLogout() async {
+    DebugLogger.auth('====== PERFORMING EMERGENCY LOGOUT ======');
+    DebugLogger.auth('⚠️ This is a forced cleanup that ignores errors');
 
     try {
       await setLoggedIn(false);
-      await removeAuthToken();
-      await removeRefreshToken();
-      await clearUserData();
-      debugPrint('📦 HiveService: User logout completed successfully');
-      // Note: We don't reset intro watched on logout
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to logout - $e');
-      throw Exception('Failed to logout: $e');
+      DebugLogger.auth('Emergency: Failed to set login status: $e');
     }
+
+    try {
+      await removeAllTokens();
+    } catch (e) {
+      DebugLogger.auth('Emergency: Failed to remove tokens: $e');
+    }
+
+    try {
+      await clearUserData();
+    } catch (e) {
+      DebugLogger.auth('Emergency: Failed to clear user data: $e');
+    }
+
+    try {
+      await clearPhoneNumber();
+    } catch (e) {
+      DebugLogger.auth('Emergency: Failed to clear phone number: $e');
+    }
+
+    DebugLogger.auth('====== EMERGENCY LOGOUT COMPLETED ======');
   }
 
   /// Check if this is a first-time user
   static bool isFirstTimeUser() {
     final result = !hasIntroBeenWatched();
-    debugPrint('📦 HiveService: Is first-time user: $result');
+    DebugLogger.intro('Is first-time user: $result');
     return result;
   }
 
   /// Get all stored keys for debugging
   static Map<String, dynamic> getDebugInfo() {
-    debugPrint('📦 HiveService: Generating debug information');
+    DebugLogger.debug('Generating debug information');
 
     try {
       final debugInfo = {
@@ -595,9 +765,11 @@ class HiveService {
         'auth': {
           'isLoggedIn': isLoggedIn(),
           'hasAuthToken': _hasAuthToken(),
+          'hasValidTokens': hasValidTokens(),
           'phoneNumber': getPhoneNumber(),
           'lastLogin': getLastLogin()?.toIso8601String(),
           'authBoxKeys': _authBox.keys.toList(),
+          'tokenInfo': _getTokenDebugInfo(),
         },
         'user': {
           'hasUserData': _hasUserData(),
@@ -606,10 +778,10 @@ class HiveService {
         },
       };
 
-      debugPrint('📦 HiveService: Debug info generated successfully');
+      DebugLogger.success('Debug info generated successfully');
       return debugInfo;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to generate debug info - $e');
+      DebugLogger.error('Failed to generate debug info - $e');
       return {'error': e.toString()};
     }
   }
@@ -643,9 +815,36 @@ class HiveService {
     }
   }
 
+  /// Helper method to get token debug information
+  static Map<String, dynamic> _getTokenDebugInfo() {
+    try {
+      final accessToken = _authBox.get(_authTokenKey) as String?;
+      final refreshToken = _authBox.get(_refreshTokenKey) as String?;
+
+      return {
+        'hasAccessToken': accessToken != null && accessToken.isNotEmpty,
+        'accessTokenLength': accessToken?.length ?? 0,
+        'accessTokenPrefix': accessToken != null && accessToken.length > 10
+            ? '${accessToken.substring(0, 10)}...'
+            : 'none',
+        'hasRefreshToken': refreshToken != null && refreshToken.isNotEmpty,
+        'refreshTokenLength': refreshToken?.length ?? 0,
+        'refreshTokenPrefix': refreshToken != null && refreshToken.length > 10
+            ? '${refreshToken.substring(0, 10)}...'
+            : 'none',
+      };
+    } catch (e) {
+      return {
+        'error': 'Failed to get token info: $e',
+        'hasAccessToken': false,
+        'hasRefreshToken': false,
+      };
+    }
+  }
+
   /// Check storage health
   static bool isStorageHealthy() {
-    debugPrint('📦 HiveService: Checking storage health');
+    DebugLogger.debug('Checking storage health');
 
     try {
       // Try to perform basic operations on each box
@@ -653,10 +852,10 @@ class HiveService {
       _authBox.containsKey(_isLoggedInKey);
       _userBox.containsKey(_userDataKey);
 
-      debugPrint('📦 HiveService: Storage health check passed');
+      DebugLogger.success('Storage health check passed');
       return true;
     } catch (e) {
-      debugPrint('📦 HiveService: Storage health check failed - $e');
+      DebugLogger.error('Storage health check failed - $e');
       return false;
     }
   }
@@ -666,155 +865,166 @@ class HiveService {
   /// Save user profile for sync
   /// Stores user profile data as JSON Map to avoid Hive adapter requirements
   static Future<void> saveUserProfile(AppUser profileData) async {
-    debugPrint('📦 HiveService: Saving user profile with ${profileData.toJson().keys.length} fields');
-    debugPrint('📦 HiveService: Converting AppUser profile to JSON for Hive storage');
+    DebugLogger.user(
+        'Saving user profile with ${profileData.toJson().keys.length} fields');
+    DebugLogger.user('Converting AppUser profile to JSON for Hive storage');
 
     try {
       // Convert AppUser to JSON Map for Hive storage
       final profileDataJson = profileData.toJson();
-      debugPrint('📦 HiveService: Profile data JSON keys: ${profileDataJson.keys.toList()}');
+      DebugLogger.user(
+          'Profile data JSON keys: ${profileDataJson.keys.toList()}');
 
       await _userBox.put(_userProfileKey, profileDataJson);
-      debugPrint('📦 HiveService: User profile saved successfully as JSON');
+      DebugLogger.user('User profile saved successfully as JSON');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to save user profile - $e');
+      DebugLogger.error('Failed to save user profile - $e');
       throw Exception('Failed to save user profile: $e');
     }
   }
 
   /// Get cached user profile
   static Map<String, dynamic>? getUserProfile() {
-    debugPrint('📦 HiveService: Getting cached user profile');
+    DebugLogger.user('Getting cached user profile');
 
     try {
       final profileData = _userBox.get(_userProfileKey);
-      final result = profileData != null ? Map<String, dynamic>.from(profileData) : null;
-      debugPrint('📦 HiveService: User profile exists: ${result != null}');
+      final result =
+          profileData != null ? Map<String, dynamic>.from(profileData) : null;
+      DebugLogger.user('User profile exists: ${result != null}');
       return result;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get user profile - $e');
+      DebugLogger.error('Failed to get user profile - $e');
       return null;
     }
   }
 
   /// Save health check timestamp
   static Future<void> saveLastHealthCheck(DateTime timestamp) async {
-    debugPrint('📦 HiveService: Saving health check timestamp: ${timestamp.toString().substring(0, 19)}');
+    DebugLogger.user(
+        'Saving health check timestamp: ${timestamp.toString().substring(0, 19)}');
 
     try {
       await _userBox.put(_lastHealthCheckKey, timestamp.millisecondsSinceEpoch);
-      debugPrint('📦 HiveService: Health check timestamp saved successfully');
+      DebugLogger.user('Health check timestamp saved successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to save health check timestamp - $e');
+      DebugLogger.error('Failed to save health check timestamp - $e');
       throw Exception('Failed to save health check timestamp: $e');
     }
   }
 
   /// Get last health check timestamp
   static DateTime? getLastHealthCheck() {
-    debugPrint('📦 HiveService: Getting last health check timestamp');
+    DebugLogger.user('Getting last health check timestamp');
 
     try {
       final timestamp = _userBox.get(_lastHealthCheckKey);
-      final result = timestamp != null ? DateTime.fromMillisecondsSinceEpoch(timestamp) : null;
-      debugPrint('📦 HiveService: Last health check: ${result?.toString().substring(0, 19) ?? 'never'}');
+      final result = timestamp != null
+          ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+          : null;
+      DebugLogger.user(
+          'Last health check: ${result?.toString().substring(0, 19) ?? 'never'}');
       return result;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get last health check - $e');
+      DebugLogger.error('Failed to get last health check - $e');
       return null;
     }
   }
 
   /// Save health check status
   static Future<void> saveHealthCheckStatus(String status) async {
-    debugPrint('📦 HiveService: Saving health check status: $status');
+    DebugLogger.user('Saving health check status: $status');
 
     try {
       await _userBox.put(_healthCheckStatusKey, status);
-      debugPrint('📦 HiveService: Health check status saved successfully');
+      DebugLogger.user('Health check status saved successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to save health check status - $e');
+      DebugLogger.error('Failed to save health check status - $e');
       throw Exception('Failed to save health check status: $e');
     }
   }
 
   /// Get cached health check status
   static String? getHealthCheckStatus() {
-    debugPrint('📦 HiveService: Getting cached health check status');
+    DebugLogger.user('Getting cached health check status');
 
     try {
       final status = _userBox.get(_healthCheckStatusKey);
-      debugPrint('📦 HiveService: Health check status: ${status ?? 'unknown'}');
+      DebugLogger.user('Health check status: ${status ?? 'unknown'}');
       return status;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get health check status - $e');
+      DebugLogger.error('Failed to get health check status - $e');
       return null;
     }
   }
 
   /// Save health check result
   static Future<void> saveHealthCheckResult(Map<String, dynamic> result) async {
-    debugPrint('📦 HiveService: Saving health check result with ${result.keys.length} fields');
+    DebugLogger.user(
+        'Saving health check result with ${result.keys.length} fields');
 
     try {
       await _userBox.put(_healthCheckResultKey, result);
-      debugPrint('📦 HiveService: Health check result saved successfully');
+      DebugLogger.user('Health check result saved successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to save health check result - $e');
+      DebugLogger.error('Failed to save health check result - $e');
       throw Exception('Failed to save health check result: $e');
     }
   }
 
   /// Get cached health check result
   static Map<String, dynamic>? getHealthCheckResult() {
-    debugPrint('📦 HiveService: Getting cached health check result');
+    DebugLogger.user('Getting cached health check result');
 
     try {
       final result = _userBox.get(_healthCheckResultKey);
       final data = result != null ? Map<String, dynamic>.from(result) : null;
-      debugPrint('📦 HiveService: Health check result exists: ${data != null}');
+      DebugLogger.user('Health check result exists: ${data != null}');
       return data;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get health check result - $e');
+      DebugLogger.error('Failed to get health check result - $e');
       return null;
     }
   }
 
   /// Check if health check is needed (based on time interval)
-  static bool isHealthCheckNeeded({Duration interval = const Duration(minutes: 30)}) {
-    debugPrint('📦 HiveService: Checking if health check is needed (interval: ${interval.inMinutes} minutes)');
+  static bool isHealthCheckNeeded(
+      {Duration interval = const Duration(minutes: 30)}) {
+    DebugLogger.user(
+        'Checking if health check is needed (interval: ${interval.inMinutes} minutes)');
 
     try {
       final lastCheck = getLastHealthCheck();
       if (lastCheck == null) {
-        debugPrint('📦 HiveService: Health check needed - no previous check found');
+        DebugLogger.user('Health check needed - no previous check found');
         return true;
       }
 
       final timeSinceLastCheck = DateTime.now().difference(lastCheck);
       final isNeeded = timeSinceLastCheck >= interval;
 
-      debugPrint('📦 HiveService: Time since last check: ${timeSinceLastCheck.inMinutes} minutes');
-      debugPrint('📦 HiveService: Health check needed: $isNeeded');
+      DebugLogger.user(
+          'Time since last check: ${timeSinceLastCheck.inMinutes} minutes');
+      DebugLogger.user('Health check needed: $isNeeded');
 
       return isNeeded;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to check if health check needed - $e');
+      DebugLogger.error('Failed to check if health check needed - $e');
       return true; // If we can't determine, better to check
     }
   }
 
   /// Clear health check data
   static Future<void> clearHealthCheckData() async {
-    debugPrint('📦 HiveService: Clearing health check data');
+    DebugLogger.user('Clearing health check data');
 
     try {
       await _userBox.delete(_lastHealthCheckKey);
       await _userBox.delete(_healthCheckStatusKey);
       await _userBox.delete(_healthCheckResultKey);
-      debugPrint('📦 HiveService: Health check data cleared successfully');
+      DebugLogger.user('Health check data cleared successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to clear health check data - $e');
+      DebugLogger.error('Failed to clear health check data - $e');
       throw Exception('Failed to clear health check data: $e');
     }
   }
@@ -823,14 +1033,14 @@ class HiveService {
 
   /// Get user type from stored user data
   static UserType getUserType() {
-    debugPrint('📦 HiveService: Getting user type');
+    DebugLogger.user('Getting user type');
 
     try {
       final userData = getUserData();
       // final userType = userData.userType;
       return userData.userType;
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to get user type - $e');
+      DebugLogger.error('Failed to get user type - $e');
       return UserType.customer; // Default fallback
     }
   }
@@ -838,7 +1048,7 @@ class HiveService {
   /// Check if current user is a provider
   static bool isProvider() {
     final result = getUserType() == UserType.provider;
-    debugPrint('📦 HiveService: Is provider: $result');
+    DebugLogger.user('Is provider: $result');
     return result;
   }
 
@@ -846,14 +1056,14 @@ class HiveService {
   static bool isCustomer() {
     final userType = getUserType();
     final result = userType == UserType.customer;
-    debugPrint('📦 HiveService: Is customer: $result');
+    DebugLogger.user('Is customer: $result');
     return result;
   }
 
   /// Check if current user is an admin
   static bool isAdmin() {
     final result = getUserType() == UserType.admin;
-    debugPrint('📦 HiveService: Is admin: $result');
+    DebugLogger.user('Is admin: $result');
     return result;
   }
 
@@ -879,7 +1089,7 @@ class HiveService {
       UserType.admin => 'Administrator',
       UserType.customer => 'Customer',
     };
-    debugPrint('📦 HiveService: User type display name: $displayName');
+    DebugLogger.user('User type display name: $displayName');
     return displayName;
   }
 
@@ -890,7 +1100,8 @@ class HiveService {
       UserType.admin => 0xFF8B5CF6, // Violet
       UserType.customer => 0xFF3B82F6, // Blue
     };
-    debugPrint('📦 HiveService: User type color: 0x${color.toRadixString(16).toUpperCase()}');
+    DebugLogger.user(
+        'User type color: 0x${color.toRadixString(16).toUpperCase()}');
     return color;
   }
 
@@ -901,7 +1112,7 @@ class HiveService {
       UserType.admin => 0xf521, // crown icon
       UserType.customer => 0xf2c0, // user icon
     };
-    debugPrint('📦 HiveService: User type icon code: 0x${iconCode.toRadixString(16)}');
+    DebugLogger.user('User type icon code: 0x${iconCode.toRadixString(16)}');
     return iconCode;
   }
 
@@ -911,43 +1122,43 @@ class HiveService {
       AppUser userData = getUserData();
       userData = userData.copyWith(userType: userType);
       await saveUserData(userData);
-      debugPrint('📦 HiveService: User type updated successfully');
+      DebugLogger.user('User type updated successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to update user type - $e');
+      DebugLogger.error('Failed to update user type - $e');
       throw Exception('Failed to update user type: $e');
     }
   }
 
   /// Set user type (alias for updateUserType)
   static Future<void> setUserType(UserType userType) async {
-    debugPrint('📦 HiveService: Setting user type: $userType');
+    DebugLogger.user('Setting user type: $userType');
     await updateUserType(userType);
   }
 
   /// Clear user type from stored data
   static Future<void> clearUserType() async {
-    debugPrint('📦 HiveService: Clearing user type');
+    DebugLogger.user('Clearing user type');
 
     try {
       AppUser userData = getUserData();
       userData = userData.copyWith(userType: UserType.customer);
       await saveUserData(userData);
-      debugPrint('📦 HiveService: User type cleared successfully');
+      DebugLogger.user('User type cleared successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to clear user type - $e');
+      DebugLogger.error('Failed to clear user type - $e');
       throw Exception('Failed to clear user type: $e');
     }
   }
 
   /// Clear phone number
   static Future<void> clearPhoneNumber() async {
-    debugPrint('📦 HiveService: Clearing phone number');
+    DebugLogger.auth('Clearing phone number');
 
     try {
       await _authBox.delete(_phoneNumberKey);
-      debugPrint('📦 HiveService: Phone number cleared successfully');
+      DebugLogger.auth('Phone number cleared successfully');
     } catch (e) {
-      debugPrint('📦 HiveService: Failed to clear phone number - $e');
+      DebugLogger.error('Failed to clear phone number - $e');
       throw Exception('Failed to clear phone number: $e');
     }
   }

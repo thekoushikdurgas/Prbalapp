@@ -37,7 +37,8 @@ class CategoryFilterBottomSheet extends StatefulWidget with ThemeAwareMixin {
     required String currentFilter,
     required Function(String) onFilterSelected,
   }) async {
-    debugPrint('🔧 CategoryFilterBottomSheet: Showing enhanced filter bottom sheet with comprehensive ThemeManager');
+    debugPrint(
+        '🔧 CategoryFilterBottomSheet: Showing enhanced filter bottom sheet with comprehensive ThemeManager');
 
     await showModalBottomSheet(
       context: context,
@@ -55,10 +56,12 @@ class CategoryFilterBottomSheet extends StatefulWidget with ThemeAwareMixin {
   }
 
   @override
-  State<CategoryFilterBottomSheet> createState() => _CategoryFilterBottomSheetState();
+  State<CategoryFilterBottomSheet> createState() =>
+      _CategoryFilterBottomSheetState();
 }
 
-class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> with TickerProviderStateMixin {
+class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet>
+    with TickerProviderStateMixin {
   late AnimationController _slideController;
   late AnimationController _fadeController;
   late Animation<Offset> _slideAnimation;
@@ -104,9 +107,11 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
     ThemeManager.of(context).logGradientInfo();
     ThemeManager.of(context).logAllColors();
     debugPrint('🔧 CategoryFilterBottomSheet: =============================');
-    debugPrint('🔧 CategoryFilterBottomSheet: BUILDING WITH ALL THEMEMANAGER ITEMS');
+    debugPrint(
+        '🔧 CategoryFilterBottomSheet: BUILDING WITH ALL THEMEMANAGER ITEMS');
     debugPrint('🔧 CategoryFilterBottomSheet: =============================');
-    debugPrint('🎨 CategoryFilterBottomSheet: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
+    debugPrint(
+        '🎨 CategoryFilterBottomSheet: Theme mode: ${ThemeManager.of(context).themeManager ? 'dark' : 'light'}');
     debugPrint(
         '🌈 CategoryFilterBottomSheet: Using ALL gradients - Background: ${ThemeManager.of(context).backgroundGradient.colors.length} colors, Surface: ${ThemeManager.of(context).surfaceGradient.colors.length} colors');
     debugPrint(
@@ -115,7 +120,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
         '🌟 CategoryFilterBottomSheet: Interactive colors - Button: ${ThemeManager.of(context).buttonBackground}, Input: ${ThemeManager.of(context).inputBackground}');
     debugPrint(
         '📊 CategoryFilterBottomSheet: Status colors - Online: ${ThemeManager.of(context).statusOnline}, Offline: ${ThemeManager.of(context).statusOffline}, Error: ${ThemeManager.of(context).errorColor}');
-    debugPrint('🔧 CategoryFilterBottomSheet: Current filter: ${widget.currentFilter}');
+    debugPrint(
+        '🔧 CategoryFilterBottomSheet: Current filter: ${widget.currentFilter}');
 
     return AnimatedBuilder(
       animation: Listenable.merge([_slideAnimation, _fadeAnimation]),
@@ -184,7 +190,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
 
   /// Build enhanced drag handle with ALL ThemeManager styling
   Widget _buildEnhancedDragHandle() {
-    debugPrint('🎯 CategoryFilterBottomSheet: Building enhanced drag handle with ALL ThemeManager properties');
+    debugPrint(
+        '🎯 CategoryFilterBottomSheet: Building enhanced drag handle with ALL ThemeManager properties');
     debugPrint(
         '🎨 CategoryFilterBottomSheet: Using shimmer gradient: ${ThemeManager.of(context).shimmerGradient.colors.length} colors');
     debugPrint(
@@ -227,7 +234,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).surfaceColor, 0.8),
+              color: ThemeManager.of(context)
+                  .withThemeAlpha(ThemeManager.of(context).surfaceColor, 0.8),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: ThemeManager.of(context).conditionalColor(
@@ -242,7 +250,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
               children: [
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: ThemeManager.of(context).getTextColorForBackground(ThemeManager.of(context).surfaceColor),
+                  color: ThemeManager.of(context).getTextColorForBackground(
+                      ThemeManager.of(context).surfaceColor),
                   size: 16.sp,
                 ),
                 SizedBox(width: 4.w),
@@ -266,7 +275,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
   Widget _buildEnhancedHeader(
     BuildContext context,
   ) {
-    debugPrint('📋 CategoryFilterBottomSheet: Building enhanced header with ALL ThemeManager integration');
+    debugPrint(
+        '📋 CategoryFilterBottomSheet: Building enhanced header with ALL ThemeManager integration');
     debugPrint(
         '🎨 CategoryFilterBottomSheet: Brand colors - Primary Light: ${ThemeManager.of(context).primaryLight}, Primary Dark: ${ThemeManager.of(context).primaryDark}');
     debugPrint(
@@ -303,7 +313,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
         ),
         border: Border(
           bottom: BorderSide(
-            color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).primaryColor),
+            color: ThemeManager.of(context)
+                .getContrastingColor(ThemeManager.of(context).primaryColor),
             width: 2.0,
           ),
         ),
@@ -325,7 +336,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
               gradient: ThemeManager.of(context).glassGradient,
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).verifiedColor, 0.5),
+                color: ThemeManager.of(context).withThemeAlpha(
+                    ThemeManager.of(context).verifiedColor, 0.5),
                 width: 2,
               ),
               boxShadow: [
@@ -352,7 +364,9 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                 boxShadow: [
                   ...ThemeManager.of(context).primaryShadow,
                   BoxShadow(
-                    color: ThemeManager.of(context).favoriteColor.withValues(alpha: 0.3),
+                    color: ThemeManager.of(context)
+                        .favoriteColor
+                        .withValues(alpha: 0.3),
                     blurRadius: 8,
                     spreadRadius: 2,
                   ),
@@ -360,7 +374,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
               ),
               child: Icon(
                 Prbal.filter,
-                color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).accent4),
+                color: ThemeManager.of(context)
+                    .getContrastingColor(ThemeManager.of(context).accent4),
                 size: 24.sp,
               ),
             ),
@@ -374,7 +389,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     gradient: ThemeManager.of(context).accent2Gradient,
                     borderRadius: BorderRadius.circular(12.r),
@@ -396,7 +412,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                   decoration: BoxDecoration(
                     color: ThemeManager.of(context).surfaceElevated,
                     borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(color: ThemeManager.of(context).borderColor),
+                    border:
+                        Border.all(color: ThemeManager.of(context).borderColor),
                   ),
                   child: Row(
                     children: [
@@ -450,14 +467,16 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  debugPrint('🔧 CategoryFilterBottomSheet: Enhanced close button with ALL features pressed');
+                  debugPrint(
+                      '🔧 CategoryFilterBottomSheet: Enhanced close button with ALL features pressed');
                   HapticFeedback.lightImpact();
                   Navigator.of(context).pop();
                 },
                 borderRadius: BorderRadius.circular(16.r),
-                splashColor: ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).errorColor, 0.3),
-                highlightColor:
-                    ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).buttonBackgroundHover, 0.2),
+                splashColor: ThemeManager.of(context)
+                    .withThemeAlpha(ThemeManager.of(context).errorColor, 0.3),
+                highlightColor: ThemeManager.of(context).withThemeAlpha(
+                    ThemeManager.of(context).buttonBackgroundHover, 0.2),
                 child: Container(
                   padding: EdgeInsets.all(12.w),
                   constraints: BoxConstraints(
@@ -466,7 +485,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                   ),
                   child: Icon(
                     Prbal.cross,
-                    color: ThemeManager.of(context).getContrastingColor(ThemeManager.of(context).errorColor),
+                    color: ThemeManager.of(context).getContrastingColor(
+                        ThemeManager.of(context).errorColor),
                     size: 20.sp,
                   ),
                 ),
@@ -482,7 +502,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
   Widget _buildEnhancedFilterOptions(
     BuildContext context,
   ) {
-    debugPrint('🎯 CategoryFilterBottomSheet: Building enhanced filter options with comprehensive ThemeManager');
+    debugPrint(
+        '🎯 CategoryFilterBottomSheet: Building enhanced filter options with comprehensive ThemeManager');
 
     return Expanded(
       child: Container(
@@ -535,9 +556,12 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                     value: 'all',
                     gradient: ThemeManager.of(context).conditionalGradient(
                       lightGradient: ThemeManager.of(context).infoGradient,
-                      darkGradient: ThemeManager.of(context).accent5 != ThemeManager.of(context).infoColor
-                          ? LinearGradient(
-                              colors: [ThemeManager.of(context).accent5, ThemeManager.of(context).infoColor])
+                      darkGradient: ThemeManager.of(context).accent5 !=
+                              ThemeManager.of(context).infoColor
+                          ? LinearGradient(colors: [
+                              ThemeManager.of(context).accent5,
+                              ThemeManager.of(context).infoColor
+                            ])
                           : ThemeManager.of(context).infoGradient,
                     ),
                     iconColor: ThemeManager.of(context).newIndicator,
@@ -555,8 +579,10 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                     value: 'active',
                     gradient: ThemeManager.of(context).conditionalGradient(
                       lightGradient: ThemeManager.of(context).successGradient,
-                      darkGradient: LinearGradient(
-                          colors: [ThemeManager.of(context).successDark, ThemeManager.of(context).verifiedColor]),
+                      darkGradient: LinearGradient(colors: [
+                        ThemeManager.of(context).successDark,
+                        ThemeManager.of(context).verifiedColor
+                      ]),
                     ),
                     iconColor: ThemeManager.of(context).statusOnline,
                     statusColor: ThemeManager.of(context).verifiedColor,
@@ -573,8 +599,10 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                     value: 'inactive',
                     gradient: ThemeManager.of(context).conditionalGradient(
                       lightGradient: ThemeManager.of(context).warningGradient,
-                      darkGradient: LinearGradient(
-                          colors: [ThemeManager.of(context).statusAway, ThemeManager.of(context).warningDark]),
+                      darkGradient: LinearGradient(colors: [
+                        ThemeManager.of(context).statusAway,
+                        ThemeManager.of(context).warningDark
+                      ]),
                     ),
                     iconColor: ThemeManager.of(context).statusOffline,
                     statusColor: ThemeManager.of(context).statusAway,
@@ -601,7 +629,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
   }) {
     final isSelected = widget.currentFilter == value;
 
-    debugPrint('🎯 CategoryFilterBottomSheet: Building filter option "$title" with ALL ThemeManager features');
+    debugPrint(
+        '🎯 CategoryFilterBottomSheet: Building filter option "$title" with ALL ThemeManager features');
     debugPrint(
         '🎨 CategoryFilterBottomSheet: Using neutral colors - 300: ${ThemeManager.of(context).neutral300}, 600: ${ThemeManager.of(context).neutral600}, 900: ${ThemeManager.of(context).neutral900}');
 
@@ -665,9 +694,12 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
             Navigator.of(context).pop();
           },
           borderRadius: BorderRadius.circular(20.r),
-          splashColor: ThemeManager.of(context).withThemeAlpha(statusColor, 0.3),
-          highlightColor: ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).buttonBackgroundHover, 0.2),
-          hoverColor: ThemeManager.of(context).withThemeAlpha(ThemeManager.of(context).buttonBackgroundPressed, 0.1),
+          splashColor:
+              ThemeManager.of(context).withThemeAlpha(statusColor, 0.3),
+          highlightColor: ThemeManager.of(context).withThemeAlpha(
+              ThemeManager.of(context).buttonBackgroundHover, 0.2),
+          hoverColor: ThemeManager.of(context).withThemeAlpha(
+              ThemeManager.of(context).buttonBackgroundPressed, 0.1),
           child: Container(
             padding: EdgeInsets.all(20.w),
             child: Row(
@@ -681,7 +713,9 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                   child: Icon(
                     icon,
                     size: 24.sp,
-                    color: isSelected ? ThemeManager.of(context).textInverted : iconColor,
+                    color: isSelected
+                        ? ThemeManager.of(context).textInverted
+                        : iconColor,
                   ),
                 ),
 
@@ -697,17 +731,21 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isSelected ? ThemeManager.of(context).textInverted : ThemeManager.of(context).textPrimary,
+                          color: isSelected
+                              ? ThemeManager.of(context).textInverted
+                              : ThemeManager.of(context).textPrimary,
                           letterSpacing: 0.2,
                         ),
                       ),
                       SizedBox(height: 6.h),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? ThemeManager.of(context).textInverted.withValues(alpha: 0.1)
+                              ? ThemeManager.of(context)
+                                  .textInverted
+                                  .withValues(alpha: 0.1)
                               : ThemeManager.of(context).surfaceElevated,
                           borderRadius: BorderRadius.circular(8.r),
                         ),
@@ -716,7 +754,9 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                           style: TextStyle(
                             fontSize: 13.sp,
                             color: isSelected
-                                ? ThemeManager.of(context).textInverted.withValues(alpha: 0.9)
+                                ? ThemeManager.of(context)
+                                    .textInverted
+                                    .withValues(alpha: 0.9)
                                 : ThemeManager.of(context).textSecondary,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.1,
@@ -733,17 +773,27 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
                 Container(
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    gradient: isSelected ? ThemeManager.of(context).accent1Gradient : null,
-                    color: isSelected ? null : ThemeManager.of(context).surfaceElevated,
+                    gradient: isSelected
+                        ? ThemeManager.of(context).accent1Gradient
+                        : null,
+                    color: isSelected
+                        ? null
+                        : ThemeManager.of(context).surfaceElevated,
                     borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
-                      color: isSelected ? Colors.transparent : ThemeManager.of(context).borderColor,
+                      color: isSelected
+                          ? Colors.transparent
+                          : ThemeManager.of(context).borderColor,
                     ),
                   ),
                   child: Icon(
-                    isSelected ? Icons.check_rounded : Icons.radio_button_unchecked_rounded,
+                    isSelected
+                        ? Icons.check_rounded
+                        : Icons.radio_button_unchecked_rounded,
                     size: 18.sp,
-                    color: isSelected ? ThemeManager.of(context).textInverted : ThemeManager.of(context).textTertiary,
+                    color: isSelected
+                        ? ThemeManager.of(context).textInverted
+                        : ThemeManager.of(context).textTertiary,
                   ),
                 ),
               ],
@@ -756,7 +806,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
 
   /// Build enhanced footer with ALL ThemeManager features
   Widget _buildEnhancedFooter() {
-    debugPrint('🎯 CategoryFilterBottomSheet: Building footer with ALL ThemeManager properties');
+    debugPrint(
+        '🎯 CategoryFilterBottomSheet: Building footer with ALL ThemeManager properties');
     debugPrint(
         '🎨 CategoryFilterBottomSheet: Interactive states - Disabled: ${ThemeManager.of(context).buttonBackgroundDisabled}, Input disabled: ${ThemeManager.of(context).inputBackgroundDisabled}');
     debugPrint(
@@ -839,7 +890,8 @@ class _CategoryFilterBottomSheetState extends State<CategoryFilterBottomSheet> w
             decoration: BoxDecoration(
               color: ThemeManager.of(context).backgroundSecondary,
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: ThemeManager.of(context).borderSecondary),
+              border:
+                  Border.all(color: ThemeManager.of(context).borderSecondary),
             ),
             child: Text(
               'Filters apply immediately to the category list',

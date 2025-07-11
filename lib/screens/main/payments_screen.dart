@@ -12,7 +12,8 @@ class PaymentsScreen extends ConsumerStatefulWidget {
   ConsumerState<PaymentsScreen> createState() => _PaymentsScreenState();
 }
 
-class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProviderStateMixin {
+class _PaymentsScreenState extends ConsumerState<PaymentsScreen>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late TabController _tabController;
@@ -198,7 +199,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildBalanceCard() {
-    debugPrint('🎨 PaymentsScreen: Building balance card with primary gradient');
+    debugPrint(
+        '🎨 PaymentsScreen: Building balance card with primary gradient');
     return Container(
       margin: EdgeInsets.all(16.w),
       padding: EdgeInsets.all(24.w),
@@ -318,7 +320,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildTransactionsTab() {
-    debugPrint('🎯 PaymentsScreen: Building transactions tab with ${_transactions.length} items');
+    debugPrint(
+        '🎯 PaymentsScreen: Building transactions tab with ${_transactions.length} items');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _transactions.length,
@@ -400,9 +403,11 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                     ),
                     SizedBox(width: 8.w),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(status).withValues(alpha: 26), // 0.1 opacity
+                        color: _getStatusColor(status)
+                            .withValues(alpha: 26), // 0.1 opacity
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
@@ -427,7 +432,9 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: isIncome ? ThemeManager.of(context).successColor : ThemeManager.of(context).textPrimary,
+                  color: isIncome
+                      ? ThemeManager.of(context).successColor
+                      : ThemeManager.of(context).textPrimary,
                 ),
               ),
               SizedBox(height: 4.h),
@@ -446,7 +453,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildPaymentMethodsTab() {
-    debugPrint('🎯 PaymentsScreen: Building payment methods tab with ${_paymentMethods.length} methods');
+    debugPrint(
+        '🎯 PaymentsScreen: Building payment methods tab with ${_paymentMethods.length} methods');
     return ListView.builder(
       padding: EdgeInsets.all(16.w),
       itemCount: _paymentMethods.length,
@@ -477,7 +485,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: (method['color'] as Color).withValues(alpha: 77), // 0.3 opacity
+            color:
+                (method['color'] as Color).withValues(alpha: 77), // 0.3 opacity
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -563,7 +572,8 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
   }
 
   Widget _buildSettingsTab() {
-    debugPrint('🎯 PaymentsScreen: Building settings tab with theme-aware styling');
+    debugPrint(
+        '🎯 PaymentsScreen: Building settings tab with theme-aware styling');
     return ListView(
       padding: EdgeInsets.all(16.w),
       children: [
@@ -571,7 +581,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
           icon: Prbal.security,
           title: 'Payment Security',
           subtitle: 'Manage payment security settings',
-          
           onTap: () {
             debugPrint('🔒 PaymentsScreen: Opening payment security settings');
           },
@@ -580,7 +589,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
           icon: Prbal.bell,
           title: 'Payment Notifications',
           subtitle: 'Configure payment alerts',
-          
           onTap: () {
             debugPrint('🔔 PaymentsScreen: Opening notification settings');
           },
@@ -589,7 +597,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
           icon: Prbal.rupee,
           title: 'Transaction History',
           subtitle: 'Export transaction records',
-          
           onTap: () {
             debugPrint('📊 PaymentsScreen: Opening transaction history export');
           },
@@ -598,7 +605,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
           icon: Prbal.questionCircle,
           title: 'Payment Help',
           subtitle: 'Get help with payments',
-          
           onTap: () {
             debugPrint('❓ PaymentsScreen: Opening payment help');
           },
@@ -637,7 +643,9 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                   width: 48.w,
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).primaryColor.withValues(alpha: 26), // 0.1 opacity
+                    color: ThemeManager.of(context)
+                        .primaryColor
+                        .withValues(alpha: 26), // 0.1 opacity
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Icon(
@@ -774,7 +782,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
               icon: Prbal.creditCard,
               title: 'Credit/Debit Card',
               subtitle: 'Add a new card',
-              
               onTap: () {
                 debugPrint('💳 PaymentsScreen: Adding credit/debit card');
                 Navigator.pop(context);
@@ -785,7 +792,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
               icon: Prbal.paypal,
               title: 'PayPal',
               subtitle: 'Connect your PayPal account',
-              
               onTap: () {
                 debugPrint('💰 PaymentsScreen: Adding PayPal account');
                 Navigator.pop(context);
@@ -796,7 +802,6 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
               icon: Prbal.university,
               title: 'Bank Account',
               subtitle: 'Add bank account details',
-              
               onTap: () {
                 debugPrint('🏦 PaymentsScreen: Adding bank account');
                 Navigator.pop(context);
@@ -834,7 +839,9 @@ class _PaymentsScreenState extends ConsumerState<PaymentsScreen> with TickerProv
                 width: 40.w,
                 height: 40.h,
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).primaryColor.withValues(alpha: 26), // 0.1 opacity
+                  color: ThemeManager.of(context)
+                      .primaryColor
+                      .withValues(alpha: 26), // 0.1 opacity
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Icon(

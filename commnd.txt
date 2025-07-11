@@ -5,7 +5,7 @@ git branch -M main
 
 
 git add .
-git commit -m "verion=0.1"
+git commit -m "10/7/2025"
 git push -u origin main -f
 
 git config --global user.email "koushik.btech.cse.19@nitap.ac.in"
@@ -56,7 +56,7 @@ flutter --version
 flutter doctor
 flutter doctor --android-licenses
 
-flutter config --jdk-dir "C:\Program Files\Java\jdk-19"
+flutter config --jdk-dir "C:\Program Files\Java\jdk-17"
 flutter doctor --android-licenses
 flutter doctor –verbose
 
@@ -83,6 +83,9 @@ cd android
 gradlew clean
 gradlew assembleDebug --stacktrace
 gradlew signingReport --warning-mode all --stacktrace
+
+dart fix --dry-run
+dart fix --apply
 
 dart migrate
 flutter channel stable

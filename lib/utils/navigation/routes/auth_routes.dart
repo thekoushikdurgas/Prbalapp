@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:prbal/models/auth/app_user.dart';
 import 'package:prbal/screens/auth/pin_verification_screen.dart';
-import 'package:prbal/services/user_service.dart';
+// import 'package:prbal/services/user_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 
 /// Authentication related routes

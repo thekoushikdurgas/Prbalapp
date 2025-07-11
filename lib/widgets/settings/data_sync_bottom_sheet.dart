@@ -44,7 +44,8 @@ class DataSyncBottomSheet extends StatefulWidget {
   }
 }
 
-class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerProviderStateMixin, ThemeAwareMixin {
+class _DataSyncBottomSheetState extends State<DataSyncBottomSheet>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   final ScrollController _scrollController = ScrollController();
 
   late AnimationController _animationController;
@@ -157,8 +158,10 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
   @override
   Widget build(BuildContext context) {
     debugPrint('🔄 [DataSync] Building data sync with theme colors:');
-    debugPrint('🔄 [DataSync] Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('🔄 [DataSync] Primary: ${ThemeManager.of(context).primaryColor}');
+    debugPrint(
+        '🔄 [DataSync] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '🔄 [DataSync] Primary: ${ThemeManager.of(context).primaryColor}');
     debugPrint('🔄 [DataSync] Info: ${ThemeManager.of(context).infoColor}');
 
     return AnimatedBuilder(
@@ -167,7 +170,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            offset: Offset(
+                0, _slideAnimation.value * MediaQuery.of(context).size.height),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.92,
               decoration: BoxDecoration(
@@ -177,7 +181,9 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).shadowDark.withValues(alpha: 102),
+                    color: ThemeManager.of(context)
+                        .shadowDark
+                        .withValues(alpha: 102),
                     blurRadius: 24.r,
                     offset: Offset(0, -6.h),
                   ),
@@ -252,7 +258,9 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).primaryColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .primaryColor
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -305,10 +313,14 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                   width: 40.w,
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceColor.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceColor
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 77),
                       width: 1,
                     ),
                   ),
@@ -328,7 +340,9 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
 
   Widget _buildSyncStatus() {
     final statusColor = _hasValidTokens
-        ? (_isSyncing ? ThemeManager.of(context).warningColor : ThemeManager.of(context).successColor)
+        ? (_isSyncing
+            ? ThemeManager.of(context).warningColor
+            : ThemeManager.of(context).successColor)
         : ThemeManager.of(context).errorColor;
 
     return Container(
@@ -462,7 +476,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
             style: ElevatedButton.styleFrom(
               backgroundColor: ThemeManager.of(context).primaryColor,
               foregroundColor: ThemeManager.of(context).textInverted,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r)),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
             ),
             child: Text(
@@ -614,10 +629,14 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: hasToken ? color.withValues(alpha: 26) : ThemeManager.of(context).errorColor.withValues(alpha: 26),
+        color: hasToken
+            ? color.withValues(alpha: 26)
+            : ThemeManager.of(context).errorColor.withValues(alpha: 26),
         borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
-          color: hasToken ? color.withValues(alpha: 128) : ThemeManager.of(context).errorColor.withValues(alpha: 128),
+          color: hasToken
+              ? color.withValues(alpha: 128)
+              : ThemeManager.of(context).errorColor.withValues(alpha: 128),
         ),
       ),
       child: Row(
@@ -836,13 +855,18 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                 child: OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      _selectedSyncTypes = syncTypes.map((e) => e['id'] as String).toSet();
+                      _selectedSyncTypes =
+                          syncTypes.map((e) => e['id'] as String).toSet();
                     });
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).primaryColor,
-                    side: BorderSide(color: ThemeManager.of(context).primaryColor.withValues(alpha: 128)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    side: BorderSide(
+                        color: ThemeManager.of(context)
+                            .primaryColor
+                            .withValues(alpha: 128)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r)),
                   ),
                   child: Text('Select All', style: TextStyle(fontSize: 12.sp)),
                 ),
@@ -857,8 +881,10 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).textSecondary,
-                    side: BorderSide(color: ThemeManager.of(context).borderColor),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).borderColor),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r)),
                   ),
                   child: Text('Select None', style: TextStyle(fontSize: 12.sp)),
                 ),
@@ -888,12 +914,16 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                 child: Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: isSelected ? color.withValues(alpha: 26) : ThemeManager.of(context).inputBackground,
+                    color: isSelected
+                        ? color.withValues(alpha: 26)
+                        : ThemeManager.of(context).inputBackground,
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
                       color: isSelected
                           ? color.withValues(alpha: 128)
-                          : ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                          : ThemeManager.of(context)
+                              .borderColor
+                              .withValues(alpha: 77),
                     ),
                   ),
                   child: Row(
@@ -904,7 +934,9 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                         decoration: BoxDecoration(
                           color: isSelected ? color : Colors.transparent,
                           border: Border.all(
-                            color: isSelected ? color : ThemeManager.of(context).borderColor,
+                            color: isSelected
+                                ? color
+                                : ThemeManager.of(context).borderColor,
                             width: 2,
                           ),
                           borderRadius: BorderRadius.circular(4.r),
@@ -1042,7 +1074,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
               style: OutlinedButton.styleFrom(
                 foregroundColor: ThemeManager.of(context).textSecondary,
                 side: BorderSide(color: ThemeManager.of(context).borderColor),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r)),
                 padding: EdgeInsets.symmetric(vertical: 16.h),
               ),
               child: Text(
@@ -1058,11 +1091,15 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
           Expanded(
             flex: 2,
             child: ElevatedButton(
-              onPressed: !_hasValidTokens || _isSyncing || _selectedSyncTypes.isEmpty ? null : () => _startSync(),
+              onPressed:
+                  !_hasValidTokens || _isSyncing || _selectedSyncTypes.isEmpty
+                      ? null
+                      : () => _startSync(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: ThemeManager.of(context).primaryColor,
                 foregroundColor: ThemeManager.of(context).textInverted,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r)),
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 elevation: 2,
               ),
@@ -1075,7 +1112,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
                           height: 16.h,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(ThemeManager.of(context).textInverted),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                ThemeManager.of(context).textInverted),
                           ),
                         ),
                         SizedBox(width: 12.w),
@@ -1156,7 +1194,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
             content: Text('Data sync completed successfully!'),
             backgroundColor: ThemeManager.of(context).successColor,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r)),
           ),
         );
       }
@@ -1176,7 +1215,8 @@ class _DataSyncBottomSheetState extends State<DataSyncBottomSheet> with TickerPr
             content: Text('Sync failed: $e'),
             backgroundColor: ThemeManager.of(context).errorColor,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r)),
           ),
         );
       }

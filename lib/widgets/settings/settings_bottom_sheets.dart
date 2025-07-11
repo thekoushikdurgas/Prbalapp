@@ -75,20 +75,25 @@ class SettingsBottomSheets {
   /// - Performance metrics for user interactions
   /// - Error context and recovery guidance
   static Future<void> showThemeBottomSheet(BuildContext context) async {
-    debugPrint('🎨 SettingsBottomSheets: === ENHANCED THEME SELECTION INITIATED ===');
+    debugPrint(
+        '🎨 SettingsBottomSheets: === ENHANCED THEME SELECTION INITIATED ===');
 
     // Capture initial theme state for comparison
     final initialTheme = Theme.of(context);
     final isDark = initialTheme.brightness == Brightness.dark;
-    debugPrint('🎨 SettingsBottomSheets: Initial theme state - Brightness: ${initialTheme.brightness}');
-    debugPrint('🎨 SettingsBottomSheets: Theme colors - Primary: ${initialTheme.colorScheme.primary}');
-    debugPrint('🎨 SettingsBottomSheets: Surface: ${initialTheme.colorScheme.surface}');
+    debugPrint(
+        '🎨 SettingsBottomSheets: Initial theme state - Brightness: ${initialTheme.brightness}');
+    debugPrint(
+        '🎨 SettingsBottomSheets: Theme colors - Primary: ${initialTheme.colorScheme.primary}');
+    debugPrint(
+        '🎨 SettingsBottomSheets: Surface: ${initialTheme.colorScheme.surface}');
 
     // Start performance timing
     final stopwatch = Stopwatch()..start();
 
     try {
-      debugPrint('🎨 SettingsBottomSheets: Creating enhanced theme selection bottom sheet...');
+      debugPrint(
+          '🎨 SettingsBottomSheets: Creating enhanced theme selection bottom sheet...');
 
       await _showModernBottomSheet(
         context,
@@ -123,7 +128,8 @@ class SettingsBottomSheets {
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : const Color(0xFF2D3748),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2D3748),
                           ),
                         ),
                         SizedBox(height: 2.h),
@@ -154,7 +160,8 @@ class SettingsBottomSheets {
                   onPressed: () {
                     debugPrint('🎨 SettingsBottomSheets: Close button tapped');
                     stopwatch.stop();
-                    debugPrint('🎨 SettingsBottomSheets: ⏱️ Total selection time: ${stopwatch.elapsedMilliseconds}ms');
+                    debugPrint(
+                        '🎨 SettingsBottomSheets: ⏱️ Total selection time: ${stopwatch.elapsedMilliseconds}ms');
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -181,12 +188,16 @@ class SettingsBottomSheets {
       );
 
       stopwatch.stop();
-      debugPrint('🎨 SettingsBottomSheets: ✅ Theme selection bottom sheet completed successfully');
-      debugPrint('🎨 SettingsBottomSheets: ⏱️ Total operation time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🎨 SettingsBottomSheets: ✅ Theme selection bottom sheet completed successfully');
+      debugPrint(
+          '🎨 SettingsBottomSheets: ⏱️ Total operation time: ${stopwatch.elapsedMilliseconds}ms');
     } catch (error, stackTrace) {
       stopwatch.stop();
-      debugPrint('🎨 SettingsBottomSheets: ❌ Error in theme selection bottom sheet: $error');
-      debugPrint('🎨 SettingsBottomSheets: 📍 Error occurred after ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint(
+          '🎨 SettingsBottomSheets: ❌ Error in theme selection bottom sheet: $error');
+      debugPrint(
+          '🎨 SettingsBottomSheets: 📍 Error occurred after ${stopwatch.elapsedMilliseconds}ms');
       debugPrint('🎨 SettingsBottomSheets: 🔍 Stack trace: $stackTrace');
 
       // Show user-friendly error feedback
@@ -212,13 +223,15 @@ class SettingsBottomSheets {
         );
       }
     } finally {
-      debugPrint('🎨 SettingsBottomSheets: === THEME SELECTION OPERATION COMPLETED ===');
+      debugPrint(
+          '🎨 SettingsBottomSheets: === THEME SELECTION OPERATION COMPLETED ===');
     }
   }
 
   /// Shows language selection bottom sheet
   static Future<void> showLanguageBottomSheet(BuildContext context) async {
-    debugPrint('🌐 SettingsBottomSheets: Showing language selection bottom sheet');
+    debugPrint(
+        '🌐 SettingsBottomSheets: Showing language selection bottom sheet');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -274,12 +287,17 @@ class SettingsBottomSheets {
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color:
-                              isSelected ? const Color(0xFF667EEA) : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
+                          color: isSelected
+                              ? const Color(0xFF667EEA)
+                              : (isDark
+                                  ? Colors.grey[700]!
+                                  : Colors.grey[300]!),
                           width: isSelected ? 2 : 1,
                         ),
                         borderRadius: BorderRadius.circular(12.r),
-                        color: isSelected ? const Color(0xFF667EEA).withValues(alpha: 0.1) : Colors.transparent,
+                        color: isSelected
+                            ? const Color(0xFF667EEA).withValues(alpha: 0.1)
+                            : Colors.transparent,
                       ),
                       child: Row(
                         children: [
@@ -288,10 +306,14 @@ class SettingsBottomSheets {
                               entry.value,
                               style: TextStyle(
                                 fontSize: 16.sp,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
                                 color: isSelected
                                     ? const Color(0xFF667EEA)
-                                    : (isDark ? Colors.white : const Color(0xFF2D3748)),
+                                    : (isDark
+                                        ? Colors.white
+                                        : const Color(0xFF2D3748)),
                               ),
                             ),
                           ),
@@ -346,7 +368,8 @@ class SettingsBottomSheets {
     required Function(bool) onBiometricsChanged,
     required VoidCallback onResetPin,
   }) async {
-    debugPrint('🔒 SettingsBottomSheets: Showing security settings bottom sheet');
+    debugPrint(
+        '🔒 SettingsBottomSheets: Showing security settings bottom sheet');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -407,14 +430,18 @@ class SettingsBottomSheets {
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2D3748),
                               ),
                             ),
                             Text(
                               'Use fingerprint or face ID to unlock',
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[600],
                               ),
                             ),
                           ],
@@ -460,14 +487,18 @@ class SettingsBottomSheets {
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: isDark ? Colors.white : const Color(0xFF2D3748),
+                                    color: isDark
+                                        ? Colors.white
+                                        : const Color(0xFF2D3748),
                                   ),
                                 ),
                                 Text(
                                   'Change your security PIN',
                                   style: TextStyle(
                                     fontSize: 12.sp,
-                                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
                                   ),
                                 ),
                               ],
@@ -597,7 +628,8 @@ class SettingsBottomSheets {
 
   /// Shows clear cache confirmation bottom sheet
   static Future<bool?> showClearCacheBottomSheet(BuildContext context) async {
-    debugPrint('🧹 SettingsBottomSheets: Showing clear cache confirmation bottom sheet');
+    debugPrint(
+        '🧹 SettingsBottomSheets: Showing clear cache confirmation bottom sheet');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

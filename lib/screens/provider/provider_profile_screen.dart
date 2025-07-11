@@ -10,7 +10,8 @@ class ProviderProfileScreen extends ConsumerStatefulWidget {
   const ProviderProfileScreen({super.key});
 
   @override
-  ConsumerState<ProviderProfileScreen> createState() => _ProviderProfileScreenState();
+  ConsumerState<ProviderProfileScreen> createState() =>
+      _ProviderProfileScreenState();
 }
 
 class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen> {

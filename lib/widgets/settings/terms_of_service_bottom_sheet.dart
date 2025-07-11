@@ -26,7 +26,8 @@ class TermsOfServiceBottomSheet extends StatefulWidget {
   const TermsOfServiceBottomSheet({super.key});
 
   @override
-  State<TermsOfServiceBottomSheet> createState() => _TermsOfServiceBottomSheetState();
+  State<TermsOfServiceBottomSheet> createState() =>
+      _TermsOfServiceBottomSheetState();
 
   /// Show terms of service modal bottom sheet
   static void show(BuildContext context) {
@@ -101,7 +102,8 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
   @override
   Widget build(BuildContext context) {
     debugPrint('📋 [Terms] Building terms of service with theme colors:');
-    debugPrint('📋 [Terms] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '📋 [Terms] Background: ${ThemeManager.of(context).backgroundColor}');
     debugPrint('📋 [Terms] Surface: ${ThemeManager.of(context).surfaceColor}');
     debugPrint('📋 [Terms] Accent: ${ThemeManager.of(context).accent2}');
 
@@ -111,7 +113,8 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            offset: Offset(
+                0, _slideAnimation.value * MediaQuery.of(context).size.height),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.92,
               decoration: BoxDecoration(
@@ -121,7 +124,9 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).shadowDark.withValues(alpha: 102),
+                    color: ThemeManager.of(context)
+                        .shadowDark
+                        .withValues(alpha: 102),
                     blurRadius: 24.r,
                     offset: Offset(0, -6.h),
                   ),
@@ -196,7 +201,9 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).accent2.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .accent2
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -247,10 +254,14 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
                   width: 36.w,
                   height: 36.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceElevated.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceElevated
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 51),
                     ),
                   ),
                   child: Icon(
@@ -547,7 +558,8 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
               setState(() {
                 _expandedIndex = isExpanded ? null : index;
               });
-              debugPrint('📋 [Terms] Terms item ${isExpanded ? "collapsed" : "expanded"}: ${item.title}');
+              debugPrint(
+                  '📋 [Terms] Terms item ${isExpanded ? "collapsed" : "expanded"}: ${item.title}');
             },
             child: Container(
               padding: EdgeInsets.all(16.w),
@@ -680,7 +692,9 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).successColor,
                     side: BorderSide(
-                      color: ThemeManager.of(context).successColor.withValues(alpha: 128),
+                      color: ThemeManager.of(context)
+                          .successColor
+                          .withValues(alpha: 128),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
@@ -707,7 +721,8 @@ class _TermsOfServiceBottomSheetState extends State<TermsOfServiceBottomSheet>
         .map((section) {
           final filteredItems = section.items
               .where((item) =>
-                  item.title.toLowerCase().contains(_searchQuery) || item.content.toLowerCase().contains(_searchQuery))
+                  item.title.toLowerCase().contains(_searchQuery) ||
+                  item.content.toLowerCase().contains(_searchQuery))
               .toList();
 
           return TermsSection(

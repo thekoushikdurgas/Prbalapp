@@ -42,7 +42,8 @@ class ContactUsBottomSheet extends StatefulWidget {
   }
 }
 
-class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with TickerProviderStateMixin, ThemeAwareMixin {
+class _ContactUsBottomSheetState extends State<ContactUsBottomSheet>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
@@ -100,9 +101,12 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
   @override
   Widget build(BuildContext context) {
     debugPrint('📧 [ContactUs] Building contact us with theme colors:');
-    debugPrint('📧 [ContactUs] Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint('📧 [ContactUs] Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint('📧 [ContactUs] Success: ${ThemeManager.of(context).successColor}');
+    debugPrint(
+        '📧 [ContactUs] Background: ${ThemeManager.of(context).backgroundColor}');
+    debugPrint(
+        '📧 [ContactUs] Surface: ${ThemeManager.of(context).surfaceColor}');
+    debugPrint(
+        '📧 [ContactUs] Success: ${ThemeManager.of(context).successColor}');
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -110,7 +114,8 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            offset: Offset(
+                0, _slideAnimation.value * MediaQuery.of(context).size.height),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.92,
               decoration: BoxDecoration(
@@ -120,7 +125,9 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeManager.of(context).shadowDark.withValues(alpha: 102),
+                    color: ThemeManager.of(context)
+                        .shadowDark
+                        .withValues(alpha: 102),
                     blurRadius: 24.r,
                     offset: Offset(0, -6.h),
                   ),
@@ -181,7 +188,9 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ThemeManager.of(context).successColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .successColor
+                          .withValues(alpha: 51),
                       blurRadius: 8.r,
                       offset: Offset(0, 2.h),
                     ),
@@ -232,10 +241,14 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
                   width: 36.w,
                   height: 36.h,
                   decoration: BoxDecoration(
-                    color: ThemeManager.of(context).surfaceElevated.withValues(alpha: 128),
+                    color: ThemeManager.of(context)
+                        .surfaceElevated
+                        .withValues(alpha: 128),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: ThemeManager.of(context).borderColor.withValues(alpha: 51),
+                      color: ThemeManager.of(context)
+                          .borderColor
+                          .withValues(alpha: 51),
                     ),
                   ),
                   child: Icon(
@@ -589,7 +602,8 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter your email';
                 }
-                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                    .hasMatch(value)) {
                   return 'Please enter a valid email';
                 }
                 return null;
@@ -739,13 +753,15 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                color:
+                    ThemeManager.of(context).borderColor.withValues(alpha: 77),
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: ThemeManager.of(context).borderColor.withValues(alpha: 77),
+                color:
+                    ThemeManager.of(context).borderColor.withValues(alpha: 77),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -803,7 +819,8 @@ class _ContactUsBottomSheetState extends State<ContactUsBottomSheet> with Ticker
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Message sent successfully! We\'ll get back to you soon.'),
+          content: const Text(
+              'Message sent successfully! We\'ll get back to you soon.'),
           backgroundColor: ThemeManager.of(context).successColor,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(

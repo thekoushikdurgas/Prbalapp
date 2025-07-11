@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:prbal/services/api_service.dart';
-import 'package:prbal/services/user_service.dart';
-import 'package:prbal/services/hive_service.dart';
+import 'package:prbal/services/app_services.dart';
 
 /// Profile Picture Handler
 ///
@@ -20,17 +18,28 @@ class ProfilePictureHandler {
     Function(String)? onError,
   }) async {
     final ref = ProviderScope.containerOf(context);
-    // final authState = ;
-    final userService = UserService(ApiService());
-    final authToken = HiveService.getAuthToken();
-    final isAuthenticated = HiveService.isLoggedIn();
+    // final authNotifier = ref.read(authenticationStateProvider.notifier);
+    final userService = ref.read(userServiceProvider);
+    final authState = ref.read(authenticationStateProvider);
+
+    debugPrint(
+        '📷 ProfilePictureHandler: ====== PROFILE PICTURE UPDATE STARTED ======');
+    debugPrint('📷 ProfilePictureHandler: Image source: ${source.name}');
+    debugPrint(
+        '📷 ProfilePictureHandler: User authenticated: ${authState.isAuthenticated}');
+    debugPrint(
+        '📷 ProfilePictureHandler: Has access token: ${authState.tokens?.accessToken.isNotEmpty ?? false}');
     // Check authentication
-    if (!isAuthenticated || authToken.isEmpty) {
+    if (!authState.isAuthenticated ||
+        authState.tokens?.accessToken.isEmpty == true) {
       final errorMessage = 'Please log in to update your profile picture';
+      debugPrint('📷 ProfilePictureHandler: ❌ Authentication check failed');
       onError?.call(errorMessage);
       _showSnackBar(context, errorMessage, isError: true);
       return;
     }
+
+    final authToken = authState.tokens!.accessToken;
 
     try {
       // Show loading indicator
@@ -43,7 +52,8 @@ class ProfilePictureHandler {
         imageQuality: 85, // Compress image for faster upload
         maxWidth: 1024, // Limit image size
         maxHeight: 1024,
-        preferredCameraDevice: CameraDevice.front, // Use front camera for profile pics
+        preferredCameraDevice:
+            CameraDevice.front, // Use front camera for profile pics
       );
 
       if (pickedFile == null) {
@@ -51,8 +61,10 @@ class ProfilePictureHandler {
         return; // User cancelled image selection
       }
 
-      debugPrint('📷 ProfilePictureHandler: Image selected: ${pickedFile.path}');
-      debugPrint('📦 ProfilePictureHandler: File size: ${await File(pickedFile.path).length()} bytes');
+      debugPrint(
+          '📷 ProfilePictureHandler: Image selected: ${pickedFile.path}');
+      debugPrint(
+          '📦 ProfilePictureHandler: File size: ${await File(pickedFile.path).length()} bytes');
 
       // Convert to File
       final File imageFile = File(pickedFile.path);
@@ -61,7 +73,8 @@ class ProfilePictureHandler {
       final fileSize = await imageFile.length();
       if (fileSize > 5 * 1024 * 1024) {
         _closeLoadingDialog(context);
-        const errorMessage = 'Image is too large. Please select an image smaller than 5MB.';
+        const errorMessage =
+            'Image is too large. Please select an image smaller than 5MB.';
         onError?.call(errorMessage);
         _showSnackBar(context, errorMessage, isError: true);
         return;
@@ -69,16 +82,20 @@ class ProfilePictureHandler {
 
       // Upload profile image
       debugPrint('🚀 ProfilePictureHandler: Uploading image...');
-      final uploadResponse = await userService.uploadProfileImage(imageFile, authToken);
+      final uploadResponse =
+          await userService.uploadProfileImage(imageFile, authToken);
 
       // Close loading dialog
       _closeLoadingDialog(context);
 
       if (uploadResponse.isSuccess && uploadResponse.data != null) {
         // Extract new profile picture URL from different possible response structures
-        final newProfilePictureUrl = _extractProfilePictureUrl(uploadResponse.data!);
+        final apiService = ref.read(apiServiceProvider);
+        final newProfilePictureUrl =
+            _extractProfilePictureUrl(uploadResponse.data!, apiService);
 
-        debugPrint('🎯 ProfilePictureHandler: New profile URL: $newProfilePictureUrl');
+        debugPrint(
+            '🎯 ProfilePictureHandler: New profile URL: $newProfilePictureUrl');
 
         if (newProfilePictureUrl != null && newProfilePictureUrl.isNotEmpty) {
           // Update authentication state with new profile picture
@@ -91,10 +108,12 @@ class ProfilePictureHandler {
           try {
             if (await imageFile.exists()) {
               await imageFile.delete();
-              debugPrint('🗑️ ProfilePictureHandler: Temporary file cleaned up');
+              debugPrint(
+                  '🗑️ ProfilePictureHandler: Temporary file cleaned up');
             }
           } catch (e) {
-            debugPrint('⚠️ ProfilePictureHandler: Failed to clean up temp file: $e');
+            debugPrint(
+                '⚠️ ProfilePictureHandler: Failed to clean up temp file: $e');
           }
 
           // Show success message
@@ -102,7 +121,8 @@ class ProfilePictureHandler {
           onSuccess?.call();
           _showSnackBar(context, successMessage, isError: false);
 
-          debugPrint('✅ ProfilePictureHandler: Profile picture updated successfully');
+          debugPrint(
+              '✅ ProfilePictureHandler: Profile picture updated successfully');
         } else {
           throw Exception('No profile picture URL received from server');
         }
@@ -123,16 +143,18 @@ class ProfilePictureHandler {
   }
 
   /// Extract profile picture URL from API response
-  static String? _extractProfilePictureUrl(Map<String, dynamic> responseData) {
+  static String? _extractProfilePictureUrl(
+      Map<String, dynamic> responseData, dynamic apiService) {
     // Try different possible response structures
-    final rawUrl = responseData['data']?['user']?['profile_picture'] as String? ??
-        responseData['user']?['profile_picture'] as String? ??
-        responseData['profile_picture'] as String? ??
-        responseData['data']?['profile_picture'] as String?;
+    final rawUrl =
+        responseData['data']?['user']?['profile_picture'] as String? ??
+            responseData['user']?['profile_picture'] as String? ??
+            responseData['profile_picture'] as String? ??
+            responseData['data']?['profile_picture'] as String?;
 
     // Convert relative URL to absolute URL if needed
     if (rawUrl != null && rawUrl.isNotEmpty) {
-      return ApiService.convertToAbsoluteUrl(rawUrl);
+      return apiService.convertToAbsoluteUrl(rawUrl);
     }
 
     return null;
@@ -143,26 +165,40 @@ class ProfilePictureHandler {
     ProviderContainer ref,
     String newProfilePictureUrl,
   ) async {
+    debugPrint(
+        '🔄 ProfilePictureHandler: ====== UPDATING AUTHENTICATION STATE ======');
+    debugPrint(
+        '🔄 ProfilePictureHandler: New profile picture URL: $newProfilePictureUrl');
+
     try {
-      // Get current user data from HiveService
-      final currentUserData = HiveService.getUserDataSafe();
-      if (currentUserData == null) {
-        throw Exception('No user data found');
+      // Get authentication notifier
+      final authNotifier = ref.read(authenticationStateProvider.notifier);
+      final currentUser = authNotifier.currentUser;
+
+      if (currentUser == null) {
+        throw Exception('No current user found in authentication state');
       }
 
+      debugPrint(
+          '🔄 ProfilePictureHandler: Current user: ${currentUser.username}');
+      debugPrint('🔄 ProfilePictureHandler: Updating profile picture...');
+
       // Create updated user data with new profile picture
-      final updatedUserData = currentUserData.copyWith(
+      final updatedUserData = currentUser.copyWith(
         profilePicture: newProfilePictureUrl,
         updatedAt: DateTime.now(),
       );
 
-      // Save updated user data to HiveService
-      await HiveService.saveUserData(updatedUserData);
+      // Update authentication state with new user data
+      await authNotifier.updateUser(updatedUserData);
 
-      debugPrint('🔄 ProfilePictureHandler: Authentication state updated with new profile picture');
-      debugPrint('🔄 ProfilePictureHandler: New profile URL: $newProfilePictureUrl');
+      debugPrint(
+          '🔄 ProfilePictureHandler: ✅ Authentication state updated successfully');
+      debugPrint(
+          '🔄 ProfilePictureHandler: User data saved to both auth state and Hive');
     } catch (e) {
-      debugPrint('❌ ProfilePictureHandler: Failed to update authentication state: $e');
+      debugPrint(
+          '🔄 ProfilePictureHandler: ❌ Failed to update authentication state: $e');
       throw Exception('Failed to update authentication state: $e');
     }
   }
@@ -179,7 +215,9 @@ class ProfilePictureHandler {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2D2D2D) : Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF2D2D2D)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -190,7 +228,9 @@ class ProfilePictureHandler {
                 Text(
                   'Updating profile picture...',
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black87,
                   ),
                 ),
               ],
@@ -209,7 +249,8 @@ class ProfilePictureHandler {
   }
 
   /// Show snackbar with message
-  static void _showSnackBar(BuildContext context, String message, {required bool isError}) {
+  static void _showSnackBar(BuildContext context, String message,
+      {required bool isError}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -227,7 +268,8 @@ class ProfilePictureHandler {
             ),
           ],
         ),
-        backgroundColor: isError ? const Color(0xFFE53E3E) : const Color(0xFF48BB78),
+        backgroundColor:
+            isError ? const Color(0xFFE53E3E) : const Color(0xFF48BB78),
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: isError ? 4 : 3),
         shape: RoundedRectangleBorder(

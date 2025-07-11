@@ -1,471 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:prbal/models/auth/user_type.dart';
+import 'package:prbal/models/business/service_models.dart';
+import 'package:prbal/models/core/api_models.dart';
+import 'package:prbal/models/core/paginated_response.dart';
 import 'package:prbal/services/api_service.dart';
 import 'package:prbal/services/hive_service.dart';
-import 'package:prbal/services/user_service.dart';
+// import 'package:prbal/services/user_service.dart';
+// Import centralized models
 
 // ====================================================================
-// MODELS - Based on Postman collection response structure
-// Analyzed from Categories.postman_collection.json and Services.postman_collection.json
+// SERVICE MANAGEMENT SERVICE - Using centralized models
+// All models are now imported from lib/models/ directory
 // Standard response format: {message, data, time, statusCode}
 // ====================================================================
-
-/// Service Category Model
-/// Represents a service category like "Home Services", "Tech Services"
-/// API Endpoints: /services/categories/
-/// Permissions: Read (All), Write (Admin only)
-/// Features: Filtering, Searching, Ordering, Statistics
-class ServiceCategory {
-  final String id;
-  final String name;
-  final String description;
-  final String? icon;
-  final String? iconUrl;
-  final int sortOrder;
-  final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  ServiceCategory({
-    required this.id,
-    required this.name,
-    required this.description,
-    this.icon,
-    this.iconUrl,
-    required this.sortOrder,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory ServiceCategory.fromJson(Map<String, dynamic> json) {
-    debugPrint('🗂️ ServiceCategory.fromJson: Parsing category data');
-    debugPrint('🗂️ → Category ID: ${json['id']}');
-    debugPrint('🗂️ → Category Name: ${json['name']}');
-    debugPrint('🗂️ → Description Length: ${(json['description'] ?? '').length} chars');
-    debugPrint('🗂️ → Sort Order: ${json['sort_order']}');
-    debugPrint('🗂️ → Is Active: ${json['is_active']}');
-    debugPrint('🗂️ → Has Icon: ${json['icon'] != null}');
-    debugPrint('🗂️ → Has Icon URL: ${json['icon_url'] != null}');
-    debugPrint('🗂️ → Created At: ${json['created_at']}');
-    debugPrint('🗂️ → Updated At: ${json['updated_at']}');
-
-    try {
-      final category = ServiceCategory(
-        id: json['id'] ?? '',
-        name: json['name'] ?? '',
-        description: json['description'] ?? '',
-        icon: json['icon'],
-        iconUrl: json['icon_url'],
-        sortOrder: json['sort_order'] ?? 0,
-        isActive: json['is_active'] ?? true,
-        createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-        updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-      );
-
-      debugPrint('🗂️ ServiceCategory.fromJson: Successfully parsed category "${category.name}"');
-      return category;
-    } catch (e, stackTrace) {
-      debugPrint('🗂️ ServiceCategory.fromJson: Error parsing category data');
-      debugPrint('🗂️ → Error: $e');
-      debugPrint('🗂️ → Stack trace: $stackTrace');
-      debugPrint('🗂️ → Raw JSON: $json');
-      rethrow;
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final json = {
-      'id': id,
-      'name': name,
-      'description': description,
-      'icon': icon,
-      'icon_url': iconUrl,
-      'sort_order': sortOrder,
-      'is_active': isActive,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
-
-    debugPrint('🗂️ ServiceCategory.toJson: Converting category to JSON');
-    debugPrint('🗂️ → Category: $name (${json.length} fields)');
-
-    return json;
-  }
-}
-
-/// Service Subcategory Model
-/// Represents a subcategory like "Plumbing", "Electrical" under "Home Services"
-/// API Endpoints: /services/subcategories/
-/// Permissions: Read (All), Write (Admin only)
-/// Features: Category filtering, Hierarchical structure
-class ServiceSubcategory {
-  final String id;
-  final String category;
-  final String categoryName;
-  final String name;
-  final String description;
-  final String? icon;
-  final String? iconUrl;
-  final int sortOrder;
-  final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  ServiceSubcategory({
-    required this.id,
-    required this.category,
-    required this.categoryName,
-    required this.name,
-    required this.description,
-    this.icon,
-    this.iconUrl,
-    required this.sortOrder,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory ServiceSubcategory.fromJson(Map<String, dynamic> json) {
-    debugPrint('📁 ServiceSubcategory.fromJson: Parsing subcategory data');
-    debugPrint('📁 → Subcategory ID: ${json['id']}');
-    debugPrint('📁 → Subcategory Name: ${json['name']}');
-    debugPrint('📁 → Parent Category ID: ${json['category']}');
-    debugPrint('📁 → Parent Category Name: ${json['category_name']}');
-    debugPrint('📁 → Description Length: ${(json['description'] ?? '').length} chars');
-    debugPrint('📁 → Sort Order: ${json['sort_order']}');
-    debugPrint('📁 → Is Active: ${json['is_active']}');
-
-    try {
-      // Handle nested category object if present
-      String categoryId = '';
-      String categoryName = '';
-
-      if (json['category'] is Map<String, dynamic>) {
-        final categoryObj = json['category'] as Map<String, dynamic>;
-        categoryId = categoryObj['id'] ?? '';
-        categoryName = categoryObj['name'] ?? '';
-        debugPrint('📁 → Category object detected: $categoryName ($categoryId)');
-      } else {
-        categoryId = json['category'] ?? '';
-        categoryName = json['category_name'] ?? '';
-        debugPrint('📁 → Category ID reference: $categoryId');
-      }
-
-      final subcategory = ServiceSubcategory(
-        id: json['id'] ?? '',
-        category: categoryId,
-        categoryName: categoryName,
-        name: json['name'] ?? '',
-        description: json['description'] ?? '',
-        icon: json['icon'],
-        iconUrl: json['icon_url'],
-        sortOrder: json['sort_order'] ?? 0,
-        isActive: json['is_active'] ?? true,
-        createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-        updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-      );
-
-      debugPrint('📁 ServiceSubcategory.fromJson: Successfully parsed subcategory "${subcategory.name}"');
-      debugPrint('📁 → Under category: ${subcategory.categoryName}');
-      return subcategory;
-    } catch (e, stackTrace) {
-      debugPrint('📁 ServiceSubcategory.fromJson: Error parsing subcategory data');
-      debugPrint('📁 → Error: $e');
-      debugPrint('📁 → Stack trace: $stackTrace');
-      debugPrint('📁 → Raw JSON: $json');
-      rethrow;
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final json = {
-      'id': id,
-      'category': category,
-      'category_name': categoryName,
-      'name': name,
-      'description': description,
-      'icon': icon,
-      'icon_url': iconUrl,
-      'sort_order': sortOrder,
-      'is_active': isActive,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
-
-    debugPrint('📁 ServiceSubcategory.toJson: Converting subcategory to JSON');
-    debugPrint('📁 → Subcategory: $name under $categoryName (${json.length} fields)');
-
-    return json;
-  }
-}
-
-/// Service Subcategory Request Model for creating subcategories
-/// Used for POST /services/subcategories/ endpoint
-/// Required fields based on Postman collection analysis
-class ServiceSubcategoryRequest {
-  final String category;
-  final String name;
-  final String description;
-  final int? sortOrder;
-  final bool isActive;
-
-  ServiceSubcategoryRequest({
-    required this.category,
-    required this.name,
-    required this.description,
-    this.sortOrder,
-    this.isActive = true,
-  });
-
-  Map<String, dynamic> toJson() {
-    final json = {
-      'category': category,
-      'name': name,
-      'description': description,
-      'is_active': isActive,
-    };
-
-    // Add sort_order if provided, or auto-assign if not provided
-    if (sortOrder != null) {
-      json['sort_order'] = sortOrder!;
-      debugPrint('📁 ServiceSubcategoryRequest: Using provided sort order: $sortOrder');
-    } else {
-      // Auto-assign a default sort order based on timestamp
-      json['sort_order'] = DateTime.now().millisecondsSinceEpoch % 1000;
-      debugPrint('📁 ServiceSubcategoryRequest: Auto-assigned sort order: ${json['sort_order']}');
-    }
-
-    debugPrint('📁 ServiceSubcategoryRequest.toJson: Creating subcategory request');
-    debugPrint('📁 → Name: $name');
-    debugPrint('📁 → Category ID: $category');
-    debugPrint('📁 → Description Length: ${description.length} chars');
-    debugPrint('📁 → Is Active: $isActive');
-    debugPrint('📁 → Final JSON: $json');
-
-    return json;
-  }
-}
-
-/// Service Model - Complete implementation based on Postman collection
-/// Represents a service offered by a provider like "Professional Plumbing Service"
-class Service {
-  final String id;
-  final Map<String, dynamic> provider;
-  final String name;
-  final String description;
-  final Map<String, dynamic> category;
-  final List<Map<String, dynamic>> subcategories;
-  final List<String> tags;
-  final double hourlyRate;
-  final Map<String, dynamic>? pricingOptions;
-  final String currency;
-  final int? minHours;
-  final int? maxHours;
-  final Map<String, dynamic>? availability;
-  final String location;
-  final double? latitude;
-  final double? longitude;
-  final List<String> requiredTools;
-  final String status;
-  final bool isFeatured;
-  final List<Map<String, dynamic>> serviceImages;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  Service({
-    required this.id,
-    required this.provider,
-    required this.name,
-    required this.description,
-    required this.category,
-    required this.subcategories,
-    required this.tags,
-    required this.hourlyRate,
-    this.pricingOptions,
-    required this.currency,
-    this.minHours,
-    this.maxHours,
-    this.availability,
-    required this.location,
-    this.latitude,
-    this.longitude,
-    required this.requiredTools,
-    required this.status,
-    required this.isFeatured,
-    required this.serviceImages,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Service.fromJson(Map<String, dynamic> json) {
-    debugPrint('🔧 Service: Parsing service data - ${json['name']}');
-
-    return Service(
-      id: json['id'] ?? '',
-      provider: Map<String, dynamic>.from(json['provider'] ?? {}),
-      name: json['name'] ?? json['title'] ?? '',
-      description: json['description'] ?? '',
-      category: Map<String, dynamic>.from(json['category'] ?? {}),
-      subcategories: List<Map<String, dynamic>>.from(
-          (json['subcategories'] as List<dynamic>?)?.map((item) => Map<String, dynamic>.from(item)) ?? []),
-      tags: List<String>.from(json['tags'] ?? []),
-      hourlyRate: (json['hourly_rate'] ?? json['price'] ?? 0.0).toDouble(),
-      pricingOptions: json['pricing_options'] != null ? Map<String, dynamic>.from(json['pricing_options']) : null,
-      currency: json['currency'] ?? 'INR',
-      minHours: json['min_hours'],
-      maxHours: json['max_hours'],
-      availability: json['availability'] != null ? Map<String, dynamic>.from(json['availability']) : null,
-      location: json['location'] ?? '',
-      latitude: json['latitude']?.toDouble(),
-      longitude: json['longitude']?.toDouble(),
-      requiredTools: List<String>.from(json['required_tools'] ?? []),
-      status: json['status'] ?? 'active',
-      isFeatured: json['is_featured'] ?? false,
-      serviceImages: List<Map<String, dynamic>>.from(
-          (json['service_images'] as List<dynamic>?)?.map((item) => Map<String, dynamic>.from(item)) ?? []),
-      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'provider': provider,
-      'name': name,
-      'description': description,
-      'category': category,
-      'subcategories': subcategories,
-      'tags': tags,
-      'hourly_rate': hourlyRate,
-      'pricing_options': pricingOptions,
-      'currency': currency,
-      'min_hours': minHours,
-      'max_hours': maxHours,
-      'availability': availability,
-      'location': location,
-      'latitude': latitude,
-      'longitude': longitude,
-      'required_tools': requiredTools,
-      'status': status,
-      'is_featured': isFeatured,
-      'service_images': serviceImages,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
-  }
-}
-
-/// Service Request Model - Complete implementation based on Postman collection
-/// Represents a request for service like "Need Emergency Plumbing Service"
-class ServiceRequest {
-  final String id;
-  final Map<String, dynamic> customer;
-  final String title;
-  final String description;
-  final Map<String, dynamic> category;
-  final List<Map<String, dynamic>> subcategories;
-  final double budgetMin;
-  final double budgetMax;
-  final String currency;
-  final String urgency;
-  final String status;
-  final DateTime requestedDateTime;
-  final String location;
-  final double? latitude;
-  final double? longitude;
-  final Map<String, dynamic>? requirements;
-  final List<Map<String, dynamic>> requestImages;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? expiresAt;
-  final int interestedProvidersCount;
-  final int viewCount;
-
-  ServiceRequest({
-    required this.id,
-    required this.customer,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.subcategories,
-    required this.budgetMin,
-    required this.budgetMax,
-    required this.currency,
-    required this.urgency,
-    required this.status,
-    required this.requestedDateTime,
-    required this.location,
-    this.latitude,
-    this.longitude,
-    this.requirements,
-    required this.requestImages,
-    required this.createdAt,
-    required this.updatedAt,
-    this.expiresAt,
-    required this.interestedProvidersCount,
-    required this.viewCount,
-  });
-
-  factory ServiceRequest.fromJson(Map<String, dynamic> json) {
-    debugPrint('🔧 ServiceRequest: Parsing service request data - ${json['title']}');
-
-    return ServiceRequest(
-      id: json['id'] ?? '',
-      customer: Map<String, dynamic>.from(json['customer'] ?? {}),
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      category: Map<String, dynamic>.from(json['category'] ?? {}),
-      subcategories: List<Map<String, dynamic>>.from(
-          (json['subcategories'] as List<dynamic>?)?.map((item) => Map<String, dynamic>.from(item)) ?? []),
-      budgetMin: (json['budget_min'] ?? 0.0).toDouble(),
-      budgetMax: (json['budget_max'] ?? 0.0).toDouble(),
-      currency: json['currency'] ?? 'INR',
-      urgency: json['urgency'] ?? 'medium',
-      status: json['status'] ?? 'open',
-      requestedDateTime: DateTime.tryParse(json['requested_date_time'] ?? '') ?? DateTime.now(),
-      location: json['location'] ?? '',
-      latitude: json['latitude']?.toDouble(),
-      longitude: json['longitude']?.toDouble(),
-      requirements: json['requirements'] != null ? Map<String, dynamic>.from(json['requirements']) : null,
-      requestImages: List<Map<String, dynamic>>.from(
-          (json['request_images'] as List<dynamic>?)?.map((item) => Map<String, dynamic>.from(item)) ?? []),
-      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
-      expiresAt: json['expires_at'] != null ? DateTime.tryParse(json['expires_at']) : null,
-      interestedProvidersCount: json['interested_providers_count'] ?? 0,
-      viewCount: json['view_count'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'customer': customer,
-      'title': title,
-      'description': description,
-      'category': category,
-      'subcategories': subcategories,
-      'budget_min': budgetMin,
-      'budget_max': budgetMax,
-      'currency': currency,
-      'urgency': urgency,
-      'status': status,
-      'requested_date_time': requestedDateTime.toIso8601String(),
-      'location': location,
-      'latitude': latitude,
-      'longitude': longitude,
-      'requirements': requirements,
-      'request_images': requestImages,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'expires_at': expiresAt?.toIso8601String(),
-      'interested_providers_count': interestedProvidersCount,
-      'view_count': viewCount,
-    };
-  }
-}
 
 /// Service Management Service for handling all service-related operations
 /// This service handles Categories, SubCategories, Services, and Service Requests
@@ -482,9 +30,11 @@ class ServiceManagementService {
   // Stream controllers for real-time updates
   final StreamController<List<ServiceCategory>> _categoryStreamController =
       StreamController<List<ServiceCategory>>.broadcast();
-  final StreamController<List<ServiceSubcategory>> _subcategoryStreamController =
+  final StreamController<List<ServiceSubcategory>>
+      _subcategoryStreamController =
       StreamController<List<ServiceSubcategory>>.broadcast();
-  final StreamController<List<Service>> _serviceStreamController = StreamController<List<Service>>.broadcast();
+  final StreamController<List<Service>> _serviceStreamController =
+      StreamController<List<Service>>.broadcast();
   final StreamController<List<ServiceRequest>> _requestStreamController =
       StreamController<List<ServiceRequest>>.broadcast();
 
@@ -497,26 +47,37 @@ class ServiceManagementService {
     debugPrint('🔧   → Categories: List, Create, Update, Delete, Statistics');
     debugPrint('🔧   → SubCategories: List, Create, Update, Delete');
     debugPrint('🔧   → Services: Full CRUD operations (Future implementation)');
-    debugPrint('🔧   → Service Requests: Management operations (Future implementation)');
+    debugPrint(
+        '🔧   → Service Requests: Management operations (Future implementation)');
     debugPrint('🔧 🔐 PERMISSION ANALYSIS:');
     debugPrint('🔧   → Read Operations: Available to all authenticated users');
-    debugPrint('🔧   → Write Operations: Admin only (Categories/SubCategories)');
+    debugPrint(
+        '🔧   → Write Operations: Admin only (Categories/SubCategories)');
     debugPrint('🔧   → Service Creation: Provider users only');
     debugPrint('🔧   → Request Creation: Customer users only');
     debugPrint('🔧 📋 API ENDPOINT MAPPING:');
     debugPrint('🔧   → GET    /services/categories/ (List categories)');
     debugPrint('🔧   → POST   /services/categories/ (Create category - Admin)');
     debugPrint('🔧   → GET    /services/categories/{id}/ (Category details)');
-    debugPrint('🔧   → PUT    /services/categories/{id}/ (Update category - Admin)');
-    debugPrint('🔧   → PATCH  /services/categories/{id}/ (Partial update - Admin)');
-    debugPrint('🔧   → DELETE /services/categories/{id}/ (Delete category - Admin)');
-    debugPrint('🔧   → GET    /services/categories/statistics/ (Statistics - Admin)');
+    debugPrint(
+        '🔧   → PUT    /services/categories/{id}/ (Update category - Admin)');
+    debugPrint(
+        '🔧   → PATCH  /services/categories/{id}/ (Partial update - Admin)');
+    debugPrint(
+        '🔧   → DELETE /services/categories/{id}/ (Delete category - Admin)');
+    debugPrint(
+        '🔧   → GET    /services/categories/statistics/ (Statistics - Admin)');
     debugPrint('🔧   → GET    /services/subcategories/ (List subcategories)');
-    debugPrint('🔧   → POST   /services/subcategories/ (Create subcategory - Admin)');
-    debugPrint('🔧   → GET    /services/subcategories/{id}/ (Subcategory details)');
-    debugPrint('🔧   → PUT    /services/subcategories/{id}/ (Update subcategory - Admin)');
-    debugPrint('🔧   → PATCH  /services/subcategories/{id}/ (Partial update - Admin)');
-    debugPrint('🔧   → DELETE /services/subcategories/{id}/ (Delete subcategory - Admin)');
+    debugPrint(
+        '🔧   → POST   /services/subcategories/ (Create subcategory - Admin)');
+    debugPrint(
+        '🔧   → GET    /services/subcategories/{id}/ (Subcategory details)');
+    debugPrint(
+        '🔧   → PUT    /services/subcategories/{id}/ (Update subcategory - Admin)');
+    debugPrint(
+        '🔧   → PATCH  /services/subcategories/{id}/ (Partial update - Admin)');
+    debugPrint(
+        '🔧   → DELETE /services/subcategories/{id}/ (Delete subcategory - Admin)');
     debugPrint('🔧 💾 CACHING STRATEGY:');
     debugPrint('🔧   → Services Cache Duration: $_serviceCacheDuration');
     debugPrint('🔧   → Cache Storage: Local Hive database');
@@ -532,10 +93,13 @@ class ServiceManagementService {
   }
 
   // Streams for real-time data updates
-  Stream<List<ServiceCategory>> get categoryStream => _categoryStreamController.stream;
-  Stream<List<ServiceSubcategory>> get subcategoryStream => _subcategoryStreamController.stream;
+  Stream<List<ServiceCategory>> get categoryStream =>
+      _categoryStreamController.stream;
+  Stream<List<ServiceSubcategory>> get subcategoryStream =>
+      _subcategoryStreamController.stream;
   Stream<List<Service>> get serviceStream => _serviceStreamController.stream;
-  Stream<List<ServiceRequest>> get requestStream => _requestStreamController.stream;
+  Stream<List<ServiceRequest>> get requestStream =>
+      _requestStreamController.stream;
 
   // ====================================================================
   // SERVICE CATEGORY MANAGEMENT METHODS
@@ -561,11 +125,15 @@ class ServiceManagementService {
     String ordering = 'sort_order',
   }) async {
     final startTime = DateTime.now();
-    debugPrint('🔧 ServiceManagementService.getCategories: ============================');
-    debugPrint('🔧 ServiceManagementService.getCategories: STARTING CATEGORY RETRIEVAL');
-    debugPrint('🔧 ServiceManagementService.getCategories: ============================');
+    debugPrint(
+        '🔧 ServiceManagementService.getCategories: ============================');
+    debugPrint(
+        '🔧 ServiceManagementService.getCategories: STARTING CATEGORY RETRIEVAL');
+    debugPrint(
+        '🔧 ServiceManagementService.getCategories: ============================');
     debugPrint('🔧 → 📋 REQUEST PARAMETERS ANALYSIS:');
-    debugPrint('🔧   → Active Only Filter: ${activeOnly ? 'ENABLED' : 'DISABLED'}');
+    debugPrint(
+        '🔧   → Active Only Filter: ${activeOnly ? 'ENABLED' : 'DISABLED'}');
     debugPrint('🔧   → Search Query: ${search ?? 'NONE'}');
     debugPrint('🔧   → Ordering Strategy: $ordering');
     debugPrint('🔧   → Request Timestamp: ${startTime.toIso8601String()}');
@@ -579,7 +147,8 @@ class ServiceManagementService {
       debugPrint('🔧 → 🔍 SEARCH ANALYSIS:');
       debugPrint('🔧   → Query Length: ${search.length} characters');
       debugPrint('🔧   → Query Words: ${search.split(' ').length}');
-      debugPrint('🔧   → Search Type: ${search.length < 3 ? 'SHORT_QUERY' : 'DETAILED_QUERY'}');
+      debugPrint(
+          '🔧   → Search Type: ${search.length < 3 ? 'SHORT_QUERY' : 'DETAILED_QUERY'}');
     }
 
     try {
@@ -608,7 +177,8 @@ class ServiceManagementService {
       debugPrint('🔧 → 📡 EXECUTING API CALL...');
       final apiStartTime = DateTime.now();
 
-      final response = await _apiService.get<PaginatedResponse<ServiceCategory>>(
+      final response =
+          await _apiService.get<PaginatedResponse<ServiceCategory>>(
         '/services/categories/',
         queryParams: queryParams,
         token: HiveService.getAuthToken(),
@@ -618,13 +188,15 @@ class ServiceManagementService {
         ),
       );
 
-      final apiDuration = DateTime.now().difference(apiStartTime).inMilliseconds;
+      final apiDuration =
+          DateTime.now().difference(apiStartTime).inMilliseconds;
       final totalDuration = DateTime.now().difference(startTime).inMilliseconds;
 
       debugPrint('🔧 → 📊 API RESPONSE ANALYSIS:');
       debugPrint('🔧   → API Call Duration: ${apiDuration}ms');
       debugPrint('🔧   → Total Operation Duration: ${totalDuration}ms');
-      debugPrint('🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
+      debugPrint(
+          '🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
       debugPrint('🔧   → Status Code: ${response.statusCode}');
 
       if (response.isSuccess && response.data != null) {
@@ -637,7 +209,8 @@ class ServiceManagementService {
         debugPrint('🔧   → Current Page: ${paginatedData.page}');
         debugPrint('🔧   → Total Pages: ${paginatedData.totalPages}');
         debugPrint('🔧   → Has Next Page: ${paginatedData.next != null}');
-        debugPrint('🔧   → Has Previous Page: ${paginatedData.previous != null}');
+        debugPrint(
+            '🔧   → Has Previous Page: ${paginatedData.previous != null}');
 
         // Analyze retrieved categories
         if (categories.isNotEmpty) {
@@ -650,19 +223,27 @@ class ServiceManagementService {
           debugPrint('🔧   → Inactive Categories: $inactiveCategories');
 
           // Sort order analysis
-          final sortOrders = categories.map((c) => c.sortOrder).toSet().toList()..sort();
+          final sortOrders = categories.map((c) => c.sortOrder).toSet().toList()
+            ..sort();
           debugPrint('🔧   → Sort Orders: ${sortOrders.join(', ')}');
 
           // Name length analysis
-          final avgNameLength = categories.map((c) => c.name.length).reduce((a, b) => a + b) / categories.length;
-          debugPrint('🔧   → Average Name Length: ${avgNameLength.toStringAsFixed(1)} characters');
+          final avgNameLength =
+              categories.map((c) => c.name.length).reduce((a, b) => a + b) /
+                  categories.length;
+          debugPrint(
+              '🔧   → Average Name Length: ${avgNameLength.toStringAsFixed(1)} characters');
 
           // Recent updates analysis
-          final recentlyUpdated = categories.where((c) => DateTime.now().difference(c.updatedAt).inDays < 7).length;
-          debugPrint('🔧   → Recently Updated (7 days): $recentlyUpdated categories');
+          final recentlyUpdated = categories
+              .where((c) => DateTime.now().difference(c.updatedAt).inDays < 7)
+              .length;
+          debugPrint(
+              '🔧   → Recently Updated (7 days): $recentlyUpdated categories');
 
           // List category names for debugging
-          debugPrint('🔧   → Category Names: ${categories.map((c) => c.name).join(', ')}');
+          debugPrint(
+              '🔧   → Category Names: ${categories.map((c) => c.name).join(', ')}');
         }
 
         // Update real-time stream
@@ -670,9 +251,11 @@ class ServiceManagementService {
         _categoryStreamController.add(categories);
         debugPrint('🔧   → Stream Update: Complete');
 
-        final finalDuration = DateTime.now().difference(startTime).inMilliseconds;
+        final finalDuration =
+            DateTime.now().difference(startTime).inMilliseconds;
         debugPrint('🔧 ServiceManagementService.getCategories: ✅ API SUCCESS');
-        debugPrint('🔧   → Final Result: ${categories.length} categories retrieved');
+        debugPrint(
+            '🔧   → Final Result: ${categories.length} categories retrieved');
         debugPrint('🔧   → Performance Breakdown:');
         debugPrint('🔧     → API Call: ${apiDuration}ms');
         debugPrint('🔧     → Total: ${finalDuration}ms');
@@ -685,8 +268,10 @@ class ServiceManagementService {
         debugPrint('🔧 ServiceManagementService.getCategories: ❌ API FAILED');
         debugPrint('🔧   → Error Message: "${response.message}"');
         debugPrint('🔧   → Status Code: ${response.statusCode}');
-        debugPrint('🔧   → Error Category: ${_categorizeError(response.statusCode)}');
-        debugPrint('🔧   → Troubleshooting: ${_getTroubleshootingTips(response.statusCode)}');
+        debugPrint(
+            '🔧   → Error Category: ${_categorizeError(response.statusCode)}');
+        debugPrint(
+            '🔧   → Troubleshooting: ${_getTroubleshootingTips(response.statusCode)}');
 
         return ApiResponse.error(
           message: response.message,
@@ -695,7 +280,8 @@ class ServiceManagementService {
       }
     } catch (e) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
-      debugPrint('🔧 ServiceManagementService: Error getting categories (${duration}ms) - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error getting categories (${duration}ms) - $e');
       return ApiResponse.error(
         message: 'Failed to get categories: $e',
         statusCode: 500,
@@ -705,8 +291,10 @@ class ServiceManagementService {
 
   /// Get category details by ID
   /// Endpoint: GET /api/services/categories/{id}/
-  Future<ApiResponse<ServiceCategory>> getCategoryById(String categoryId) async {
-    debugPrint('🔧 ServiceManagementService: Getting category details for ID: $categoryId');
+  Future<ApiResponse<ServiceCategory>> getCategoryById(
+      String categoryId) async {
+    debugPrint(
+        '🔧 ServiceManagementService: Getting category details for ID: $categoryId');
 
     try {
       final response = await _apiService.get<ServiceCategory>(
@@ -716,17 +304,20 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully retrieved category: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully retrieved category: ${response.data!.name}');
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to get category - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to get category - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error getting category details - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error getting category details - $e');
       return ApiResponse.error(
         message: 'Failed to get category details: $e',
         statusCode: 500,
@@ -745,12 +336,15 @@ class ServiceManagementService {
     bool isActive = true,
   }) async {
     debugPrint('🔧 ServiceManagementService: Creating new category');
-    debugPrint('🔧 Category details: name=$name, description=$description, sortOrder=$sortOrder');
-    debugPrint('🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
+    debugPrint(
+        '🔧 Category details: name=$name, description=$description, sortOrder=$sortOrder');
+    debugPrint(
+        '🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot create category');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot create category');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -766,7 +360,8 @@ class ServiceManagementService {
         'icon_url': iconUrl, // ✨ Using icon_url for predefined icons
       };
 
-      debugPrint('🔧 ServiceManagementService: Sending create request with body: $requestBody');
+      debugPrint(
+          '🔧 ServiceManagementService: Sending create request with body: $requestBody');
 
       final response = await _apiService.post<ServiceCategory>(
         '/services/categories/',
@@ -776,11 +371,13 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully created category: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully created category: ${response.data!.name}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to create category - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to create category - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -807,13 +404,17 @@ class ServiceManagementService {
     int sortOrder = 0,
     bool isActive = true,
   }) async {
-    debugPrint('🔧 ServiceManagementService: Updating category ID: $categoryId');
-    debugPrint('🔧 New details: name=$name, description=$description, sortOrder=$sortOrder');
-    debugPrint('🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
+    debugPrint(
+        '🔧 ServiceManagementService: Updating category ID: $categoryId');
+    debugPrint(
+        '🔧 New details: name=$name, description=$description, sortOrder=$sortOrder');
+    debugPrint(
+        '🔧 → Icon URL specified: ${iconUrl != null ? 'YES ($iconUrl)' : 'NO'}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot update category');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot update category');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -829,7 +430,8 @@ class ServiceManagementService {
         'is_active': isActive,
       };
 
-      debugPrint('🔧 ServiceManagementService: Sending update request with body: $requestBody');
+      debugPrint(
+          '🔧 ServiceManagementService: Sending update request with body: $requestBody');
 
       final response = await _apiService.put<ServiceCategory>(
         '/services/categories/$categoryId/',
@@ -839,11 +441,13 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully updated category: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully updated category: ${response.data!.name}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to update category - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to update category - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -862,11 +466,13 @@ class ServiceManagementService {
   /// Delete a category (Admin only)
   /// Endpoint: DELETE /api/services/categories/{id}/
   Future<ApiResponse<void>> deleteCategory(String categoryId) async {
-    debugPrint('🔧 ServiceManagementService: Deleting category ID: $categoryId');
+    debugPrint(
+        '🔧 ServiceManagementService: Deleting category ID: $categoryId');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot delete category');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot delete category');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -880,14 +486,16 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess) {
-        debugPrint('🔧 ServiceManagementService: Successfully deleted category ID: $categoryId');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully deleted category ID: $categoryId');
 
         return ApiResponse.success(
           data: null,
           message: 'Category deleted successfully',
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to delete category - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to delete category - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -909,7 +517,8 @@ class ServiceManagementService {
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot access statistics');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot access statistics');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -925,12 +534,14 @@ class ServiceManagementService {
 
       if (response.isSuccess && response.data != null) {
         final stats = response.data!;
-        debugPrint('🔧 ServiceManagementService: Retrieved category statistics');
+        debugPrint(
+            '🔧 ServiceManagementService: Retrieved category statistics');
         debugPrint('🔧 Statistics summary: ${stats['summary']}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to get statistics - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to get statistics - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -1027,10 +638,12 @@ class ServiceManagementService {
         queryParams['active_only'] = 'true';
       }
 
-      debugPrint('🔧 ServiceManagementService: Making API call with params: $queryParams');
+      debugPrint(
+          '🔧 ServiceManagementService: Making API call with params: $queryParams');
 
       // Make API call
-      final response = await _apiService.get<PaginatedResponse<ServiceSubcategory>>(
+      final response =
+          await _apiService.get<PaginatedResponse<ServiceSubcategory>>(
         '/services/subcategories/',
         queryParams: queryParams,
         token: HiveService.getAuthToken(),
@@ -1055,7 +668,8 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to get subcategories - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to get subcategories - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -1063,7 +677,8 @@ class ServiceManagementService {
       }
     } catch (e) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
-      debugPrint('🔧 ServiceManagementService: Error getting subcategories (${duration}ms) - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error getting subcategories (${duration}ms) - $e');
       return ApiResponse.error(
         message: 'Failed to get subcategories: $e',
         statusCode: 500,
@@ -1073,8 +688,10 @@ class ServiceManagementService {
 
   /// Get subcategory details by ID
   /// Endpoint: GET /api/services/subcategories/{id}/
-  Future<ApiResponse<ServiceSubcategory>> getSubcategoryById(String subcategoryId) async {
-    debugPrint('🔧 ServiceManagementService: Getting subcategory details for ID: $subcategoryId');
+  Future<ApiResponse<ServiceSubcategory>> getSubcategoryById(
+      String subcategoryId) async {
+    debugPrint(
+        '🔧 ServiceManagementService: Getting subcategory details for ID: $subcategoryId');
 
     try {
       final response = await _apiService.get<ServiceSubcategory>(
@@ -1084,17 +701,20 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully retrieved subcategory: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully retrieved subcategory: ${response.data!.name}');
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to get subcategory - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to get subcategory - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error getting subcategory details - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error getting subcategory details - $e');
       return ApiResponse.error(
         message: 'Failed to get subcategory details: $e',
         statusCode: 500,
@@ -1104,13 +724,15 @@ class ServiceManagementService {
 
   /// Create a new service subcategory (Admin only)
   /// Endpoint: POST /api/services/subcategories/
-  Future<ApiResponse<ServiceSubcategory>> createSubcategory(ServiceSubcategoryRequest request) async {
+  Future<ApiResponse<ServiceSubcategory>> createSubcategory(
+      ServiceSubcategoryRequest request) async {
     debugPrint('🔧 ServiceManagementService: Creating new subcategory');
     debugPrint('🔧 Subcategory details: ${request.toJson()}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot create subcategory');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot create subcategory');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -1119,7 +741,8 @@ class ServiceManagementService {
 
     try {
       final requestBody = request.toJson();
-      debugPrint('🔧 ServiceManagementService: Sending create request with body: $requestBody');
+      debugPrint(
+          '🔧 ServiceManagementService: Sending create request with body: $requestBody');
 
       final response = await _apiService.post<ServiceSubcategory>(
         '/services/subcategories/',
@@ -1129,11 +752,13 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully created subcategory: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully created subcategory: ${response.data!.name}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to create subcategory - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to create subcategory - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -1141,7 +766,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error creating subcategory - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error creating subcategory - $e');
       return ApiResponse.error(
         message: 'Failed to create subcategory: $e',
         statusCode: 500,
@@ -1155,12 +781,14 @@ class ServiceManagementService {
     required String subcategoryId,
     required ServiceSubcategoryRequest request,
   }) async {
-    debugPrint('🔧 ServiceManagementService: Updating subcategory ID: $subcategoryId');
+    debugPrint(
+        '🔧 ServiceManagementService: Updating subcategory ID: $subcategoryId');
     debugPrint('🔧 New details: ${request.toJson()}');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot update subcategory');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot update subcategory');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -1169,7 +797,8 @@ class ServiceManagementService {
 
     try {
       final requestBody = request.toJson();
-      debugPrint('🔧 ServiceManagementService: Sending full update request with body: $requestBody');
+      debugPrint(
+          '🔧 ServiceManagementService: Sending full update request with body: $requestBody');
 
       final response = await _apiService.put<ServiceSubcategory>(
         '/services/subcategories/$subcategoryId/',
@@ -1179,11 +808,13 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully updated subcategory: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully updated subcategory: ${response.data!.name}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to update subcategory - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to update subcategory - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -1191,7 +822,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error updating subcategory - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error updating subcategory - $e');
       return ApiResponse.error(
         message: 'Failed to update subcategory: $e',
         statusCode: 500,
@@ -1207,12 +839,15 @@ class ServiceManagementService {
     int? sortOrder,
     bool? isActive,
   }) async {
-    debugPrint('🔧 ServiceManagementService: Partially updating subcategory ID: $subcategoryId');
-    debugPrint('🔧 Patch fields: description=$description, sortOrder=$sortOrder, isActive=$isActive');
+    debugPrint(
+        '🔧 ServiceManagementService: Partially updating subcategory ID: $subcategoryId');
+    debugPrint(
+        '🔧 Patch fields: description=$description, sortOrder=$sortOrder, isActive=$isActive');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot patch subcategory');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot patch subcategory');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -1242,7 +877,8 @@ class ServiceManagementService {
         );
       }
 
-      debugPrint('🔧 ServiceManagementService: Sending partial update request with body: $requestBody');
+      debugPrint(
+          '🔧 ServiceManagementService: Sending partial update request with body: $requestBody');
 
       final response = await _apiService.patch<ServiceSubcategory>(
         '/services/subcategories/$subcategoryId/',
@@ -1252,11 +888,13 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess && response.data != null) {
-        debugPrint('🔧 ServiceManagementService: Successfully patched subcategory: ${response.data!.name}');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully patched subcategory: ${response.data!.name}');
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to patch subcategory - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to patch subcategory - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
@@ -1264,7 +902,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error patching subcategory - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error patching subcategory - $e');
       return ApiResponse.error(
         message: 'Failed to patch subcategory: $e',
         statusCode: 500,
@@ -1275,11 +914,13 @@ class ServiceManagementService {
   /// Delete a subcategory (Admin only)
   /// Endpoint: DELETE /api/services/subcategories/{id}/
   Future<ApiResponse<void>> deleteSubcategory(String subcategoryId) async {
-    debugPrint('🔧 ServiceManagementService: Deleting subcategory ID: $subcategoryId');
+    debugPrint(
+        '🔧 ServiceManagementService: Deleting subcategory ID: $subcategoryId');
 
     // Validate user permissions
     if (!HiveService.isAdmin()) {
-      debugPrint('🔧 ServiceManagementService: User is not admin, cannot delete subcategory');
+      debugPrint(
+          '🔧 ServiceManagementService: User is not admin, cannot delete subcategory');
       return ApiResponse.error(
         message: 'Permission denied: Admin access required',
         statusCode: 403,
@@ -1293,21 +934,24 @@ class ServiceManagementService {
       );
 
       if (response.isSuccess) {
-        debugPrint('🔧 ServiceManagementService: Successfully deleted subcategory ID: $subcategoryId');
+        debugPrint(
+            '🔧 ServiceManagementService: Successfully deleted subcategory ID: $subcategoryId');
 
         return ApiResponse.success(
           data: null,
           message: 'Subcategory deleted successfully',
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: Failed to delete subcategory - ${response.message}');
+        debugPrint(
+            '🔧 ServiceManagementService: Failed to delete subcategory - ${response.message}');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Error deleting subcategory - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Error deleting subcategory - $e');
       return ApiResponse.error(
         message: 'Failed to delete subcategory: $e',
         statusCode: 500,
@@ -1357,19 +1001,25 @@ class ServiceManagementService {
     bool useCache = false, // Requests are time-sensitive, avoid caching
   }) async {
     final startTime = DateTime.now();
-    debugPrint('🔧 ServiceManagementService.getServiceRequests: ==============================');
-    debugPrint('🔧 ServiceManagementService.getServiceRequests: SERVICE REQUEST DISCOVERY');
-    debugPrint('🔧 ServiceManagementService.getServiceRequests: ==============================');
+    debugPrint(
+        '🔧 ServiceManagementService.getServiceRequests: ==============================');
+    debugPrint(
+        '🔧 ServiceManagementService.getServiceRequests: SERVICE REQUEST DISCOVERY');
+    debugPrint(
+        '🔧 ServiceManagementService.getServiceRequests: ==============================');
     debugPrint('🔧 → 📋 REQUEST DISCOVERY PARAMETERS:');
-    debugPrint('🔧   → Status Filter: ${status ?? 'ALL_STATUSES (open, in_progress, fulfilled, cancelled, expired)'}');
+    debugPrint(
+        '🔧   → Status Filter: ${status ?? 'ALL_STATUSES (open, in_progress, fulfilled, cancelled, expired)'}');
     debugPrint('🔧   → Category Filter: ${categoryId ?? 'ALL_CATEGORIES'}');
-    debugPrint('🔧   → Urgency Filter: ${urgency ?? 'ALL_URGENCIES (low, medium, high, urgent)'}');
+    debugPrint(
+        '🔧   → Urgency Filter: ${urgency ?? 'ALL_URGENCIES (low, medium, high, urgent)'}');
     debugPrint(
         '🔧   → Budget Range: ${budgetMin != null && budgetMax != null ? '$budgetMin - $budgetMax' : 'NO_BUDGET_FILTER'}');
     debugPrint('🔧   → Search Query: ${search ?? 'NO_SEARCH'}');
     debugPrint('🔧   → Ordering Strategy: $ordering');
     debugPrint('🔧   → Pagination: Page $page, Size $pageSize');
-    debugPrint('🔧   → Caching Strategy: ${useCache ? 'ENABLED' : 'DISABLED (time-sensitive data)'}');
+    debugPrint(
+        '🔧   → Caching Strategy: ${useCache ? 'ENABLED' : 'DISABLED (time-sensitive data)'}');
     debugPrint(
         '🔧   → User Access Level: ${isCustomer ? 'CUSTOMER' : isProvider ? 'PROVIDER' : isAdmin ? 'ADMIN' : 'PUBLIC'}');
 
@@ -1421,21 +1071,27 @@ class ServiceManagementService {
         fromJson: (json) => json as Map<String, dynamic>,
       );
 
-      final apiDuration = DateTime.now().difference(apiStartTime).inMilliseconds;
+      final apiDuration =
+          DateTime.now().difference(apiStartTime).inMilliseconds;
       final totalDuration = DateTime.now().difference(startTime).inMilliseconds;
 
       debugPrint('🔧 → 📊 REQUEST DISCOVERY RESPONSE ANALYSIS:');
       debugPrint('🔧   → API Call Duration: ${apiDuration}ms');
       debugPrint('🔧   → Total Operation Duration: ${totalDuration}ms');
-      debugPrint('🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
+      debugPrint(
+          '🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
 
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
-        final requestsData = data['service_requests'] as List<dynamic>? ?? data['data'] as List<dynamic>? ?? [];
-        final requests = requestsData.map((item) => ServiceRequest.fromJson(item)).toList();
+        final requestsData = data['service_requests'] as List<dynamic>? ??
+            data['data'] as List<dynamic>? ??
+            [];
+        final requests =
+            requestsData.map((item) => ServiceRequest.fromJson(item)).toList();
 
         debugPrint('🔧   → Response Type: SERVICE_REQUEST_LIST');
-        debugPrint('🔧   → Total Requests Available: ${data['summary']?['total_count'] ?? requests.length}');
+        debugPrint(
+            '🔧   → Total Requests Available: ${data['summary']?['total_count'] ?? requests.length}');
         debugPrint('🔧   → Requests in Current Page: ${requests.length}');
 
         // Analyze request characteristics for business intelligence
@@ -1448,10 +1104,13 @@ class ServiceManagementService {
           final categoryCounts = <String, int>{};
 
           for (final request in requests) {
-            statusCounts[request.status] = (statusCounts[request.status] ?? 0) + 1;
-            urgencyCounts[request.urgency] = (urgencyCounts[request.urgency] ?? 0) + 1;
+            statusCounts[request.status] =
+                (statusCounts[request.status] ?? 0) + 1;
+            urgencyCounts[request.urgency] =
+                (urgencyCounts[request.urgency] ?? 0) + 1;
             final categoryName = request.category['name'] ?? 'unknown';
-            categoryCounts[categoryName] = (categoryCounts[categoryName] ?? 0) + 1;
+            categoryCounts[categoryName] =
+                (categoryCounts[categoryName] ?? 0) + 1;
           }
 
           debugPrint('🔧   → Status Distribution: $statusCounts');
@@ -1459,7 +1118,10 @@ class ServiceManagementService {
           debugPrint('🔧   → Category Distribution: $categoryCounts');
 
           // Budget analysis
-          final budgets = requests.map((r) => (r.budgetMin + r.budgetMax) / 2).where((b) => b > 0).toList();
+          final budgets = requests
+              .map((r) => (r.budgetMin + r.budgetMax) / 2)
+              .where((b) => b > 0)
+              .toList();
           if (budgets.isNotEmpty) {
             budgets.sort();
             final avgBudget = budgets.reduce((a, b) => a + b) / budgets.length;
@@ -1467,26 +1129,36 @@ class ServiceManagementService {
             final maxBudget = budgets.last;
 
             debugPrint('🔧   → Budget Analysis:');
-            debugPrint('🔧     → Average Budget: ${avgBudget.toStringAsFixed(2)}');
-            debugPrint('🔧     → Budget Range: ${minBudget.toStringAsFixed(2)} - ${maxBudget.toStringAsFixed(2)}');
+            debugPrint(
+                '🔧     → Average Budget: ${avgBudget.toStringAsFixed(2)}');
+            debugPrint(
+                '🔧     → Budget Range: ${minBudget.toStringAsFixed(2)} - ${maxBudget.toStringAsFixed(2)}');
           }
 
           // Time-sensitive analysis
-          final urgentRequests = requests.where((r) => r.urgency == 'urgent').length;
-          final recentRequests = requests.where((r) => DateTime.now().difference(r.createdAt).inHours < 24).length;
+          final urgentRequests =
+              requests.where((r) => r.urgency == 'urgent').length;
+          final recentRequests = requests
+              .where((r) => DateTime.now().difference(r.createdAt).inHours < 24)
+              .length;
 
           debugPrint('🔧   → Time Analysis:');
-          debugPrint('🔧     → Urgent Requests: $urgentRequests/${requests.length}');
-          debugPrint('🔧     → Recent Requests (24h): $recentRequests/${requests.length}');
+          debugPrint(
+              '🔧     → Urgent Requests: $urgentRequests/${requests.length}');
+          debugPrint(
+              '🔧     → Recent Requests (24h): $recentRequests/${requests.length}');
         }
 
         // Update real-time stream for UI synchronization
         debugPrint('🔧 → 📡 UPDATING REQUEST STREAM...');
         _requestStreamController.add(requests);
 
-        final finalDuration = DateTime.now().difference(startTime).inMilliseconds;
-        debugPrint('🔧 ServiceManagementService.getServiceRequests: ✅ DISCOVERY SUCCESS');
-        debugPrint('🔧   → Final Result: ${requests.length} requests retrieved');
+        final finalDuration =
+            DateTime.now().difference(startTime).inMilliseconds;
+        debugPrint(
+            '🔧 ServiceManagementService.getServiceRequests: ✅ DISCOVERY SUCCESS');
+        debugPrint(
+            '🔧   → Final Result: ${requests.length} requests retrieved');
         debugPrint('🔧   → Total Duration: ${finalDuration}ms');
 
         return ApiResponse.success(
@@ -1494,7 +1166,8 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService.getServiceRequests: ❌ DISCOVERY FAILED');
+        debugPrint(
+            '🔧 ServiceManagementService.getServiceRequests: ❌ DISCOVERY FAILED');
         debugPrint('🔧   → Error: ${response.message}');
         debugPrint('🔧   → Status Code: ${response.statusCode}');
 
@@ -1505,10 +1178,12 @@ class ServiceManagementService {
       }
     } catch (e, stackTrace) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
-      debugPrint('🔧 ServiceManagementService.getServiceRequests: 💥 DISCOVERY EXCEPTION');
+      debugPrint(
+          '🔧 ServiceManagementService.getServiceRequests: 💥 DISCOVERY EXCEPTION');
       debugPrint('🔧   → Exception: $e');
       debugPrint('🔧   → Duration: ${duration}ms');
-      debugPrint('🔧   → Stack trace: ${stackTrace.toString().split('\n').first}');
+      debugPrint(
+          '🔧   → Stack trace: ${stackTrace.toString().split('\n').first}');
 
       return ApiResponse.error(
         message: 'Service request discovery failed: $e',
@@ -1541,9 +1216,12 @@ class ServiceManagementService {
     double? longitude,
     Map<String, dynamic>? requirements,
   }) async {
-    debugPrint('🔧 ServiceManagementService.createServiceRequest: =======================');
-    debugPrint('🔧 ServiceManagementService.createServiceRequest: CREATING SERVICE REQUEST');
-    debugPrint('🔧 ServiceManagementService.createServiceRequest: =======================');
+    debugPrint(
+        '🔧 ServiceManagementService.createServiceRequest: =======================');
+    debugPrint(
+        '🔧 ServiceManagementService.createServiceRequest: CREATING SERVICE REQUEST');
+    debugPrint(
+        '🔧 ServiceManagementService.createServiceRequest: =======================');
     debugPrint('🔧 → 📋 REQUEST CREATION PARAMETERS:');
     debugPrint('🔧   → Title: "$title"');
     debugPrint('🔧   → Description Length: ${description.length} characters');
@@ -1551,15 +1229,18 @@ class ServiceManagementService {
     debugPrint('🔧   → Subcategories: ${subcategoryIds?.join(', ') ?? 'NONE'}');
     debugPrint('🔧   → Budget Range: $budgetMin - $budgetMax $currency');
     debugPrint('🔧   → Urgency Level: $urgency');
-    debugPrint('🔧   → Requested Time: ${requestedDateTime?.toIso8601String() ?? 'FLEXIBLE'}');
+    debugPrint(
+        '🔧   → Requested Time: ${requestedDateTime?.toIso8601String() ?? 'FLEXIBLE'}');
     debugPrint('🔧   → Location: ${location ?? 'NOT_SPECIFIED'}');
     debugPrint(
         '🔧   → Coordinates: ${latitude != null && longitude != null ? '$latitude, $longitude' : 'NOT_PROVIDED'}');
-    debugPrint('🔧   → Requirements: ${requirements?.keys.join(', ') ?? 'NONE'}');
+    debugPrint(
+        '🔧   → Requirements: ${requirements?.keys.join(', ') ?? 'NONE'}');
 
     // Validate user permissions
     if (!isCustomer) {
-      debugPrint('🔧 ServiceManagementService: ❌ Permission denied - User is not a customer');
+      debugPrint(
+          '🔧 ServiceManagementService: ❌ Permission denied - User is not a customer');
       debugPrint('🔧   → Current User Type: $currentUserType');
       debugPrint('🔧   → Required Permission: Customer');
       return ApiResponse.error(
@@ -1596,7 +1277,8 @@ class ServiceManagementService {
       }
 
       if (requestedDateTime != null) {
-        requestBody['requested_date_time'] = requestedDateTime.toIso8601String();
+        requestBody['requested_date_time'] =
+            requestedDateTime.toIso8601String();
       }
 
       if (location != null) {
@@ -1631,11 +1313,13 @@ class ServiceManagementService {
         final requestData = data['service_request'] ?? data['data'];
         final serviceRequest = ServiceRequest.fromJson(requestData);
 
-        debugPrint('🔧 ServiceManagementService.createServiceRequest: ✅ CREATION SUCCESS');
+        debugPrint(
+            '🔧 ServiceManagementService.createServiceRequest: ✅ CREATION SUCCESS');
         debugPrint('🔧 → 📊 CREATED REQUEST DETAILS:');
         debugPrint('🔧   → Request ID: ${serviceRequest.id}');
         debugPrint('🔧   → Status: ${serviceRequest.status}');
-        debugPrint('🔧   → Expires At: ${serviceRequest.expiresAt?.toIso8601String() ?? 'NO_EXPIRATION'}');
+        debugPrint(
+            '🔧   → Expires At: ${serviceRequest.expiresAt?.toIso8601String() ?? 'NO_EXPIRATION'}');
         debugPrint('🔧   → Creation Details: ${data['creation_details']}');
 
         // Clear any cached request data to force refresh
@@ -1650,7 +1334,8 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService.createServiceRequest: ❌ CREATION FAILED');
+        debugPrint(
+            '🔧 ServiceManagementService.createServiceRequest: ❌ CREATION FAILED');
         debugPrint('🔧   → Error: ${response.message}');
         debugPrint('🔧   → Status Code: ${response.statusCode}');
         debugPrint('🔧   → Validation Errors: ${response.errors}');
@@ -1662,7 +1347,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService.createServiceRequest: 💥 CREATION EXCEPTION');
+      debugPrint(
+          '🔧 ServiceManagementService.createServiceRequest: 💥 CREATION EXCEPTION');
       debugPrint('🔧   → Exception: $e');
       return ApiResponse.error(
         message: 'Failed to create service request: $e',
@@ -1682,13 +1368,15 @@ class ServiceManagementService {
     String? status,
     String? search,
   }) async {
-    debugPrint('🔧 ServiceManagementService: Getting customer service requests');
+    debugPrint(
+        '🔧 ServiceManagementService: Getting customer service requests');
     debugPrint('🔧 → User Type: $currentUserType');
     debugPrint('🔧 → Status Filter: ${status ?? 'ALL_STATUSES'}');
     debugPrint('🔧 → Search Query: ${search ?? 'NO_SEARCH'}');
 
     if (!isCustomer) {
-      debugPrint('🔧 ServiceManagementService: ❌ Access denied - Not a customer');
+      debugPrint(
+          '🔧 ServiceManagementService: ❌ Access denied - Not a customer');
       return ApiResponse.error(
         message: 'Only customers can access personal requests',
         statusCode: 403,
@@ -1716,9 +1404,11 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
         final requestsData = data['requests'] as List<dynamic>? ?? [];
-        final requests = requestsData.map((item) => ServiceRequest.fromJson(item)).toList();
+        final requests =
+            requestsData.map((item) => ServiceRequest.fromJson(item)).toList();
 
-        debugPrint('🔧 ServiceManagementService: ✅ Customer requests retrieved');
+        debugPrint(
+            '🔧 ServiceManagementService: ✅ Customer requests retrieved');
         debugPrint('🔧 → Personal Requests: ${requests.length}');
         debugPrint('🔧 → Summary: ${data['summary']}');
 
@@ -1727,14 +1417,16 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Failed to get personal requests');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Failed to get personal requests');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: 💥 Error getting personal requests - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Error getting personal requests - $e');
       return ApiResponse.error(
         message: 'Failed to get personal requests: $e',
         statusCode: 500,
@@ -1749,8 +1441,10 @@ class ServiceManagementService {
   /// - Permission: Request owner or Admin
   /// - AI algorithm factors: location, budget, availability, ratings
   /// - Real-time provider scoring and ranking
-  Future<ApiResponse<List<Map<String, dynamic>>>> getRecommendedProviders(String requestId) async {
-    debugPrint('🔧 ServiceManagementService: Getting recommended providers for request: $requestId');
+  Future<ApiResponse<List<Map<String, dynamic>>>> getRecommendedProviders(
+      String requestId) async {
+    debugPrint(
+        '🔧 ServiceManagementService: Getting recommended providers for request: $requestId');
     debugPrint('🔧 → AI Matching: Location, budget, availability, ratings');
     debugPrint('🔧 → Permission Check: Request owner or admin access');
 
@@ -1763,12 +1457,17 @@ class ServiceManagementService {
 
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
-        final providersData = data['recommended_providers'] as List<dynamic>? ?? [];
-        final providers = providersData.map((item) => Map<String, dynamic>.from(item)).toList();
+        final providersData =
+            data['recommended_providers'] as List<dynamic>? ?? [];
+        final providers = providersData
+            .map((item) => Map<String, dynamic>.from(item))
+            .toList();
 
-        debugPrint('🔧 ServiceManagementService: ✅ Provider recommendations retrieved');
+        debugPrint(
+            '🔧 ServiceManagementService: ✅ Provider recommendations retrieved');
         debugPrint('🔧 → Recommended Providers: ${providers.length}');
-        debugPrint('🔧 → Recommendation Criteria: ${data['recommendation_criteria']}');
+        debugPrint(
+            '🔧 → Recommendation Criteria: ${data['recommendation_criteria']}');
         debugPrint('🔧 → Request Info: ${data['service_request']}');
 
         return ApiResponse.success(
@@ -1776,14 +1475,16 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Failed to get provider recommendations');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Failed to get provider recommendations');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: 💥 Error getting provider recommendations - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Error getting provider recommendations - $e');
       return ApiResponse.error(
         message: 'Failed to get provider recommendations: $e',
         statusCode: 500,
@@ -1798,9 +1499,12 @@ class ServiceManagementService {
   /// - Permission: Request owner or Admin
   /// - Cancellable statuses: open, in_progress
   /// - Impact analysis and notification system
-  Future<ApiResponse<Map<String, dynamic>>> cancelServiceRequest(String requestId) async {
-    debugPrint('🔧 ServiceManagementService: Cancelling service request: $requestId');
-    debugPrint('🔧 → Cancellation Analysis: Impact assessment and notifications');
+  Future<ApiResponse<Map<String, dynamic>>> cancelServiceRequest(
+      String requestId) async {
+    debugPrint(
+        '🔧 ServiceManagementService: Cancelling service request: $requestId');
+    debugPrint(
+        '🔧 → Cancellation Analysis: Impact assessment and notifications');
     debugPrint('🔧 → Permission: Request owner or admin access');
 
     try {
@@ -1814,8 +1518,10 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
 
-        debugPrint('🔧 ServiceManagementService: ✅ Request cancelled successfully');
-        debugPrint('🔧 → Cancellation Details: ${data['cancellation_details']}');
+        debugPrint(
+            '🔧 ServiceManagementService: ✅ Request cancelled successfully');
+        debugPrint(
+            '🔧 → Cancellation Details: ${data['cancellation_details']}');
         debugPrint('🔧 → Impact Analysis: ${data['cancellation_impact']}');
 
         // Clear cached data to reflect cancellation
@@ -1826,7 +1532,8 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Request cancellation failed');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Request cancellation failed');
         debugPrint('🔧 → Error: ${response.message}');
         return ApiResponse.error(
           message: response.message,
@@ -1834,7 +1541,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: 💥 Error cancelling request - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Error cancelling request - $e');
       return ApiResponse.error(
         message: 'Failed to cancel service request: $e',
         statusCode: 500,
@@ -1848,8 +1556,10 @@ class ServiceManagementService {
 
   /// Trigger AI provider matching (background process)
   void _triggerProviderMatching(String requestId) {
-    debugPrint('🔧 ServiceManagementService: 🤖 AI Provider Matching initiated for request: $requestId');
-    debugPrint('🔧 → Matching Algorithm: Distance, budget, availability, ratings');
+    debugPrint(
+        '🔧 ServiceManagementService: 🤖 AI Provider Matching initiated for request: $requestId');
+    debugPrint(
+        '🔧 → Matching Algorithm: Distance, budget, availability, ratings');
     debugPrint('🔧 → Process: Asynchronous background operation');
     // This would typically trigger a background job or websocket notification
     // Implementation depends on the specific AI service integration
@@ -1862,7 +1572,9 @@ class ServiceManagementService {
 
       // Remove all request-related cache keys
       final keysToRemove = profile.keys
-          .where((key) => key.toString().startsWith('requests_') || key.toString().startsWith('my_requests_'))
+          .where((key) =>
+              key.toString().startsWith('requests_') ||
+              key.toString().startsWith('my_requests_'))
           .toList();
 
       for (final key in keysToRemove) {
@@ -1870,9 +1582,11 @@ class ServiceManagementService {
       }
 
       // await HiveService.saveUserProfile(profile);
-      debugPrint('🔧 ServiceManagementService: Request cache cleared (${keysToRemove.length} keys)');
+      debugPrint(
+          '🔧 ServiceManagementService: Request cache cleared (${keysToRemove.length} keys)');
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: Failed to clear request cache - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: Failed to clear request cache - $e');
     }
   }
 
@@ -1925,14 +1639,19 @@ class ServiceManagementService {
     bool useCache = true,
   }) async {
     final startTime = DateTime.now();
-    debugPrint('🔧 ServiceManagementService.getServices: ================================');
-    debugPrint('🔧 ServiceManagementService.getServices: STARTING SERVICE DISCOVERY');
-    debugPrint('🔧 ServiceManagementService.getServices: ================================');
+    debugPrint(
+        '🔧 ServiceManagementService.getServices: ================================');
+    debugPrint(
+        '🔧 ServiceManagementService.getServices: STARTING SERVICE DISCOVERY');
+    debugPrint(
+        '🔧 ServiceManagementService.getServices: ================================');
     debugPrint('🔧 → 📋 SERVICE DISCOVERY PARAMETERS:');
     debugPrint('🔧   → Category Filter: ${categoryId ?? 'ALL_CATEGORIES'}');
-    debugPrint('🔧   → Subcategory Filter: ${subcategoryIds?.join(', ') ?? 'ALL_SUBCATEGORIES'}');
+    debugPrint(
+        '🔧   → Subcategory Filter: ${subcategoryIds?.join(', ') ?? 'ALL_SUBCATEGORIES'}');
     debugPrint('🔧   → Status Filter: ${status ?? 'ALL_STATUSES'}');
-    debugPrint('🔧   → Featured Filter: ${isFeatured?.toString() ?? 'ALL_SERVICES'}');
+    debugPrint(
+        '🔧   → Featured Filter: ${isFeatured?.toString() ?? 'ALL_SERVICES'}');
     debugPrint('🔧   → Provider Filter: ${providerId ?? 'ALL_PROVIDERS'}');
     debugPrint('🔧   → Currency Filter: ${currency ?? 'ALL_CURRENCIES'}');
     debugPrint('🔧   → Search Query: ${search ?? 'NO_SEARCH'}');
@@ -1946,7 +1665,8 @@ class ServiceManagementService {
       debugPrint('🔧 → 🔍 SEARCH QUERY ANALYSIS:');
       debugPrint('🔧   → Query Length: ${search.length} characters');
       debugPrint('🔧   → Word Count: ${search.split(' ').length} words');
-      debugPrint('🔧   → Search Type: ${search.length < 3 ? 'SHORT_QUERY' : 'SEMANTIC_SEARCH'}');
+      debugPrint(
+          '🔧   → Search Type: ${search.length < 3 ? 'SHORT_QUERY' : 'SEMANTIC_SEARCH'}');
       debugPrint('🔧   → Contains Numbers: ${RegExp(r'\d').hasMatch(search)}');
       debugPrint(
           '🔧   → Contains Location: ${search.toLowerCase().contains(RegExp(r'mumbai|delhi|bangalore|chennai|hyderabad|pune|kolkata'))}');
@@ -1968,7 +1688,8 @@ class ServiceManagementService {
 
       if (subcategoryIds != null && subcategoryIds.isNotEmpty) {
         queryParams['subcategories'] = subcategoryIds.join(',');
-        debugPrint('🔧   → Subcategory Filter Applied: ${subcategoryIds.length} subcategories');
+        debugPrint(
+            '🔧   → Subcategory Filter Applied: ${subcategoryIds.length} subcategories');
       }
 
       if (status != null) {
@@ -1996,7 +1717,8 @@ class ServiceManagementService {
         debugPrint('🔧   → Search Query Applied: "$search"');
       }
 
-      debugPrint('🔧   → Final Query Parameters: ${queryParams.length} filters');
+      debugPrint(
+          '🔧   → Final Query Parameters: ${queryParams.length} filters');
       debugPrint('🔧   → API Endpoint: /services/services/');
       debugPrint('🔧   → Expected Response: Paginated service list');
 
@@ -2014,13 +1736,15 @@ class ServiceManagementService {
         ),
       );
 
-      final apiDuration = DateTime.now().difference(apiStartTime).inMilliseconds;
+      final apiDuration =
+          DateTime.now().difference(apiStartTime).inMilliseconds;
       final totalDuration = DateTime.now().difference(startTime).inMilliseconds;
 
       debugPrint('🔧 → 📊 SERVICE DISCOVERY RESPONSE ANALYSIS:');
       debugPrint('🔧   → API Call Duration: ${apiDuration}ms');
       debugPrint('🔧   → Total Operation Duration: ${totalDuration}ms');
-      debugPrint('🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
+      debugPrint(
+          '🔧   → Response Status: ${response.isSuccess ? 'SUCCESS' : 'FAILED'}');
       debugPrint('🔧   → HTTP Status Code: ${response.statusCode}');
 
       if (response.isSuccess && response.data != null) {
@@ -2033,7 +1757,8 @@ class ServiceManagementService {
         debugPrint('🔧   → Current Page: ${paginatedData.page}');
         debugPrint('🔧   → Total Pages: ${paginatedData.totalPages}');
         debugPrint('🔧   → Has Next Page: ${paginatedData.next != null}');
-        debugPrint('🔧   → Has Previous Page: ${paginatedData.previous != null}');
+        debugPrint(
+            '🔧   → Has Previous Page: ${paginatedData.previous != null}');
 
         // Analyze retrieved services for business intelligence
         if (services.isNotEmpty) {
@@ -2046,41 +1771,59 @@ class ServiceManagementService {
           final featuredCount = services.where((s) => s.isFeatured).length;
 
           for (final service in services) {
-            statusCounts[service.status] = (statusCounts[service.status] ?? 0) + 1;
-            currencyCounts[service.currency] = (currencyCounts[service.currency] ?? 0) + 1;
+            statusCounts[service.status] =
+                (statusCounts[service.status] ?? 0) + 1;
+            currencyCounts[service.currency] =
+                (currencyCounts[service.currency] ?? 0) + 1;
             final providerUsername = service.provider['username'] ?? 'unknown';
-            providerCounts[providerUsername] = (providerCounts[providerUsername] ?? 0) + 1;
+            providerCounts[providerUsername] =
+                (providerCounts[providerUsername] ?? 0) + 1;
           }
 
           debugPrint('🔧   → Status Distribution: $statusCounts');
           debugPrint('🔧   → Currency Distribution: $currencyCounts');
-          debugPrint('🔧   → Featured Services: $featuredCount/${services.length}');
+          debugPrint(
+              '🔧   → Featured Services: $featuredCount/${services.length}');
           debugPrint('🔧   → Unique Providers: ${providerCounts.length}');
 
           // Price analysis
-          final hourlyRates = services.map((s) => s.hourlyRate).where((rate) => rate > 0).toList();
+          final hourlyRates = services
+              .map((s) => s.hourlyRate)
+              .where((rate) => rate > 0)
+              .toList();
           if (hourlyRates.isNotEmpty) {
             hourlyRates.sort();
-            final avgRate = hourlyRates.reduce((a, b) => a + b) / hourlyRates.length;
+            final avgRate =
+                hourlyRates.reduce((a, b) => a + b) / hourlyRates.length;
             final minRate = hourlyRates.first;
             final maxRate = hourlyRates.last;
             final medianRate = hourlyRates[hourlyRates.length ~/ 2];
 
-            debugPrint('🔧   → Price Analysis (${currency ?? 'Multi-Currency'}):');
+            debugPrint(
+                '🔧   → Price Analysis (${currency ?? 'Multi-Currency'}):');
             debugPrint('🔧     → Average Rate: ${avgRate.toStringAsFixed(2)}');
-            debugPrint('🔧     → Median Rate: ${medianRate.toStringAsFixed(2)}');
+            debugPrint(
+                '🔧     → Median Rate: ${medianRate.toStringAsFixed(2)}');
             debugPrint('🔧     → Min Rate: ${minRate.toStringAsFixed(2)}');
             debugPrint('🔧     → Max Rate: ${maxRate.toStringAsFixed(2)}');
-            debugPrint('🔧     → Price Spread: ${((maxRate - minRate) / avgRate * 100).toStringAsFixed(1)}%');
+            debugPrint(
+                '🔧     → Price Spread: ${((maxRate - minRate) / avgRate * 100).toStringAsFixed(1)}%');
           }
 
           // Location analysis
-          final locations = services.map((s) => s.location).where((loc) => loc.isNotEmpty).toSet();
-          debugPrint('🔧   → Geographic Coverage: ${locations.length} unique locations');
+          final locations = services
+              .map((s) => s.location)
+              .where((loc) => loc.isNotEmpty)
+              .toSet();
+          debugPrint(
+              '🔧   → Geographic Coverage: ${locations.length} unique locations');
 
           // Service quality indicators
-          final recentlyUpdated = services.where((s) => DateTime.now().difference(s.updatedAt).inDays < 7).length;
-          debugPrint('🔧   → Recently Updated (7 days): $recentlyUpdated services');
+          final recentlyUpdated = services
+              .where((s) => DateTime.now().difference(s.updatedAt).inDays < 7)
+              .length;
+          debugPrint(
+              '🔧   → Recently Updated (7 days): $recentlyUpdated services');
 
           // List top service names for debugging
           final topServices = services.take(3).map((s) => s.name).join(', ');
@@ -2092,18 +1835,23 @@ class ServiceManagementService {
           debugPrint('🔧 → 💾 CACHING SERVICE RESULTS...');
           final cacheStartTime = DateTime.now();
           await _cacheServices(services, queryParams);
-          final cacheDuration = DateTime.now().difference(cacheStartTime).inMilliseconds;
+          final cacheDuration =
+              DateTime.now().difference(cacheStartTime).inMilliseconds;
           debugPrint('🔧   → Cache Write Time: ${cacheDuration}ms');
         }
 
         // Update real-time stream for UI synchronization
         debugPrint('🔧 → 📡 UPDATING REAL-TIME SERVICE STREAM...');
         _serviceStreamController.add(services);
-        debugPrint('🔧   → Stream Update: Complete (${services.length} services)');
+        debugPrint(
+            '🔧   → Stream Update: Complete (${services.length} services)');
 
-        final finalDuration = DateTime.now().difference(startTime).inMilliseconds;
-        debugPrint('🔧 ServiceManagementService.getServices: ✅ DISCOVERY SUCCESS');
-        debugPrint('🔧   → Final Result: ${services.length} services retrieved');
+        final finalDuration =
+            DateTime.now().difference(startTime).inMilliseconds;
+        debugPrint(
+            '🔧 ServiceManagementService.getServices: ✅ DISCOVERY SUCCESS');
+        debugPrint(
+            '🔧   → Final Result: ${services.length} services retrieved');
         debugPrint('🔧   → Performance Summary:');
         debugPrint('🔧     → API Call: ${apiDuration}ms');
         debugPrint('🔧     → Caching: ${useCache ? '~5ms' : 'skipped'}');
@@ -2115,12 +1863,16 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService.getServices: ❌ DISCOVERY FAILED');
+        debugPrint(
+            '🔧 ServiceManagementService.getServices: ❌ DISCOVERY FAILED');
         debugPrint('🔧   → Error Message: "${response.message}"');
         debugPrint('🔧   → HTTP Status Code: ${response.statusCode}');
-        debugPrint('🔧   → Error Category: ${_categorizeError(response.statusCode)}');
-        debugPrint('🔧   → Troubleshooting Guide: ${_getTroubleshootingTips(response.statusCode)}');
-        debugPrint('🔧   → Retry Strategy: ${_getRetryStrategy(response.statusCode)}');
+        debugPrint(
+            '🔧   → Error Category: ${_categorizeError(response.statusCode)}');
+        debugPrint(
+            '🔧   → Troubleshooting Guide: ${_getTroubleshootingTips(response.statusCode)}');
+        debugPrint(
+            '🔧   → Retry Strategy: ${_getRetryStrategy(response.statusCode)}');
 
         return ApiResponse.error(
           message: response.message,
@@ -2129,7 +1881,8 @@ class ServiceManagementService {
       }
     } catch (e, stackTrace) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
-      debugPrint('🔧 ServiceManagementService.getServices: 💥 DISCOVERY EXCEPTION');
+      debugPrint(
+          '🔧 ServiceManagementService.getServices: 💥 DISCOVERY EXCEPTION');
       debugPrint('🔧   → Exception Type: ${e.runtimeType}');
       debugPrint('🔧   → Exception Message: $e');
       debugPrint('🔧   → Operation Duration: ${duration}ms');
@@ -2155,9 +1908,12 @@ class ServiceManagementService {
   /// - Service images, pricing options, location data
   /// - Real-time availability status
   Future<ApiResponse<Service>> getServiceById(String serviceId) async {
-    debugPrint('🔧 ServiceManagementService: Getting detailed service info for ID: $serviceId');
-    debugPrint('🔧 → Service Access: Public endpoint (no authentication required)');
-    debugPrint('🔧 → Expected Data: Complete service profile with provider info');
+    debugPrint(
+        '🔧 ServiceManagementService: Getting detailed service info for ID: $serviceId');
+    debugPrint(
+        '🔧 → Service Access: Public endpoint (no authentication required)');
+    debugPrint(
+        '🔧 → Expected Data: Complete service profile with provider info');
 
     try {
       final response = await _apiService.get<Service>(
@@ -2168,11 +1924,14 @@ class ServiceManagementService {
 
       if (response.isSuccess && response.data != null) {
         final service = response.data!;
-        debugPrint('🔧 ServiceManagementService: ✅ Service details retrieved successfully');
+        debugPrint(
+            '🔧 ServiceManagementService: ✅ Service details retrieved successfully');
         debugPrint('🔧 → Service Name: "${service.name}"');
-        debugPrint('🔧 → Provider: ${service.provider['username'] ?? 'Unknown'}');
+        debugPrint(
+            '🔧 → Provider: ${service.provider['username'] ?? 'Unknown'}');
         debugPrint('🔧 → Location: ${service.location}');
-        debugPrint('🔧 → Hourly Rate: ${service.hourlyRate} ${service.currency}');
+        debugPrint(
+            '🔧 → Hourly Rate: ${service.hourlyRate} ${service.currency}');
         debugPrint('🔧 → Status: ${service.status}');
         debugPrint('🔧 → Featured: ${service.isFeatured}');
         debugPrint('🔧 → Category: ${service.category['name'] ?? 'Unknown'}');
@@ -2184,7 +1943,8 @@ class ServiceManagementService {
 
         return response;
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Failed to get service details');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Failed to get service details');
         debugPrint('🔧 → Error: ${response.message}');
         debugPrint('🔧 → Status Code: ${response.statusCode}');
 
@@ -2194,7 +1954,8 @@ class ServiceManagementService {
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: 💥 Exception getting service details - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Exception getting service details - $e');
       return ApiResponse.error(
         message: 'Failed to get service details: $e',
         statusCode: 500,
@@ -2220,16 +1981,21 @@ class ServiceManagementService {
     bool useCache = false, // Location-based queries shouldn't be cached long
   }) async {
     final startTime = DateTime.now();
-    debugPrint('🔧 ServiceManagementService.findNearbyServices: ========================');
-    debugPrint('🔧 ServiceManagementService.findNearbyServices: LOCATION-BASED DISCOVERY');
-    debugPrint('🔧 ServiceManagementService.findNearbyServices: ========================');
+    debugPrint(
+        '🔧 ServiceManagementService.findNearbyServices: ========================');
+    debugPrint(
+        '🔧 ServiceManagementService.findNearbyServices: LOCATION-BASED DISCOVERY');
+    debugPrint(
+        '🔧 ServiceManagementService.findNearbyServices: ========================');
     debugPrint('🔧 → 📍 LOCATION PARAMETERS:');
     debugPrint('🔧   → Search Center: $latitude, $longitude');
     debugPrint('🔧   → Search Radius: ${radius}km');
     debugPrint('🔧   → Max Results: $maxResults services');
     debugPrint('🔧   → Category Filter: ${categoryId ?? 'ALL_CATEGORIES'}');
-    debugPrint('🔧   → Min Rating Filter: ${minRating?.toString() ?? 'NO_RATING_FILTER'}');
-    debugPrint('🔧   → Caching Strategy: ${useCache ? 'ENABLED' : 'DISABLED (recommended for location)'}');
+    debugPrint(
+        '🔧   → Min Rating Filter: ${minRating?.toString() ?? 'NO_RATING_FILTER'}');
+    debugPrint(
+        '🔧   → Caching Strategy: ${useCache ? 'ENABLED' : 'DISABLED (recommended for location)'}');
 
     try {
       // Build location-based query parameters
@@ -2263,9 +2029,11 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
         final servicesData = data['services'] as List<dynamic>? ?? [];
-        final services = servicesData.map((item) => Service.fromJson(item)).toList();
+        final services =
+            servicesData.map((item) => Service.fromJson(item)).toList();
 
-        debugPrint('🔧 ServiceManagementService.findNearbyServices: ✅ LOCATION SEARCH SUCCESS');
+        debugPrint(
+            '🔧 ServiceManagementService.findNearbyServices: ✅ LOCATION SEARCH SUCCESS');
         debugPrint('🔧 → 📊 LOCATION SEARCH RESULTS:');
         debugPrint('🔧   → Search Duration: ${duration}ms');
         debugPrint('🔧   → Services Found: ${services.length}');
@@ -2292,7 +2060,8 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Nearby services search failed');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Nearby services search failed');
         debugPrint('🔧 → Error: ${response.message}');
         return ApiResponse.error(
           message: response.message,
@@ -2301,7 +2070,8 @@ class ServiceManagementService {
       }
     } catch (e) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
-      debugPrint('🔧 ServiceManagementService: 💥 Nearby services exception (${duration}ms) - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Nearby services exception (${duration}ms) - $e');
       return ApiResponse.error(
         message: 'Failed to find nearby services: $e',
         statusCode: 500,
@@ -2347,17 +2117,21 @@ class ServiceManagementService {
       if (response.isSuccess && response.data != null) {
         final data = response.data!;
         final trendingData = data['trending_services'] as List<dynamic>? ?? [];
-        final services = trendingData.map((item) => Service.fromJson(item)).toList();
+        final services =
+            trendingData.map((item) => Service.fromJson(item)).toList();
 
-        debugPrint('🔧 ServiceManagementService: ✅ Trending services retrieved');
+        debugPrint(
+            '🔧 ServiceManagementService: ✅ Trending services retrieved');
         debugPrint('🔧 → Trending Period: ${data['calculation_period']}');
-        debugPrint('🔧 → Algorithm Factors: ${data['trending_criteria']['factors']}');
+        debugPrint(
+            '🔧 → Algorithm Factors: ${data['trending_criteria']['factors']}');
         debugPrint('🔧 → Services Count: ${services.length}');
 
         // Log trending insights
         for (int i = 0; i < services.length && i < 3; i++) {
           final service = services[i];
-          debugPrint('🔧 → Trending #${i + 1}: ${service.name} (Score: trending_score from API)');
+          debugPrint(
+              '🔧 → Trending #${i + 1}: ${service.name} (Score: trending_score from API)');
         }
 
         return ApiResponse.success(
@@ -2365,14 +2139,16 @@ class ServiceManagementService {
           message: response.message,
         );
       } else {
-        debugPrint('🔧 ServiceManagementService: ❌ Failed to get trending services');
+        debugPrint(
+            '🔧 ServiceManagementService: ❌ Failed to get trending services');
         return ApiResponse.error(
           message: response.message,
           statusCode: response.statusCode,
         );
       }
     } catch (e) {
-      debugPrint('🔧 ServiceManagementService: 💥 Error getting trending services - $e');
+      debugPrint(
+          '🔧 ServiceManagementService: 💥 Error getting trending services - $e');
       return ApiResponse.error(
         message: 'Failed to get trending services: $e',
         statusCode: 500,
@@ -2385,7 +2161,8 @@ class ServiceManagementService {
   // ====================================================================
 
   /// Cache services with query context for intelligent retrieval
-  Future<void> _cacheServices(List<Service> services, Map<String, String> queryParams) async {
+  Future<void> _cacheServices(
+      List<Service> services, Map<String, String> queryParams) async {
     try {
       final cacheKey = 'services_${queryParams.hashCode}';
       final serviceData = services.map((s) => s.toJson()).toList();
@@ -2396,7 +2173,8 @@ class ServiceManagementService {
       profile['${cacheKey}_params'] = queryParams;
 
       // await HiveService.saveUserProfile(profile);
-      debugPrint('🔧 ServiceManagementService: Cached ${services.length} services with key: $cacheKey');
+      debugPrint(
+          '🔧 ServiceManagementService: Cached ${services.length} services with key: $cacheKey');
     } catch (e) {
       debugPrint('🔧 ServiceManagementService: Failed to cache services - $e');
     }
@@ -2445,7 +2223,8 @@ class ServiceManagementService {
 
     try {
       // Category caches have been removed as part of cleanup
-      debugPrint('🔧 ServiceManagementService: Category caches removed, only service data refresh needed');
+      debugPrint(
+          '🔧 ServiceManagementService: Category caches removed, only service data refresh needed');
 
       // Fetch fresh data
       final categoriesResponse = await getCategories();
@@ -2514,7 +2293,8 @@ class ServiceManagementService {
         'service_management_version': '1.0.0',
       };
 
-      debugPrint('🔧 ServiceManagementService: Health check completed - Status: ${healthStatus['status']}');
+      debugPrint(
+          '🔧 ServiceManagementService: Health check completed - Status: ${healthStatus['status']}');
       return healthStatus;
     } catch (e) {
       final duration = DateTime.now().difference(startTime).inMilliseconds;
@@ -2554,7 +2334,8 @@ class ServiceManagementService {
       await _requestStreamController.close();
       debugPrint('🔧 ServiceManagementService: Stream controllers closed');
 
-      debugPrint('🔧 ServiceManagementService: Disposal completed successfully');
+      debugPrint(
+          '🔧 ServiceManagementService: Disposal completed successfully');
     } catch (e) {
       debugPrint('🔧 ServiceManagementService: Error during disposal - $e');
     }
@@ -2566,7 +2347,8 @@ class ServiceManagementService {
 
     try {
       // Category caches have been removed as part of cleanup
-      debugPrint('🔧 ServiceManagementService: Category caches already removed, only service cache cleanup needed');
+      debugPrint(
+          '🔧 ServiceManagementService: Category caches already removed, only service cache cleanup needed');
 
       // Cancel timers
       _serviceCacheTimer?.cancel();
@@ -2594,14 +2376,19 @@ class ServiceManagementService {
 
     // Print cache information
     debugPrint('🔧 CACHE INFORMATION:');
-    debugPrint('🔧 Service cache timer: ${_serviceCacheTimer?.isActive ?? false}');
+    debugPrint(
+        '🔧 Service cache timer: ${_serviceCacheTimer?.isActive ?? false}');
 
     // Print stream information
     debugPrint('🔧 STREAM INFORMATION:');
-    debugPrint('🔧 Category stream closed: ${_categoryStreamController.isClosed}');
-    debugPrint('🔧 Subcategory stream closed: ${_subcategoryStreamController.isClosed}');
-    debugPrint('🔧 Service stream closed: ${_serviceStreamController.isClosed}');
-    debugPrint('🔧 Request stream closed: ${_requestStreamController.isClosed}');
+    debugPrint(
+        '🔧 Category stream closed: ${_categoryStreamController.isClosed}');
+    debugPrint(
+        '🔧 Subcategory stream closed: ${_subcategoryStreamController.isClosed}');
+    debugPrint(
+        '🔧 Service stream closed: ${_serviceStreamController.isClosed}');
+    debugPrint(
+        '🔧 Request stream closed: ${_requestStreamController.isClosed}');
 
     debugPrint('🔧 ========================================');
   }

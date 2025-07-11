@@ -154,8 +154,10 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
-            darkColor: ThemeManager.of(context).borderFocus.withValues(alpha: 0.6),
+            lightColor:
+                ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+            darkColor:
+                ThemeManager.of(context).borderFocus.withValues(alpha: 0.6),
           ),
           width: 2,
         ),
@@ -163,7 +165,8 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
           ...ThemeManager.of(context).elevatedShadow,
           BoxShadow(
             color: ThemeManager.of(context).conditionalColor(
-              lightColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.15),
+              lightColor:
+                  ThemeManager.of(context).primaryColor.withValues(alpha: 0.15),
               darkColor: ThemeManager.of(context).shadowDark,
             ),
             blurRadius: 25,
@@ -173,7 +176,8 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
           BoxShadow(
             color: ThemeManager.of(context).conditionalColor(
               lightColor: Colors.white.withValues(alpha: 0.8),
-              darkColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.2),
+              darkColor:
+                  ThemeManager.of(context).primaryColor.withValues(alpha: 0.2),
             ),
             blurRadius: 10,
             offset: const Offset(0, -3),
@@ -197,13 +201,15 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Enhanced selection icon with animated progress
-                  _buildSelectionIcon(selectionProgress, isAllSelected, ThemeManager.of(context)),
+                  _buildSelectionIcon(selectionProgress, isAllSelected,
+                      ThemeManager.of(context)),
 
                   SizedBox(width: 16.w), // Reduced spacing from 20.w to 16.w
 
                   // Enhanced selection info with progress
                   Expanded(
-                    child: _buildSelectionInfo(isAllSelected, ThemeManager.of(context)),
+                    child: _buildSelectionInfo(
+                        isAllSelected, ThemeManager.of(context)),
                   ),
 
                   SizedBox(width: 12.w), // Reduced spacing from 16.w to 12.w
@@ -232,7 +238,8 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
   }
 
   /// Build enhanced selection icon with comprehensive ThemeManager progress indication
-  Widget _buildSelectionIcon(double progress, bool isAllSelected, ThemeManager themeManager) {
+  Widget _buildSelectionIcon(
+      double progress, bool isAllSelected, ThemeManager themeManager) {
     return Container(
       width: 60.w,
       height: 60.w,
@@ -417,7 +424,8 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
             ),
             SizedBox(width: 6.w), // Reduced spacing from 8.w to 6.w
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h), // Reduced padding
+              padding: EdgeInsets.symmetric(
+                  horizontal: 4.w, vertical: 2.h), // Reduced padding
               decoration: BoxDecoration(
                 color: themeManager.primaryColor.withValues(alpha: 26),
                 borderRadius: BorderRadius.circular(4.r),
@@ -461,14 +469,16 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
             ),
           ),
 
-        if (onSelectAll != null && !isAllSelected) SizedBox(width: 8.w), // Reduced spacing
+        if (onSelectAll != null && !isAllSelected)
+          SizedBox(width: 8.w), // Reduced spacing
 
         // Clear selection button with enhanced design
         Flexible(
           child: _buildEnhancedActionButton(
             themeManager: themeManager,
             onPressed: () {
-              debugPrint('❌ CategorySelectionBar: Clear selection button pressed');
+              debugPrint(
+                  '❌ CategorySelectionBar: Clear selection button pressed');
               HapticFeedback.mediumImpact();
               onClearSelection();
             },
@@ -684,8 +694,10 @@ class CategorySelectionBar extends StatelessWidget with ThemeAwareMixin {
                     borderRadius: BorderRadius.circular(4.r),
                     border: Border.all(
                       color: themeManager.conditionalColor(
-                        lightColor: themeManager.primaryColor.withValues(alpha: 0.3),
-                        darkColor: themeManager.primaryLight.withValues(alpha: 0.4),
+                        lightColor:
+                            themeManager.primaryColor.withValues(alpha: 0.3),
+                        darkColor:
+                            themeManager.primaryLight.withValues(alpha: 0.4),
                       ),
                       width: 0.5,
                     ),

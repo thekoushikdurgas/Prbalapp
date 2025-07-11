@@ -1,13 +1,12 @@
 import 'package:prbal/app.dart';
-// import 'package:prbal/utils/cache/onboarding/intro_caching.dart' ;
 import 'package:prbal/utils/cubit/theme_cubit.dart';
 import 'package:prbal/utils/icon/prbal_icons.dart';
-// import 'package:prbal/utils/theme/theme_caching.dart';
+import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/localization/project_locales.dart';
 import 'package:prbal/utils/cubit/cubit_observer.dart';
-import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/services/performance_service.dart';
 import 'package:prbal/services/health_service.dart';
+import 'package:prbal/utils/debug_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,14 +20,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    debugPrint('🚀 Starting Prbal app initialization...');
+    DebugLogger.info('Starting Prbal app initialization...');
 
     // Set up BLoC observer for better debugging
     Bloc.observer = CubitObserver();
 
     // Run app services in parallel for faster startup
     await _initializeAppServices().then((_) {
-      debugPrint('🚀 All services initialized successfully');
+      DebugLogger.success('All services initialized successfully');
 
       // Log localization status before starting app
       LocaleVariables.logLocalizationStatus();
@@ -49,7 +48,7 @@ Future<void> main() async {
     });
   } catch (error) {
     // Fallback error handling
-    debugPrint('❌ App initialization error: $error');
+    DebugLogger.error('App initialization error: $error');
     runApp(
       MaterialApp(
         home: Scaffold(
@@ -87,16 +86,19 @@ Future<void> main() async {
 }
 
 /// Parallel initialization of app services
+/// Note: HiveService initialization is included here for immediate availability
 Future<void> _initializeAppServices() async {
-  debugPrint('📦 Initializing app services...');
+  final timer = PerformanceTimer('App Services Initialization');
+
+  DebugLogger.info('Initializing app services...');
   await Future.wait([
     LocaleVariables._init(),
     ThemeCaching.init(),
     IntroCaching.init(),
-    HiveService.init(),
+    HiveService.init(), // Initialize HiveService for splash screen usage
   ]);
 
-  debugPrint('🏥 Initializing performance and health monitoring...');
+  DebugLogger.info('Initializing performance and health monitoring...');
 
   // Initialize performance service first
   await PerformanceService.instance.initializePerformanceMonitoring();
@@ -109,8 +111,10 @@ Future<void> _initializeAppServices() async {
   final healthService = HealthService();
   await healthService.initialize();
 
-  debugPrint('🏥 Performance and health monitoring ready');
-  debugPrint(
-      '🏥 Note: Health checks will be performed on splash screen with caching');
-  debugPrint('📦 App services initialized');
+  DebugLogger.health('Performance and health monitoring ready');
+  DebugLogger.info(
+      'Note: Health checks will be performed on splash screen with caching');
+
+  timer.finish();
+  DebugLogger.success('App services initialized');
 }

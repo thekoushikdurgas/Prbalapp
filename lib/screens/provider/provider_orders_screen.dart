@@ -13,10 +13,12 @@ class ProviderOrdersScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProviderOrdersScreen> createState() => _ProviderOrdersScreenState();
+  ConsumerState<ProviderOrdersScreen> createState() =>
+      _ProviderOrdersScreenState();
 }
 
-class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> with TickerProviderStateMixin {
+class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -37,7 +39,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎯 ProviderOrdersScreen: Building screen with initialTabIndex: ${widget.initialTabIndex}');
+    debugPrint(
+        '🎯 ProviderOrdersScreen: Building screen with initialTabIndex: ${widget.initialTabIndex}');
     debugPrint(
         '🎨 ProviderOrdersScreen: ThemeManager - isDark: ${ThemeManager.of(context).themeManager}, primaryColor: ${ThemeManager.of(context).primaryColor}');
 
@@ -92,7 +95,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       labelColor: Colors.white,
-                      unselectedLabelColor: ThemeManager.of(context).textSecondary,
+                      unselectedLabelColor:
+                          ThemeManager.of(context).textSecondary,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -212,7 +216,9 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).warningColor.withValues(alpha: 26),
+                  color: ThemeManager.of(context)
+                      .warningColor
+                      .withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
@@ -247,7 +253,9 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).warningColor.withValues(alpha: 26),
+                  color: ThemeManager.of(context)
+                      .warningColor
+                      .withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -308,7 +316,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).errorColor,
-                    side: BorderSide(color: ThemeManager.of(context).errorColor),
+                    side:
+                        BorderSide(color: ThemeManager.of(context).errorColor),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -379,7 +388,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).infoColor.withValues(alpha: 26),
+                  color:
+                      ThemeManager.of(context).infoColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
@@ -414,7 +424,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).infoColor.withValues(alpha: 26),
+                  color:
+                      ThemeManager.of(context).infoColor.withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
@@ -478,7 +489,8 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
                   icon: Icon(Prbal.phone, size: 16.sp),
                   label: Text(
                     'Call',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ThemeManager.of(context).infoColor,
@@ -556,7 +568,9 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).successColor.withValues(alpha: 26),
+                  color: ThemeManager.of(context)
+                      .successColor
+                      .withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
@@ -591,7 +605,9 @@ class _ProviderOrdersScreenState extends ConsumerState<ProviderOrdersScreen> wit
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: ThemeManager.of(context).successColor.withValues(alpha: 26),
+                  color: ThemeManager.of(context)
+                      .successColor
+                      .withValues(alpha: 26),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(

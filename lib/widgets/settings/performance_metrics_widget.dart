@@ -22,17 +22,20 @@ class PerformanceMetricsWidget extends StatefulWidget {
   final Map<String, dynamic> performanceMetrics;
 
   @override
-  State<PerformanceMetricsWidget> createState() => _PerformanceMetricsWidgetState();
+  State<PerformanceMetricsWidget> createState() =>
+      _PerformanceMetricsWidgetState();
 }
 
-class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> with SingleTickerProviderStateMixin {
+class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _progressAnimation;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('📊 PerformanceMetricsWidget: Initializing performance metrics display');
+    debugPrint(
+        '📊 PerformanceMetricsWidget: Initializing performance metrics display');
 
     // Initialize progress animation for performance score
     _animationController = AnimationController(
@@ -55,7 +58,8 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
     });
 
     debugPrint('📊 PerformanceMetricsWidget: Animation controller initialized');
-    debugPrint('📊 PerformanceMetricsWidget: Performance score: $performanceScore');
+    debugPrint(
+        '📊 PerformanceMetricsWidget: Performance score: $performanceScore');
   }
 
   @override
@@ -67,13 +71,15 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('📊 PerformanceMetricsWidget: Building performance metrics card');
+    debugPrint(
+        '📊 PerformanceMetricsWidget: Building performance metrics card');
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final performanceScore = _getPerformanceScore();
 
     debugPrint('📊 PerformanceMetricsWidget: Theme is dark: $isDark');
-    debugPrint('📊 PerformanceMetricsWidget: Performance score: $performanceScore');
+    debugPrint(
+        '📊 PerformanceMetricsWidget: Performance score: $performanceScore');
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -82,20 +88,26 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.4) : Colors.grey.withValues(alpha: 0.1),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.4)
+                : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white.withValues(alpha: 0.9),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.white.withValues(alpha: 0.9),
             blurRadius: 1,
             offset: const Offset(0, 1),
             spreadRadius: 0,
           ),
         ],
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -276,11 +288,14 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
 
   /// Builds the performance metrics grid
   Widget _buildPerformanceMetrics(bool isDark) {
-    debugPrint('📊 PerformanceMetricsWidget: Building performance metrics grid');
+    debugPrint(
+        '📊 PerformanceMetricsWidget: Building performance metrics grid');
 
     final frameDrops = widget.performanceMetrics['frame_drops'] as int? ?? 0;
-    final avgFrameTime = widget.performanceMetrics['average_frame_time'] as double? ?? 0.0;
-    final memoryUsage = widget.performanceMetrics['memory_usage'] as double? ?? 0.0;
+    final avgFrameTime =
+        widget.performanceMetrics['average_frame_time'] as double? ?? 0.0;
+    final memoryUsage =
+        widget.performanceMetrics['memory_usage'] as double? ?? 0.0;
 
     return Row(
       children: [
@@ -299,7 +314,9 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
             'Avg Frame Time',
             '${avgFrameTime.toStringAsFixed(1)}ms',
             Prbal.clock,
-            avgFrameTime > 16.7 ? const Color(0xFFED8936) : const Color(0xFF48BB78),
+            avgFrameTime > 16.7
+                ? const Color(0xFFED8936)
+                : const Color(0xFF48BB78),
             isDark,
           ),
         ),
@@ -328,7 +345,8 @@ class _PerformanceMetricsWidgetState extends State<PerformanceMetricsWidget> wit
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800]?.withValues(alpha: 0.5) : Colors.grey[50],
+        color:
+            isDark ? Colors.grey[800]?.withValues(alpha: 0.5) : Colors.grey[50],
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: color.withValues(alpha: 0.2),

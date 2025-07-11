@@ -31,10 +31,12 @@ class ProviderDashboardContent extends ConsumerStatefulWidget {
   const ProviderDashboardContent({super.key});
 
   @override
-  ConsumerState<ProviderDashboardContent> createState() => _ProviderDashboardContentState();
+  ConsumerState<ProviderDashboardContent> createState() =>
+      _ProviderDashboardContentState();
 }
 
-class _ProviderDashboardContentState extends ConsumerState<ProviderDashboardContent> {
+class _ProviderDashboardContentState
+    extends ConsumerState<ProviderDashboardContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -287,7 +289,8 @@ class _ProviderDashboardContentState extends ConsumerState<ProviderDashboardCont
                                     'View All',
                                     style: TextStyle(
                                       fontSize: 14.sp,
-                                      color: ThemeManager.of(context).primaryColor,
+                                      color:
+                                          ThemeManager.of(context).primaryColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

@@ -111,7 +111,8 @@ class HealthStatusWidget extends StatefulWidget {
   State<HealthStatusWidget> createState() => _HealthStatusWidgetState();
 }
 
-class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTickerProviderStateMixin, ThemeAwareMixin {
+class _HealthStatusWidgetState extends State<HealthStatusWidget>
+    with SingleTickerProviderStateMixin, ThemeAwareMixin {
   // ========== SERVICES AND DATA ==========
   final HealthService _healthService = HealthService();
   ApplicationHealth? _healthData;
@@ -129,7 +130,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
   @override
   void initState() {
     super.initState();
-    debugPrint('🏥 HealthStatusWidget: Initializing ENHANCED health status widget with comprehensive ThemeManager');
+    debugPrint(
+        '🏥 HealthStatusWidget: Initializing ENHANCED health status widget with comprehensive ThemeManager');
 
     // Initialize animations for enhanced UX
     _animationController = AnimationController(
@@ -159,7 +161,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
 
   @override
   void dispose() {
-    debugPrint('🏥 HealthStatusWidget: Disposing enhanced health status widget');
+    debugPrint(
+        '🏥 HealthStatusWidget: Disposing enhanced health status widget');
     _animationController.dispose();
     _healthService.dispose();
     super.dispose();
@@ -167,7 +170,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
 
   Future<void> _loadHealthData() async {
     try {
-      debugPrint('🏥 HealthStatusWidget: Loading health data with comprehensive monitoring');
+      debugPrint(
+          '🏥 HealthStatusWidget: Loading health data with comprehensive monitoring');
       await _healthService.initialize();
 
       // Get application health check
@@ -180,7 +184,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
           _isLoading = false;
         });
 
-        debugPrint('🏥 HealthStatusWidget: Health data loaded - Status: $_healthStatus');
+        debugPrint(
+            '🏥 HealthStatusWidget: Health data loaded - Status: $_healthStatus');
       }
     } catch (e) {
       debugPrint('🏥 HealthStatusWidget: Error loading health data: $e');
@@ -246,13 +251,15 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🏥 HealthStatusWidget: Building ENHANCED health status widget with comprehensive ThemeManager');
+    debugPrint(
+        '🏥 HealthStatusWidget: Building ENHANCED health status widget with comprehensive ThemeManager');
 
     // ========== COMPREHENSIVE THEME INTEGRATION ==========
 
     // Comprehensive theme logging for debugging
 
-    debugPrint('🏥 HealthStatusWidget: Building with COMPREHENSIVE ThemeManager integration');
+    debugPrint(
+        '🏥 HealthStatusWidget: Building with COMPREHENSIVE ThemeManager integration');
     debugPrint('🏥 HealthStatusWidget: → Health Status: $_healthStatus');
     debugPrint('🏥 HealthStatusWidget: → Is Loading: $_isLoading');
     debugPrint('🏥 HealthStatusWidget: → Show Details: ${widget.showDetails}');
@@ -386,8 +393,10 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
-            darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.3),
+            lightColor:
+                ThemeManager.of(context).borderColor.withValues(alpha: 0.2),
+            darkColor:
+                ThemeManager.of(context).borderSecondary.withValues(alpha: 0.3),
           ),
           width: 1.5,
         ),
@@ -409,7 +418,8 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            debugPrint('🏥 HealthStatusWidget: Health widget tapped - navigating to health dashboard');
+            debugPrint(
+                '🏥 HealthStatusWidget: Health widget tapped - navigating to health dashboard');
             HapticFeedback.lightImpact();
             NavigationRoute.goRouteNormal(RouteEnum.health.rawValue);
           },
@@ -545,14 +555,22 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
                   ? ThemeManager.of(context).conditionalGradient(
                       lightGradient: LinearGradient(
                         colors: [
-                          ThemeManager.of(context).accent2.withValues(alpha: 0.15),
-                          ThemeManager.of(context).accent2.withValues(alpha: 0.1),
+                          ThemeManager.of(context)
+                              .accent2
+                              .withValues(alpha: 0.15),
+                          ThemeManager.of(context)
+                              .accent2
+                              .withValues(alpha: 0.1),
                         ],
                       ),
                       darkGradient: LinearGradient(
                         colors: [
-                          ThemeManager.of(context).accent2.withValues(alpha: 0.2),
-                          ThemeManager.of(context).accent2.withValues(alpha: 0.15),
+                          ThemeManager.of(context)
+                              .accent2
+                              .withValues(alpha: 0.2),
+                          ThemeManager.of(context)
+                              .accent2
+                              .withValues(alpha: 0.15),
                         ],
                       ),
                     )
@@ -561,8 +579,12 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
               border: _isHovered
                   ? Border.all(
                       color: ThemeManager.of(context).conditionalColor(
-                        lightColor: ThemeManager.of(context).accent2.withValues(alpha: 0.3),
-                        darkColor: ThemeManager.of(context).accent2.withValues(alpha: 0.4),
+                        lightColor: ThemeManager.of(context)
+                            .accent2
+                            .withValues(alpha: 0.3),
+                        darkColor: ThemeManager.of(context)
+                            .accent2
+                            .withValues(alpha: 0.4),
                       ),
                       width: 1,
                     )
@@ -571,8 +593,12 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
             child: Icon(
               Prbal.arrowSync,
               color: ThemeManager.of(context).conditionalColor(
-                lightColor: _isHovered ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).textSecondary,
-                darkColor: _isHovered ? ThemeManager.of(context).primaryLight : ThemeManager.of(context).textTertiary,
+                lightColor: _isHovered
+                    ? ThemeManager.of(context).primaryColor
+                    : ThemeManager.of(context).textSecondary,
+                darkColor: _isHovered
+                    ? ThemeManager.of(context).primaryLight
+                    : ThemeManager.of(context).textTertiary,
               ),
               size: 18.sp,
             ),
@@ -611,8 +637,10 @@ class _HealthStatusWidgetState extends State<HealthStatusWidget> with SingleTick
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor: ThemeManager.of(context).dividerColor.withValues(alpha: 0.2),
-            darkColor: ThemeManager.of(context).dividerColor.withValues(alpha: 0.3),
+            lightColor:
+                ThemeManager.of(context).dividerColor.withValues(alpha: 0.2),
+            darkColor:
+                ThemeManager.of(context).dividerColor.withValues(alpha: 0.3),
           ),
           width: 1,
         ),

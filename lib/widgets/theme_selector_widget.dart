@@ -24,14 +24,16 @@ class ThemeSelectorWidget extends StatefulWidget {
   State<ThemeSelectorWidget> createState() => _ThemeSelectorWidgetState();
 }
 
-class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerProviderStateMixin, ThemeAwareMixin {
+class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget>
+    with TickerProviderStateMixin, ThemeAwareMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   @override
   void initState() {
     super.initState();
-    debugPrint('🎨 ThemeSelectorWidget: Initializing enhanced theme selector with ThemeManager');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Initializing enhanced theme selector with ThemeManager');
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -66,7 +68,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 ThemeSelectorWidget: Building enhanced theme selector with ThemeManager');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Building enhanced theme selector with ThemeManager');
 
     // Use centralized ThemeManager instead of manual theme detection
     //
@@ -92,7 +95,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
   /// Builds enhanced theme selector with advanced ThemeManager features
   Widget _buildEnhancedThemeSelector() {
-    debugPrint('🎨 ThemeSelectorWidget: Building enhanced theme selector container');
+    debugPrint(
+        '🎨 ThemeSelectorWidget: Building enhanced theme selector container');
 
     return Container(
       margin: EdgeInsets.all(20.w),
@@ -183,7 +187,8 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
 
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
-        debugPrint('🎨 ThemeSelectorWidget: Current theme mode: ${themeMode.name}');
+        debugPrint(
+            '🎨 ThemeSelectorWidget: Current theme mode: ${themeMode.name}');
 
         return Column(
           children: [
@@ -255,10 +260,14 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
           color: isSelected ? null : ThemeManager.of(context).surfaceColor,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: isSelected ? Colors.transparent : ThemeManager.of(context).borderColor,
+            color: isSelected
+                ? Colors.transparent
+                : ThemeManager.of(context).borderColor,
             width: 2,
           ),
-          boxShadow: isSelected ? ThemeManager.of(context).elevatedShadow : ThemeManager.of(context).primaryShadow,
+          boxShadow: isSelected
+              ? ThemeManager.of(context).elevatedShadow
+              : ThemeManager.of(context).primaryShadow,
         ),
         child: Row(
           children: [
@@ -278,7 +287,9 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
               child: Icon(
                 icon,
                 size: 20.sp,
-                color: isSelected ? Colors.white : ThemeManager.of(context).textSecondary,
+                color: isSelected
+                    ? Colors.white
+                    : ThemeManager.of(context).textSecondary,
               ),
             ),
 
@@ -294,7 +305,9 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : ThemeManager.of(context).textPrimary,
+                      color: isSelected
+                          ? Colors.white
+                          : ThemeManager.of(context).textPrimary,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -302,7 +315,9 @@ class _ThemeSelectorWidgetState extends State<ThemeSelectorWidget> with TickerPr
                     description,
                     style: TextStyle(
                       fontSize: 13.sp,
-                      color: isSelected ? Colors.white.withValues(alpha: 0.9) : ThemeManager.of(context).textSecondary,
+                      color: isSelected
+                          ? Colors.white.withValues(alpha: 0.9)
+                          : ThemeManager.of(context).textSecondary,
                     ),
                   ),
                 ],
