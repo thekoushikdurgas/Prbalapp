@@ -95,13 +95,11 @@ String? _optimizedRedirect(Ref ref, BuildContext context, GoRouterState state) {
 
   // Log only when needed (not for every navigation)
   if (kDebugMode) {
-    DebugLogger.navigation(
-        'Redirect check: $currentLocation (auth: ${authState.isAuthenticated})');
+    DebugLogger.navigation('Redirect check: $currentLocation (auth: ${authState.isAuthenticated})');
   }
 
   // Check onboarding flow
-  final onboardingRedirect =
-      _checkOnboardingFlow(ref, authState, currentLocation);
+  final onboardingRedirect = _checkOnboardingFlow(ref, authState, currentLocation);
   if (onboardingRedirect != null) return onboardingRedirect;
 
   // Check authentication flow
@@ -116,19 +114,34 @@ String? _optimizedRedirect(Ref ref, BuildContext context, GoRouterState state) {
 }
 
 /// Check onboarding flow with minimal overhead
-String? _checkOnboardingFlow(
-    Ref ref, AuthenticationState authState, String location) {
+String? _checkOnboardingFlow(Ref ref, AuthenticationState authState, String location) {
   final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
+  final isLanguageSelected = HiveService.isLanguageSelected();
 
   // Redirect to onboarding if intro not watched
   if (!hasIntroBeenWatched && location != RouteEnum.onboarding.rawValue) {
+    if (kDebugMode) {
+      DebugLogger.navigation('Redirecting to onboarding: intro not watched');
+    }
     return RouteEnum.onboarding.rawValue;
   }
 
-  // Redirect to welcome if intro watched but not authenticated
+  // Redirect to language selection if intro watched but language not selected
+  if (hasIntroBeenWatched && !isLanguageSelected && location != RouteEnum.languageSelection.rawValue) {
+    if (kDebugMode) {
+      DebugLogger.navigation('Redirecting to language selection: language not selected');
+    }
+    return RouteEnum.languageSelection.rawValue;
+  }
+
+  // Redirect to welcome if intro watched, language selected, but not authenticated
   if (hasIntroBeenWatched &&
+      isLanguageSelected &&
       !authState.isAuthenticated &&
       !NavigationRouters._authScreens.contains(location)) {
+    if (kDebugMode) {
+      DebugLogger.navigation('Redirecting to welcome: not authenticated');
+    }
     return RouteEnum.welcome.rawValue;
   }
 
@@ -136,11 +149,9 @@ String? _checkOnboardingFlow(
 }
 
 /// Check authentication flow with cached screen lookup
-String? _checkAuthenticationFlow(
-    AuthenticationState authState, String location) {
+String? _checkAuthenticationFlow(AuthenticationState authState, String location) {
   // Redirect away from auth screens if logged in
-  if (authState.isAuthenticated &&
-      NavigationRouters._authScreens.contains(location)) {
+  if (authState.isAuthenticated && NavigationRouters._authScreens.contains(location)) {
     return RouteEnum.home.rawValue;
   }
 
@@ -176,8 +187,7 @@ String? _checkUserSpecificFlow(AuthenticationState authState, String location) {
 extension NavigationUtilities on NavigationRouters {
   /// Get dashboard route for user type
   static String getDashboardForUserType(UserType userType) {
-    return NavigationRouters._userTypeDashboards[userType] ??
-        RouteEnum.takerDashboard.rawValue;
+    return NavigationRouters._userTypeDashboards[userType] ?? RouteEnum.takerDashboard.rawValue;
   }
 
   /// Check if location is an auth screen
@@ -236,19 +246,15 @@ extension NavigationUtilities on NavigationRouters {
   }
 
   /// Log navigation state for debugging
-  static void logNavigationState(
-      AuthenticationState authState, String currentLocation) {
+  static void logNavigationState(AuthenticationState authState, String currentLocation) {
     if (kDebugMode) {
       DebugLogger.navigation('Navigation State Debug:');
       DebugLogger.navigation('  Current Location: $currentLocation');
-      DebugLogger.navigation(
-          '  Is Authenticated: ${authState.isAuthenticated}');
-      DebugLogger.navigation(
-          '  User Type: ${authState.user?.userType.name ?? 'none'}');
+      DebugLogger.navigation('  Is Authenticated: ${authState.isAuthenticated}');
+      DebugLogger.navigation('  User Type: ${authState.user?.userType.name ?? 'none'}');
       DebugLogger.navigation(
           '  Expected Dashboard: ${authState.user != null ? NavigationRouters._userTypeDashboards[authState.user!.userType] : 'none'}');
-      DebugLogger.navigation(
-          '  Is Auth Screen: ${NavigationRouters._authScreens.contains(currentLocation)}');
+      DebugLogger.navigation('  Is Auth Screen: ${NavigationRouters._authScreens.contains(currentLocation)}');
       DebugLogger.navigation(
           '  Is User Specific: ${NavigationRouters._userTypeSpecificRoutes.contains(currentLocation)}');
     }
@@ -269,8 +275,7 @@ extension NavigationExtension on BuildContext {
 
   /// Navigate to onboarding with stack clear
   void goToOnboardingAndClear() {
-    NavigationUtilities.navigateAndClearStack(
-        this, RouteEnum.onboarding.rawValue);
+    NavigationUtilities.navigateAndClearStack(this, RouteEnum.onboarding.rawValue);
   }
 }
 
@@ -279,8 +284,7 @@ class SimplifiedRouter {
   const SimplifiedRouter._();
 
   /// Get router instance
-  static Provider<GoRouter> get routerProvider =>
-      NavigationRouters.routerProvider;
+  static Provider<GoRouter> get routerProvider => NavigationRouters.routerProvider;
 
   /// Legacy compatibility
   @Deprecated('Use NavigationRouters.routerProvider instead')

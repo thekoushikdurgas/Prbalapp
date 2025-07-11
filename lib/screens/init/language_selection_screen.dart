@@ -11,6 +11,7 @@ import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/services/app_services.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/utils/debug_logger.dart';
 // import 'package:prbal/utils/extension/context/context_extension.dart';
 
 /// LanguageSelectionScreen - Enhanced Multi-Language Support Screen
@@ -70,13 +71,10 @@ class LanguageSelectionScreen extends ConsumerStatefulWidget {
   const LanguageSelectionScreen({super.key});
 
   @override
-  ConsumerState<LanguageSelectionScreen> createState() =>
-      _LanguageSelectionScreenState();
+  ConsumerState<LanguageSelectionScreen> createState() => _LanguageSelectionScreenState();
 }
 
-class _LanguageSelectionScreenState
-    extends ConsumerState<LanguageSelectionScreen>
-    with TickerProviderStateMixin {
+class _LanguageSelectionScreenState extends ConsumerState<LanguageSelectionScreen> with TickerProviderStateMixin {
   // Animation controllers for smooth UI transitions
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -88,10 +86,8 @@ class _LanguageSelectionScreenState
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Supported languages: ${ProjectLocales.localesMap.length}');
+    DebugLogger.intro('LanguageSelectionScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
+    DebugLogger.intro('LanguageSelectionScreen: Supported languages: ${ProjectLocales.localesMap.length}');
 
     // Log all supported locales for debugging
     ProjectLocales.logSupportedLocales();
@@ -103,8 +99,7 @@ class _LanguageSelectionScreenState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Dependencies changed → Setting current locale...');
+    DebugLogger.intro('LanguageSelectionScreen: Dependencies changed → Setting current locale...');
     _setCurrentLocale();
     _logAuthenticationState();
   }
@@ -112,19 +107,13 @@ class _LanguageSelectionScreenState
   /// Logs current authentication state for debugging
   void _logAuthenticationState() {
     final authState = ref.read(authenticationStateProvider);
-    debugPrint('🔐 LanguageSelectionScreen: Authentication state check:');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - Authenticated: ${authState.isAuthenticated}');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - Loading: ${authState.isLoading}');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - User: ${authState.user?.username ?? 'none'}');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - Has Tokens: ${authState.tokens != null}');
-    debugPrint(
-        '🔐 LanguageSelectionScreen:   - Error: ${authState.error ?? 'none'}');
+    DebugLogger.auth('LanguageSelectionScreen: Authentication state check:');
+    DebugLogger.auth('LanguageSelectionScreen:   - Authenticated: ${authState.isAuthenticated}');
+    DebugLogger.auth('LanguageSelectionScreen:   - Loading: ${authState.isLoading}');
+    DebugLogger.auth('LanguageSelectionScreen:   - User: ${authState.user?.username ?? 'none'}');
+    DebugLogger.auth('LanguageSelectionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
+    DebugLogger.auth('LanguageSelectionScreen:   - Has Tokens: ${authState.tokens != null}');
+    DebugLogger.auth('LanguageSelectionScreen:   - Error: ${authState.error ?? 'none'}');
   }
 
   /// Initialize entrance animations for smooth user experience
@@ -174,26 +163,23 @@ class _LanguageSelectionScreenState
   /// 5. Update UI state to reflect selected locale
   /// 6. Log all steps for debugging
   void _setCurrentLocale() {
-    debugPrint('🌐 LanguageSelectionScreen: === LOCALE DETECTION PROCESS ===');
+    DebugLogger.intro('LanguageSelectionScreen: === LOCALE DETECTION PROCESS ===');
 
     try {
       // Step 1: Get current locale from Flutter context (safely)
       final currentLocale = Localizations.maybeLocaleOf(context);
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Device locale detected: $currentLocale');
+      DebugLogger.intro('LanguageSelectionScreen: Device locale detected: $currentLocale');
 
       if (currentLocale != null) {
-        debugPrint(
-            '🌐 LanguageSelectionScreen: Checking if device locale is supported...');
+        DebugLogger.intro('LanguageSelectionScreen: Checking if device locale is supported...');
 
         // Step 2: Check if current locale is in our supported languages
         if (ProjectLocales.isSupported(currentLocale)) {
-          debugPrint(
-              '🌐 LanguageSelectionScreen: ✅ Device locale IS supported → Using: ${currentLocale.languageCode}-${currentLocale.countryCode}');
+          DebugLogger.success(
+              'LanguageSelectionScreen: Device locale IS supported → Using: ${currentLocale.languageCode}-${currentLocale.countryCode}');
           _selectedLocale = currentLocale;
         } else {
-          debugPrint(
-              '🌐 LanguageSelectionScreen: ⚠️ Device locale NOT supported → Checking language-only match...');
+          DebugLogger.intro('LanguageSelectionScreen: Device locale NOT supported → Checking language-only match...');
 
           // Step 3: Try to find a language-only match (e.g., 'hi' matches 'hi-IN')
           final languageOnlyMatch = ProjectLocales.supportedLocales.firstWhere(
@@ -202,36 +188,33 @@ class _LanguageSelectionScreenState
           );
 
           if (languageOnlyMatch != ProjectLocales.defaultLocale) {
-            debugPrint(
-                '🌐 LanguageSelectionScreen: ✅ Found language match: ${languageOnlyMatch.languageCode}-${languageOnlyMatch.countryCode}');
+            DebugLogger.success(
+                'LanguageSelectionScreen: Found language match: ${languageOnlyMatch.languageCode}-${languageOnlyMatch.countryCode}');
             _selectedLocale = languageOnlyMatch;
           } else {
-            debugPrint(
-                '🌐 LanguageSelectionScreen: ⚠️ No language match → Using default: ${ProjectLocales.defaultLocale.languageCode}-${ProjectLocales.defaultLocale.countryCode}');
+            DebugLogger.info(
+                'LanguageSelectionScreen: No language match → Using default: ${ProjectLocales.defaultLocale.languageCode}-${ProjectLocales.defaultLocale.countryCode}');
             _selectedLocale = ProjectLocales.defaultLocale;
           }
         }
       } else {
-        debugPrint(
-            '🌐 LanguageSelectionScreen: ⚠️ Device locale not available → Using default: ${ProjectLocales.defaultLocale.languageCode}-${ProjectLocales.defaultLocale.countryCode}');
+        DebugLogger.info(
+            'LanguageSelectionScreen: Device locale not available → Using default: ${ProjectLocales.defaultLocale.languageCode}-${ProjectLocales.defaultLocale.countryCode}');
         _selectedLocale = ProjectLocales.defaultLocale;
       }
 
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🎯 Final selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 📱 Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
+      DebugLogger.success(
+          'LanguageSelectionScreen: Final selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
+      DebugLogger.intro('LanguageSelectionScreen: Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
 
       // Step 4: Update UI to reflect selected locale
       if (mounted) {
         setState(() {});
-        debugPrint(
-            '🌐 LanguageSelectionScreen: ✅ UI updated with selected locale');
+        DebugLogger.success('LanguageSelectionScreen: UI updated with selected locale');
       }
     } catch (e) {
-      debugPrint('🌐 LanguageSelectionScreen: ❌ Error in locale detection: $e');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: 🔄 Using fallback default locale');
+      DebugLogger.error('LanguageSelectionScreen: Error in locale detection: $e');
+      DebugLogger.info('LanguageSelectionScreen: Using fallback default locale');
 
       // Fallback to default locale on any error
       _selectedLocale = ProjectLocales.defaultLocale;
@@ -240,8 +223,7 @@ class _LanguageSelectionScreenState
       }
     }
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ============================================');
+    DebugLogger.intro('LanguageSelectionScreen: ============================================');
   }
 
   @override
@@ -253,14 +235,11 @@ class _LanguageSelectionScreenState
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building UI with ThemeManager colors');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Background: ${ThemeManager.of(context).backgroundColor}');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Surface: ${ThemeManager.of(context).surfaceColor}');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Current selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
+    DebugLogger.ui('LanguageSelectionScreen: Building UI with ThemeManager colors');
+    DebugLogger.ui('LanguageSelectionScreen: Background: ${ThemeManager.of(context).backgroundColor}');
+    DebugLogger.ui('LanguageSelectionScreen: Surface: ${ThemeManager.of(context).surfaceColor}');
+    DebugLogger.ui(
+        'LanguageSelectionScreen: Current selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
 
     return Scaffold(
       backgroundColor: ThemeManager.of(context).backgroundColor,
@@ -292,21 +271,18 @@ class _LanguageSelectionScreenState
   /// 3. Navigate to appropriate next screen
   /// 4. Handle errors gracefully
   void _setDefaultLanguageAndContinue(BuildContext context) async {
-    debugPrint('🌐 LanguageSelectionScreen: === SETTING DEFAULT LANGUAGE ===');
+    DebugLogger.intro('LanguageSelectionScreen: === SETTING DEFAULT LANGUAGE ===');
 
     try {
       // Set English as default if no language is selected
       await HiveService.setSelectedLanguage('en-US');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ✅ Default language (en-US) saved successfully');
-      debugPrint('🌐 LanguageSelectionScreen: → Continuing to next screen...');
+      DebugLogger.success('LanguageSelectionScreen: Default language (en-US) saved successfully');
+      DebugLogger.navigation('LanguageSelectionScreen: → Continuing to next screen...');
 
       _navigateToNextScreen(context);
     } catch (e) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ❌ Error setting default language: $e');
-      debugPrint(
-          '🌐 LanguageSelectionScreen: → Continuing anyway (language can be set later)');
+      DebugLogger.error('LanguageSelectionScreen: Error setting default language: $e');
+      DebugLogger.info('LanguageSelectionScreen: → Continuing anyway (language can be set later)');
 
       // Even if there's an error saving language, continue to next screen
       // Language selection can be done later in settings
@@ -314,22 +290,11 @@ class _LanguageSelectionScreenState
     }
   }
 
-  /// Navigate to the appropriate next screen based on user state
-  ///
-  /// **NAVIGATION LOGIC:**
-  /// 1. Check if intro has been watched → If not, go to onboarding
-  /// 2. Check if user is logged in → If not, go to welcome/auth screen
-  /// 3. If both complete → go to home screen
-  ///
-  /// **DEBUGGING:**
-  /// - Logs each navigation decision for troubleshooting
-  /// - Shows current user state for context
-  /// Enhanced navigation with authentication state awareness
+  /// Navigate to the appropriate next screen via router delegation
   ///
   /// **NAVIGATION APPROACH:**
-  /// Instead of manually checking all conditions, we delegate to the router's
-  /// authentication-aware redirect functionality which handles:
-  /// - Language selection check
+  /// Delegate all navigation logic to the router's redirect functionality which handles:
+  /// - Language selection validation (now completed)
   /// - Intro/onboarding check
   /// - Authentication state verification
   /// - User type-specific dashboard routing
@@ -340,56 +305,48 @@ class _LanguageSelectionScreenState
   /// - Automatic handling of authentication state
   /// - Simpler maintenance and debugging
   void _navigateToNextScreen(BuildContext context) {
-    debugPrint(
-        '🧭 LanguageSelectionScreen: === ENHANCED NAVIGATION WITH AUTH AWARENESS ===');
+    DebugLogger.navigation('LanguageSelectionScreen: === NAVIGATION WITH ROUTER DELEGATION ===');
 
-    // Get current authentication and onboarding state
+    // Get current authentication and onboarding state for debugging
     final authState = ref.read(authenticationStateProvider);
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
 
-    debugPrint('🧭 LanguageSelectionScreen: Current state analysis:');
-    debugPrint(
-        '🧭 LanguageSelectionScreen:   📚 Intro watched: $hasIntroBeenWatched');
-    debugPrint(
-        '🧭 LanguageSelectionScreen:   🔐 Authenticated: ${authState.isAuthenticated}');
-    debugPrint(
-        '🧭 LanguageSelectionScreen:   👤 User: ${authState.user?.username ?? 'none'}');
-    debugPrint(
-        '🧭 LanguageSelectionScreen:   🎭 User Type: ${authState.user?.userType.name ?? 'none'}');
+    DebugLogger.navigation('LanguageSelectionScreen: Current state analysis:');
+    DebugLogger.navigation('LanguageSelectionScreen:   📚 Intro watched: $hasIntroBeenWatched');
+    DebugLogger.navigation('LanguageSelectionScreen:   🌐 Language selected: ${HiveService.isLanguageSelected()}');
+    DebugLogger.navigation('LanguageSelectionScreen:   🔐 Authenticated: ${authState.isAuthenticated}');
+    DebugLogger.navigation('LanguageSelectionScreen:   👤 User: ${authState.user?.username ?? 'none'}');
+    DebugLogger.navigation('LanguageSelectionScreen:   🎭 User Type: ${authState.user?.userType.name ?? 'none'}');
 
     try {
       // Navigate to home - let the router's redirect logic handle the rest
-      debugPrint(
-          '🧭 LanguageSelectionScreen: Navigating to home → Router will handle redirect...');
-      debugPrint(
-          '🧭 LanguageSelectionScreen: Router will check intro → auth → user-specific dashboard');
+      DebugLogger.navigation('LanguageSelectionScreen: Navigating to home → Router will handle redirect...');
+      DebugLogger.navigation('LanguageSelectionScreen: Router will check: auth → user-specific dashboard');
 
       context.go(RouteEnum.home.rawValue);
-      debugPrint(
-          '✅ LanguageSelectionScreen: Navigation initiated - router redirect will take over');
+      DebugLogger.success('LanguageSelectionScreen: Navigation initiated - router redirect will take over');
     } catch (e, stackTrace) {
-      debugPrint('❌ LanguageSelectionScreen: Navigation error: $e');
-      debugPrint('🔍 LanguageSelectionScreen: Stack trace: $stackTrace');
+      DebugLogger.error('LanguageSelectionScreen: Navigation error: $e');
+      DebugLogger.debug('LanguageSelectionScreen: Stack trace: $stackTrace');
 
       // Fallback navigation in case of error
-      debugPrint(
-          '🔄 LanguageSelectionScreen: Attempting fallback navigation...');
+      DebugLogger.navigation('LanguageSelectionScreen: Attempting fallback navigation...');
       try {
-        if (!hasIntroBeenWatched) {
-          context.go(RouteEnum.onboarding.rawValue);
-        } else if (!authState.isAuthenticated) {
-          context.go(RouteEnum.welcome.rawValue);
-        } else {
-          context.go(RouteEnum.home.rawValue);
-        }
+        // Fallback to home - let router handle the redirect
+        DebugLogger.navigation('LanguageSelectionScreen: Fallback → Home (router will redirect)');
+        context.go(RouteEnum.home.rawValue);
       } catch (fallbackError) {
-        debugPrint(
-            '❌ LanguageSelectionScreen: Fallback navigation also failed: $fallbackError');
+        DebugLogger.error('LanguageSelectionScreen: Fallback navigation also failed: $fallbackError');
+        // Ultimate fallback to welcome screen
+        try {
+          context.go(RouteEnum.welcome.rawValue);
+        } catch (ultimateError) {
+          DebugLogger.error('LanguageSelectionScreen: Ultimate fallback failed: $ultimateError');
+        }
       }
     }
 
-    debugPrint(
-        '🧭 LanguageSelectionScreen: ===============================================');
+    DebugLogger.navigation('LanguageSelectionScreen: ===============================================');
   }
 
   /// Builds the main body content with header and language list
@@ -403,8 +360,7 @@ class _LanguageSelectionScreenState
   Widget _buildBody(
     BuildContext context,
   ) {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building main body content with bottom-fixed apply button');
+    debugPrint('🌐 LanguageSelectionScreen: Building main body content with bottom-fixed apply button');
 
     return Column(
       children: [
@@ -419,9 +375,7 @@ class _LanguageSelectionScreenState
                 // _buildHeader(),
                 // SizedBox(height: 32.h),
                 _buildLanguageList(),
-                SizedBox(
-                    height:
-                        20.h), // Reduced spacing since button is now separate
+                SizedBox(height: 20.h), // Reduced spacing since button is now separate
               ],
             ),
           ),
@@ -461,8 +415,8 @@ class _LanguageSelectionScreenState
   /// - Proper dividers between items
   /// - Theme-aware styling throughout
   Widget _buildLanguageList() {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Building language list with ${ProjectLocales.localesMap.length} languages');
+    DebugLogger.ui(
+        'LanguageSelectionScreen: Building language list with ${ProjectLocales.localesMap.length} languages');
 
     return Column(
       children: ProjectLocales.localesMap.entries
@@ -508,9 +462,8 @@ class _LanguageSelectionScreenState
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            debugPrint(
-                '🌐 LanguageSelectionScreen: Language tapped: ${locale.languageCode}-${locale.countryCode}');
-            debugPrint('🌐 LanguageSelectionScreen: Display name: $name');
+            DebugLogger.ui('LanguageSelectionScreen: Language tapped: ${locale.languageCode}-${locale.countryCode}');
+            DebugLogger.ui('LanguageSelectionScreen: Display name: $name');
 
             setState(() {
               _selectedLocale = locale;
@@ -518,13 +471,10 @@ class _LanguageSelectionScreenState
 
             // Provide haptic feedback for better UX
             HapticFeedback.lightImpact();
-            debugPrint(
-                '🌐 LanguageSelectionScreen: ✅ Language selection updated with haptic feedback');
+            DebugLogger.success('LanguageSelectionScreen: Language selection updated with haptic feedback');
           },
           borderRadius: BorderRadius.vertical(
-            top: locale == ProjectLocales.localesMap.keys.first
-                ? Radius.circular(20.r)
-                : Radius.zero,
+            top: locale == ProjectLocales.localesMap.keys.first ? Radius.circular(20.r) : Radius.zero,
             bottom: isLast ? Radius.circular(20.r) : Radius.zero,
           ),
           child: Container(
@@ -584,13 +534,9 @@ class _LanguageSelectionScreenState
                   height: 24.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected
-                        ? ThemeManager.of(context).primaryColor
-                        : Colors.transparent,
+                    color: isSelected ? ThemeManager.of(context).primaryColor : Colors.transparent,
                     border: Border.all(
-                      color: isSelected
-                          ? ThemeManager.of(context).primaryColor
-                          : ThemeManager.of(context).textTertiary,
+                      color: isSelected ? ThemeManager.of(context).primaryColor : ThemeManager.of(context).textTertiary,
                       width: 2,
                     ),
                   ),
@@ -739,8 +685,7 @@ class _LanguageSelectionScreenState
   /// 🇮🇳 pa (Punjabi) - Punjab
   String _getFlagForLocale(Locale locale) {
     final languageCode = locale.languageCode;
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Getting flag for language: $languageCode');
+    DebugLogger.ui('LanguageSelectionScreen: Getting flag for language: $languageCode');
 
     String flag;
 
@@ -766,12 +711,11 @@ class _LanguageSelectionScreenState
       // Fallback for any unknown languages
       default:
         flag = '🌐';
-        debugPrint(
-            '🌐 LanguageSelectionScreen: ⚠️ Unknown language code: $languageCode, using globe icon');
+        DebugLogger.error('LanguageSelectionScreen: Unknown language code: $languageCode, using globe icon');
         break;
     }
 
-    debugPrint('🌐 LanguageSelectionScreen: Flag for $languageCode: $flag');
+    DebugLogger.ui('LanguageSelectionScreen: Flag for $languageCode: $flag');
     return flag;
   }
 
@@ -789,42 +733,34 @@ class _LanguageSelectionScreenState
   /// - User receives appropriate error messages
   /// - App continues to function even if language saving fails
   void _applyLanguageSelection(BuildContext context) async {
-    debugPrint(
-        '🌐 LanguageSelectionScreen: === APPLYING LANGUAGE SELECTION ===');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
-    debugPrint(
-        '🌐 LanguageSelectionScreen: Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
+    DebugLogger.intro('LanguageSelectionScreen: === APPLYING LANGUAGE SELECTION ===');
+    DebugLogger.intro(
+        'LanguageSelectionScreen: Selected locale: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
+    DebugLogger.intro('LanguageSelectionScreen: Display name: ${ProjectLocales.getDisplayName(_selectedLocale)}');
 
     try {
       // Step 1: Convert locale to storage format
-      final languageCode =
-          '${_selectedLocale.languageCode}-${_selectedLocale.countryCode}';
-      debugPrint('🌐 LanguageSelectionScreen: Storage format: $languageCode');
+      final languageCode = '${_selectedLocale.languageCode}-${_selectedLocale.countryCode}';
+      DebugLogger.storage('LanguageSelectionScreen: Storage format: $languageCode');
 
       // Step 2: Save the selected language to local storage
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Saving language to local storage...');
+      DebugLogger.storage('LanguageSelectionScreen: Saving language to local storage...');
       await HiveService.setSelectedLanguage(languageCode);
-      debugPrint('🌐 LanguageSelectionScreen: ✅ Language saved successfully');
+      DebugLogger.success('LanguageSelectionScreen: Language saved successfully');
 
       // Step 2.5: Apply locale change using EasyLocalization
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Applying locale change with EasyLocalization...');
+      DebugLogger.intro('LanguageSelectionScreen: Applying locale change with EasyLocalization...');
 
       if (context.mounted) {
         try {
           // Change the app's locale immediately using EasyLocalization
           await context.setLocale(_selectedLocale);
-          debugPrint(
-              '🌐 LanguageSelectionScreen: ✅ EasyLocalization locale changed successfully');
-          debugPrint(
-              '🌐 LanguageSelectionScreen: 🎯 App now using: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
+          DebugLogger.success('LanguageSelectionScreen: EasyLocalization locale changed successfully');
+          DebugLogger.success(
+              'LanguageSelectionScreen: App now using: ${_selectedLocale.languageCode}-${_selectedLocale.countryCode}');
         } catch (localeError) {
-          debugPrint(
-              '🌐 LanguageSelectionScreen: ⚠️ EasyLocalization setLocale failed: $localeError');
-          debugPrint(
-              '🌐 LanguageSelectionScreen: 🔄 Continuing anyway - locale may change on next app start');
+          DebugLogger.error('LanguageSelectionScreen: EasyLocalization setLocale failed: $localeError');
+          DebugLogger.info('LanguageSelectionScreen: Continuing anyway - locale may change on next app start');
         }
       }
 
@@ -853,8 +789,7 @@ class _LanguageSelectionScreenState
                 ),
               ],
             ),
-            backgroundColor:
-                ThemeManager.of(context).successColor, // Success green
+            backgroundColor: ThemeManager.of(context).successColor, // Success green
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
@@ -871,21 +806,17 @@ class _LanguageSelectionScreenState
       }
 
       // Step 5: Navigate to next screen after short delay for UX
-      debugPrint(
-          '🌐 LanguageSelectionScreen: Waiting 1 second before navigation...');
+      DebugLogger.navigation('LanguageSelectionScreen: Waiting 1 second before navigation...');
       await Future.delayed(const Duration(milliseconds: 1000));
 
       if (context.mounted) {
-        debugPrint(
-            '🌐 LanguageSelectionScreen: 🎯 Language applied: $languageCode');
+        DebugLogger.success('LanguageSelectionScreen: Language applied: $languageCode');
         _navigateToNextScreen(context);
       }
 
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ✅ Language application completed successfully');
+      DebugLogger.success('LanguageSelectionScreen: Language application completed successfully');
     } catch (e) {
-      debugPrint(
-          '🌐 LanguageSelectionScreen: ❌ Error saving language selection: $e');
+      DebugLogger.error('LanguageSelectionScreen: Error saving language selection: $e');
 
       // Show error notification to user
       if (context.mounted) {
@@ -921,16 +852,14 @@ class _LanguageSelectionScreenState
             duration: const Duration(seconds: 3),
           ),
         );
-        debugPrint('🌐 LanguageSelectionScreen: ❌ Error notification shown');
+        DebugLogger.error('LanguageSelectionScreen: Error notification shown');
       }
 
       // Continue to next screen anyway - language can be set later in settings
-      debugPrint(
-          '🌐 LanguageSelectionScreen: → Continuing to next screen despite error');
+      DebugLogger.navigation('LanguageSelectionScreen: → Continuing to next screen despite error');
       _navigateToNextScreen(context);
     }
 
-    debugPrint(
-        '🌐 LanguageSelectionScreen: ===============================================');
+    DebugLogger.intro('LanguageSelectionScreen: ===============================================');
   }
 }

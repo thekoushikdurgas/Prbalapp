@@ -5,6 +5,7 @@ import 'package:prbal/utils/icon/prbal_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prbal/screens/auth/phone_login_bottom_sheet.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/utils/debug_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:prbal/services/hive_service.dart';
 
@@ -41,8 +42,7 @@ class WelcomeScreen extends ConsumerStatefulWidget {
   ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
-    with TickerProviderStateMixin {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> with TickerProviderStateMixin {
   // Animation controllers for smooth entrance effects
   late AnimationController _slideController;
   late AnimationController _fadeController;
@@ -56,9 +56,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint('🎨 WelcomeScreen: 🚀 Initializing welcome screen');
-    debugPrint(
-        '🎨 WelcomeScreen: 📱 Checking existing user session via HiveService');
+    DebugLogger.ui('WelcomeScreen: Initializing welcome screen');
+    DebugLogger.auth('WelcomeScreen: Checking existing user session via HiveService');
 
     // Check if user is already logged in via HiveService
     _checkExistingSession();
@@ -66,62 +65,58 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     _initializeAnimations();
     _startAnimations();
 
-    debugPrint('🎨 WelcomeScreen: ✅ Welcome screen initialization completed');
+    DebugLogger.success('WelcomeScreen: Welcome screen initialization completed');
   }
 
   /// Check for existing user session using HiveService
   ///
-  /// **Purpose:** Verify if user is already authenticated
+  /// **Purpose:** Verify if user is already authenticated and potentially navigate away
   /// **Process:**
   /// 1. Check HiveService for existing login status
   /// 2. Validate user data and auth tokens
-  /// 3. Navigate to appropriate dashboard if authenticated
+  /// 3. Navigate to home if authenticated (let router handle dashboard routing)
   /// **Integration:** Uses HiveService methods for session validation
   void _checkExistingSession() {
-    debugPrint('🎨 WelcomeScreen: 🔍 Checking for existing user session');
+    DebugLogger.auth('WelcomeScreen: Checking for existing user session');
 
     try {
       // Check if user is logged in via HiveService
       final isLoggedIn = HiveService.isLoggedIn();
-      debugPrint('🎨 WelcomeScreen: 📊 HiveService login status: $isLoggedIn');
+      DebugLogger.auth('WelcomeScreen: HiveService login status: $isLoggedIn');
 
       if (isLoggedIn) {
         // Get user data safely from HiveService
         final userData = HiveService.getUserDataSafe();
         final authTokens = HiveService.getAuthTokens();
 
-        debugPrint(
-            '🎨 WelcomeScreen: 👤 Existing user data found: ${userData != null}');
-        debugPrint(
-            '🎨 WelcomeScreen: 🔑 Auth tokens found: ${authTokens != null}');
+        DebugLogger.user('WelcomeScreen: Existing user data found: ${userData != null}');
+        DebugLogger.auth('WelcomeScreen: Auth tokens found: ${authTokens != null}');
 
         if (userData != null) {
-          debugPrint('🎨 WelcomeScreen: ✅ Valid existing session detected');
-          debugPrint(
-              '🎨 WelcomeScreen: 👤 User: ${userData.firstName} ${userData.lastName}');
-          debugPrint('🎨 WelcomeScreen: 🏷️ UserType: ${userData.userType}');
-          debugPrint('🎨 WelcomeScreen: 📧 Email: ${userData.email}');
+          DebugLogger.success('WelcomeScreen: Valid existing session detected');
+          DebugLogger.user('WelcomeScreen: User: ${userData.firstName} ${userData.lastName}');
+          DebugLogger.user('WelcomeScreen: UserType: ${userData.userType}');
+          DebugLogger.user('WelcomeScreen: Email: ${userData.email}');
 
-          // TODO: Navigate to appropriate dashboard based on UserType
-          // This would be implemented when dashboard routing is ready
-          debugPrint(
-              '🎨 WelcomeScreen: 🧭 Dashboard navigation would happen here');
+          // Navigate to home - let router handle dashboard routing
+          DebugLogger.navigation('WelcomeScreen: Navigating to home → Router will handle dashboard routing');
+
+          // Note: We could navigate here, but the router's redirect logic will handle this
+          // automatically when the authentication state is properly initialized
+          DebugLogger.navigation('WelcomeScreen: Router will redirect to appropriate dashboard');
         } else {
-          debugPrint(
-              '🎨 WelcomeScreen: ⚠️ Login status true but no user data found');
-          debugPrint(
-              '🎨 WelcomeScreen: 🧹 Clearing inconsistent session state');
+          DebugLogger.error('WelcomeScreen: Login status true but no user data found');
+          DebugLogger.storage('WelcomeScreen: Clearing inconsistent session state');
 
           // Clear inconsistent state
           HiveService.emergencyLogout();
         }
       } else {
-        debugPrint(
-            '🎨 WelcomeScreen: ℹ️ No existing session found, showing welcome screen');
+        DebugLogger.info('WelcomeScreen: No existing session found, showing welcome screen');
       }
     } catch (e) {
-      debugPrint('🎨 WelcomeScreen: ❌ Error checking existing session: $e');
-      debugPrint('🎨 WelcomeScreen: 🧹 Performing emergency logout for safety');
+      DebugLogger.error('WelcomeScreen: Error checking existing session: $e');
+      DebugLogger.storage('WelcomeScreen: Performing emergency logout for safety');
 
       // Perform emergency logout on any error
       HiveService.emergencyLogout();
@@ -136,28 +131,25 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   /// - Fade animation: Opacity transition (1000ms)
   /// - Button scale: Elastic scale-in effect (600ms)
   void _initializeAnimations() {
-    debugPrint('🎨 WelcomeScreen: 🎬 Initializing entrance animations');
+    DebugLogger.ui('WelcomeScreen: Initializing entrance animations');
 
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    debugPrint(
-        '🎨 WelcomeScreen: ⬆️ Slide controller created (800ms duration)');
+    DebugLogger.ui('WelcomeScreen: Slide controller created (800ms duration)');
 
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    debugPrint(
-        '🎨 WelcomeScreen: 🌟 Fade controller created (1000ms duration)');
+    DebugLogger.ui('WelcomeScreen: Fade controller created (1000ms duration)');
 
     _buttonController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    debugPrint(
-        '🎨 WelcomeScreen: 🔘 Button controller created (600ms duration)');
+    DebugLogger.ui('WelcomeScreen: Button controller created (600ms duration)');
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
@@ -166,8 +158,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
       parent: _slideController,
       curve: Curves.easeOut,
     ));
-    debugPrint(
-        '🎨 WelcomeScreen: 📐 Slide animation configured (0.3 offset to 0.0)');
+    DebugLogger.ui('WelcomeScreen: Slide animation configured (0.3 offset to 0.0)');
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
@@ -176,8 +167,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
       parent: _fadeController,
       curve: Curves.easeIn,
     ));
-    debugPrint(
-        '🎨 WelcomeScreen: 💫 Fade animation configured (0.0 to 1.0 opacity)');
+    DebugLogger.ui('WelcomeScreen: Fade animation configured (0.0 to 1.0 opacity)');
 
     _buttonScale = Tween<double>(
       begin: 0.8,
@@ -186,10 +176,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
       parent: _buttonController,
       curve: Curves.elasticOut,
     ));
-    debugPrint(
-        '🎨 WelcomeScreen: 🎈 Button scale animation configured (0.8 to 1.0 scale)');
+    DebugLogger.ui('WelcomeScreen: Button scale animation configured (0.8 to 1.0 scale)');
 
-    debugPrint('🎨 WelcomeScreen: ✅ All animations initialized successfully');
+    DebugLogger.success('WelcomeScreen: All animations initialized successfully');
   }
 
   /// Start staggered entrance animations for smooth UX
@@ -227,29 +216,28 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
 
   @override
   void dispose() {
-    debugPrint('🎨 WelcomeScreen: 🧹 Starting welcome screen cleanup');
+    DebugLogger.ui('WelcomeScreen: Starting welcome screen cleanup');
 
     // Clean up animation controllers
-    debugPrint('🎨 WelcomeScreen: 🎬 Disposing animation controllers');
+    DebugLogger.ui('WelcomeScreen: Disposing animation controllers');
     _slideController.dispose();
     _fadeController.dispose();
     _buttonController.dispose();
 
-    debugPrint('🎨 WelcomeScreen: ✅ Welcome screen cleanup completed');
+    DebugLogger.success('WelcomeScreen: Welcome screen cleanup completed');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🎨 WelcomeScreen: 🎨 Building welcome screen UI');
+    DebugLogger.ui('WelcomeScreen: Building welcome screen UI');
 
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 700; // Detect smaller screens
 
-    debugPrint('🎨 WelcomeScreen: 📐 Screen height: ${screenHeight}px');
-    debugPrint('🎨 WelcomeScreen: 📱 Is small screen: $isSmallScreen');
-    debugPrint(
-        '🎨 WelcomeScreen: 🎨 Theme manager loaded: ${ThemeManager.of(context).runtimeType}');
+    DebugLogger.ui('WelcomeScreen: Screen height: ${screenHeight}px');
+    DebugLogger.ui('WelcomeScreen: Is small screen: $isSmallScreen');
+    DebugLogger.ui('WelcomeScreen: Theme manager loaded: ${ThemeManager.of(context).runtimeType}');
 
     return Scaffold(
       backgroundColor: ThemeManager.of(context).backgroundColor,
@@ -315,10 +303,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   },
                 ),
 
-                SizedBox(
-                    height: isSmallScreen
-                        ? 10.h
-                        : 20.h), // Further reduced for small screens
+                SizedBox(height: isSmallScreen ? 10.h : 20.h), // Further reduced for small screens
               ],
             ),
           ),
@@ -350,9 +335,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               width: 50.w,
               height: 50.w,
               decoration: BoxDecoration(
-                color: ThemeManager.of(context)
-                    .primaryColor
-                    .withValues(alpha: 0.1),
+                color: ThemeManager.of(context).primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(25.r),
               ),
             ),
@@ -364,9 +347,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
               width: 35.w,
               height: 35.w,
               decoration: BoxDecoration(
-                color: ThemeManager.of(context)
-                    .successColor
-                    .withValues(alpha: 0.1),
+                color: ThemeManager.of(context).successColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(17.5.r),
               ),
             ),
@@ -498,17 +479,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
           height: 52.h,
           child: ElevatedButton(
             onPressed: () {
-              debugPrint('🎨 WelcomeScreen: 🚀 Get Started button pressed');
-              debugPrint(
-                  '🎨 WelcomeScreen: 📱 Opening phone login bottom sheet');
+              DebugLogger.ui('WelcomeScreen: Get Started button pressed');
+              DebugLogger.navigation('WelcomeScreen: Opening phone login bottom sheet');
               _showPhoneLoginBottomSheet();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: ThemeManager.of(context).primaryColor,
               foregroundColor: Colors.white,
               elevation: 0,
-              shadowColor:
-                  ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
+              shadowColor: ThemeManager.of(context).primaryColor.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.r),
               ),
@@ -549,7 +528,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             ),
             GestureDetector(
               onTap: () {
-                debugPrint('🎨 WelcomeScreen: 📄 Terms of Service tapped');
+                DebugLogger.ui('WelcomeScreen: Terms of Service tapped');
                 // TODO: Show terms modal or navigate to terms page
               },
               child: Text(
@@ -570,7 +549,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             ),
             GestureDetector(
               onTap: () {
-                debugPrint('🎨 WelcomeScreen: 🔒 Privacy Policy tapped');
+                DebugLogger.ui('WelcomeScreen: Privacy Policy tapped');
                 // TODO: Show privacy policy modal or navigate to privacy page
               },
               child: Text(
@@ -604,19 +583,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
   /// - Navigation to PIN verification with AppUser data
   /// - HiveService integration for session management
   void _showPhoneLoginBottomSheet() {
-    debugPrint('🎨 WelcomeScreen: 📱 Opening phone login bottom sheet modal');
-    debugPrint('🎨 WelcomeScreen: 🔗 Integrating with authentication flow');
+    DebugLogger.navigation('WelcomeScreen: Opening phone login bottom sheet modal');
+    DebugLogger.auth('WelcomeScreen: Integrating with authentication flow');
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        debugPrint('🎨 WelcomeScreen: 🎨 Building PhoneLoginBottomSheet');
+        DebugLogger.ui('WelcomeScreen: Building PhoneLoginBottomSheet');
         return const PhoneLoginBottomSheet();
       },
     ).then((_) {
-      debugPrint('🎨 WelcomeScreen: 📱 Phone login bottom sheet dismissed');
+      DebugLogger.navigation('WelcomeScreen: Phone login bottom sheet dismissed');
     });
   }
 }

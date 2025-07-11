@@ -9,6 +9,7 @@ import 'package:prbal/services/app_services.dart';
 import 'package:prbal/utils/navigation/navigation_route.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/utils/debug_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 /// ====================================================================
@@ -68,8 +69,7 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🎬 IntroductionScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
+    DebugLogger.intro('IntroductionScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
     pageController = PageController();
     _initializeAnimations();
     _startAnimations();
@@ -95,18 +95,13 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
   /// Logs current authentication state for debugging
   void _logAuthenticationState() {
     final authState = ref.read(authenticationStateProvider);
-    debugPrint('🔐 IntroductionScreen: Authentication state check:');
-    debugPrint(
-        '🔐 IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
-    debugPrint('🔐 IntroductionScreen:   - Loading: ${authState.isLoading}');
-    debugPrint(
-        '🔐 IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
-    debugPrint(
-        '🔐 IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
-    debugPrint(
-        '🔐 IntroductionScreen:   - Has Tokens: ${authState.tokens != null}');
-    debugPrint(
-        '🔐 IntroductionScreen:   - Error: ${authState.error ?? 'none'}');
+    DebugLogger.auth('IntroductionScreen: Authentication state check:');
+    DebugLogger.auth('IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
+    DebugLogger.auth('IntroductionScreen:   - Loading: ${authState.isLoading}');
+    DebugLogger.auth('IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
+    DebugLogger.auth('IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
+    DebugLogger.auth('IntroductionScreen:   - Has Tokens: ${authState.tokens != null}');
+    DebugLogger.auth('IntroductionScreen:   - Error: ${authState.error ?? 'none'}');
   }
 
   /// Gets comprehensive theme-aware onboarding pages using ALL ThemeManager properties
@@ -405,8 +400,7 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                 GestureDetector(
                   onTap: _skipOnboarding,
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                     decoration: BoxDecoration(
                       gradient: ThemeManager.of(context).conditionalGradient(
                         lightGradient: LinearGradient(
@@ -427,10 +421,8 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: ThemeManager.of(context).conditionalColor(
-                          lightColor:
-                              currentPageData.color.withValues(alpha: 0.3),
-                          darkColor:
-                              currentPageData.color.withValues(alpha: 0.4),
+                          lightColor: currentPageData.color.withValues(alpha: 0.3),
+                          darkColor: currentPageData.color.withValues(alpha: 0.4),
                         ),
                         width: 1.5,
                       ),
@@ -477,9 +469,8 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                       gradient: _getPageGradient(currentPageData),
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
-                        color: ThemeManager.of(context)
-                            .getContrastingColor(currentPageData.color)
-                            .withValues(alpha: 0.3),
+                        color:
+                            ThemeManager.of(context).getContrastingColor(currentPageData.color).withValues(alpha: 0.3),
                         width: 2,
                       ),
                       // boxShadow: [
@@ -497,8 +488,7 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
-                          color: ThemeManager.of(context)
-                              .getContrastingColor(currentPageData.color),
+                          color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
                         ),
                       ),
                     ),
@@ -571,10 +561,8 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            currentPageData.color
-                                .withValues(alpha: 0.2 * _glowAnimation.value),
-                            currentPageData.color
-                                .withValues(alpha: 0.1 * _glowAnimation.value),
+                            currentPageData.color.withValues(alpha: 0.2 * _glowAnimation.value),
+                            currentPageData.color.withValues(alpha: 0.1 * _glowAnimation.value),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(10.r),
@@ -635,24 +623,20 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                       children: [
                         // Enhanced feature badge with comprehensive theming
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 6.h),
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                           decoration: BoxDecoration(
-                            gradient:
-                                ThemeManager.of(context).conditionalGradient(
+                            gradient: ThemeManager.of(context).conditionalGradient(
                               lightGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.15),
                                   page.gradientColors[1].withValues(alpha: 0.1),
-                                  page.gradientColors[2]
-                                      .withValues(alpha: 0.05),
+                                  page.gradientColors[2].withValues(alpha: 0.05),
                                 ],
                               ),
                               darkGradient: LinearGradient(
                                 colors: [
                                   page.color.withValues(alpha: 0.2),
-                                  page.gradientColors[1]
-                                      .withValues(alpha: 0.15),
+                                  page.gradientColors[1].withValues(alpha: 0.15),
                                   page.gradientColors[2].withValues(alpha: 0.1),
                                 ],
                               ),
@@ -818,10 +802,8 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
           color: ThemeManager.of(context).conditionalColor(
-            lightColor:
-                ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
-            darkColor:
-                ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
+            lightColor: ThemeManager.of(context).borderColor.withValues(alpha: 0.3),
+            darkColor: ThemeManager.of(context).borderSecondary.withValues(alpha: 0.4),
           ),
           width: 1.5,
         ),
@@ -912,9 +894,7 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                 gradient: _getPageGradient(currentPageData),
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
-                  color: ThemeManager.of(context)
-                      .getContrastingColor(currentPageData.color)
-                      .withValues(alpha: 0.2),
+                  color: ThemeManager.of(context).getContrastingColor(currentPageData.color).withValues(alpha: 0.2),
                   width: 1,
                 ),
                 // boxShadow: [
@@ -937,25 +917,19 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          currentPage == pages.length - 1
-                              ? 'intro.getStarted'.tr()
-                              : 'button.next'.tr(),
+                          currentPage == pages.length - 1 ? 'intro.getStarted'.tr() : 'button.next'.tr(),
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
-                            color: ThemeManager.of(context)
-                                .getContrastingColor(currentPageData.color),
+                            color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
                             letterSpacing: 0.5,
                           ),
                         ),
                         SizedBox(width: 8.w),
                         Icon(
-                          currentPage == pages.length - 1
-                              ? Prbal.rocket2
-                              : Prbal.arrowDown,
+                          currentPage == pages.length - 1 ? Prbal.rocket2 : Prbal.arrowDown,
                           size: 18.sp,
-                          color: ThemeManager.of(context)
-                              .getContrastingColor(currentPageData.color),
+                          color: ThemeManager.of(context).getContrastingColor(currentPageData.color),
                         ),
                       ],
                     ),
@@ -1005,28 +979,26 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
     }
   }
 
-  /// Enhanced intro completion with language selection check and authentication state management
+  /// Enhanced intro completion with router delegation
   ///
   /// **PROCESS:**
-  /// 1. Check current authentication state
+  /// 1. Check current authentication state for debugging
   /// 2. Mark intro as watched in HiveService for persistence
-  /// 3. Check if language is selected using HiveService
-  /// 4. Navigate to appropriate screen based on language selection status
+  /// 3. Navigate to home and let router handle the rest
+  /// 4. Router will check language selection and redirect appropriately
   /// 5. Provide proper error handling and user feedback
   ///
   /// **NAVIGATION FLOW:**
-  /// - If language NOT selected → Navigate to language selection screen
-  /// - If language is selected → Navigate to welcome/auth screen
-  /// - Auth flow then handles authentication state and dashboard routing
+  /// - Mark intro as watched → Navigate to home
+  /// - Router checks: language → auth → dashboard
+  /// - This ensures consistent navigation logic across the app
   Future<void> _handleGetStarted() async {
     if (_isCompletingIntro) {
-      debugPrint(
-          '🚀 IntroductionScreen: Intro completion already in progress, ignoring...');
+      DebugLogger.intro('IntroductionScreen: Intro completion already in progress, ignoring...');
       return;
     }
 
-    debugPrint(
-        '🚀 IntroductionScreen: ====== COMPLETING INTRODUCTION FLOW ======');
+    DebugLogger.intro('IntroductionScreen: ====== COMPLETING INTRODUCTION FLOW ======');
 
     try {
       setState(() {
@@ -1035,73 +1007,46 @@ class _IntroductionScreenState extends ConsumerState<IntroductionScreen>
 
       // Log current auth state for debugging
       final authState = ref.read(authenticationStateProvider);
-      debugPrint(
-          '🔐 IntroductionScreen: Current auth state before completion:');
-      debugPrint(
-          '🔐 IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
-      debugPrint(
-          '🔐 IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
-      debugPrint(
-          '🔐 IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
+      DebugLogger.auth('IntroductionScreen: Current auth state before completion:');
+      DebugLogger.auth('IntroductionScreen:   - Authenticated: ${authState.isAuthenticated}');
+      DebugLogger.auth('IntroductionScreen:   - User: ${authState.user?.username ?? 'none'}');
+      DebugLogger.auth('IntroductionScreen:   - User Type: ${authState.user?.userType.name ?? 'none'}');
 
       // Mark intro as watched in HiveService for persistence
-      debugPrint(
-          '📝 IntroductionScreen: Marking intro as watched in HiveService...');
+      DebugLogger.storage('IntroductionScreen: Marking intro as watched in HiveService...');
       await HiveService.setIntroWatched();
-      debugPrint(
-          '✅ IntroductionScreen: Intro completion status saved successfully');
+      DebugLogger.success('IntroductionScreen: Intro completion status saved successfully');
 
-      // Check if language is selected using HiveService
-      debugPrint(
-          '🌐 IntroductionScreen: Checking language selection status...');
-      final isLanguageSelected = HiveService.isLanguageSelected();
-      final selectedLanguage = HiveService.getSelectedLanguage();
+      // Log current state for debugging
+      DebugLogger.intro('IntroductionScreen: Current state after intro completion:');
+      DebugLogger.intro('IntroductionScreen:   - Intro watched: ${HiveService.hasIntroBeenWatched()}');
+      DebugLogger.intro('IntroductionScreen:   - Language selected: ${HiveService.isLanguageSelected()}');
+      DebugLogger.intro('IntroductionScreen:   - Selected language: ${HiveService.getSelectedLanguage() ?? 'none'}');
 
-      debugPrint('🌐 IntroductionScreen: Language selection check results:');
-      debugPrint(
-          '🌐 IntroductionScreen:   - Language selected: $isLanguageSelected');
-      debugPrint(
-          '🌐 IntroductionScreen:   - Selected language: ${selectedLanguage ?? 'none'}');
+      // Navigate to home and let the router handle the redirect logic
+      DebugLogger.navigation('IntroductionScreen: Navigating to home → Router will handle redirect logic...');
+      DebugLogger.navigation('IntroductionScreen: Router will check: language → auth → user-specific dashboard');
 
-      // Navigate based on language selection status
-      if (!isLanguageSelected) {
-        debugPrint(
-            '🧭 IntroductionScreen: Language NOT selected → Navigating to language selection screen');
-        NavigationRoute.goRouteClear(RouteEnum.languageSelection.rawValue);
-      } else {
-        debugPrint(
-            '🧭 IntroductionScreen: Language selected ($selectedLanguage) → Navigating to welcome screen');
-        NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
-      }
+      NavigationRoute.goRouteClear(RouteEnum.home.rawValue);
 
-      debugPrint(
-          '🚀 IntroductionScreen: ====== INTRO COMPLETION SUCCESSFUL ======');
+      DebugLogger.success('IntroductionScreen: ====== INTRO COMPLETION SUCCESSFUL ======');
     } catch (e, stackTrace) {
-      debugPrint('❌ IntroductionScreen: Error completing intro: $e');
-      debugPrint('🔍 IntroductionScreen: Stack trace: $stackTrace');
+      DebugLogger.error('IntroductionScreen: Error completing intro: $e');
+      DebugLogger.debug('IntroductionScreen: Stack trace: $stackTrace');
 
       // Even if there's an error, try to navigate
-      debugPrint('🔄 IntroductionScreen: Attempting fallback navigation...');
+      DebugLogger.navigation('IntroductionScreen: Attempting fallback navigation...');
       try {
-        // On error, check language selection for fallback navigation
-        final isLanguageSelected = HiveService.isLanguageSelected();
-        if (!isLanguageSelected) {
-          debugPrint(
-              '🔄 IntroductionScreen: Fallback → Language selection screen');
-          NavigationRoute.goRouteClear(RouteEnum.languageSelection.rawValue);
-        } else {
-          debugPrint('🔄 IntroductionScreen: Fallback → Welcome screen');
-          NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
-        }
+        // Fallback to home - let router handle the redirect
+        DebugLogger.navigation('IntroductionScreen: Fallback → Home (router will redirect)');
+        NavigationRoute.goRouteClear(RouteEnum.home.rawValue);
       } catch (navError) {
-        debugPrint(
-            '❌ IntroductionScreen: Fallback navigation failed: $navError');
+        DebugLogger.error('IntroductionScreen: Fallback navigation failed: $navError');
         // Ultimate fallback to welcome screen
         try {
           NavigationRoute.goRouteClear(RouteEnum.welcome.rawValue);
         } catch (ultimateError) {
-          debugPrint(
-              '❌ IntroductionScreen: Ultimate fallback failed: $ultimateError');
+          DebugLogger.error('IntroductionScreen: Ultimate fallback failed: $ultimateError');
         }
       }
     } finally {

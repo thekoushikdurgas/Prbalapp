@@ -12,6 +12,7 @@ import 'package:prbal/services/health_service.dart';
 import 'package:prbal/services/hive_service.dart';
 import 'package:prbal/utils/navigation/routes/route_enum.dart';
 import 'package:prbal/utils/theme/theme_manager.dart';
+import 'package:prbal/utils/debug_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // TODO: Add sound effects for splash animations
@@ -42,8 +43,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with TickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
   late AnimationController _progressController;
@@ -62,8 +62,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        '🚀 SplashScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
+    DebugLogger.info('SplashScreen: ====== INITIALIZING WITH AUTH INTEGRATION ======');
     _initializeAnimations();
     _startAnimationSequence();
   }
@@ -131,8 +130,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _startAnimationSequence() async {
     // Start logo and lottie animations simultaneously
     _logoController.forward();
-    _lottieController.duration =
-        const Duration(milliseconds: 3000); // Set initial duration
+    _lottieController.duration = const Duration(milliseconds: 3000); // Set initial duration
     _lottieController.repeat(); // Loop the Lottie animation
 
     // Wait for logo animation to finish
@@ -219,8 +217,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         if (currentHealth != null) {
           healthStatusResult = currentHealth;
         }
-        await Future.delayed(
-            const Duration(milliseconds: 200)); // Shorter delay for cached data
+        await Future.delayed(const Duration(milliseconds: 200)); // Shorter delay for cached data
       } else {
         // Perform health check with connectivity awareness
         if (healthService.isOffline) {
@@ -233,8 +230,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         } else {
           // Network available - perform full health check
           _updateLoadingText('loading.performingHealthCheck'.tr());
-          final healthCheckResult =
-              await healthService.performHealthCheckWithWait(
+          final healthCheckResult = await healthService.performHealthCheckWithWait(
             networkTimeout: const Duration(seconds: 3),
           );
           if (healthCheckResult != null) {
@@ -250,8 +246,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       } else if (healthStatusResult.overallStatus == HealthStatus.healthy) {
         _updateLoadingText('loading.systemHealthy'.tr());
       } else {
-        _updateLoadingText(
-            '${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
+        _updateLoadingText('${'loading.systemStatus'.tr()}: ${healthStatusResult.overallStatus.name}');
       }
 
       await Future.delayed(const Duration(milliseconds: 300));
@@ -278,22 +273,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// Logs current authentication state for debugging
   Future<void> _logAuthenticationState() async {
     final authState = ref.read(authenticationStateProvider);
-    debugPrint('🔐 SplashScreen: ====== AUTHENTICATION STATE CHECK ======');
-    debugPrint('🔐 SplashScreen: Authenticated: ${authState.isAuthenticated}');
-    debugPrint('🔐 SplashScreen: Loading: ${authState.isLoading}');
-    debugPrint('🔐 SplashScreen: User: ${authState.user?.username ?? 'none'}');
-    debugPrint(
-        '🔐 SplashScreen: User Type: ${authState.user?.userType.name ?? 'none'}');
-    debugPrint('🔐 SplashScreen: Has Tokens: ${authState.tokens != null}');
-    debugPrint('🔐 SplashScreen: Error: ${authState.error ?? 'none'}');
+    DebugLogger.auth('SplashScreen: ====== AUTHENTICATION STATE CHECK ======');
+    DebugLogger.auth('SplashScreen: Authenticated: ${authState.isAuthenticated}');
+    DebugLogger.auth('SplashScreen: Loading: ${authState.isLoading}');
+    DebugLogger.auth('SplashScreen: User: ${authState.user?.username ?? 'none'}');
+    DebugLogger.auth('SplashScreen: User Type: ${authState.user?.userType.name ?? 'none'}');
+    DebugLogger.auth('SplashScreen: Has Tokens: ${authState.tokens != null}');
+    DebugLogger.auth('SplashScreen: Error: ${authState.error ?? 'none'}');
 
     // Also log HiveService state for comparison
-    debugPrint(
-        '📦 SplashScreen: HiveService logged in: ${HiveService.isLoggedIn()}');
-    debugPrint(
-        '📦 SplashScreen: HiveService intro watched: ${HiveService.hasIntroBeenWatched()}');
-    debugPrint(
-        '📦 SplashScreen: HiveService language selected: ${HiveService.isLanguageSelected()}');
+    DebugLogger.storage('SplashScreen: HiveService logged in: ${HiveService.isLoggedIn()}');
+    DebugLogger.storage('SplashScreen: HiveService intro watched: ${HiveService.hasIntroBeenWatched()}');
+    DebugLogger.storage('SplashScreen: HiveService language selected: ${HiveService.isLanguageSelected()}');
   }
 
   /// Validates and refreshes authentication if needed
@@ -301,8 +292,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final authState = ref.read(authenticationStateProvider);
 
     if (!authState.isAuthenticated || authState.user == null) {
-      debugPrint(
-          '🔐 SplashScreen: No valid authentication, skipping validation');
+      DebugLogger.auth('SplashScreen: No valid authentication, skipping validation');
       return;
     }
 
@@ -314,62 +304,54 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
       // Check if we have a valid access token
       if (authState.tokens?.accessToken.isNotEmpty == true) {
-        debugPrint('🔐 SplashScreen: Validating access token...');
+        DebugLogger.auth('SplashScreen: Validating access token...');
 
-        final isValid =
-            await userService.isAuthenticated(authState.tokens!.accessToken);
+        final isValid = await userService.isAuthenticated(authState.tokens!.accessToken);
 
         if (isValid) {
-          debugPrint('✅ SplashScreen: Access token is valid');
+          DebugLogger.success('SplashScreen: Access token is valid');
 
           // Optionally refresh user data from API
           _updateLoadingText('loading.syncingUserData'.tr());
           try {
-            final profileResponse = await userService
-                .getCurrentUserProfile(authState.tokens!.accessToken);
+            final profileResponse = await userService.getCurrentUserProfile(authState.tokens!.accessToken);
             if (profileResponse.isSuccess && profileResponse.data != null) {
               await authNotifier.updateUser(profileResponse.data!);
-              debugPrint('✅ SplashScreen: User data synchronized from API');
+              DebugLogger.success('SplashScreen: User data synchronized from API');
             }
           } catch (e) {
-            debugPrint(
-                '⚠️ SplashScreen: Failed to sync user data (non-critical): $e');
+            DebugLogger.error('SplashScreen: Failed to sync user data (non-critical): $e');
           }
         } else {
-          debugPrint(
-              '❌ SplashScreen: Access token invalid, attempting refresh...');
+          DebugLogger.error('SplashScreen: Access token invalid, attempting refresh...');
 
           if (authState.tokens?.refreshToken.isNotEmpty == true) {
             try {
-              final refreshResponse = await userService
-                  .refreshToken(authState.tokens!.refreshToken);
+              final refreshResponse = await userService.refreshToken(authState.tokens!.refreshToken);
               if (refreshResponse.isSuccess && refreshResponse.data != null) {
                 final newTokens = AuthTokens.fromJson(refreshResponse.data!);
                 await authNotifier.updateTokens(newTokens);
-                debugPrint('✅ SplashScreen: Tokens refreshed successfully');
+                DebugLogger.success('SplashScreen: Tokens refreshed successfully');
               } else {
-                debugPrint(
-                    '❌ SplashScreen: Token refresh failed, clearing auth state');
+                DebugLogger.error('SplashScreen: Token refresh failed, clearing auth state');
                 await authNotifier.logout();
               }
             } catch (e) {
-              debugPrint('❌ SplashScreen: Token refresh error: $e');
+              DebugLogger.error('SplashScreen: Token refresh error: $e');
               await authNotifier.logout();
             }
           } else {
-            debugPrint(
-                '❌ SplashScreen: No refresh token available, clearing auth state');
+            DebugLogger.error('SplashScreen: No refresh token available, clearing auth state');
             await authNotifier.logout();
           }
         }
       } else {
-        debugPrint(
-            '⚠️ SplashScreen: User authenticated but no access token found');
+        DebugLogger.error('SplashScreen: User authenticated but no access token found');
         // Keep user data but they'll need to re-authenticate for API calls
       }
     } catch (e, stackTrace) {
-      debugPrint('❌ SplashScreen: Authentication validation error: $e');
-      debugPrint('🔍 SplashScreen: Stack trace: $stackTrace');
+      DebugLogger.error('SplashScreen: Authentication validation error: $e');
+      DebugLogger.debug('SplashScreen: Stack trace: $stackTrace');
       // Don't clear auth state on validation errors, just log them
     }
   }
@@ -391,11 +373,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// Simplified navigation that delegates to router's redirect logic
   ///
   /// **APPROACH:**
-  /// Instead of manually checking all conditions and deciding where to navigate,
-  /// we delegate this to the router's authentication-aware redirect functionality.
-  /// The router in navigation_routers.dart handles all the logic for:
-  /// - Language selection check
+  /// The router in navigation_routers.dart now handles all the logic for:
   /// - Intro/onboarding check
+  /// - Language selection check
   /// - Authentication state verification
   /// - User type-specific dashboard routing
   ///
@@ -405,55 +385,46 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// - Automatic handling of edge cases
   /// - Simpler maintenance and debugging
   Future<void> _performNavigation() async {
-    debugPrint(
-        '🧭 SplashScreen: ====== SIMPLIFIED NAVIGATION WITH ROUTER DELEGATION ======');
+    DebugLogger.navigation('SplashScreen: ====== NAVIGATION WITH ENHANCED ROUTER DELEGATION ======');
 
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
 
-    debugPrint(
-        '🧭 SplashScreen: Widget is still mounted, proceeding with navigation');
+    DebugLogger.navigation('SplashScreen: Widget is still mounted, proceeding with navigation');
 
     // Log current state for debugging
     final authState = ref.read(authenticationStateProvider);
     final isLanguageSelected = HiveService.isLanguageSelected();
     final hasIntroBeenWatched = HiveService.hasIntroBeenWatched();
 
-    debugPrint('🧭 SplashScreen: ====== CURRENT STATE SUMMARY ======');
-    debugPrint('🧭 SplashScreen: Language selected: $isLanguageSelected');
-    debugPrint('🧭 SplashScreen: Intro watched: $hasIntroBeenWatched');
-    debugPrint('🧭 SplashScreen: Auth state: ${authState.isAuthenticated}');
-    debugPrint('🧭 SplashScreen: User: ${authState.user?.username ?? 'none'}');
-    debugPrint(
-        '🧭 SplashScreen: User type: ${authState.user?.userType.name ?? 'none'}');
+    DebugLogger.navigation('SplashScreen: ====== CURRENT STATE SUMMARY ======');
+    DebugLogger.navigation('SplashScreen: Language selected: $isLanguageSelected');
+    DebugLogger.navigation('SplashScreen: Intro watched: $hasIntroBeenWatched');
+    DebugLogger.navigation('SplashScreen: Auth state: ${authState.isAuthenticated}');
+    DebugLogger.navigation('SplashScreen: User: ${authState.user?.username ?? 'none'}');
+    DebugLogger.navigation('SplashScreen: User type: ${authState.user?.userType.name ?? 'none'}');
 
     try {
       // Navigate to home - let the router's redirect logic handle the rest
-      debugPrint(
-          '🧭 SplashScreen: Navigating to home → Router will handle redirect logic...');
-      debugPrint(
-          '🧭 SplashScreen: Router will check language → intro → auth → user-specific dashboard');
+      DebugLogger.navigation('SplashScreen: Navigating to home → Router will handle all redirect logic...');
+      DebugLogger.navigation('SplashScreen: Router will check: intro → language → auth → user-specific dashboard');
 
       context.go(RouteEnum.home.rawValue);
-      debugPrint(
-          '✅ SplashScreen: Navigation initiated - router redirect will take over');
+      DebugLogger.success('SplashScreen: Navigation initiated - enhanced router redirect will take over');
     } catch (e, stackTrace) {
-      debugPrint('❌ SplashScreen: Navigation error: $e');
-      debugPrint('🔍 SplashScreen: Stack trace: $stackTrace');
+      DebugLogger.error('SplashScreen: Navigation error: $e');
+      DebugLogger.debug('SplashScreen: Stack trace: $stackTrace');
 
       // Fallback navigation in case of error
-      debugPrint(
-          '🔄 SplashScreen: Attempting fallback navigation to welcome...');
+      DebugLogger.navigation('SplashScreen: Attempting fallback navigation to welcome...');
       try {
         context.go(RouteEnum.welcome.rawValue);
       } catch (fallbackError) {
-        debugPrint(
-            '❌ SplashScreen: Fallback navigation also failed: $fallbackError');
+        DebugLogger.error('SplashScreen: Fallback navigation also failed: $fallbackError');
       }
     }
 
-    debugPrint(
-        '🧭 SplashScreen: ====== NAVIGATION DELEGATION COMPLETED ======');
+    DebugLogger.navigation('SplashScreen: ====== ENHANCED NAVIGATION DELEGATION COMPLETED ======');
   }
 
   @override
@@ -567,8 +538,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       children: [
         // App name with custom SourGummy font and gradient text effect
         ShaderMask(
-          shaderCallback: (bounds) =>
-              ThemeManager.of(context).primaryGradient.createShader(bounds),
+          shaderCallback: (bounds) => ThemeManager.of(context).primaryGradient.createShader(bounds),
           child: Text(
             'Prbal',
             style: TextStyle(
@@ -629,8 +599,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// Build enhanced bottom section with custom typography
   Widget _buildEnhancedBottomSection() {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: 24.w, vertical: 16.h), // Reduced padding
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h), // Reduced padding
       decoration: BoxDecoration(
         gradient: ThemeManager.of(context).surfaceGradient,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
@@ -650,8 +619,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   children: [
                     // Loading text with enhanced styling
                     Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16.w, vertical: 8.h), // Reduced padding
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h), // Reduced padding
                       // decoration: BoxDecoration(
                       //   borderRadius: BorderRadius.circular(16.r),
                       //   border: Border.all(
@@ -741,8 +709,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        final progressWidth =
-                            constraints.maxWidth * _progressValue.value;
+                        final progressWidth = constraints.maxWidth * _progressValue.value;
 
                         return Stack(
                           clipBehavior: Clip.none,
@@ -750,9 +717,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             // Background shimmer
                             Container(
                               decoration: BoxDecoration(
-                                gradient: _isInitializationComplete
-                                    ? null
-                                    : ThemeManager.of(context).shimmerGradient,
+                                gradient: _isInitializationComplete ? null : ThemeManager.of(context).shimmerGradient,
                                 borderRadius: BorderRadius.circular(3.r),
                               ),
                             ),
@@ -764,33 +729,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                 decoration: BoxDecoration(
                                   gradient: _isInitializationComplete
                                       ? ThemeManager.of(context).successGradient
-                                      : ThemeManager.of(context)
-                                          .accent1Gradient,
+                                      : ThemeManager.of(context).accent1Gradient,
                                   borderRadius: BorderRadius.circular(3.r),
                                 ),
                               ),
                             ),
                             // Moving circle at the end of progress bar
-                            if (_progressValue.value >
-                                0.01) // Only show circle when progress has started
+                            if (_progressValue.value > 0.01) // Only show circle when progress has started
                               Positioned(
-                                left: progressWidth -
-                                    8.w, // Center the circle at the progress end
-                                top: -4
-                                    .h, // Position circle to overlap the progress bar
+                                left: progressWidth - 8.w, // Center the circle at the progress end
+                                top: -4.h, // Position circle to overlap the progress bar
                                 child: Container(
                                   width: 15.w,
                                   height: 15.h,
                                   decoration: BoxDecoration(
                                     gradient: _isInitializationComplete
-                                        ? ThemeManager.of(context)
-                                            .successGradient
-                                        : ThemeManager.of(context)
-                                            .primaryGradient,
+                                        ? ThemeManager.of(context).successGradient
+                                        : ThemeManager.of(context).primaryGradient,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color:
-                                          ThemeManager.of(context).textPrimary,
+                                      color: ThemeManager.of(context).textPrimary,
                                       width: 2.0,
                                     ),
                                   ),
@@ -799,8 +757,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                       width: 8.w,
                                       height: 8.h,
                                       decoration: BoxDecoration(
-                                        color: ThemeManager.of(context)
-                                            .textPrimary,
+                                        color: ThemeManager.of(context).textPrimary,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -855,9 +812,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   letterSpacing: 0.4,
                   shadows: [
                     Shadow(
-                      color: ThemeManager.of(context)
-                          .verifiedColor
-                          .withValues(alpha: 77),
+                      color: ThemeManager.of(context).verifiedColor.withValues(alpha: 77),
                       blurRadius: 3,
                       offset: const Offset(0, 1),
                     ),
